@@ -1,0 +1,48 @@
+\documentclass[a4paper,11pt]{article}
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyvrb}
+\usepackage{hyperref}
+\usepackage{float}
+
+\makeatletter
+\renewcommand\paragraph{%
+   \@startsection{paragraph}{4}{0mm}%
+      {-\baselineskip}%
+      {.5\baselineskip}%
+      {\normalfont\normalsize\bfseries}}
+\makeatother
+
+\begin{document}
+
+% The Title page
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{fig/logo}\\[3cm]    
+\textsc{\LARGE Large-scale Image Processing}\\[0.5cm]
+\textsc{\large Overview of the sate of the art of publications, software and test databases}\\[0.5cm]
+\vfill
+\end{center}
+{\large
+\emph{E. Ranguelova} \\
+}
+{\large
+{Netherlands eScience Center, \\
+Science Park 140 (Matrix 1), 1098 XG Amsterdam, the Netherlands\\
+}
+}
+\begin{center}
+{\large \today}
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\input{introduction.tex}
+\end{document}
+
