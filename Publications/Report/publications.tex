@@ -27,4 +27,14 @@ approach of computing saliency in images using low
 level features of color and luminance. The resulting saliency maps are better suited to salient object segmentation, with higher precision and
 better recall than the analyzed state-of-the-art techniques.
 
-In \cite{LCAV-CONF-2009-012}, the authors introduce a method for salient region detection that  outputs full resolution saliency maps with well-defined boundaries of salient objects. These boundaries are  preserved by retaining substantially more frequency  content from the original image than other existing  techniques. The method exploits features of color and luminance, is simple to implement, and is computationally  efficient. ...
+In \cite{YanCVPR2013} the authors address a fundamental problem in saliency detection, namely, the small-scale background structures, which affect the detection. This problem occurs often in natural images. They propose a hierarchical framwork that infers importance values fromimage layers with different scales. The approach is summarized in Figure \ref{fig:hier_yan13}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.95\textwidth]{fig/Hierarchy_Yan13}
+\end{center}
+\caption{An overview of the hierarchical framework. Three image layers are extracted from the input, and then  saliency cues from each of these layers are computed. They are finally fed into a hierarchical model to get the final results.}
+\label{fig:hier_yan13}
+\end{figure}
+
+For the purpose of their research the authors made a new database available to the community, the Complex Scene Saliency dataset (CSSD) and the Extended CSSD (ECSSD), described in Section \ref{subsec:cssd}. The executable of their software is also available from the project link (\cite{ecssd_db}), but not the source code. The authors report better performence of their method on MSRA-1000 and (E)CSSD datasets comapred to $11$ other state-of-the-art methods.
