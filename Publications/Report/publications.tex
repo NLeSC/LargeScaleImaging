@@ -3,4 +3,28 @@
 
 
 \subsection{Saliency}
+
+In \cite{LiuCVPR2007} the salient object detection is formulated as image segmentation problem. The object is separated from the background on the basis of several features including multi-scale contrast, center-surround histogram and colour spatial distribution for the object description on several levels- locally, regionally and globally. The multi-scale contrast is the local feature, the center-surround histogram is the regional feature and the colour spatial histogram- the global. These features are illustrated on Figure \ref{fig:sal_feat_liu07}.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.95\textwidth]{fig/SalientFeatures_Liu2007}
+\end{center}
+\caption{Examples of salient features. From leftto right: input image, multi-scale contrast, center-surround histogram, colour spatial distribution and binary salient mask by CRF.}
+\label{fig:sal_feat_liu07}
+\end{figure}
+A conditional Random Field is trained on these features. 
+For the purposes of this research the autors have compiled a large-scale database, MSRA (\cite{msra_db}), presented in section \ref{subsec:msra}. The database is publically available, while the software is not. The proposed methods compared to two other algorithms ``FG" (fuzzy growing) and ``SM" (salient model as computed by the SalientToolbox, described in section \ref{subsec:saltool}). The authors' tends to produce smaller and more focused bounding boxes.
+
+{\em good for automatic cropping?}
+In \cite{LCAV-CONF-2009-012} the authors perform a frequency-domain analysis on five stateof-
+the-art saliency methods, and compared the spatial frequency
+content retained from the original image, which is
+then used in the computation of the saliency maps. This
+analysis illustrated that the deficiencies of these techniques
+arise from the use of an inappropriate range of spatial frequencies.
+Based on this analysis, they presented a frequency-tuned
+approach of computing saliency in images using low
+level features of color and luminance. The resulting saliency maps are better suited to salient object segmentation, with higher precision and
+better recall than the analyzed state-of-the-art techniques.
+
 In \cite{LCAV-CONF-2009-012}, the authors introduce a method for salient region detection that  outputs full resolution saliency maps with well-defined boundaries of salient objects. These boundaries are  preserved by retaining substantially more frequency  content from the original image than other existing  techniques. The method exploits features of color and luminance, is simple to implement, and is computationally  efficient. ...

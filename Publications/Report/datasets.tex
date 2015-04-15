@@ -3,9 +3,9 @@
 
 The annotated segmentation and saliency datasets, which are used by the researchers to test the algorithms are often made available to the object saliency detection and segmentation community.
 
-\subsection{Saliency Datasets}
-\subsubsection{MSRA}
-The MSRA  Database form the Visual computing group of Microsoft  research \cite{msra_db} is a collection of two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset.
+\subsection{Image Saliency Datasets}
+\subsubsection{MSRA}\label{subsec:msra}
+The MSRA  Database form the Visual computing group of Microsoft Research Asia \cite{msra_db} is  first large-scale labeled dataset made publically availablefortraining andevaluaiton. It contains two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset.
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.95\textwidth]{fig/MSRA}
@@ -13,6 +13,9 @@ The MSRA  Database form the Visual computing group of Microsoft  research \cite{
 \caption{Examples of the MSRA dataset.}
 \label{fig:msra}
 \end{figure}
+
+The results of the proposed method by the authors of the dataset, have been published in \cite{LiuCVPR2007}.
+
 \subsubsection{MSRA10k}
 This is an extension of the MSRA dataset, which  addresses the coarse-grained limitation of the MSRA labeling (bounding boxes). The MSRA10k (\cite{msra10k_db}) dataset consists of $10000$ randomly selected MSRA images for which a pixel-level saliency labeling is available. Figure \ref{fig:msra10k} illustrates the dataset. 
 \begin{figure}[H]
@@ -38,7 +41,7 @@ Later, the CSSD was extended to a larger dataset (ECSSD) of $1000$ images, which
 \end{figure}
 
 \subsection{DUT-OMRON}
-The datasets mentioned so far, although widely used in the community are not {\em large-scale} per se. The Dalian University of Technology and the Omron Corporation introduced in the DUT-OMRON dataset \cite{dut-omron_db} consisting of $5168$, manually selected from more than $140 000$ images. They are re-sized to $400 \times x$ or $x \times 400$, where  $x < 400$. They contain one or more salient objects with relatively complex background. Five people have labeled the pixel-wise ground truth along with bounding box and eye-fixation. The dataset is illustrated on Figure \ref{fig:dut-omron}. The results of the experiments on the collected dataset were published in \cite{yang2013saliency}.
+The Dalian University of Technology and the Omron Corporation introduced in the DUT-OMRON dataset \cite{dut-omron_db} consisting of $5168$, manually selected from more than $140 000$ images. They are re-sized to $400 \times x$ or $x \times 400$, where  $x < 400$. They contain one or more salient objects with relatively complex background. Five people have labeled the pixel-wise ground truth along with bounding box and eye-fixation. The dataset is illustrated on Figure \ref{fig:dut-omron}. The results of the experiments on the collected dataset were published in \cite{yang2013saliency}.
 
 \begin{figure}[h]
 \begin{center}
@@ -61,3 +64,7 @@ Another dataset, which aims at bridging the gap between fixations and salient ob
 
 
 The saliency segmentation method and the findings have been published at \cite{TPAMI.2012.147}.  
+
+\subsection{Multimedia Datasets}
+\subsubsection{MSRA-MM}
+In 2009, the reserachers from Micsosoft Research Asia have released 2 versions of large multimedia datasets- MSRA-MM \cite{msra-mm_db}. MSRA-MM 1.0 consists of two sub-datasets, i.e., an image dataset and a video dataset that are collected from the image and video search engines. For image dataset, there are about $1000$ images per query for $68$ representative queries based on the log of search engies. There are $65443$ images in total. For the video dataset, $165$ representative queries have been selected from a log resulting in total of $10277$ videos. Due to copyright issues, the raw image and video data are not available, but only features and annotations are provided. The dataset is explained in detail in a techical report \cite{export:79942}.
