@@ -1,56 +1,57 @@
-% mssr_binary.m- binary MSSR
+% mssr_binary.m- binary MSSR detector
 %**************************************************************************
-% [saliency_masks] = mssr_binary(ROI, area_factor, saliency_type, visualise)
+% [saliency_masks] = mssr_binary(ROI, SE_size_factor, area_factor, ...
+%                                saliency_type, visualise)
 %
-% author: Elena Ranguelova, TNO
+% author: Elena Ranguelova, NLeSc
 % date created: 25 Feb 2008
-% last modification date: 
-% modification details: 
+% last modification date: 28-04-2013
+% modification details: the se_size_factor added as a parameter
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
-% area_factor - area factor for the significant CC
+% SE_size_factor- structuring element (SE) size factor
+% area_factor - area factor for the significant connected components (CCs)
 % [saliency_type]- array with 4 flags for the 4 saliency types 
 %                (Holes, Islands, Indentations, Protrusions)
 %                [optional], if left out- default is [1 1 1 1]   
 % [visualise] - visualisation flag
 %                     [optional], if left out- default is 0
+%                     if set to 1, the regions are dsipalyed as colour-coded
+%                     overlays: "holes" in blue, "islands" in yellow, 
+%                     "indentations" in green and "indentations" in red 
 %**************************************************************************
 % OUTPUTS:
 % saliency_masks - 3-D array of the binary saliency masks of the regions
-%                  for example saliency_masks(:,:,1) contains the holes
-%                  then islands, indentation and protrusions 
+%                  saliency_masks(:,:,i) contains the salient regions per 
+%                  type: i=1- "holes", i=2- "islands", i=3 - "indentaitons"
+%                  and i =4-"protrusions" 
 %**************************************************************************
 % EXAMPLES USAGE:
-% [saliency_masks] = mssr_binary(ROI, area_factor, saliency_type, visualise);
-% as called from mssr_gray_level.m
+% [saliency_masks] = mssr_binary(ROI, se_size_factor, area_factor, ...
+%                                saliency_type, visualise);
+%                    as called from mssr_gray_level.m- TO DO!
 %**************************************************************************
 % REFERENCES: Ranguelova, E., Pauwels, E. J. ``Morphology-based Stable
 % Salient Regions Detector'', International conference on Image and Vision 
 % Computing New Zealand (IVCNZ'06), Great Barrier Island, New Zealand,
 % November 2006, pp.97-102
 %**************************************************************************
-function [saliency_masks] = mssr_binary(ROI, area_factor, saliency_type,...
-                                        visualise)
+function [saliency_masks] = mssr_binary(ROI, SE_size_factor, area_factor,...
+                                        saliency_type, visualise)
 
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
-if nargin < 4
+if nargin < 5
     visualise = 0;
-elseif nargin < 3
+elseif nargin < 4
     saliency_type = [1 1 1 1];
-elseif nargin < 2
-    error('mssr_binary.m requires at least 2 input aruments!');
+elseif nargin < 3
+    error('mssr_binary.m requires at least 3 input aruments!');
     saliency_masks = [];
     return
 end
-%**************************************************************************
-% constants/hard-set parameters
-%--------------------------------------------------------------------------
-% Structuring Element (SE) size factor
-%SE_size_factor = 0.02;
-SE_size_factor = 0.01;
 
 %**************************************************************************
 % input parameters -> variables
@@ -65,11 +66,10 @@ protrusions_flag = saliency_type(4);
 [nrows, ncols] = size(ROI);
 
 % ROI area
-%A = bwarea(ROI);
-A = nrows*ncols;
+ROI_Area = nrows*ncols;
 
 % SE
-SE_size = fix(sqrt(SE_size_factor*A/(2 * pi)));
+SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)));
 SE = strel('disk',SE_size);
 
 % area opening parameter
@@ -85,6 +85,7 @@ holes = zeros(nrows,ncols);
 islands = zeros(nrows,ncols);
 indentations = zeros(nrows,ncols);
 protrusions = zeros(nrows,ncols);
+
 % the connected components labels mattrix
 CCL = zeros(nrows,ncols);
 
@@ -105,9 +106,10 @@ stats = regionprops(bw,'Area');
 
 % compute the areas of all regions (to find the most significant ones?)
 for i=1:num
-    if stats(i).Area/A >= area_factor;
+    if stats(i).Area/ROI_Area >= area_factor;
         num_CC = num_CC + 1;
-        CCL(bw==i)= num_CC;
+        index = (bw==i);
+        CCL(index)= num_CC;
     end
 end
 
@@ -185,6 +187,7 @@ saliency_masks(:,:,4) = protrusions;
 
 % final vizualization
 if visualise
+    subplot(1,2,1);imshow(logical(ROI)); title('Original ROI');
     red = [255 0 0];
     green = [0 255 0];
     blue = [0 0 255];
@@ -193,5 +196,5 @@ if visualise
     rgb = imoverlay(rgb, indentations, green);
     rgb = imoverlay(rgb, holes, blue);
     rgb = imoverlay(rgb, islands, yellow);
-    imshow(rgb);
+    subplot(1,2,2); imshow(rgb); title('ROI with overlayed MSSR');
 end
