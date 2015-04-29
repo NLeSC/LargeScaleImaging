@@ -7,7 +7,7 @@
 %**************************************************************************
 %% parmaters
 interactive = false;
-visualize = true;
+visualize = false;
 
 %% image filename
 if interactive 
@@ -20,13 +20,6 @@ end
 %% load the image 
 image_data = logical(imread(image_filename));
 
-% %% visualize 
-% if visualize
-%     f=figure;
-%     subplot(1,2,1);
-%     imshow(logical(image_data));
-%     title('Original image');
-% end
 
 %% run the MSSR detector on the test image
 if interactive
@@ -42,5 +35,9 @@ else
     Area_factor = 0.02;
 end
 
+tic
 [saliency_masks] = mssr_binary(image_data, Area_factor, SE_size_factor,...
     saliency_types, visualize);
+toc
+%% visualize
+visualize_mssr_binary(image_data, saliency_masks)

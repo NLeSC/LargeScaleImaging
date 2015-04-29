@@ -29,6 +29,8 @@
 % conversion_ellipse.m- function to obtain the parameters of an MSER
 %
 % display_features.m- displays salient regions (ellipses) on the image
+% visualize_mssr_binary.m- visualize the MSSR regions overlayed on the 
+%                          original binary image
 %
 % IMOVERLAY Create a mask-based image overlay.
 %**************************************************************************

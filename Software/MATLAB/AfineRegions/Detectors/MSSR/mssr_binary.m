@@ -5,8 +5,10 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 25 Feb 2008
-% last modification date: 28-04-2013
+% last modification date: 29-04-2013
 % modification details: the se_size_factor added as a parameter
+%                       the visualization of the final result is taken out
+%                       of the function into visualize_mssr_binary
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
@@ -16,10 +18,8 @@
 %                (Holes, Islands, Indentations, Protrusions)
 %                [optional], if left out- default is [1 1 1 1]   
 % [visualise] - visualisation flag
-%                     [optional], if left out- default is 0
-%                     if set to 1, the regions are dsipalyed as colour-coded
-%                     overlays: "holes" in blue, "islands" in yellow, 
-%                     "indentations" in green and "indentations" in red 
+%               [optional], if left out- default is 0, if set to 1, 
+%               intermendiate steps of the detection are shown 
 %**************************************************************************
 % OUTPUTS:
 % saliency_masks - 3-D array of the binary saliency masks of the regions
@@ -136,11 +136,11 @@ if holes_flag
     holes = bwareaopen(holes,lambda);
 end
 
-% % visualisation
-% if visualise
-%     figure;imshow(holes);title('holes');
-%     figure;imshow(islands);title('islands');
-% end
+% visualisation
+if visualise
+    figure;imshow(holes);title('holes');
+    figure;imshow(islands);title('islands');
+end
 
 %..........................................................................
 % Border Saliency Structures (BSS) - indentaions & protrusions
@@ -154,7 +154,7 @@ if (indentations_flag || protrusions_flag)
         % black top hat
              SCC_bth = imbothat(SCC,SE);
              if visualise
-                 %figure;imshow(SCC_bth);title('black top hat');
+                 figure;imshow(SCC_bth);title('black top hat');
              end
          SCC_bth = bwareaopen(SCC_bth,lambda);
          indentations = indentations|SCC_bth;
@@ -164,7 +164,7 @@ if (indentations_flag || protrusions_flag)
         % white top hat       
          SCC_wth = imtophat(SCC,SE);
          if visualise
-              %figure;imshow(SCC_wth);title('white top hat');
+              figure;imshow(SCC_wth);title('white top hat');
          end
          SCC_wth = bwareaopen(SCC_wth,lambda);
          protrusions = protrusions|SCC_wth;
@@ -172,10 +172,10 @@ if (indentations_flag || protrusions_flag)
     end
 end
 
-% if visualise
-%     figure;imshow(indentations);title('indentaions');
-%     figure;imshow(protrusions);title('protrusions');
-% end
+if visualise
+    figure;imshow(indentations);title('indentaions');
+    figure;imshow(protrusions);title('protrusions');
+end
 
 %**************************************************************************
 % variables -> output parameters
@@ -185,16 +185,5 @@ saliency_masks(:,:,2) = islands;
 saliency_masks(:,:,3) = indentations;
 saliency_masks(:,:,4) = protrusions;
 
-% final vizualization
-if visualise
-    subplot(1,2,1);imshow(logical(ROI)); title('Original ROI');
-    red = [255 0 0];
-    green = [0 255 0];
-    blue = [0 0 255];
-    yellow = [255 255 0];
-    rgb = imoverlay(ROI,protrusions, red);
-    rgb = imoverlay(rgb, indentations, green);
-    rgb = imoverlay(rgb, holes, blue);
-    rgb = imoverlay(rgb, islands, yellow);
-    subplot(1,2,2); imshow(rgb); title('ROI with overlayed MSSR');
+
 end
