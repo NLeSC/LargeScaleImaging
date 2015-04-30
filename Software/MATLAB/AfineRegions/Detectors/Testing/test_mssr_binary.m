@@ -40,4 +40,7 @@ tic
     saliency_types, visualize);
 toc
 %% visualize
-visualize_mssr_binary(image_data, saliency_masks)
+% visualize original image
+f = figure;visualize_mssr_binary(image_data);
+% visualize regions
+figure;visualize_mssr_binary(image_data, saliency_masks);
