@@ -1,13 +1,13 @@
 % visualize_mssr_binary.m- visualize the MSSR regions overlayed on the 
 %                          original binary image
 %**************************************************************************
-% visualize_mssr_binary(ROI, subplt, saliency_masks, saliency_type, ...
+% visualize_mssr_binary(ROI,saliency_masks, saliency_type, ...
 %                       area_factor, SE_factor)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 29 Apr 2015
 % last modification date: 30 April 2015 
-% modification details: extra optional parameters added- subplot, SE and
+% modification details: extra optional parameters added- SE and
 % area factors
 %**************************************************************************
 % INPUTS:
@@ -18,8 +18,6 @@
 %                  saliency_masks(:,:,i) contains the salient regions per 
 %                  type: i=1- "holes", i=2- "islands", i=3 - "indentations"
 %                  and i =4-"protrusions", default is []
-% [subplt]-        vector with the 3 subplot numbers, if left out default
-%                  is [1 1 1]- full figure
 % [saliency_type]- array with 4 flags for the 4 saliency types 
 %                  (Holes, Islands, Indentations, Protrusions)
 %                  if left out- default is [1 1 1 1]   
@@ -43,7 +41,7 @@
 % SEE ALSO: test_mssr_binary, imoverlay
 %**************************************************************************
 
-function visualize_mssr_binary(ROI, saliency_masks, subplt, saliency_type, ...
+function visualize_mssr_binary(ROI, saliency_masks, saliency_type, ...
                                area_factor, SE_factor)
 
 % default parameters and required parameters check
@@ -53,25 +51,18 @@ if nargin < 1
 end
 if (nargin < 2)
     original_only = 1;
-    saliency_masks =[];
 end
-if (nargin < 3)
-    subplt = [1 1 1];
-end
-if (nargin < 4)   
+if (nargin < 3)     
     saliency_type = [1 1 1 1];
 end
-if (nargin < 5)    
+if (nargin < 4)    
     area_factor = 'unknown';
 end
-if (nargin < 6)
+if (nargin < 5)
     SE_factor = 'unknown';
 end
 
-
-
 if original_only
-    subplot(subplt(1),subplt(2),subplt(3));
     imshow(logical(ROI)); title('Original ROI');
     return
 else
@@ -112,10 +103,10 @@ else
         rgb = imoverlay(rgb,protrusions, red);
     end
 
-    subplot(subplt(1),subplt(2),subplt(3)); imshow(rgb); 
+    imshow(rgb);
     title('ROI with overlayed MSSR');
-    xlabel(['SE size factor: ',num2str(SE_factor)])
-    ylabel(['Area factor: ',num2str(area_factor)])
+    xlabel({['SE size factor: ',num2str(SE_factor)];...
+        ['Area factor: ',num2str(area_factor)]}, 'FontSize',8)
     return
 end
 

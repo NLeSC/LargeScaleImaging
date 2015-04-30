@@ -41,6 +41,6 @@ tic
 toc
 %% visualize
 % visualize original image
-f = figure;visualize_mssr_binary(image_data);
+f = figure; subplot(1, 2, 1); visualize_mssr_binary(image_data);
 % visualize regions
-figure;visualize_mssr_binary(image_data, saliency_masks);
+figure(f);subplot(1, 2, 2);visualize_mssr_binary(image_data, saliency_masks);
