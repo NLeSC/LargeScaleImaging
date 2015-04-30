@@ -6,18 +6,15 @@
 % modification details: 
 %**************************************************************************
 %% parmaters
-interactive = false;
-visualize = true;
+interactive = true;
+visualize = false;
 
 %% image filename
 if interactive 
     image_filename = input('Enter the test image filename: ','s');
 else
-%     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%         'Data','Synthetic','Binary','BasicSaliency.png');
-     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-         'Data','BinaryShapes','Selected','frog-15_mod.gif');
-
+    image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+        'Data','Synthetic','Binary','BasicSaliency.png');
 end
 
 %% load the image 
@@ -35,7 +32,7 @@ if interactive
 else
     saliency_types = [1 1 1 1];
     SE_size_factor = 0.025;
-    Area_factor = 0.015;
+    Area_factor = 0.1;
 end
 
 tic
@@ -47,4 +44,4 @@ toc
 f = figure; subplot(1, 2, 1); visualize_mssr_binary(image_data);
 % visualize regions
 figure(f);subplot(1, 2, 2);visualize_mssr_binary(image_data, saliency_masks,...
-    [1 1 1 1], Area_factor, SE_size_factor);
+    [1 1 0 1], Area_factor, SE_size_factor);

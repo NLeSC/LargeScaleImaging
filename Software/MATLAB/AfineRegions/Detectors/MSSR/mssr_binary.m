@@ -70,6 +70,7 @@ ROI_Area = nrows*ncols;
 
 % SE
 SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)));
+
 SE = strel('disk',SE_size);
 
 % area opening parameter

@@ -11,3 +11,5 @@
 % Scripts
 %**************************************************************************
 % test_mssr_binary.m- script to test binary MSSR detector
+% parameter_sweep_mssr_binary.m- script to test the MSSR detector with
+%                                different parameters

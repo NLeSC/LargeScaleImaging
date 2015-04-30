@@ -104,9 +104,10 @@ else
     end
 
     imshow(rgb);
-    title('ROI with overlayed MSSR');
+    title('ROI with overlayed MSSR','FontSize',10);
     xlabel({['SE size factor: ',num2str(SE_factor)];...
         ['Area factor: ',num2str(area_factor)]}, 'FontSize',8)
+   
     return
 end
 
