@@ -34,8 +34,8 @@ if interactive
     Area_factor = input('Enter the Connected Component size factor: ');
 else
     saliency_types = [1 1 1 1];
-    SE_size_factor = 0.025;
-    Area_factor = 0.015;
+    SE_size_factor = 0.01;
+    Area_factor = 0.02;
 end
 
 tic
@@ -44,7 +44,7 @@ tic
 toc
 %% visualize
 % visualize original image
-f = figure; subplot(1, 2, 1); visualize_mssr_binary(image_data);
+f = figure; subplot(1, 2, 1); visualize_mssr_binary(image_data); axis on, grid on;
 % visualize regions
 figure(f);subplot(1, 2, 2);visualize_mssr_binary(image_data, saliency_masks,...
-    [1 1 1 1], Area_factor, SE_size_factor);
+    [1 1 1 1], Area_factor, SE_size_factor); axis on; grid on;

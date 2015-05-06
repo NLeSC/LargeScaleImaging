@@ -5,10 +5,11 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 25 Feb 2008
-% last modification date: 29-04-2013
+% last modification date: 06-05-2015
 % modification details: the se_size_factor added as a parameter
 %                       the visualization of the final result is taken out
 %                       of the function into visualize_mssr_binary
+%                       Major bug fix: islands are now comupted properly
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
@@ -69,12 +70,12 @@ protrusions_flag = saliency_type(4);
 ROI_Area = nrows*ncols;
 
 % SE
-SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)));
+SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)))
 
 SE = strel('disk',SE_size);
 
 % area opening parameter
-lambda = 2*SE_size;
+lambda = 2*SE_size
 
 %**************************************************************************
 % initialisations
@@ -84,11 +85,13 @@ saliency_masks = zeros(nrows, ncols, 4);
 % by type
 holes = zeros(nrows,ncols);
 islands = zeros(nrows,ncols);
+%islands_inv = zeros(nrows,ncols);
 indentations = zeros(nrows,ncols);
 protrusions = zeros(nrows,ncols);
 
 % the connected components labels mattrix
 CCL = zeros(nrows,ncols);
+CCL_inv = zeros(nrows,ncols);
 
 %**************************************************************************
 % computations
@@ -97,23 +100,47 @@ CCL = zeros(nrows,ncols);
 
 % counter of the significant connected components (CC)
 num_CC = 0;
+%num_CC_inv = 0;
 
 % hole filling operator
 filled_ROI = imfill(ROI,'holes');
+%filled_ROI_inv = imfill(imcomplement(ROI),'holes');
+
+% visualisation
+if visualise
+    f1 = figure;subplot(221); imshow(ROI); title('ROI');
+    subplot(221);imshow(filled_ROI);title('filled ROI');
+ %   subplot(222);imshow(filled_ROI_inv);title('filled ROI (inverted)');
+end
 
 % get the CCs
 [bw,num]=bwlabel(filled_ROI,4);
 stats = regionprops(bw,'Area');
 
+% [bw_inv,num_inv]=bwlabel(filled_ROI_inv,4);
+% stats_inv = regionprops(bw_inv,'Area');
 % compute the areas of all regions (to find the most significant ones?)
 for i=1:num
+    stats(i).Area
     if stats(i).Area/ROI_Area >= area_factor;
         num_CC = num_CC + 1;
         index = (bw==i);
         CCL(index)= num_CC;
     end
 end
-
+% compute the areas of all regions (for the inverted ROI)
+% for i=1:num_inv
+%     stats_inv(i).Area
+%     if stats_inv(i).Area/ROI_Area >= area_factor;
+%         num_CC_inv = num_CC_inv + 1;
+%         index = (bw_inv==i);
+%         CCL_inv(index)= num_CC_inv;
+%     end
+% end
+if visualise
+    figure; subplot(221);imshow(CCL); title('CCL');
+    %subplot(222);imshow(CCL_inv); title('CCL inv');
+end
 %--------------------------------------------------------------------------
 % parameters depending on preprocessing
 %--------------------------------------------------------------------------
@@ -123,10 +150,11 @@ end
 %..........................................................................
 if islands_flag
     if isempty(find(imcomplement(CCL>0), 1))
+        disp('Yes')
         islands = ROI;
     else
         islands= imcomplement(CCL>0).*ROI;
-    end
+    end    
     % remove small isolated bits
     islands = bwareaopen(islands,lambda);
 end
@@ -139,8 +167,8 @@ end
 
 % visualisation
 if visualise
-    figure;imshow(holes);title('holes');
-    figure;imshow(islands);title('islands');
+    f2 = figure;subplot(221);imshow(holes);title('holes');
+    subplot(222);imshow(islands);title('islands');
 end
 
 %..........................................................................
@@ -155,7 +183,7 @@ if (indentations_flag || protrusions_flag)
         % black top hat
              SCC_bth = imbothat(SCC,SE);
              if visualise
-                 figure;imshow(SCC_bth);title('black top hat');
+                 figure(f1);subplot(223);imshow(SCC_bth);title('black top hat');
              end
          SCC_bth = bwareaopen(SCC_bth,lambda);
          indentations = indentations|SCC_bth;
@@ -165,7 +193,7 @@ if (indentations_flag || protrusions_flag)
         % white top hat       
          SCC_wth = imtophat(SCC,SE);
          if visualise
-              figure;imshow(SCC_wth);title('white top hat');
+               figure(f1);subplot(224);imshow(SCC_wth);title('white top hat');
          end
          SCC_wth = bwareaopen(SCC_wth,lambda);
          protrusions = protrusions|SCC_wth;
@@ -174,8 +202,8 @@ if (indentations_flag || protrusions_flag)
 end
 
 if visualise
-    figure;imshow(indentations);title('indentaions');
-    figure;imshow(protrusions);title('protrusions');
+    figure(f2);subplot(223);imshow(indentations);title('indentaions');
+    subplot(224);imshow(protrusions);title('protrusions');
 end
 
 %**************************************************************************
