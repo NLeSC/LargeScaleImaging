@@ -13,6 +13,8 @@ visualize = true;
 if interactive 
     image_filename = input('Enter the test image filename: ','s');
 else
+         image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+         'Data','Synthetic','Binary','shapes_holes.png');
 %     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
 %         'Data','Synthetic','Binary','BasicSaliency.png');
 %      image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
@@ -23,8 +25,8 @@ else
 %           'Data','BinaryShapes','Selected','horseshoe-11.gif');
 %        image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
 %            'Data','BinaryShapes','Selected','device9-15_mod.gif');
-     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-         'Data','BinaryShapes','Selected','butterfly-2.gif');
+%      image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+%          'Data','BinaryShapes','Selected','butterfly-2.gif');
 end
 
 %% load the image 
@@ -42,7 +44,7 @@ if interactive
 else
     saliency_types = [1 1 1 1];
     SE_size_factor = 0.02;
-    Area_factor = 0.01;
+    Area_factor = 0.03;
 end
 
 tic
