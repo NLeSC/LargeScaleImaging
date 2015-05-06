@@ -70,12 +70,12 @@ protrusions_flag = saliency_type(4);
 ROI_Area = nrows*ncols;
 
 % SE
-SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)))
+SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)));
 
 SE = strel('disk',SE_size);
 
 % area opening parameter
-lambda = 2*SE_size
+lambda = 2*SE_size;
 
 %**************************************************************************
 % initialisations
@@ -85,13 +85,11 @@ saliency_masks = zeros(nrows, ncols, 4);
 % by type
 holes = zeros(nrows,ncols);
 islands = zeros(nrows,ncols);
-%islands_inv = zeros(nrows,ncols);
 indentations = zeros(nrows,ncols);
 protrusions = zeros(nrows,ncols);
 
 % the connected components labels mattrix
 CCL = zeros(nrows,ncols);
-CCL_inv = zeros(nrows,ncols);
 
 %**************************************************************************
 % computations
@@ -100,46 +98,33 @@ CCL_inv = zeros(nrows,ncols);
 
 % counter of the significant connected components (CC)
 num_CC = 0;
-%num_CC_inv = 0;
 
 % hole filling operator
 filled_ROI = imfill(ROI,'holes');
-%filled_ROI_inv = imfill(imcomplement(ROI),'holes');
+filled_ROI_inv = imfill(imcomplement(ROI),'holes');
 
 % visualisation
 if visualise
-    f1 = figure;subplot(221); imshow(ROI); title('ROI');
+    figure;imshow(ROI); title('ROI');
+    f1 = figure;
     subplot(221);imshow(filled_ROI);title('filled ROI');
- %   subplot(222);imshow(filled_ROI_inv);title('filled ROI (inverted)');
+    subplot(222);imshow(filled_ROI_inv);title('filled ROI (inverted)');
 end
 
 % get the CCs
 [bw,num]=bwlabel(filled_ROI,4);
 stats = regionprops(bw,'Area');
 
-% [bw_inv,num_inv]=bwlabel(filled_ROI_inv,4);
-% stats_inv = regionprops(bw_inv,'Area');
-% compute the areas of all regions (to find the most significant ones?)
+% compute the areas of all regions (to find the most significant ones)
 for i=1:num
-    stats(i).Area
     if stats(i).Area/ROI_Area >= area_factor;
         num_CC = num_CC + 1;
         index = (bw==i);
         CCL(index)= num_CC;
     end
 end
-% compute the areas of all regions (for the inverted ROI)
-% for i=1:num_inv
-%     stats_inv(i).Area
-%     if stats_inv(i).Area/ROI_Area >= area_factor;
-%         num_CC_inv = num_CC_inv + 1;
-%         index = (bw_inv==i);
-%         CCL_inv(index)= num_CC_inv;
-%     end
-% end
 if visualise
-    figure; subplot(221);imshow(CCL); title('CCL');
-    %subplot(222);imshow(CCL_inv); title('CCL inv');
+    figure; imshow(CCL); title('CCL');
 end
 %--------------------------------------------------------------------------
 % parameters depending on preprocessing
@@ -149,12 +134,13 @@ end
 % Inner type Salient Structures (ISS)- holes & islands
 %..........................................................................
 if islands_flag
-    if isempty(find(imcomplement(CCL>0), 1))
-        disp('Yes')
-        islands = ROI;
-    else
-        islands= imcomplement(CCL>0).*ROI;
-    end    
+%     if isempty(find(imcomplement(CCL>0), 1))
+%         disp('Yes')
+%         islands = ROI;
+%     else
+%         islands= imcomplement(CCL>0).*ROI;
+%     end    
+    islands = (filled_ROI_inv.*ROI);
     % remove small isolated bits
     islands = bwareaopen(islands,lambda);
 end
