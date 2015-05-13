@@ -7,31 +7,31 @@
 %**************************************************************************
 %% parmaters
 interactive = false;
-visualize = true;
+visualize = false;
 
 %% image filename
 if interactive 
     image_filename = input('Enter the test image filename: ','s');
 else
-         image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+    image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
          'Data','Synthetic','Binary','binary_shapes.png');
-%     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%         'Data','Synthetic','Binary','BasicSaliency.png');
-%      image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%          'Data','BinaryShapes','Selected','frog-15_mod.gif');
-%      image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%          'Data','BinaryShapes','Selected','frog-15_mod_new.gif');
-%       image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%           'Data','BinaryShapes','Selected','horseshoe-11.gif');     
-%       image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%           'Data','BinaryShapes','Selected','horseshoe-19.gif'); 
-%        image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%            'Data','BinaryShapes','Selected','device9-15_mod.gif');
-%      image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%          'Data','BinaryShapes','Selected','butterfly-2.gif');
-%      image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
-%          'Data','BinaryShapes','Selected','butterfly-1.gif');
-end
+    image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+        'Data','Synthetic','Binary','BasicSaliency.png');
+     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+         'Data','BinaryShapes','Selected','frog-15_mod.gif');
+    image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+    'Data','BinaryShapes','Selected','frog-15_mod_new.gif');
+       image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+           'Data','BinaryShapes','Selected','horseshoe-11.gif');      
+      image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+          'Data','BinaryShapes','Selected','horseshoe-19.gif'); 
+       image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+           'Data','BinaryShapes','Selected','device9-15_mod.gif');
+     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+         'Data','BinaryShapes','Selected','butterfly-2.gif');
+     image_filename = fullfile('home','elena','eStep','LargeScaleImaging',...
+         'Data','BinaryShapes','Selected','butterfly-1.gif');
+ end
 
 %% load the image 
 image_data = logical(imread(image_filename));
@@ -48,7 +48,7 @@ if interactive
 else
     saliency_types = [1 1 1 1];
     SE_size_factor = 0.02;
-    Area_factor = 0.01;
+    Area_factor = 0.03;
 end
 
 tic
