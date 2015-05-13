@@ -89,8 +89,9 @@ islands = zeros(nrows,ncols);
 indentations = zeros(nrows,ncols);
 protrusions = zeros(nrows,ncols);
 
-CCLL = zeros(nrows,ncols);
 CCL = zeros(nrows,ncols);
+CCLH = zeros(nrows,ncols);
+CCLI = zeros(nrows,ncols);
 %**************************************************************************
 % computations
 %--------------------------------------------------------------------------
@@ -98,7 +99,8 @@ CCL = zeros(nrows,ncols);
 
 % counter of the significant connected components (CC)
 num_CCL = 0;
-num_CC = 0;
+num_CCLH = 0;
+num_CCLI = 0;
 
 filled_ROI = imfill(ROI,'holes');
 filled_ROI_inv = imfill(imcomplement(ROI),'holes');
@@ -151,62 +153,66 @@ statsi = regionprops(bwi,'Area');
 % compute the areas of all regions (to find the most significant ones?)
 for i=1:numh
     if statsh(i).Area/ROI_Area >= area_factor;
-        num_CC = num_CC + 1;
+        num_CCLH = num_CCLH + 1;
         region = (bwh==i);
         filled_region = imfill(region,'holes');
-        CCL(filled_region)= num_CC;
+        CCLH(filled_region)= num_CCLH;
     end
 end
 already_detected = false;
 for i=1:numi
     if statsi(i).Area/ROI_Area >= area_factor;
-        num_CC = num_CC + 1;
+        num_CCLI = num_CCLI + 1;
         region = (bwi==i);
         filled_region = imfill(region,'holes');
         if filled_region == filled_ROI
             already_detected = true;
         end
-        CCL(filled_region)= num_CC;
+        CCLI(filled_region)= num_CCLI;
     end
 end
 if visualise
-    figure;imshow(CCL);title('Significant components (from holes and islands) labelled');
+    ff= figure;subplot(221);imshow(CCLH);title('Significant components (from holes) labelled');
+    subplot(222);imshow(CCLI);title('Significant components (from islands) labelled');
 end
+
 if not(already_detected)
     for i=1:num
         if stats(i).Area/ROI_Area >= area_factor;
             num_CCL = num_CCL + 1;
             region = (bw==i);
-            CCLL(region)= num_CCL;
+            CCL(region)= num_CCL;
         end
     end
 end
 
 if (indentations_flag || protrusions_flag)
     % inside the significant CCs
-    for j = 1:num_CC
-        SCC = (CCL==j);
+    for j = 1:num_CCLH
+        SCCH = (CCLH==j);
 
        if indentations_flag
         % black top hat
-         SCC_bth = imbothat(SCC,SE);
-         SCC_bth = bwareaopen(SCC_bth,lambda);
-         indentations = indentations|SCC_bth;
+         SCCH_bth = imbothat(SCCH,SE);
+         SCCH_bth = bwareaopen(SCCH_bth,lambda);
+         indentations = indentations|SCCH_bth;
        end
-       
-       if protrusions_flag
+    end
+    for j = 1:num_CCLI
+        SCCI = (CCLI==j);
+        if protrusions_flag
         % white top hat       
-         SCC_wth = imtophat(SCC,SE);
-         SCC_wth = bwareaopen(SCC_wth,lambda);
-         protrusions = protrusions|SCC_wth;
+         SCCI_wth = imtophat(SCCI,SE);
+         SCCI_wth = bwareaopen(SCCI_wth,lambda);
+         protrusions = protrusions|SCCI_wth;
        end               
     end
   
     if not(already_detected)
       for j = 1:num_CCL
-            SCCL = (CCLL==j);
+            SCCL = (CCL==j);
             if visualise
-                figure; imshow(SCCL); title('Significant components large');
+                figure(ff); subplot(223);imshow(SCCL); title('Significant components large');
             end
 
            if indentations_flag
@@ -227,7 +233,7 @@ if (indentations_flag || protrusions_flag)
 end
 
 if visualise
-    figure;subplot(223);imshow(indentations);title('indentaions');
+    figure;subplot(223);imshow(indentations);title('indentations');
     subplot(224);imshow(protrusions);title('protrusions');
 end
 
