@@ -18,12 +18,16 @@ else
         case 'binary_test'
             image_filename{1} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
             'Data','Synthetic','Binary','TestBinarySaliency.png');
+            image_filename{2} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
+            'Data','Synthetic','Binary','TestBinarySaliency_affine.png');
         case 'binary_shapes'
             image_filename{1} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
             'Data','Synthetic','Binary','binary_shapes.png');
         case 'basic_saliency'
             image_filename{1} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
             'Data','Synthetic','Binary','BasicSaliency.png');
+            image_filename{2} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
+            'Data','Synthetic','Binary','BasicSaliency_affine.png');
         case 'frog'
             image_filename{1} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
             'Data','BinaryShapes','Selected','frog-15_mod.gif');
@@ -69,15 +73,29 @@ for i = 1:len
         SE_size_factor = 0.02;
         Area_factor = 0.03;
     end
-
+    
+    disp('Version 2008');
+    tic
+    [saliency_masks_2008] = mssr_binary_2008(image_data, Area_factor,...
+        saliency_types, visualize);
+    toc
+    
+    disp('Version 2015');
     tic
     [saliency_masks] = mssr_binary(image_data, SE_size_factor,Area_factor,...
         saliency_types, visualize);
     toc
+    
     %% visualize
     % visualize original image
-    f = figure; subplot(1, 2, 1); visualize_mssr_binary(image_data); axis on, grid on;
+    f1 = figure; subplot(1, 2, 1); visualize_mssr_binary(image_data); axis on, grid on;
     % visualize regions
-    figure(f);subplot(1, 2, 2);visualize_mssr_binary(image_data, saliency_masks,...
+    figure(f1);subplot(1, 2, 2);visualize_mssr_binary(image_data, saliency_masks_2008,...
+        [1 1 1 1], Area_factor, SE_size_factor); axis on; grid on;
+    
+     % visualize original image
+    f2 = figure; subplot(1, 2, 1); visualize_mssr_binary(image_data); axis on, grid on;
+    % visualize regions
+    figure(f2);subplot(1, 2, 2);visualize_mssr_binary(image_data, saliency_masks,...
         [1 1 1 1], Area_factor, SE_size_factor); axis on; grid on;
 end
