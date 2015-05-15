@@ -5,13 +5,14 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 25 Feb 2008
-% last modification date: 13-05-2015
+% last modification date: 15-05-2015
 % modification details: the se_size_factor added as a parameter
 %                       the visualization of the final result is taken out
 %                       of the function into visualize_mssr_binary
 %                       Major bug fix: islands are now comupted properly
 %                       Protrusions and indentations are now computed also  
-%                       from the found (significant) islands and holes.                                                                                                                                                                                             
+%                       from the found (significant) islands and holes.
+%                       Second SE with smaller size for holes and islands.
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
@@ -73,11 +74,13 @@ ROI_Area = nrows*ncols;
 
 % SE
 SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)));
+SEhi_size = fix(SE_size/2);
 SE = strel('disk',SE_size);
+SEhi = strel('disk',SEhi_size);
 
 % area opening parameter
 lambda = 2*SE_size;
-
+lambdahi = fix(SE_size/2);
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
@@ -186,24 +189,37 @@ if not(already_detected)
     end
 end
 
+% find the indentations and protrusions
 if (indentations_flag || protrusions_flag)
     % inside the significant CCs
     for j = 1:num_CCLH
-        SCCH = (CCLH==j);
-
+       SCCH = (CCLH==j);
        if indentations_flag
         % black top hat
-         SCCH_bth = imbothat(SCCH,SE);
-         SCCH_bth = bwareaopen(SCCH_bth,lambda);
+         SCCH_bth = imbothat(SCCH,SEhi);
+         SCCH_bth = bwareaopen(SCCH_bth,lambdahi);
          indentations = indentations|SCCH_bth;
        end
+       if protrusions_flag
+        % white top hat       
+         SCCH_wth = imtophat(SCCH,SEhi);
+         SCCH_wth = bwareaopen(SCCH_wth,lambdahi);
+         protrusions = protrusions|SCCH_wth;
+       end    
     end
+    
     for j = 1:num_CCLI
         SCCI = (CCLI==j);
+        if indentations_flag
+        % black top hat
+         SCCI_bth = imbothat(SCCI,SEhi);
+         SCCI_bth = bwareaopen(SCCI_bth,lambdahi);
+         indentations = indentations|SCCI_bth;
+       end
         if protrusions_flag
         % white top hat       
-         SCCI_wth = imtophat(SCCI,SE);
-         SCCI_wth = bwareaopen(SCCI_wth,lambda);
+         SCCI_wth = imtophat(SCCI,SEhi);
+         SCCI_wth = bwareaopen(SCCI_wth,lambdahi);
          protrusions = protrusions|SCCI_wth;
        end               
     end
