@@ -13,7 +13,7 @@
 % mssr- main function of the MSSR detector 
 % mssr_gray_level.m- salient regions in a cross-section of gray-level image
 % mssr_binary.m- binary MSSR
-%
+% mssr_binary_2008.m- binary MSSR (version of 2008)
 % mssr_save- function to save the results from the MSSR detector
 % mssr_open- function to open the saved results from the MSSR detector
 %
