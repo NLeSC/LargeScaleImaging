@@ -24,7 +24,7 @@
 %                  SE_size_factor- structuring element (SE) size factor  
 %                  area_factor- area factor for the significant CC, 
 %                  thresh- percentage of kept regions
-% [execution_flags] - vector with 4 flags [verbose, visualise_final, ...
+% [execution_flags] - vector with 3 flags [verbose, ...
 %                                         visualise_major, visualise_minor]
 %                     [optional], if left out- default is [0 0 0 0]
 %                     visualise_major "overrides" visualise_minor
@@ -42,6 +42,7 @@
 % mssr_2008- the version of the detector from 2008
 %**************************************************************************
 % EXAMPLES USAGE: 
+% cl;
 % if ispc 
 %     starting_path = fullfile('C:','Projects');
 % else
@@ -53,8 +54,8 @@
 %                                      mssr(image_filename);
 % finds all types of saleint regions for the image
 %--------------------------------------------------------------------------
-% [num_regions, features, saliency_masks] = ...
-%          mssr(image_filename,[],[],[1 1 0 0],[],[1 0 0]);
+%[num_regions, features, saliency_masks] = ...
+%                        mssr(image_filename,[],[],[1 1 1 1],[],[1 1 0 0]);
 % finds only the 'holes' and 'islands' for the whole image in verbose mode
 %--------------------------------------------------------------------------
 % [num_regions, features, saliency_masks] = ...
@@ -141,9 +142,8 @@ protrusions_flag = saliency_type(4);
 
 % execution flags
 verbose = execution_flags(1);
-visualise_final = execution_flags(2);
-visualise_major = execution_flags(3);
-visualise_minor = execution_flags(4);    
+visualise_major = execution_flags(2);
+visualise_minor = execution_flags(3);    
 
 if visualise_minor
     visualise_major = 1;  
