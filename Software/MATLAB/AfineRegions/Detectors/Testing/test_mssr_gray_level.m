@@ -2,23 +2,28 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 15-05-2015
-% last modification date:
-% modification details: 
+% last modification date: 19-05-2015
+% modification details: made OS aware
 %**************************************************************************
 %% paramaters
 interactive = false;
 visualize = true;
 
 %% image filename
+if ispc 
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
 if interactive 
     image_filename = input('Enter the test image filename: ','s');
 else
     test_image = input('Enter test case: [boat]: ','s');
     switch lower(test_image)
         case 'boat'
-            image_filename{1} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','boat','boat1.png');    
-            image_filename{2} = fullfile(filesep,'home','elena','eStep','LargeScaleImaging',...
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','boat','boat2.png');
     end
 
