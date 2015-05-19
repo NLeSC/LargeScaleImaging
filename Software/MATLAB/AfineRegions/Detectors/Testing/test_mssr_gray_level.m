@@ -7,7 +7,7 @@
 %**************************************************************************
 %% paramaters
 interactive = false;
-visualize = true;
+visualize = false;
 
 %% image filename
 if ispc 
@@ -18,13 +18,18 @@ end
 if interactive 
     image_filename = input('Enter the test image filename: ','s');
 else
-    test_image = input('Enter test case: [boat]: ','s');
+    test_image = input('Enter test case: [boat|phantom]: ','s');
     switch lower(test_image)
         case 'boat'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','boat','boat1.png');    
             image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','boat','boat2.png');
+        case 'phantom'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','Phantom','phantom.png');
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','Phantom','phantom_affine.png');
     end
 
 
@@ -50,7 +55,8 @@ for i = 1:len
         Area_factor = input('Enter the Connected Component size factor: ');
     else
         saliency_types = [1 1 1 1];
-        gray_level = 128;
+        %gray_level = 128;
+        gray_level = 20;
         SE_size_factor = 0.02;
         Area_factor = 0.03;
     end
@@ -77,6 +83,6 @@ for i = 1:len
      % visualize original image
     f2 = figure; subplot(1, 2, 1); visualize_mssr_gray_level(image_data); axis on, grid on;
     % visualize regions
-    figure(f2);subplot(1, 2, 2);visualize_mssr_gray_level(image_data, saliency_masks,...
+    figure(f2);subplot(1, 2, 2);visualize_mssr_gray_level(image_data, saliency_masks, gray_level, ...
         [1 1 1 1], Area_factor, SE_size_factor); axis on; grid on;
 end

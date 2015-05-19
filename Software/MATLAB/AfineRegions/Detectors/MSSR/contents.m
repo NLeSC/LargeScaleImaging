@@ -10,6 +10,7 @@
 %--------------------------------------------------------------------------
 % main
 %--------------------------------------------------------------------------
+% mssr_2008- main function of the MSSR detector (version 2008)
 % mssr- main function of the MSSR detector 
 % mssr_gray_level_2008 .m- salient regions in a cross-section of gray-level 
 %                           imag (version 2008)
@@ -18,7 +19,8 @@
 % mssr_save- function to save the results from the MSSR detector
 % mssr_open- function to open the saved results from the MSSR detector
 %
-% 
+% visualise.m- function for displaying the extracted salient regions on 1
+%              image
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------
@@ -32,9 +34,9 @@
 % display_features.m- displays salient regions (ellipses) on the image
 % visualize_mssr_binary.m- visualize the MSSR regions overlayed on the 
 %                          original binary image
-% visualize_mssr_gray_levely.m- visualize the MSSR regions from a single 
-%                           gray-level threshold overlayed on the 
-%                          original gray-level image
+% visualize_mssr_gray_level.m- visualize the MSSR regions from a single 
+%                             gray-level threshold overlayed on the 
+%                             original gray-level image
 %
 % IMOVERLAY Create a mask-based image overlay.
 %**************************************************************************
