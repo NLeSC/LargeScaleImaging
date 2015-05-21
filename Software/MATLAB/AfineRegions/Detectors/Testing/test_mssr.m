@@ -12,6 +12,8 @@ visualize = true;
 visualize_major = false;
 visualize_minor = false;
 
+otsu = false;
+
 %% image filename
 if ispc 
     starting_path = fullfile('C:','Projects');
@@ -36,7 +38,7 @@ else
             'Data','AffineRegions','Phantom','phantom_affine.png');
         case 'thorax'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','CT','thorax.jpg');
+            'Data','AffineRegions','CT','thorax1.jpg');
     end
     mask_filename =[];
 
@@ -86,7 +88,7 @@ else
     saliency_types = [1 1 1 1];
     SE_size_factor = 0.02;
     Area_factor = 0.03;
-    num_levels = 25;
+    num_levels = 50;
     thersh = 0.75;
 end
 
@@ -96,7 +98,7 @@ disp('Version 2015');
 region_params = [SE_size_factor Area_factor];
 execution_params = [verbose visualize_major visualize_minor];
 [num_regions, features, saliency_masks] = mssr(image_data, ROI, ...
-    num_levels, saliency_types, region_params, execution_params);
+    num_levels, otsu, saliency_types, region_params, execution_params);
 toc
 
 %% visualize
