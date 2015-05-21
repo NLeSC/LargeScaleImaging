@@ -9,7 +9,7 @@
 interactive = false;
 verbose = false;
 visualize = true;
-visualize_major = true;
+visualize_major = false;
 visualize_minor = false;
 
 %% image filename
@@ -22,7 +22,7 @@ if interactive
     image_filename = input('Enter the test image filename: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    test_image = input('Enter test case: [boat|phantom]: ','s');
+    test_image = input('Enter test case: [boat|phantom|thorax]: ','s');
     switch lower(test_image)
         case 'boat'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
@@ -34,6 +34,9 @@ else
             'Data','AffineRegions','Phantom','phantom.png');
             image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','Phantom','phantom_affine.png');
+        case 'thorax'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','CT','thorax.jpg');
     end
     mask_filename =[];
 
