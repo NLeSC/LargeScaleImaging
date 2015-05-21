@@ -1,42 +1,42 @@
 % mssr- main function of the MSSR detector 
 %**************************************************************************
-% [num_regions, features, saliency_masks] =...
-%                            mssr(image_fname,ROI_mask_fname,num_levels,                                                          
-%                                 saliency_type, region_params, ...
-%                                 execution_flags)
+% [num_regions, features, saliency_masks] = mssr(image_data,ROI_mask,...
+%                                           num_levels,saliency_type, ...
+%                                           region_params, execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 May 2015
-% last modification date: 19 May 2015
-% modification details: 
+% last modification date: 21 May 2015
+% modification details: fixed paramter check
 %**************************************************************************
 % INPUTS:
-% image_fname- the image filename 
-% [ROI_mask_fname]- the Region Of Interenst binary mask (*.mat) [optional]
+% image_data        the input gray-level image data
+% [ROI_mask]        the Region Of Interenst binary mask [optional]
 %                   if specified should contain the binary array ROI
 %                   if left out or empty [], the whole image is considered
-% [num_levels] -number of gray levels to consider
-% [saliency_type]- array with 4 flags for the 4 saliency types 
-%                (Holes, Islands, Indentations, Protrusions)
-%                [optional], if left out- default is [1 1 1 1]   
-% [region_params]- salient region parameters [SE_size_factor, ...
+% [num_levels]      number of gray levels to consider
+% [saliency_type]   array with 4 flags for the 4 saliency types 
+%                   (Holes, Islands, Indentations, Protrusions)
+%                   [optional], if left out- default is [1 1 1 1]   
+% [region_params]   salient region parameters [SE_size_factor, ...
 %                                                      area_factor, thresh]
-%                  SE_size_factor- structuring element (SE) size factor  
-%                  area_factor- area factor for the significant CC, 
-%                  thresh- percentage of kept regions
-% [execution_flags] - vector with 3 flags [verbose, ...
-%                                         visualise_major, visualise_minor]
-%                     [optional], if left out- default is [0 0 0 0]
-%                     visualise_major "overrides" visualise_minor
+%                   SE_size_factor- structuring element (SE) size factor  
+%                   area_factor- area factor for the significant CC, 
+%                   thresh- percentage of kept regions
+% [execution_flags] vector with 3 flags [verbose, visualise_major, ...
+%                                                       visualise_minor]
+%                   [optional], if left out- default is [0 0 0]
+%                   visualise_major "overrides" visualise_minor
 %**************************************************************************
 % OUTPUTS:
-% num_regions- number of detected salient regions
-% features- the features of the equivalent ellipses to the salient regions
-%           in format [x y a b c t], where (x,y)- ellipse centroid coords,
-%           a(x-u)^2 + 2b(x-u)(y-v) + c(y-v)^2 = 1 - ellipse equation,
-%           t- region type (1= Hol/2= Isl/ 3=Ind/ 4=Pr)
-% saliency_masks - 3-D array of the binary saliency masks of the regions
-%                  for example saliency_masks(:,:,1) contains the holes
+% num_regions       number of detected salient regions
+% features          the features of the equivalent ellipses to the salient 
+%                   regions in format [x y a b c t], where (x,y)- ellipse 
+%                   centroid coords, a(x-u)^2 + 2b(x-u)(y-v) + c(y-v)^2 = 1
+%                   is the ellipse equation,
+%                   t- region type (1= Hol | 2= Isl | 3=Ind | 4=Pr)
+% saliency_masks    3-D array of the binary saliency masks of the regions
+%                   for example saliency_masks(:,:,1) contains the holes
 %**************************************************************************
 % SEE ALSO
 % mssr_2008- the version of the detector from 2008
@@ -50,25 +50,29 @@
 % end
 % image_filename = fullfile(starting_path,'eStep','LargeScaleImaging',...
 %            'Data','AffineRegions','Phantom','phantom.png');
+% image_data =imread(image_filename);
 % [num_regions, features, saliency_masks] = ...
-%                                      mssr(image_filename);
+%                                      mssr(image_data);
 % finds all types of saleint regions for the image
 %--------------------------------------------------------------------------
-%[num_regions, features, saliency_masks] = ...
-%                        mssr(image_filename,[],[],[1 1 1 1],[],[1 1 0 0]);
+% [num_regions, features, saliency_masks] = ...
+%                        mssr(image_data,[],[],[1 1 1 1],[],[1 1 0 0]);
 % finds only the 'holes' and 'islands' for the whole image in verbose mode
 %--------------------------------------------------------------------------
+% load ROI_mask; 
 % [num_regions, features, saliency_masks] = ...
-%               mssr('..\data\tails\na0016_1_tail_image.jpg',...
-%                   '..\data\tails\na0016_1_tail');
+%               mssr(image_data, ROI_mask);
 % finds all types of salient regions within the presegmented ROI (tail)
+%--------------------------------------------------------------------------
+% see also test_mssr.m
 %**************************************************************************
 % RERERENCES:Ranguelova, Pauwels, "Saliency detection and matching strategy
 % for photo-ID of humpback whales", IJGVIP, Special issue on features, 2006
 %**************************************************************************
-function  [num_regions, features, saliency_masks] = mssr(image_fname, ...
-                            ROI_mask_fname, num_levels, ...
-                            saliency_type, region_params, execution_flags)
+function [num_regions, features, saliency_masks] = mssr(image_data,ROI_mask,...
+                                           num_levels,saliency_type, ...
+                                           region_params, execution_flags)
+
                                          
 %**************************************************************************
 % input control                                         
@@ -86,7 +90,7 @@ if nargin < 3 || isempty(saliency_type)
     saliency_type = [1 1 1 1];
 end
 if nargin < 2 
-    ROI_mask_fname = [];
+    ROI_mask = [];
 end
 if nargin < 1
     error('mssr.m requires at least 1 input argument- the image filename!');
@@ -97,41 +101,21 @@ if nargin < 1
 end
 
 %**************************************************************************
-%  parameters
+% input parameters -> variables
 %--------------------------------------------------------------------------
 % structuring element (SE) size factor  
 SE_size_factor=region_params(1);
-% area factor for the significant CC
-area_factor = region_params(2);
-% thresholding the salient regions
-thresh = region_params(3);
-
-%**************************************************************************
-% input parameters -> variables
-%--------------------------------------------------------------------------
-% image
-I_or = imread(image_fname);
-nrows = size(I_or,1);
-ncols = size(I_or,2);
-
-% ROI
-ROI = [];
-if ~isempty(ROI_mask_fname)
-    s = load(ROI_mask_fname);
-    s_cell = struct2cell(s);
-    for k = 1:size(s_cell)
-        field = s_cell{k};
-        if islogical(field)
-            ROI = field;
-        end
-    end
-    if isempty(ROI)
-       error('ROI_mask_fname does not contain binary mask!');
-       num_regions = 0;
-       featurs = [];
-       saliency_masks = [];
-       return
-    end
+if ndims(region_params) > 1
+    % area factor for the significant CC
+    area_factor = region_params(2);
+else
+    area_factor = 0.03;
+end
+if ndims(region_params) > 2   
+    % thresholding the salient regions
+    thresh = region_params(3);
+else
+    thresh =  0.7;
 end
 
 % saliency flags
@@ -148,6 +132,12 @@ visualise_minor = execution_flags(3);
 if visualise_minor
     visualise_major = 1;  
 end
+
+%**************************************************************************
+% parameters
+%--------------------------------------------------------------------------
+% image dimensions
+[nrows, ncols] = size(image_data);
 
 % set up the figures positions
     bdwidth = 5;
@@ -182,8 +172,6 @@ if visualise_minor || visualise_major
     load('MyColormaps','mycmap'); 
 end
 
-
-
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
@@ -208,14 +196,11 @@ protrusions_thresh = zeros(nrows,ncols);
 % final saliency masks
 saliency_masks = zeros(nrows,ncols,4);
 
-
 %**************************************************************************
 % computations
 %--------------------------------------------------------------------------
 % pre-processing
 %--------------------------------------------------------------------------
-% if the image is colour convert it to gray-scale
-
 if verbose
     disp('Preprocessing...');
 end
@@ -223,32 +208,21 @@ end
 tic;
 t0 = clock;
 
-if ndims(I_or) == 3 
-    if verbose  
-        disp('Original image is colour- converting to gray-scale...');
-    end
-    I = rgb2gray(I_or);
-else
-    if verbose  
-       disp('Original image is gray-scale.');
-    end
-    I = I_or;
-end
-
 % apply the ROI mask if given and get the range of gray levels
-ROI_only = uint8(zeros(nrows, ncols));
-if ~isempty(ROI)
-    ROI_only = I.*uint8(ROI);
+if ~isempty(ROI_mask)
+    ROI_only = image_data.*uint8(ROI_mask);
 else
-    ROI_only = I;
+    ROI_only = image_data;
 end
 
-[otsu_thr,qual, mean_level1,mean_level2] = otsu_threshold(double(ROI_only(ROI_only>0)));
+[otsu_thr,qual, mean_level1, mean_level2] = ...
+                              otsu_threshold(double(ROI_only(ROI_only>0)));
 
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
 % gray-level step
+%step = fix((mean_level2 - mean_level1)/num_levels);
 step = fix(255/num_levels);
 if step == 0
     step = 1;
@@ -269,17 +243,20 @@ tic;
 
 % waitbar
 %if visualise_major
-    wb_handle = waitbar(0,'MSSR detection computaitons: please wait...','Position',wait_pos);
+    wb_handle = waitbar(0,'MSSR detection computaitons: please wait...',...
+                        'Position',wait_pos);
     wb_counter = 0;
 %end
 
 %..........................................................................
 % compute binary saliency for every sampled gray-level
 %..........................................................................
-for level = 0 : step: 255 
+min_level =  0; max_level = 255;
+%min_level =  mean_level1; max_level = mean_level2;
+for level = min_level : step:  max_level
 
     wb_counter = wb_counter + 1;
-    waitbar(wb_counter/length(mean_level1:step:mean_level2));
+    waitbar(wb_counter/length(min_level:step:max_level));
     drawnow
 
     [saliency_masks_level] = mssr_gray_level(ROI_only, level, ...
@@ -325,28 +302,28 @@ end
     if visualise_major
         if holes_flag
          figure(f2);
-         subplot(221);imshow(I_or); title('Original image');axis image;axis on;
+         subplot(221);imshow(image_data); freezeColors; title('Original image');axis image;axis on;
          subplot(222);imshow(holes_acc,mycmap);
          axis image;axis on;title('holes');freezeColors; 
         end
         % indentations
         if indentations_flag
          figure(f3);
-         subplot(221);imshow(I_or); title('Original image');axis image;axis on;
+         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
          subplot(222);imshow(indentations_acc,mycmap);
          axis image;axis on;title('indentations');freezeColors; 
         end
         % islands
         if islands_flag
          figure(f4);
-         subplot(221);imshow(I_or); title('Original image');axis image;axis on;
+         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
          subplot(222);imshow(islands_acc,mycmap);
          axis image;axis on;title('islands');freezeColors; 
         end
         % protrusions
         if protrusions_flag
          figure(f5);
-         subplot(221);imshow(I_or); title('Original image');axis image;axis on;
+         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
          subplot(222);imshow(protrusions_acc,mycmap);
          axis image;axis on; title('protrusions'); freezeColors; 
         end
@@ -379,89 +356,14 @@ if find(protrusions_acc)
     protrusions_thresh = thresh_area(protrusions_acc, thresh, verbose);
 end
   
-    %visualisation
-    if visualise_major
-        % holes
-        if holes_flag && ~isempty(find(holes_thresh, 1))
-            if (ndims(I_or)==3)
-                I_r=I_or(:,:,1); I_g=I_or(:,:,2); I_b=I_or(:,:,3);    
-            else
-                I_r = I_or; I_g = I_or; I_b = I_or;        
-            end
+%visualisation
+if visualise_major
+    visualise_regions();
+end
 
-             figure(f2);
-             subplot(223);imshow(holes_thresh);set(gcf, 'Colormap',1-gray(256));
-             title('thresholded holes');axis image;axis on;
-             drawnow; 
-             Per = zeros(nrows,ncols);
-             Per = bwperim(holes_thresh);
-             I_r(Per)=0; I_g(Per)=0; I_b(Per)=255; 
-             I_reg(:,:,1)=I_r; I_reg(:,:,2)=I_g; I_reg(:,:,3)=I_b;
-             I_reg = uint8(I_reg);
-             subplot(224); imshow(I_reg); axis on; title('Detected holes');            
-        end
-        % indentations
-        if indentations_flag && ~isempty(find(indentations_thresh,1))
-            if (ndims(I_or)==3)
-                I_r=I_or(:,:,1); I_g=I_or(:,:,2); I_b=I_or(:,:,3);    
-            else
-                I_r = I_or; I_g = I_or; I_b = I_or;        
-            end
-
-             figure(f3);
-             subplot(223);imshow(indentations_thresh);set(gcf, 'Colormap',1-gray(256));
-             title('thresholded indentations');axis image;axis on;
-             drawnow; 
-             Per = zeros(nrows,ncols);
-             Per = bwperim(indentations_thresh);
-             I_r(Per)=0; I_g(Per)=255; I_b(Per)=0; 
-             I_reg(:,:,1)=I_r; I_reg(:,:,2)=I_g; I_reg(:,:,3)=I_b;
-             I_reg = uint8(I_reg);
-             subplot(224); imshow(I_reg); axis on; title('Detected indentations');               
-        end
-        % islands
-        if islands_flag && ~isempty(find(islands_thresh,1))
-            if (ndims(I_or)==3)
-                I_r=I_or(:,:,1); I_g=I_or(:,:,2); I_b=I_or(:,:,3);    
-            else
-                I_r = I_or; I_g = I_or; I_b = I_or;        
-            end
-
-             figure(f4);
-             subplot(223);imshow(islands_thresh);set(gcf, 'Colormap',1-gray(256));
-             title('thresholded islands');axis image;axis on;
-             drawnow; 
-             Per = zeros(nrows,ncols);
-             Per = bwperim(islands_thresh);
-             I_r(Per)=255; I_g(Per)=255; I_b(Per)=0; 
-             I_reg(:,:,1)=I_r; I_reg(:,:,2)=I_g; I_reg(:,:,3)=I_b;
-             I_reg = uint8(I_reg);
-             subplot(224); imshow(I_reg); axis on; title('Detected islands');  
-        end
-        % protrusions
-        if protrusions_flag && ~isempty(find(protrusions_thresh,1))
-            if (ndims(I_or)==3)
-                I_r=I_or(:,:,1); I_g=I_or(:,:,2); I_b=I_or(:,:,3);    
-            else
-                I_r = I_or; I_g = I_or; I_b = I_or;        
-            end
-
-             figure(f5);
-             subplot(223);imshow(protrusions_thresh);set(gcf, 'Colormap',1-gray(256));
-             title('thresholded protrusions');axis image;axis on;
-             drawnow; 
-             Per = zeros(nrows,ncols);
-             Per = bwperim(protrusions_thresh);
-             I_r(Per)=255; I_g(Per)=0; I_b(Per)=0; 
-             I_reg(:,:,1)=I_r; I_reg(:,:,2)=I_g; I_reg(:,:,3)=I_b;
-             I_reg = uint8(I_reg);
-             subplot(224); imshow(I_reg); axis on; title('Detected protrusions');  
-        end
-    end
-    
-    if verbose
-        disp('Elapsed time for the thresholding: ');toc
-    end
+if verbose
+   disp('Elapsed time for the thresholding: ');toc
+end
 
     
 %**************************************************************************
@@ -472,11 +374,6 @@ saliency_masks(:,:,1) = holes_thresh;
 saliency_masks(:,:,2) = islands_thresh;
 saliency_masks(:,:,3) = protrusions_thresh;
 saliency_masks(:,:,4) = indentations_thresh;
-
-% display the original regions overlaid on the image
-if visualise_final
-    visualize_mssr(I_or, saliency_masks, saliency_type,region_params);
-end
 
 %..........................................................................
 % get the equivalent ellipses
@@ -518,3 +415,59 @@ if verbose
        disp(['Total elapsed time:  ' num2str(etime(clock,t0))]);
 end
 
+    function visualise_regions()
+
+        % define colors
+        blue = [0 0 255];
+        yellow = [255 255 0];
+        green = [0 255 0];
+        red = [255 0 0];
+        
+        % holes
+        if holes_flag && ~isempty(find(holes_thresh, 1))
+           
+            rgb = image_data;
+            rgb = imoverlay(rgb, holes_thresh, blue);
+    
+            figure(f2);
+            subplot(223);imshow(holes_thresh);
+            title('thresholded holes');axis image;axis on;
+            drawnow;
+            subplot(224); imshow(rgb); axis on; title('Detected holes');
+        end
+        % indentations
+        if indentations_flag && ~isempty(find(indentations_thresh,1))
+            rgb = image_data;
+            rgb = imoverlay(rgb, indentations_thresh, green);
+    
+            figure(f3);
+            subplot(223);imshow(indentations_thresh);
+            title('thresholded indentations');axis image;axis on;
+            drawnow;
+            subplot(224); imshow(rgb); axis on; title('Detected indentations');           
+        end
+        % islands
+        if islands_flag && ~isempty(find(islands_thresh,1))
+            rgb = image_data;
+            rgb = imoverlay(rgb, islands_thresh, yellow);
+
+            figure(f4);
+            subplot(223);imshow(islands_thresh);
+            title('thresholded islands');axis image;axis on;
+            drawnow;
+            subplot(224); imshow(rgb); axis on; title('Detected islands'); 
+        end
+        % protrusions
+        if protrusions_flag && ~isempty(find(protrusions_thresh,1))
+            rgb = image_data;
+            rgb = imoverlay(rgb, protrusions_thresh, red);
+    
+            figure(f5);
+            subplot(223);imshow(protrusions_thresh);
+            title('thresholded protrusions');axis image;axis on;
+            drawnow;
+            subplot(224); imshow(rgb); axis on; title('Detected protrusions'); 
+        end
+    end
+    
+end

@@ -66,10 +66,18 @@ end
 % parameters
 % structuring element (SE) size factor  
 SE_size_factor=region_params(1);
-% area factor for the significant CC
-area_factor = region_params(2);
-% thresholding the salient regions
-thresh = region_params(3);
+if ndims(region_params) > 1
+    % area factor for the significant CC
+    area_factor = region_params(2);
+else
+    area_factor = 0.03;
+end
+if ndims(region_params) > 2   
+    % thresholding the salient regions
+    thresh = region_params(3);
+else
+    thresh =  0.7;
+end
 
 if original_only
     imshow(image_data); title('Original image');
@@ -112,10 +120,11 @@ else
         rgb = imoverlay(rgb,protrusions, red);
     end
 
+    figure;
     imshow(rgb);
     title('Image with overlayed MSSR','FontSize',10);
     xlabel({['threshold: ',num2str(thresh)];...
-        ['SE size factor: ',num2str(SE_factor)];...
+        ['SE size factor: ',num2str(SE_size_factor)];...
         ['Area factor: ',num2str(area_factor)];}, 'FontSize',8)
    
     return
