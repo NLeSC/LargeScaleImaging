@@ -15,4 +15,5 @@
 % test_mssr.m- script to test the MSSR detector
 % parameter_sweep_mssr_binary.m- script to test the MSSR detector with
 %                                different parameters
+% test_thresholding.m- script to test gray-level image thresholding evolution
 % transform_test_image.m- script to affinely transformation a test image
