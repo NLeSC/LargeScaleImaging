@@ -6,8 +6,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 May 2015
-% last modification date: 21 May 2015
-% modification details: fixed paramter check
+% last modification date: 22 May 2015
+% modification details: visualization of the binary images added
 %**************************************************************************
 % INPUTS:
 % image_data        the input gray-level image data
@@ -144,11 +144,11 @@ end
 [nrows, ncols] = size(image_data);
 
 % set up the figures positions
-    bdwidth = 5;
-    topbdwidth = 80;
+bdwidth = 5;
+topbdwidth = 80;
 
-    set(0,'Units','pixels') 
-    scnsize = get(0,'ScreenSize');
+set(0,'Units','pixels')
+scnsize = get(0,'ScreenSize');
 wait_pos = [0.2*scnsize(3), 0.2*scnsize(4),scnsize(3)/4, scnsize(4)/20 ];
 
 if visualise_minor || visualise_major
@@ -168,11 +168,11 @@ if visualise_minor || visualise_major
          pos1(4)];
      
     f1 = figure('Position',pos1);
-    f2 = figure('Position',pos2);
-    f3 = figure('Position',pos3);
-    f4 = figure('Position',pos2);
-    f5 = figure('Position',pos3);
-
+    f2 = figure('Position',pos3);
+    f3 = figure('Position',pos2);
+    f4 = figure('Position',pos3);
+    f5 = figure('Position',pos2);
+    f6 = figure('Position',pos3);
     load('MyColormaps','mycmap'); 
 end
 
@@ -266,7 +266,7 @@ for level = min_level : step:  max_level
     wb_counter = wb_counter + 1;
     waitbar(wb_counter/length(min_level:step:max_level));
     drawnow
-
+    pause
     [saliency_masks_level] = mssr_gray_level(ROI_only, level, ...
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
@@ -285,7 +285,7 @@ for level = min_level : step:  max_level
     if visualise_major
         if holes_flag
          figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on;
-         set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');
+         set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');         
         end
         if islands_flag
          subplot(222);imagesc(islands_acc);axis image;axis on;
@@ -299,7 +299,9 @@ for level = min_level : step:  max_level
          subplot(224);imagesc(protrusions_acc);axis image;axis on;
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
-
+        figure(f2);imshow(ROI_only >= level); 
+        title(['Segmented image at gray level: ' num2str(level)]);
+        axis image; axis on;
     end
 end
     if verbose
@@ -309,28 +311,28 @@ end
     %visualisation
     if visualise_major
         if holes_flag
-         figure(f2);
+         figure(f3);
          subplot(221);imshow(image_data); freezeColors; title('Original image');axis image;axis on;
          subplot(222);imshow(holes_acc,mycmap);
          axis image;axis on;title('holes');freezeColors; 
         end
         % indentations
         if indentations_flag
-         figure(f3);
+         figure(f4);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
          subplot(222);imshow(indentations_acc,mycmap);
          axis image;axis on;title('indentations');freezeColors; 
         end
         % islands
         if islands_flag
-         figure(f4);
+         figure(f5);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
          subplot(222);imshow(islands_acc,mycmap);
          axis image;axis on;title('islands');freezeColors; 
         end
         % protrusions
         if protrusions_flag
-         figure(f5);
+         figure(f6);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
          subplot(222);imshow(protrusions_acc,mycmap);
          axis image;axis on; title('protrusions'); freezeColors; 
@@ -437,7 +439,7 @@ end
             rgb = image_data;
             rgb = imoverlay(rgb, holes_thresh, blue);
     
-            figure(f2);
+            figure(f3);
             subplot(223);imshow(holes_thresh);
             title('thresholded holes');axis image;axis on;
             drawnow;
@@ -448,7 +450,7 @@ end
             rgb = image_data;
             rgb = imoverlay(rgb, indentations_thresh, green);
     
-            figure(f3);
+            figure(f4);
             subplot(223);imshow(indentations_thresh);
             title('thresholded indentations');axis image;axis on;
             drawnow;
@@ -459,7 +461,7 @@ end
             rgb = image_data;
             rgb = imoverlay(rgb, islands_thresh, yellow);
 
-            figure(f4);
+            figure(f5);
             subplot(223);imshow(islands_thresh);
             title('thresholded islands');axis image;axis on;
             drawnow;
@@ -470,7 +472,7 @@ end
             rgb = image_data;
             rgb = imoverlay(rgb, protrusions_thresh, red);
     
-            figure(f5);
+            figure(f6);
             subplot(223);imshow(protrusions_thresh);
             title('thresholded protrusions');axis image;axis on;
             drawnow;
