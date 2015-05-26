@@ -9,7 +9,7 @@
 interactive = false;
 verbose = false;
 visualize = true;
-visualize_major = false;
+visualize_major = true;
 visualize_minor = false;
 
 otsu = false;
@@ -24,13 +24,34 @@ if interactive
     image_filename = input('Enter the test image filename: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    test_image = input('Enter test case: [boat|phantom|thorax]: ','s');
+    test_image = input('Enter test case: [boat|phantom|thorax|graffiti]: ','s');
     switch lower(test_image)
         case 'boat'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','boat','boat1.png');    
             image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','boat','boat2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat3.png');
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat5.png');
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat6.png');
+        case 'graffiti'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','graffiti','graffiti1.png');    
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','graffiti','graffiti2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti3.png');
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti5.png');
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti6.png');            
         case 'phantom'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','Phantom','phantom.png');
