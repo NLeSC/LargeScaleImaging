@@ -9,7 +9,7 @@
 interactive = false;
 verbose = false;
 visualize = true;
-visualize_major = true;
+visualize_major = false;
 visualize_minor = false;
 lisa = true;
 
@@ -138,7 +138,7 @@ else
     saliency_types = [1 1 1 1];
     SE_size_factor = 0.02;
     Area_factor = 0.03;
-    num_levels = 25;
+    num_levels = 20;
     thersh = 0.75;
 end
 
