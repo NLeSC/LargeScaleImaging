@@ -11,12 +11,15 @@ verbose = false;
 visualize = true;
 visualize_major = true;
 visualize_minor = false;
+lisa = true;
 
 otsu = false;
 
 %% image filename
 if ispc 
     starting_path = fullfile('C:','Projects');
+elseif lisa
+     starting_path = fullfile(filesep, 'home','elenar');
 else
     starting_path = fullfile(filesep,'home','elena');
 end
@@ -24,7 +27,7 @@ if interactive
     image_filename = input('Enter the test image filename: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    test_image = input('Enter test case: [boat|phantom|thorax|graffiti]: ','s');
+    test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
     switch lower(test_image)
         case 'boat'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
@@ -60,6 +63,32 @@ else
         case 'thorax'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
             'Data','AffineRegions','CT','thorax1.jpg');
+        case 'leuven'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven1.png');    
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven3.png');    
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven5.png');    
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven6.png');
+        case 'bikes'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes1.png');    
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes3.png');    
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes5.png');    
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes6.png');
     end
     mask_filename =[];
 
@@ -109,7 +138,7 @@ else
     saliency_types = [1 1 1 1];
     SE_size_factor = 0.02;
     Area_factor = 0.03;
-    num_levels = 50;
+    num_levels = 25;
     thersh = 0.75;
 end
 

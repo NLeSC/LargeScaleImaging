@@ -266,7 +266,7 @@ for level = min_level : step:  max_level
     wb_counter = wb_counter + 1;
     waitbar(wb_counter/length(min_level:step:max_level));
     drawnow
-    pause
+    %pause
     [saliency_masks_level] = mssr_gray_level(ROI_only, level, ...
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
