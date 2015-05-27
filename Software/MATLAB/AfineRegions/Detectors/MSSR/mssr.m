@@ -97,7 +97,7 @@ if nargin < 2
     ROI_mask = [];
 end
 if nargin < 1
-    error('mssr.m requires at least 1 input argument- the image filename!');
+    error('mssr.m requires at least 1 input argument- the gray-level image!');
     num_regions = 0;
     featurs = [];
     saliency_masks = [];
