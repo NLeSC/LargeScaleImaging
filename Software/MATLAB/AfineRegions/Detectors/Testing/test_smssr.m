@@ -125,17 +125,23 @@ for i = 1:len
 tic;
 
 if interactive
+    preproc_types(1) = input('Smooth? [0/1]: ');
+    preproc_types(2) = input('Histogram equialize? [0/1]: ');
+    SE_size_factor_preproc = input('Enter the Structuring Element size factor (preprocessing): ');
     saliency_types(1) = input('Detect "holes"? [0/1]: ');
     saliency_types(2) = input('Detect "islands"? [0/1]: ');
     saliency_types(3) = input('Detect "indentations"? [0/1]: ');
     saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
     SE_size_factor = input('Enter the Structuring Element size factor: ');
-    Area_factor = input('Enter the Connected Component size factor: ');
+    Area_factor = input('Enter the Connected Component size factor (processing): ');
     num_levels = input('Enter the number of gray-levels: ');
     thresh = input('Enter the region threshold: ');
+    
 else
+    preproc_types = [0 1];
     saliency_types = [1 1 1 1];
     SE_size_factor = 0.02;
+    SE_size_factor_preproc = 0.002;
     Area_factor = 0.03;
     num_levels = 20;
     thersh = 0.75;
@@ -146,6 +152,7 @@ disp('Version 2015');
 
 region_params = [SE_size_factor Area_factor];
 execution_params = [verbose visualize_major visualize_minor];
+image_data = smssr_preproc(image_data, preproc_types);
 [num_regions, features, saliency_masks] = smssr(image_data, ROI, ...
     num_levels, saliency_types, region_params, execution_params);
 toc

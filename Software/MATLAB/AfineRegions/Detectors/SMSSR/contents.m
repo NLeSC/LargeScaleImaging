@@ -15,6 +15,7 @@
 % secondary
 %--------------------------------------------------------------------------
 % smssr_gray_thresh.m- salient regions in a in a thresholded gray-level image
+% smssr_preproc.m- pre-processing for the SMMSR detector
 %
 % thresh_cumsum- thresholding based on cumulative sum
 % thresh_area- thresholding based on the data's effective "area"
