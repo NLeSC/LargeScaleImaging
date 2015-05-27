@@ -18,7 +18,7 @@ lisa = true;
 %% image filename
 if ispc 
     starting_path = fullfile('C:','Projects');
- elseif lisa
+elseif lisa
      starting_path = fullfile(filesep, 'home','elenar');
 else
     starting_path = fullfile(filesep,'home','elena');
@@ -94,15 +94,16 @@ else
 end
  %% input parameters
 if interactive
-    min_level = input('Enter minimum gray level: ');
-    max_level = input('Enter maximum gray level');
+  %  min_level = input('Enter minimum gray level: ');
+  %  max_level = input('Enter maximum gray level');
     num_levels = input('Enter number of gray-levels');
 else
-    min_level =  0; max_level = 255; num_levels = [10 20 50];
+   % min_level =  0; max_level = 255; 
+   num_levels = 25;
 end
 
 % smoothing with morphology
-%se = strel('disk',2);
+se = strel('disk',2);
 
 %% find out the number of test files
 len = length(image_filename);
@@ -116,90 +117,68 @@ for i = 1:len
     end
 
    % length(unique(image_data))
-    if visualize_major
+    if visualize_minor
         % visualize original image
         f = figure; subplot(221); imshow(image_data); title('Original image ');
     end
     
+    %% smooth the image
+    image_data = imclose(image_data, se);
     %% threshold the original image
     level = graythresh(image_data);
     
-    if visualize_major
+    if visualize_minor
         result = im2bw(image_data, level);
         figure(f); subplot(223);imshow(result);
-            title('Thresholded original image');
+            title('Thresholded original image');    
     end
-    %% visualization
-    if visualize_minor
-        f0 = figure;
-    end
+   
     %% histogram equilization
     image_data = histeq(image_data);
     
-    if visualize_major
+    if visualize_minor
         % visualize original image
-        figure(f); subplot(222); imshow(image_data); title('Adjusted image ');
+        figure(f); subplot(222); imshow(image_data); title('Adjusted image');
     end
-    %% image blur
-%     h = fspecial('disk',2);
-%     image_data=imfilter(image_data,h);
-    
+
     %% threshold the adjusted data
     level = graythresh(image_data);
     
-    if visualize_major
+    if visualize_minor
         result = im2bw(image_data, level);
         figure(f); subplot(224);imshow(result);
             title('Thresholded adjusted image');
     end
 
 
-%     num_levels_counter = 0;
-%     for n = num_levels
-%          num_levels_counter = num_levels_counter + 1;
-% %         step = fix((max_level - min_level)/n);
-% %         if step == 0
-% %             step = 1;
-% %         end
-% %         level_counter =0;
-% %         for level = min_level:step:max_level
-% %             level_counter = level_counter+1;
-% %             thresh_image  = image_data >= level;
-% %             thresh_data(:,:,level_counter) = thresh_image;
-% %             if visualize_minor
-% %                 figure(f0); imshow(thresh_image);
-% %                 title(['Segmented image at gray level: ' num2str(level)]);
-% %                 axis on; grid on;
-% %                 pause(0.2);
-% %             end
-% %         end
-% 
-%         %% obtain accumulative threshodilg scores
-%         quantized_data = gray2ind(image_data, n);
-%         [otsu_thr, d1, d2, d3] =  otsu_threshold(double(quantized_data(:)));
-%         %acc_thresh_data = sum(thresh_data,3);
-%         % [otsu_thr, d1, d2, d3] =  otsu_threshold(double(acc_thresh_data(:)));
-%         %     %% quantize the image
-%         %     levels = min_level:step:max_level;
-%         %     quant_image = imquantize(image_data, levels); % to be used only in versions after 2012b!
-%         %
-%         %% visualize
-%         if visualize_major
-%             % visualize quantized image
-%             figure(f);
-%             subplot(2,4,num_levels_counter+1);
-%             rgb = label2rgb(quantized_data);
-%             imshow(rgb); title(['Quantized image with number of levels: ' num2str(n)]);
-%             freezeColors;
-%             %imshow(acc_thresh_data,mycmap);
-%             %imagesc(acc_thresh_data);
-% 
+    num_levels_counter = 0;
+    
+    if visualize_major
+        f1=figure; 
+    end
+    for n = num_levels
+        num_levels_counter = num_levels_counter + 1;
+        
+        %% convert to inxeded image using num_levels
+        ind_image = grayslice(image_data,n);
+%          thresholds = multithresh(image_data,n) 
+%         [ind_image, map] = gray2ind(image_data, n); 
+        %% visualize
+        if visualize_major
+            % visualize quantized image
+            figure(f1);
+            %subplot(2,3,num_levels_counter);
+            rgb = label2rgb(ind_image);
+            imshow(rgb); title(['Index image with number of levels: ' num2str(n)]);
+            freezeColors;
+            %imshow(ind_image,map); title(['Index image with number of levels: ' num2str(n)]);
+
 %             figure(f); subplot(2,4,num_levels_counter+5);
 %             %imhist(quantized_data);
 %             imshow(quantized_data >= otsu_thr);
 %             title('Thresholded his.eq. quantized image');
-%         end
-%     %     clear thresh_data;%  acc_thresh_data;
-%     end
-%    % clear image_data;
+        end
+    %     clear thresh_data;%  acc_thresh_data;
+    end
+   % clear image_data;
 end
