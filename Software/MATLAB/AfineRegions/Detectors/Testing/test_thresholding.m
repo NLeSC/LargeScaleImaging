@@ -2,13 +2,14 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 26-05-2015
-% last modification date: 
-% modification details:
+% last modification date: 27-05-2015
+% modification details: adaptation  to  workon Lisa
 %**************************************************************************
 %% paramaters
 interactive = false;
 visualize_major = true;
 visualize_minor = false;
+lisa = true; 
 
 % if visualize_major
 %   load('MyColormaps','mycmap'); 
@@ -17,6 +18,8 @@ visualize_minor = false;
 %% image filename
 if ispc 
     starting_path = fullfile('C:','Projects');
+ elseif lisa
+     starting_path = fullfile(filesep, 'home','elenar');
 else
     starting_path = fullfile(filesep,'home','elena');
 end
@@ -115,7 +118,16 @@ for i = 1:len
    % length(unique(image_data))
     if visualize_major
         % visualize original image
-        f = figure; subplot(241); imshow(image_data); title('Original image ');
+        f = figure; subplot(221); imshow(image_data); title('Original image ');
+    end
+    
+    %% threshold the original image
+    level = graythresh(image_data);
+    
+    if visualize_major
+        result = im2bw(image_data, level);
+        figure(f); subplot(223);imshow(result);
+            title('Thresholded original image');
     end
     %% visualization
     if visualize_minor
@@ -124,66 +136,70 @@ for i = 1:len
     %% histogram equilization
     image_data = histeq(image_data);
     
-    %% image blur
-    h = fspecial('disk',2);
-    image_data=imfilter(image_data,h);
-    
-    %% threshold the data
-    
-    [otsu_thr_global,d1,d2,d3] =  otsu_threshold(double(image_data(:)));
     if visualize_major
-%        result = imclose(image_data >= otsu_thr_global,se)
-        result = image_data >= otsu_thr_global;
-        figure(f); subplot(245);imshow(result);
-            title('Thresholded qustogram equalized original image');
+        % visualize original image
+        figure(f); subplot(222); imshow(image_data); title('Adjusted image ');
+    end
+    %% image blur
+%     h = fspecial('disk',2);
+%     image_data=imfilter(image_data,h);
+    
+    %% threshold the adjusted data
+    level = graythresh(image_data);
+    
+    if visualize_major
+        result = im2bw(image_data, level);
+        figure(f); subplot(224);imshow(result);
+            title('Thresholded adjusted image');
     end
 
-    num_levels_counter = 0;
-    for n = num_levels
-         num_levels_counter = num_levels_counter + 1;
-%         step = fix((max_level - min_level)/n);
-%         if step == 0
-%             step = 1;
-%         end
-%         level_counter =0;
-%         for level = min_level:step:max_level
-%             level_counter = level_counter+1;
-%             thresh_image  = image_data >= level;
-%             thresh_data(:,:,level_counter) = thresh_image;
-%             if visualize_minor
-%                 figure(f0); imshow(thresh_image);
-%                 title(['Segmented image at gray level: ' num2str(level)]);
-%                 axis on; grid on;
-%                 pause(0.2);
-%             end
-%         end
 
-        %% obtain accumulative threshodilg scores
-        quantized_data = gray2ind(image_data, n);
-        [otsu_thr, d1, d2, d3] =  otsu_threshold(double(quantized_data(:)));
-        %acc_thresh_data = sum(thresh_data,3);
-        % [otsu_thr, d1, d2, d3] =  otsu_threshold(double(acc_thresh_data(:)));
-        %     %% quantize the image
-        %     levels = min_level:step:max_level;
-        %     quant_image = imquantize(image_data, levels); % to be used only in versions after 2012b!
-        %
-        %% visualize
-        if visualize_major
-            % visualize quantized image
-            figure(f);
-            subplot(2,4,num_levels_counter+1);
-            rgb = label2rgb(quantized_data);
-            imshow(rgb); title(['Quantized image with number of levels: ' num2str(n)]);
-            freezeColors;
-            %imshow(acc_thresh_data,mycmap);
-            %imagesc(acc_thresh_data);
-
-            figure(f); subplot(2,4,num_levels_counter+5);
-            %imhist(quantized_data);
-            imshow(quantized_data >= otsu_thr);
-            title('Thresholded his.eq. quantized image');
-        end
-    %     clear thresh_data;%  acc_thresh_data;
-    end
-   % clear image_data;
+%     num_levels_counter = 0;
+%     for n = num_levels
+%          num_levels_counter = num_levels_counter + 1;
+% %         step = fix((max_level - min_level)/n);
+% %         if step == 0
+% %             step = 1;
+% %         end
+% %         level_counter =0;
+% %         for level = min_level:step:max_level
+% %             level_counter = level_counter+1;
+% %             thresh_image  = image_data >= level;
+% %             thresh_data(:,:,level_counter) = thresh_image;
+% %             if visualize_minor
+% %                 figure(f0); imshow(thresh_image);
+% %                 title(['Segmented image at gray level: ' num2str(level)]);
+% %                 axis on; grid on;
+% %                 pause(0.2);
+% %             end
+% %         end
+% 
+%         %% obtain accumulative threshodilg scores
+%         quantized_data = gray2ind(image_data, n);
+%         [otsu_thr, d1, d2, d3] =  otsu_threshold(double(quantized_data(:)));
+%         %acc_thresh_data = sum(thresh_data,3);
+%         % [otsu_thr, d1, d2, d3] =  otsu_threshold(double(acc_thresh_data(:)));
+%         %     %% quantize the image
+%         %     levels = min_level:step:max_level;
+%         %     quant_image = imquantize(image_data, levels); % to be used only in versions after 2012b!
+%         %
+%         %% visualize
+%         if visualize_major
+%             % visualize quantized image
+%             figure(f);
+%             subplot(2,4,num_levels_counter+1);
+%             rgb = label2rgb(quantized_data);
+%             imshow(rgb); title(['Quantized image with number of levels: ' num2str(n)]);
+%             freezeColors;
+%             %imshow(acc_thresh_data,mycmap);
+%             %imagesc(acc_thresh_data);
+% 
+%             figure(f); subplot(2,4,num_levels_counter+5);
+%             %imhist(quantized_data);
+%             imshow(quantized_data >= otsu_thr);
+%             title('Thresholded his.eq. quantized image');
+%         end
+%     %     clear thresh_data;%  acc_thresh_data;
+%     end
+%    % clear image_data;
 end
