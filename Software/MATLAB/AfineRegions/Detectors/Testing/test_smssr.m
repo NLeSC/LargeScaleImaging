@@ -2,7 +2,7 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 27-05-2015
-% last modification date: 
+% last modification date: 29-05-2015
 % modification details: 
 %**************************************************************************
 %% paramaters
@@ -159,9 +159,16 @@ toc
 
 %% visualize
 if visualize
-    visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
+    figure;
+    subplot(3,2,1); visualize_mssr(image_data);
+    subplot(3,2,2);visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
+    subplot(3,2,3);visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
+    subplot(3,2,4);visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
+    subplot(3,2,5);visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
+    subplot(3,2,6);visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
 end
 
-    
+     code with results
+     
 end
 
