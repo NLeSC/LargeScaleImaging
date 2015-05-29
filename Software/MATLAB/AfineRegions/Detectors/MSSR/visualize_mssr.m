@@ -51,32 +51,32 @@ end
 if (nargin < 2)
     original_only = 1;
 end
-if (nargin < 3)
-    gray_level = 'unknown';
-end
+
 if (nargin < 3)     
     saliency_type = [1 1 1 1];
 end
-if (nargin < 5)    
+if (nargin < 4)    
     area_factor = 'unknown';
     SE_factor = 'unknown';
     tresh = 'unknown';
 end
 
 % parameters
-% structuring element (SE) size factor  
-SE_size_factor=region_params(1);
-if ndims(region_params) > 1
-    % area factor for the significant CC
-    area_factor = region_params(2);
-else
-    area_factor = 0.03;
-end
-if ndims(region_params) > 2   
-    % thresholding the salient regions
-    thresh = region_params(3);
-else
-    thresh =  0.7;
+if nargin >3 
+    % structuring element (SE) size factor
+    SE_size_factor=region_params(1);
+    if ndims(region_params) > 1
+        % area factor for the significant CC
+        area_factor = region_params(2);
+    else
+        area_factor = 0.03;
+    end
+    if ndims(region_params) > 2
+        % thresholding the salient regions
+        thresh = region_params(3);
+    else
+        thresh =  0.7;
+    end
 end
 
 if original_only
@@ -120,13 +120,14 @@ else
         rgb = imoverlay(rgb,protrusions, red);
     end
 
-    figure;
+    %figure;
     imshow(rgb);
-    title('Image with overlayed MSSR','FontSize',10);
-    xlabel({['threshold: ',num2str(thresh)];...
-        ['SE size factor: ',num2str(SE_size_factor)];...
-        ['Area factor: ',num2str(area_factor)];}, 'FontSize',8)
-   
+    if ~isempty(saliency_masks)
+        title('Image with overlayed salient regions','FontSize',10);
+        xlabel({['threshold: ',num2str(thresh)];...
+            ['SE size factor: ',num2str(SE_size_factor)];...
+            ['Area factor: ',num2str(area_factor)];}, 'FontSize',8)
+    end
     return
 end
 
