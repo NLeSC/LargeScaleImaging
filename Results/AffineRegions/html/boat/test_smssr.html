@@ -1,0 +1,488 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>test_smssr</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-05-29"><meta name="DC.source" content="test_smssr.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">paramaters</a></li><li><a href="#3">image filename</a></li><li><a href="#4">find out the number of test files</a></li><li><a href="#5">loop over all test images</a></li><li><a href="#6">load the image &amp; convertto gray-scale if  color</a></li><li><a href="#7">load the mask, if any</a></li><li><a href="#8">run the SMSSR detector</a></li><li><a href="#9">visualize</a></li></ul></div><pre class="codeinput"><span class="comment">% test_smssr.m- script to test the SMSSR detector</span>
+<span class="comment">%**************************************************************************</span>
+<span class="comment">% author: Elena Ranguelova, NLeSc</span>
+<span class="comment">% date created: 27-05-2015</span>
+<span class="comment">% last modification date: 29-05-2015</span>
+<span class="comment">% modification details:</span>
+<span class="comment">%**************************************************************************</span>
+</pre><h2>paramaters<a name="2"></a></h2><pre class="codeinput">interactive = false;
+verbose = false;
+visualize = true;
+visualize_major = false;
+visualize_minor = false;
+lisa = true;
+</pre><h2>image filename<a name="3"></a></h2><pre class="codeinput"><span class="keyword">if</span> ispc
+    starting_path = fullfile(<span class="string">'C:'</span>,<span class="string">'Projects'</span>);
+<span class="keyword">elseif</span> lisa
+     starting_path = fullfile(filesep, <span class="string">'home'</span>,<span class="string">'elenar'</span>);
+<span class="keyword">else</span>
+    starting_path = fullfile(filesep,<span class="string">'home'</span>,<span class="string">'elena'</span>);
+<span class="keyword">end</span>
+<span class="keyword">if</span> interactive
+    image_filename = input(<span class="string">'Enter the test image filename: '</span>,<span class="string">'s'</span>);
+    mask_filename = input(<span class="string">'Enter the mask filename (.mat): '</span>, <span class="string">'s'</span>);
+<span class="keyword">else</span>
+    <span class="comment">%test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');</span>
+    <span class="keyword">switch</span> lower(test_image)
+        <span class="keyword">case</span> <span class="string">'boat'</span>
+            image_filename{1} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'boat'</span>,<span class="string">'boat1.png'</span>);
+            image_filename{2} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'boat'</span>,<span class="string">'boat2.png'</span>);
+            image_filename{3} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'boat'</span>,<span class="string">'boat3.png'</span>);
+            image_filename{4} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'boat'</span>,<span class="string">'boat4.png'</span>);
+            image_filename{5} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'boat'</span>,<span class="string">'boat5.png'</span>);
+            image_filename{6} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'boat'</span>,<span class="string">'boat6.png'</span>);
+        <span class="keyword">case</span> <span class="string">'graffiti'</span>
+            image_filename{1} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'graffiti'</span>,<span class="string">'graffiti1.png'</span>);
+            image_filename{2} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'graffiti'</span>,<span class="string">'graffiti2.png'</span>);
+            image_filename{3} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'graffiti'</span>,<span class="string">'graffiti3.png'</span>);
+            image_filename{4} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'graffiti'</span>,<span class="string">'graffiti4.png'</span>);
+            image_filename{5} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'graffiti'</span>,<span class="string">'graffiti5.png'</span>);
+            image_filename{6} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+                <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'graffiti'</span>,<span class="string">'graffiti6.png'</span>);
+        <span class="keyword">case</span> <span class="string">'phantom'</span>
+            image_filename{1} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'Phantom'</span>,<span class="string">'phantom.png'</span>);
+            image_filename{2} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'Phantom'</span>,<span class="string">'phantom_affine.png'</span>);
+        <span class="keyword">case</span> <span class="string">'thorax'</span>
+            image_filename{1} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'CT'</span>,<span class="string">'thorax1.jpg'</span>);
+        <span class="keyword">case</span> <span class="string">'leuven'</span>
+            image_filename{1} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'leuven'</span>,<span class="string">'leuven1.png'</span>);
+            image_filename{2} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'leuven'</span>,<span class="string">'leuven2.png'</span>);
+            image_filename{3} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'leuven'</span>,<span class="string">'leuven3.png'</span>);
+            image_filename{4} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'leuven'</span>,<span class="string">'leuven4.png'</span>);
+            image_filename{5} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'leuven'</span>,<span class="string">'leuven5.png'</span>);
+            image_filename{6} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'leuven'</span>,<span class="string">'leuven6.png'</span>);
+        <span class="keyword">case</span> <span class="string">'bikes'</span>
+            image_filename{1} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'bikes'</span>,<span class="string">'bikes1.png'</span>);
+            image_filename{2} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'bikes'</span>,<span class="string">'bikes2.png'</span>);
+            image_filename{3} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'bikes'</span>,<span class="string">'bikes3.png'</span>);
+            image_filename{4} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'bikes'</span>,<span class="string">'bikes4.png'</span>);
+            image_filename{5} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'bikes'</span>,<span class="string">'bikes5.png'</span>);
+            image_filename{6} = fullfile(starting_path,<span class="string">'eStep'</span>,<span class="string">'LargeScaleImaging'</span>,<span class="keyword">...</span>
+            <span class="string">'Data'</span>,<span class="string">'AffineRegions'</span>,<span class="string">'bikes'</span>,<span class="string">'bikes6.png'</span>);
+    <span class="keyword">end</span>
+    mask_filename =[];
+
+<span class="keyword">end</span>
+</pre><h2>find out the number of test files<a name="4"></a></h2><pre class="codeinput">len = length(image_filename);
+</pre><h2>loop over all test images<a name="5"></a></h2><pre class="codeinput"><span class="keyword">for</span> i = 1:len
+</pre><h2>load the image &amp; convertto gray-scale if  color<a name="6"></a></h2><pre class="codeinput">    image_data = imread(image_filename{i});
+    <span class="keyword">if</span> ndims(image_data) &gt; 2
+        image_data = rgb2gray(image_data);
+    <span class="keyword">end</span>
+</pre><h2>load the mask, if any<a name="7"></a></h2><pre class="codeinput">    ROI = [];
+    <span class="keyword">if</span> ~isempty(mask_filename)
+        s = load(ROI_mask_fname);
+        s_cell = struct2cell(s);
+        <span class="keyword">for</span> k = 1:size(s_cell)
+            field = s_cell{k};
+            <span class="keyword">if</span> islogical(field)
+                ROI = field;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> isempty(ROI)
+           error(<span class="string">'ROI_mask_fname does not contain binary mask!'</span>);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+</pre><h2>run the SMSSR detector<a name="8"></a></h2><pre class="codeinput">    tic;
+
+    <span class="keyword">if</span> interactive
+        preproc_types(1) = input(<span class="string">'Smooth? [0/1]: '</span>);
+        preproc_types(2) = input(<span class="string">'Histogram equialize? [0/1]: '</span>);
+        SE_size_factor_preproc = input(<span class="string">'Enter the Structuring Element size factor (preprocessing): '</span>);
+        saliency_types(1) = input(<span class="string">'Detect "holes"? [0/1]: '</span>);
+        saliency_types(2) = input(<span class="string">'Detect "islands"? [0/1]: '</span>);
+        saliency_types(3) = input(<span class="string">'Detect "indentations"? [0/1]: '</span>);
+        saliency_types(4) = input(<span class="string">'Detect "protrusions"? [0/1]: '</span>);
+        SE_size_factor = input(<span class="string">'Enter the Structuring Element size factor: '</span>);
+        Area_factor = input(<span class="string">'Enter the Connected Component size factor (processing): '</span>);
+        num_levels = input(<span class="string">'Enter the number of gray-levels: '</span>);
+        thresh = input(<span class="string">'Enter the region threshold: '</span>);
+
+    <span class="keyword">else</span>
+        preproc_types = [0 1];
+        saliency_types = [1 1 1 1];
+        SE_size_factor = 0.02;
+        SE_size_factor_preproc = 0.002;
+        Area_factor = 0.03;
+        num_levels = 20;
+        thersh = 0.75;
+    <span class="keyword">end</span>
+
+
+    disp(<span class="string">'Test case: '</span>);disp(test_image);
+    region_params = [SE_size_factor Area_factor];
+    execution_params = [verbose visualize_major visualize_minor];
+    image_data = smssr_preproc(image_data, preproc_types);
+    [num_regions, features, saliency_masks] = smssr(image_data, ROI, <span class="keyword">...</span>
+        num_levels, saliency_types, region_params, execution_params);
+    toc
+</pre><pre class="codeoutput">Test case: 
+boat
+Elapsed time is 1.405633 seconds.
+</pre><pre class="codeoutput">Test case: 
+boat
+Elapsed time is 1.848269 seconds.
+</pre><pre class="codeoutput">Test case: 
+boat
+Elapsed time is 2.054001 seconds.
+</pre><pre class="codeoutput">Test case: 
+boat
+Elapsed time is 1.791682 seconds.
+</pre><pre class="codeoutput">Test case: 
+boat
+Elapsed time is 1.258758 seconds.
+</pre><pre class="codeoutput">Test case: 
+boat
+Elapsed time is 2.230879 seconds.
+</pre><h2>visualize<a name="9"></a></h2><pre class="codeinput">    <span class="keyword">if</span> visualize
+        f1 = figure; set(f1,<span class="string">'WindowStyle'</span>,<span class="string">'docked'</span>);visualize_mssr(image_data);
+        f2 = figure; set(f2,<span class="string">'WindowStyle'</span>,<span class="string">'docked'</span>);visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
+        f3 = figure; set(f3,<span class="string">'WindowStyle'</span>,<span class="string">'docked'</span>);visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
+        f4 = figure; set(f4,<span class="string">'WindowStyle'</span>,<span class="string">'docked'</span>);visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
+        f5 = figure; set(f5,<span class="string">'WindowStyle'</span>,<span class="string">'docked'</span>);visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
+        f6 = figure; set(f6,<span class="string">'WindowStyle'</span>,<span class="string">'docked'</span>);visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
+
+    <span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+</pre><img vspace="5" hspace="5" src="test_smssr_01.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_02.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_03.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_04.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_05.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_06.png" alt=""> <pre class="codeoutput">Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+</pre><img vspace="5" hspace="5" src="test_smssr_07.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_08.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_09.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_10.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_11.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_12.png" alt=""> <pre class="codeoutput">Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+</pre><img vspace="5" hspace="5" src="test_smssr_13.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_14.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_15.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_16.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_17.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_18.png" alt=""> <pre class="codeoutput">Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+</pre><img vspace="5" hspace="5" src="test_smssr_19.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_20.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_21.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_22.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_23.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_24.png" alt=""> <pre class="codeoutput">Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+</pre><img vspace="5" hspace="5" src="test_smssr_25.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_26.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_27.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_28.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_29.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_30.png" alt=""> <pre class="codeoutput">Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+Warning: The initial magnification of the image is set to 'fit' in a docked
+figure. 
+</pre><img vspace="5" hspace="5" src="test_smssr_31.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_32.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_33.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_34.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_35.png" alt=""> <img vspace="5" hspace="5" src="test_smssr_36.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% test_smssr.m- script to test the SMSSR detector
+%**************************************************************************
+% author: Elena Ranguelova, NLeSc
+% date created: 27-05-2015
+% last modification date: 29-05-2015
+% modification details: 
+%**************************************************************************
+%% paramaters
+interactive = false;
+verbose = false;
+visualize = true;
+visualize_major = false;
+visualize_minor = false;
+lisa = true;
+
+
+%% image filename
+if ispc 
+    starting_path = fullfile('C:','Projects');
+elseif lisa
+     starting_path = fullfile(filesep, 'home','elenar');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
+if interactive 
+    image_filename = input('Enter the test image filename: ','s');
+    mask_filename = input('Enter the mask filename (.mat): ', 's');
+else
+    %test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
+    switch lower(test_image)
+        case 'boat'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','boat','boat1.png');    
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','boat','boat2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat3.png');
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat5.png');
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','boat','boat6.png');
+        case 'graffiti'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','graffiti','graffiti1.png');    
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','graffiti','graffiti2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti3.png');
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti5.png');
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+                'Data','AffineRegions','graffiti','graffiti6.png');            
+        case 'phantom'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','Phantom','phantom.png');
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','Phantom','phantom_affine.png');
+        case 'thorax'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','CT','thorax1.jpg');
+        case 'leuven'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven1.png');    
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven3.png');    
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven5.png');    
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','leuven','leuven6.png');
+        case 'bikes'
+            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes1.png');    
+            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes2.png');
+            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes3.png');    
+            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes4.png');
+            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes5.png');    
+            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
+            'Data','AffineRegions','bikes','bikes6.png');
+    end
+    mask_filename =[];
+
+end
+
+%% find out the number of test files
+len = length(image_filename);
+
+%% loop over all test images
+for i = 1:len
+    %% load the image & convertto gray-scale if  color
+    image_data = imread(image_filename{i});
+    if ndims(image_data) > 2
+        image_data = rgb2gray(image_data);
+    end
+    
+    %% load the mask, if any
+    ROI = [];
+    if ~isempty(mask_filename)
+        s = load(ROI_mask_fname);
+        s_cell = struct2cell(s);
+        for k = 1:size(s_cell)
+            field = s_cell{k};
+            if islogical(field)
+                ROI = field;
+            end
+        end
+        if isempty(ROI)
+           error('ROI_mask_fname does not contain binary mask!');
+        end
+    end
+
+    %% run the SMSSR detector
+    
+    tic;
+    
+    if interactive
+        preproc_types(1) = input('Smooth? [0/1]: ');
+        preproc_types(2) = input('Histogram equialize? [0/1]: ');
+        SE_size_factor_preproc = input('Enter the Structuring Element size factor (preprocessing): ');
+        saliency_types(1) = input('Detect "holes"? [0/1]: ');
+        saliency_types(2) = input('Detect "islands"? [0/1]: ');
+        saliency_types(3) = input('Detect "indentations"? [0/1]: ');
+        saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
+        SE_size_factor = input('Enter the Structuring Element size factor: ');
+        Area_factor = input('Enter the Connected Component size factor (processing): ');
+        num_levels = input('Enter the number of gray-levels: ');
+        thresh = input('Enter the region threshold: ');
+        
+    else
+        preproc_types = [0 1];
+        saliency_types = [1 1 1 1];
+        SE_size_factor = 0.02;
+        SE_size_factor_preproc = 0.002;
+        Area_factor = 0.03;
+        num_levels = 20;
+        thersh = 0.75;
+    end
+    
+    
+    disp('Test case: ');disp(test_image);
+    region_params = [SE_size_factor Area_factor];
+    execution_params = [verbose visualize_major visualize_minor];
+    image_data = smssr_preproc(image_data, preproc_types);
+    [num_regions, features, saliency_masks] = smssr(image_data, ROI, ...
+        num_levels, saliency_types, region_params, execution_params);
+    toc
+    
+    %% visualize
+    if visualize
+        f1 = figure; set(f1,'WindowStyle','docked');visualize_mssr(image_data);
+        f2 = figure; set(f2,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
+        f3 = figure; set(f3,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
+        f4 = figure; set(f4,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
+        f5 = figure; set(f5,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
+        f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
+        
+    end
+
+     
+end
+
+
+##### SOURCE END #####
+--></body></html>
