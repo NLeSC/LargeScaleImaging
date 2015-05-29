@@ -26,7 +26,7 @@ if interactive
     image_filename = input('Enter the test image filename: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
+    %test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
     switch lower(test_image)
         case 'boat'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
@@ -120,55 +120,53 @@ for i = 1:len
         end
     end
 
-%% run the SMSSR detector
-
-tic;
-
-if interactive
-    preproc_types(1) = input('Smooth? [0/1]: ');
-    preproc_types(2) = input('Histogram equialize? [0/1]: ');
-    SE_size_factor_preproc = input('Enter the Structuring Element size factor (preprocessing): ');
-    saliency_types(1) = input('Detect "holes"? [0/1]: ');
-    saliency_types(2) = input('Detect "islands"? [0/1]: ');
-    saliency_types(3) = input('Detect "indentations"? [0/1]: ');
-    saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
-    SE_size_factor = input('Enter the Structuring Element size factor: ');
-    Area_factor = input('Enter the Connected Component size factor (processing): ');
-    num_levels = input('Enter the number of gray-levels: ');
-    thresh = input('Enter the region threshold: ');
+    %% run the SMSSR detector
     
-else
-    preproc_types = [0 1];
-    saliency_types = [1 1 1 1];
-    SE_size_factor = 0.02;
-    SE_size_factor_preproc = 0.002;
-    Area_factor = 0.03;
-    num_levels = 20;
-    thersh = 0.75;
-end
+    tic;
+    
+    if interactive
+        preproc_types(1) = input('Smooth? [0/1]: ');
+        preproc_types(2) = input('Histogram equialize? [0/1]: ');
+        SE_size_factor_preproc = input('Enter the Structuring Element size factor (preprocessing): ');
+        saliency_types(1) = input('Detect "holes"? [0/1]: ');
+        saliency_types(2) = input('Detect "islands"? [0/1]: ');
+        saliency_types(3) = input('Detect "indentations"? [0/1]: ');
+        saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
+        SE_size_factor = input('Enter the Structuring Element size factor: ');
+        Area_factor = input('Enter the Connected Component size factor (processing): ');
+        num_levels = input('Enter the number of gray-levels: ');
+        thresh = input('Enter the region threshold: ');
+        
+    else
+        preproc_types = [0 1];
+        saliency_types = [1 1 1 1];
+        SE_size_factor = 0.02;
+        SE_size_factor_preproc = 0.002;
+        Area_factor = 0.03;
+        num_levels = 20;
+        thersh = 0.75;
+    end
+    
+    
+    disp('Test case: ');disp(test_image);
+    region_params = [SE_size_factor Area_factor];
+    execution_params = [verbose visualize_major visualize_minor];
+    image_data = smssr_preproc(image_data, preproc_types);
+    [num_regions, features, saliency_masks] = smssr(image_data, ROI, ...
+        num_levels, saliency_types, region_params, execution_params);
+    toc
+    
+    %% visualize
+    if visualize
+        f1 = figure; set(f1,'WindowStyle','docked');visualize_mssr(image_data);
+        f2 = figure; set(f2,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
+        f3 = figure; set(f3,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
+        f4 = figure; set(f4,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
+        f5 = figure; set(f5,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
+        f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
+        
+    end
 
-
-disp('Version 2015');
-
-region_params = [SE_size_factor Area_factor];
-execution_params = [verbose visualize_major visualize_minor];
-image_data = smssr_preproc(image_data, preproc_types);
-[num_regions, features, saliency_masks] = smssr(image_data, ROI, ...
-    num_levels, saliency_types, region_params, execution_params);
-toc
-
-%% visualize
-if visualize
-    figure;
-    subplot(3,2,1); visualize_mssr(image_data);
-    subplot(3,2,2);visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
-    subplot(3,2,3);visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
-    subplot(3,2,4);visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
-    subplot(3,2,5);visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
-    subplot(3,2,6);visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
-end
-
-     code with results
      
 end
 
