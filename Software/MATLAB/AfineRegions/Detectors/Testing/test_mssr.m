@@ -30,7 +30,7 @@ if interactive
     image_filename = input('Enter the test image filename: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    %test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
+    test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
     switch lower(test_image)
         case 'boat'
             image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
@@ -86,7 +86,7 @@ else
                 'Data','AffineRegions','graffiti','graffiti6.png');  
             if save_flag
                 features_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                    Results','AffineRegions','graffiti','graffiti1.mssr');
+                    'Results','AffineRegions','graffiti','graffiti1.mssr');
                 features_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
                     'Results','AffineRegions','graffiti','graffiti2.mssr');
                 features_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
@@ -117,13 +117,13 @@ else
             'Data','AffineRegions','Phantom','phantom_affine.png');
             if save_flag
                 features_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                    Results','AffineRegions','phantom','phantom.mssr');
+                    'Results','AffineRegions','Phantom','phantom.mssr');
                 features_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                    'Results','AffineRegions','phantom','phantom_affine.mssr');
+                    'Results','AffineRegions','Phantom','phantom_affine.mssr');
                 regions_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                    Results','AffineRegions','phantom','phantom_regions.mat');
+                    'Results','AffineRegions','Phantom','phantom_regions.mat');
                 regions_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                    'Results','AffineRegions','phantom','phantom_affine_regions.mat');    
+                    'Results','AffineRegions','Phantom','phantom_affine_regions.mat');    
             end
         case 'thorax'
              image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
@@ -149,7 +149,7 @@ else
             'Data','AffineRegions','leuven','leuven6.png');
             if save_flag
                 features_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                    Results','AffineRegions','leuven','leuven1.mssr');
+                    'Results','AffineRegions','leuven','leuven1.mssr');
                 features_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
                     'Results','AffineRegions','leuven','leuven2.mssr');
                 features_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
@@ -188,7 +188,7 @@ else
             'Data','AffineRegions','bikes','bikes6.png');
             if save_flag
                features_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                    Results','AffineRegions','bikes','bikes1.mssr');
+                    'Results','AffineRegions','bikes','bikes1.mssr');
                 features_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
                     'Results','AffineRegions','bikes','bikes2.mssr');
                 features_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
