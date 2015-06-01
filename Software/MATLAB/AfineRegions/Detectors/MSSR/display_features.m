@@ -7,11 +7,12 @@
 %
 % author: Elena Ranguelova, TNO
 % date created: 26 Feb 2008
-% last modification date: 3 Mar 2008
+% last modification date: 1 June 2015
 % modification details:  added many appearance parameters
 %                        added example of usage on the TNO laptop
 %                        show features only within (potential) ROI
 %                        added posibility to show the regions too
+%                       added figure handles
 %**************************************************************************
 % INPUTS:
 % image_fname- the original image filename 
@@ -223,12 +224,12 @@ if original
                  I_reg = uint8(I_reg);
             end
     
-    figure; imshow(I_reg); axis on;
+    f0=figure; imshow(I_reg); axis on;
 end
 
 % display the (relevant part of the) image
 I = uint8(I);
-figure; imshow(I);axis on;
+f = figure; imshow(I);axis on;
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
@@ -304,7 +305,7 @@ end
 %--------------------------------------------------------------------------
 function drawellipse(x,y,a,b,c,scaling,col,lw)
     % draws the ellipse corresponding the each feature 
-    hold on;
+    figure(f);hold on;
     [v e]=eig([a b;b c]);
 
     l1=1/sqrt(e(1));
