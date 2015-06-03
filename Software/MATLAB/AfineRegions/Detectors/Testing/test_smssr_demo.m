@@ -1,4 +1,4 @@
-% test_smssr_demo.m- script to test the SMSSR detector for demo purposes
+%% test_smssr_demo.m- script to test the SMSSR detector for demo purposes
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 03-06-2015
@@ -66,6 +66,9 @@ len = length(images_list);
 for i = 1:len
     if not(images_list(i).isdir)
       image_filename = fullfile(data_test_path, images_list(i).name);
+      [pathstr,name,ext] = fileparts(image_filename);
+      features_filename = fullfile(results_domain_path, [name '.smssr');
+      regions_filename = fullfile(results_domain_path, [name '._smartregions.mat');
       %% load the image & convertto gray-scale if  color
       image_data = imread(image_filename);
       if ndims(image_data) > 2
@@ -128,43 +131,34 @@ for i = 1:len
       % save the features
       disp('Saving ...');
       
-      smssr_save(features_filename{i}, regions_filename{i}, num_smartregions, features, saliency_masks);
+      smssr_save(features_filename, regions_filename, num_smartregions, features, saliency_masks);
       
       
       %% visualize
-  %   if visualize
-  %       f1 = figure; set(f1,'WindowStyle','docked');visualize_mssr(image_data);
-  %       f2 = figure; set(f2,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
-  %       f3 = figure; set(f3,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
-  %       f4 = figure; set(f4,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
-  %       f5 = figure; set(f5,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
-  %       f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
+
+      if vis_flag
+	    disp(' Displaying... ');
 	
-  %   end
-    if vis_flag
-	disp(' Displaying... ');
-	
-	type = 1; % distinguish region's types
-    
-	% display the saved regions
-	%[num_smartregions, features, saliency_masks] = smssr_open(features_filename{i}, regions_filename{1}, type);
-      
-	list_smartregions = [];     % display all regions
-    
-	scaling = 1;  % no scaling
-	line_width = 2; % thickness of the line
-	labels = 0; % no region's labels
-    
-	col_ellipse = [];
-	col_label = [];
-      
-	original = 0; % no original region's outline
-      
-	display_smart_regions(image_filename{i}, features_filename{i}, mask_filename, ...
-		      regions_filename{i},...  
-		      type, list_smartregions, scaling, labels, col_ellipse, ...
-		      line_width, col_label, original);
-	title('SMSSR');
+	    type = 1; % distinguish region's types
+        
+	    % display the saved region
+          
+	    list_smartregions = [];     % display all regions
+        
+	    scaling = 1;  % no scaling
+	    line_width = 2; % thickness of the line
+	    labels = 0; % no region's labels
+        
+	    col_ellipse = [];
+	    col_label = [];
+          
+	    original = 0; % no original region's outline
+          
+	    display_smart_regions(image_filename, features_filename, mask_filename, ...
+		          regions_filename,...  
+		          type, list_smartregions, scaling, labels, col_ellipse, ...
+		          line_width, col_label, original);
+	    title('SMSSR');
       end
     end
      
