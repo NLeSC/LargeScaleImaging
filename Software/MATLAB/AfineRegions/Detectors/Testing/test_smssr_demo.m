@@ -57,10 +57,10 @@ results_domain_path = fullfile(results_path,test_case_name);
 switch lower(test_case_name)
 case 'leatherback'
   image = '057071a'
-  image_filename{1} = fullfile(data_test_path,image,'.pgm');    
+  image_filename{1} = fullfile(data_test_path,[image '.pgm']);    
   if save_flag
-    features_filename{1} = fullfile(results_domain_path,image,'.smssr');
-    regions_filename{1} = fullfile(results_domain_path, image,'_smartregions.mat');
+    features_filename{1} = fullfile(results_domain_path,[image '.smssr']);
+    regions_filename{1} = fullfile(results_domain_path, [image '_smartregions.mat']);
   end                   
         
  end
