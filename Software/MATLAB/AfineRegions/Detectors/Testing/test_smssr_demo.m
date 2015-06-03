@@ -26,12 +26,14 @@ else
 end
 project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 data_path = fullfile(project_path, 'Data', 'Scientific');
+results_path = fullfile(project_path, 'Results', 'Scientific');
 
 test_domain = input('Enter test domain: [AnimalBiometrics|Medical|Forestry]: ','s');
 
 switch lower(test_domain)
   case 'animalbiometrics'
     domain_path = fullfile(data_path,'AnimalBiometrics');
+    domain_results_path = fullfile(results_path,'AnimalBiometrics');
     test_case = input('Enter test case: [turtle|whale|newt]: ','s');
     switch lower(test_case)
       case 'turtle'
@@ -43,25 +45,25 @@ switch lower(test_domain)
     end
   case 'medical'
     domain_path = fullfile(data_path,'Medical');
+    domain_results_path = fullfile(results_path,'Medical');
     test_case_name = input('Enter test case: [MRI|CT|retina]: ','s');
   case 'forestry'
     domain_path = fullfile(data_path,'Forestry');
+    domain_results_path = fullfile(results_path,'Forestry');
     test_case_name = '';
 end
 
 data_test_path = fullfile(domain_path, test_case_name);
-
-results_path = fullfile(project_path, 'Results', 'Scientific');
-results_domain_path = fullfile(results_path,test_case_name); 
+results_domain_path = fullfile(domain_results_path,test_case_name); 
 
 switch lower(test_case_name)
-case 'leatherback'
-  image = '057071a'
-  image_filename{1} = fullfile(data_test_path,[image '.pgm']);    
-  if save_flag
-    features_filename{1} = fullfile(results_domain_path,[image '.smssr']);
-    regions_filename{1} = fullfile(results_domain_path, [image '_smartregions.mat']);
-  end                   
+    case 'leatherback'
+        image = '0517071a'
+        image_filename{1} = fullfile(data_test_path,[image '.pgm']);
+        if save_flag
+            features_filename{1} = fullfile(results_domain_path,[image '.smssr']);
+            regions_filename{1} = fullfile(results_domain_path, [image '_smartregions.mat']);
+        end
         
  end
  mask_filename =[];
@@ -122,7 +124,7 @@ for i = 1:len
     end
     
     
-    disp('Test case: ');disp(test_image);
+    disp('Test case: ');disp(test_case_name);
     disp('SMSSR');
       
     region_params = [SE_size_factor Area_factor];
