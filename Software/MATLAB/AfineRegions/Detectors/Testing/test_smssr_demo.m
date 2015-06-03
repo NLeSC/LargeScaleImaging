@@ -59,10 +59,10 @@ results_domain_path = fullfile(domain_results_path,test_case_name);
 switch lower(test_case_name)
     case 'leatherback'
         image = '0517071a'
-        image_filename{1} = fullfile(data_test_path,[image '.pgm']);
+        image_filename{1} = fullfile(data_test_path,[image '.pgm'])
         if save_flag
-            features_filename{1} = fullfile(results_domain_path,[image '.smssr']);
-            regions_filename{1} = fullfile(results_domain_path, [image '_smartregions.mat']);
+            features_filename{1} = fullfile(results_domain_path,[image '.smssr'])
+            regions_filename{1} = fullfile(results_domain_path, [image '_smartregions.mat'])
         end
         
  end
@@ -154,8 +154,8 @@ for i = 1:len
       
       type = 1; % distinguish region's types
    
-      % open the saved regions
-      [num_smartregions, features, saliency_masks] = smssr_open(features_filename{i}, regions_filename{1}, type);
+      % display the saved regions
+      %[num_smartregions, features, saliency_masks] = smssr_open(features_filename{i}, regions_filename{1}, type);
     
       list_smartregions = [];     % display all regions
    
@@ -168,7 +168,7 @@ for i = 1:len
     
       original = 0; % no original region's outline
     
-      display_features(image_filename{i}, features_filename{i}, mask_filename, ...
+      display_smart_regions(image_filename{i}, features_filename{i}, mask_filename, ...
 		    regions_filename{i},...  
 		    type, list_smartregions, scaling, labels, col_ellipse, ...
 		    line_width, col_label, original);

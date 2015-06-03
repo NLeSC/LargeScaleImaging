@@ -25,6 +25,7 @@
 %
 % smssr_save- function to save the results from the SMSSR detector
 % smssr_open- function to open the saved results from the SMSSR detector
+% display_smart_regions.m- displays salient regions overlaid on the image
 %**************************************************************************
 % scripts
 %**************************************************************************
