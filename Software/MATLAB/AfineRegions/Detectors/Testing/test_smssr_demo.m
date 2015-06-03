@@ -41,7 +41,7 @@ switch lower(test_domain)
       case 'whale'
 	test_case_name = 'tails'
       case 'newt'
-	test_case_name = 'newt images'
+	test_case_name = 'newt'
     end
   case 'medical'
     domain_path = fullfile(data_path,'Medical');
