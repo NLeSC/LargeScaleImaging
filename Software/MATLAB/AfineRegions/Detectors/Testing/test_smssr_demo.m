@@ -64,12 +64,12 @@ len = length(images_list);
 
 %% loop over all test images
 for i = 1:len
-    if not images_list(i).isdir
+    if not(images_list(i).isdir)
       image_filename = fullfile(data_test_path, images_list(i).name);
       %% load the image & convertto gray-scale if  color
       image_data = imread(image_filename);
       if ndims(image_data) > 2
-	  image_data = rgb2gray(image_data);
+        image_data = rgb2gray(image_data);
       end
     
       %% load the mask, if any
