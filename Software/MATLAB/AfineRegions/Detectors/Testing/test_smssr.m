@@ -2,8 +2,9 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 27-05-2015
-% last modification date: 29-05-2015
-% modification details: 
+% last modification date: 03-06-2015
+% modification details: added saving of the features and displaying them as ellipses
+%			shorter filenames
 %**************************************************************************
 %% paramaters
 interactive = false;
@@ -13,6 +14,8 @@ visualize_major = false;
 visualize_minor = false;
 lisa = true;
 
+save_flag = 1;
+vis_flag = 1;
 
 %% image filename
 if ispc 
@@ -22,77 +25,121 @@ elseif lisa
 else
     starting_path = fullfile(filesep,'home','elena');
 end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
+data_path = fullfile(project_path, 'Data', 'AffineRegions');
+results_path = fullfile(project_path, 'Results', 'AffineRegions');
+
 if interactive 
     image_filename = input('Enter the test image filename: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    %test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
+    test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
     switch lower(test_image)
         case 'boat'
-            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','boat','boat1.png');    
-            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','boat','boat2.png');
-            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','boat','boat3.png');
-            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','boat','boat4.png');
-            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','boat','boat5.png');
-            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','boat','boat6.png');
+            image_filename{1} = fullfile(data_path,test_image,'boat1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'boat2.png');
+            image_filename{3} = fullfile(data_path,test_image,'boat3.png');
+            image_filename{4} = fullfile(data_path,test_image,'boat4.png');
+            image_filename{5} = fullfile(data_path,test_image,'boat5.png');
+            image_filename{6} = fullfile(data_path,test_image,'boat6.png');
+            if save_flag
+                features_filename{1} = fullfile(results_path,test_image,'boat1.mssr');
+                features_filename{2} = fullfile(results_path,test_image,'boat2.mssr');
+                features_filename{3} = fullfile(results_path,test_image,'boat3.mssr');
+                features_filename{4} = fullfile(results_path,test_image,'boat4.mssr');
+                features_filename{5} = fullfile(results_path,test_image,'boat5.mssr');
+                features_filename{6} = fullfile(results_path,test_image,'boat6.mssr');
+                regions_filename{1} = fullfile(results_path,test_image,'boat1_regions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'boat2_regions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'boat3_regions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'boat4_regions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'boat5_regions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'boat6_regions.mat');   
+            end
         case 'graffiti'
-            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','graffiti','graffiti1.png');    
-            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','graffiti','graffiti2.png');
-            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','graffiti','graffiti3.png');
-            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','graffiti','graffiti4.png');
-            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','graffiti','graffiti5.png');
-            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-                'Data','AffineRegions','graffiti','graffiti6.png');            
+            image_filename{1} = fullfile(data_path,test_image,'graffiti1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'graffiti2.png');
+            image_filename{3} = fullfile(data_path,test_image,'graffiti3.png');
+            image_filename{4} = fullfile(data_path,test_image,'graffiti4.png');
+            image_filename{5} = fullfile(data_path,test_image,'graffiti5.png');
+            image_filename{6} = fullfile(data_path,test_image,'graffiti6.png');  
+            if save_flag
+                features_filename{1} = fullfile(results_path,test_image,'graffiti1.mssr');
+                features_filename{2} = fullfile(results_path,test_image,'graffiti2.mssr');
+                features_filename{3} = fullfile(results_path,test_image,'graffiti3.mssr');
+                features_filename{4} = fullfile(results_path,test_image,'graffiti4.mssr');
+                features_filename{5} = fullfile(results_path,test_image,'graffiti5.mssr');
+                features_filename{6} = fullfile(results_path,test_image,'graffiti6.mssr');
+                regions_filename{1} = fullfile(results_path,test_image,'graffiti1_regions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'graffiti2_regions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'graffiti3_regions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'graffiti4_regions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'graffiti5_regions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'graffiti6_regions.mat');     
+            end
         case 'phantom'
-            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','Phantom','phantom.png');
-            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','Phantom','phantom_affine.png');
+            image_filename{1} = fullfile(data_path,'Phantom','phantom.png');
+            image_filename{2} = fullfile(data_path,'Phantom','phantom_affine.png');
+            if save_flag
+                features_filename{1} = fullfile(results_path,'Phantom','phantom.mssr');
+                features_filename{2} = fullfile(results_path,'Phantom','phantom_affine.mssr');
+                regions_filename{1} = fullfile(results_path,'Phantom','phantom_regions.mat');
+                regions_filename{2} = fullfile(results_path,'Phantom','phantom_affine_regions.mat');    
+            end
         case 'thorax'
-            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','CT','thorax1.jpg');
+             image_filename{1} = fullfile(data_path,'CT','thorax1.jpg');
+            if save_flag
+                features_filename{1} = fullfile(results_path,'CT','thorax1.mssr');
+	      regions_filename{1} = fullfile(results_path,'CT','thorax1_regions.mat');
+            end
         case 'leuven'
-            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','leuven','leuven1.png');    
-            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','leuven','leuven2.png');
-            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','leuven','leuven3.png');    
-            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','leuven','leuven4.png');
-            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','leuven','leuven5.png');    
-            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','leuven','leuven6.png');
+            image_filename{1} = fullfile(data_path,test_image,'leuven1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'leuven2.png');
+            image_filename{3} = fullfile(data_path,test_image,'leuven3.png');    
+            image_filename{4} = fullfile(data_path,test_image,'leuven4.png');
+            image_filename{5} = fullfile(data_path,test_image,'leuven5.png');    
+            image_filename{6} = fullfile(data_path,test_image,'leuven6.png');
+            if save_flag
+                features_filename{1} = fullfile(results_path,test_image,'leuven1.mssr');
+                features_filename{2} = fullfile(results_path,test_image,'leuven2.mssr');
+                features_filename{3} = fullfile(results_path,test_image,'leuven3.mssr');
+                features_filename{4} = fullfile(results_path,test_image,'leuven4.mssr');
+                features_filename{5} = fullfile(results_path,test_image,'leuven5.mssr');
+                features_filename{6} = fullfile(results_path,test_image,'leuven6.mssr');
+                regions_filename{1} = fullfile(results_path,test_image,'leuven1_regions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'leuven2_regions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'leuven3_regions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'leuven4_regions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'leuven5_regions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'leuven6_regions.mat');    
+            end
         case 'bikes'
-            image_filename{1} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','bikes','bikes1.png');    
-            image_filename{2} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','bikes','bikes2.png');
-            image_filename{3} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','bikes','bikes3.png');    
-            image_filename{4} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','bikes','bikes4.png');
-            image_filename{5} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','bikes','bikes5.png');    
-            image_filename{6} = fullfile(starting_path,'eStep','LargeScaleImaging',...
-            'Data','AffineRegions','bikes','bikes6.png');
+            image_filename{1} = fullfile(data_path,test_image,'bikes1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'bikes2.png');
+            image_filename{3} = fullfile(data_path,test_image,'bikes3.png');    
+            image_filename{4} = fullfile(data_path,test_image,'bikes4.png');
+            image_filename{5} = fullfile(data_path,test_image,'bikes5.png');    
+            image_filename{6} = fullfile(data_path,test_image,'bikes6.png');
+            if save_flag
+               features_filename{1} = fullfile(results_path,test_image,'bikes1.mssr');
+                features_filename{2} = fullfile(results_path,test_image,'bikes2.mssr');
+                features_filename{3} = fullfile(results_path,test_image,'bikes3.mssr');
+                features_filename{4} = fullfile(results_path,test_image,'bikes4.mssr');
+                features_filename{5} = fullfile(results_path,test_image,'bikes5.mssr');
+                features_filename{6} = fullfile(results_path,test_image,'bikes6.mssr'); 
+                regions_filename{1} = fullfile(results_path,test_image,'bikes1_regions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'bikes2_regions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'bikes3_regions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'bikes4_regions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'bikes5_regions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'bikes6_regions.mat');      
+            end
     end
     mask_filename =[];
 
 end
 
+disp('**************************** Testing SMSSR detector *****************');
 %% find out the number of test files
 len = length(image_filename);
 
@@ -149,24 +196,56 @@ for i = 1:len
     
     
     disp('Test case: ');disp(test_image);
+    disp('SMSSR');
+      
     region_params = [SE_size_factor Area_factor];
     execution_params = [verbose visualize_major visualize_minor];
     image_data = smssr_preproc(image_data, preproc_types);
     [num_regions, features, saliency_masks] = smssr(image_data, ROI, ...
         num_levels, saliency_types, region_params, execution_params);
     toc
+    % save the features
+    disp('Saving ...');
+    
+    mssr_save(features_filename{i}, regions_filename{i}, num_regions, features, saliency_masks);
+    
     
     %% visualize
-    if visualize
-        f1 = figure; set(f1,'WindowStyle','docked');visualize_mssr(image_data);
-        f2 = figure; set(f2,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
-        f3 = figure; set(f3,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
-        f4 = figure; set(f4,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
-        f5 = figure; set(f5,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
-        f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
-        
+ %   if visualize
+ %       f1 = figure; set(f1,'WindowStyle','docked');visualize_mssr(image_data);
+ %       f2 = figure; set(f2,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
+ %       f3 = figure; set(f3,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
+ %       f4 = figure; set(f4,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
+ %       f5 = figure; set(f5,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
+ %       f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
+      
+ %   end
+  if vis_flag
+      disp(' Displaying... ');
+      
+      type = 1; % distinguish region's types
+   
+      % open the saved regions
+      [num_regions, features, saliency_masks] = mssr_open(features_filename{i}, regions_filename{1}, type);
+    
+      list_regions = [];     % display all regions
+   
+      scaling = 1;  % no scaling
+      line_width = 2; % thickness of the line
+      labels = 0; % no region's labels
+   
+      col_ellipse = [];
+      col_label = [];
+    
+      original = 0; % no original region's outline
+    
+      display_features(image_filename{i}, features_filename{i}, mask_filename, ...
+		    regions_filename{i},...  
+		    type, list_regions, scaling, labels, col_ellipse, ...
+		    line_width, col_label, original);
+      title('SMSSR');
     end
-
+    
      
 end
-
+disp('--------------- The End ---------------------------------');
