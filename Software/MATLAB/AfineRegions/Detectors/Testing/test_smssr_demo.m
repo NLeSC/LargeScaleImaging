@@ -67,8 +67,8 @@ for i = 1:len
     if not(images_list(i).isdir)
       image_filename = fullfile(data_test_path, images_list(i).name);
       [pathstr,name,ext] = fileparts(image_filename);
-      features_filename = fullfile(results_domain_path, [name '.smssr');
-      regions_filename = fullfile(results_domain_path, [name '._smartregions.mat');
+      features_filename = fullfile(results_domain_path, [name '.smssr']);
+      regions_filename = fullfile(results_domain_path, [name '._smartregions.mat']);
       %% load the image & convertto gray-scale if  color
       image_data = imread(image_filename);
       if ndims(image_data) > 2
