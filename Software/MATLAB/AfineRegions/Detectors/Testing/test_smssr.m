@@ -207,7 +207,7 @@ for i = 1:len
     % save the features
     disp('Saving ...');
     
-    mssr_save(features_filename{i}, regions_filename{i}, num_smartregions, features, saliency_masks);
+    smssr_save(features_filename{i}, regions_filename{i}, num_smartregions, features, saliency_masks);
     
     
     %% visualize
@@ -226,7 +226,7 @@ for i = 1:len
       type = 1; % distinguish region's types
    
       % open the saved regions
-      [num_smartregions, features, saliency_masks] = mssr_open(features_filename{i}, regions_filename{1}, type);
+      [num_smartregions, features, saliency_masks] = smssr_open(features_filename{i}, regions_filename{1}, type);
     
       list_smartregions = [];     % display all regions
    
