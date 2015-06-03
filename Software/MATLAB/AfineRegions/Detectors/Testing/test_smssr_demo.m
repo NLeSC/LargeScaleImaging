@@ -55,19 +55,7 @@ end
 
 data_test_path = fullfile(domain_path, test_case_name);
 results_domain_path = fullfile(domain_results_path,test_case_name); 
-
-%switch lower(test_case_name)
-    %case 'leatherback'
-        %image = '0517071a'
-        %image_filename{1} = fullfile(data_test_path,[image '.pgm']);
-        %if save_flag
-        %    features_filename{1} = fullfile(results_domain_path,[image '.smssr']);
-        %    regions_filename{1} = fullfile(results_domain_path, [image '_smartregions.mat']);
-        %end
-        
- %end
 images_list = dir(data_test_path);
- 
 mask_filename =[];
 
 disp('**************************** Demo SMSSR detector *****************');
