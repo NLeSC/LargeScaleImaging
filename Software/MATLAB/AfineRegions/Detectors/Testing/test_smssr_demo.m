@@ -109,7 +109,7 @@ for i = 1:len
 	  thresh = input('Enter the region threshold: ');
 	  
       else
-	  preproc_types = [0 1];
+	  preproc_types = [1 0];
 	  saliency_types = [1 1 1 1];
 	  SE_size_factor = 0.02;
 	  SE_size_factor_preproc = 0.002;

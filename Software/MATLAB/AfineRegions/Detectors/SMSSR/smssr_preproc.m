@@ -38,16 +38,19 @@ function [out_image] = smssr_preproc(in_image,preproc_types, ...
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
-if nargin < 4
-    visualise = 0;
-elseif nargin < 3
-    SE_size_factor = 0.02;
-elseif nargin <2    
-    preproc_types = [1 1];
-elseif nargin <1
+if nargin <1
     error('smssr_preproc.m requires at least 1 input aruments!');
     out_image = [];
-    return
+    return;
+end
+if nargin <2    
+    preproc_types = [1 1]; 
+end
+if nargin < 3
+    SE_size_factor = 0.02; 
+end
+if nargin < 4
+    visualise = 0;
 end
 
 %**************************************************************************
@@ -57,8 +60,10 @@ end
 % input parameters -> variables
 %--------------------------------------------------------------------------
 [nrows,ncols] = size(in_image);
-smooth = preproc_types(1);
-hist_eq = preproc_types(2);
+if ~isempty(preproc_types)
+    smooth = preproc_types(1);
+    hist_eq = preproc_types(2);
+end
 
 
 Area = nrows*ncols;
