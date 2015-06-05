@@ -169,8 +169,6 @@ for i = 1:len
 
     %% run the SMSSR detector
     
-    tic;
-    
     if interactive
         preproc_types(1) = input('Smooth? [0/1]: ');
         preproc_types(2) = input('Histogram equialize? [0/1]: ');
@@ -194,11 +192,10 @@ for i = 1:len
         thersh = 0.75;
     end
     
-    
+    tic;
     disp('Test case: ');disp(test_image);
     disp('SMSSR');
       
-    region_params = [SE_size_factor Area_factor];
     execution_params = [verbose visualize_major visualize_minor];
     image_data = smssr_preproc(image_data, preproc_types);
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
