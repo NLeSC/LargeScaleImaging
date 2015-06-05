@@ -128,16 +128,19 @@ disp('                                                                         '
 image_fname = input('Enter the full filename of the input image: ','s');
 
 %% load the image & convertto gray-scale if  color
-image_data = imread(image_filename{i});
+image_data = imread(image_fname);
 if ndims(image_data) > 2
      image_data = rgb2gray(image_data);
 end
-    
+ [nrows,ncols] = size(image_data);
+ diag = sqrt(nrows^2 + ncols ^2);
+ radius = fix(diag/2);
 % display
 im_disp = input('Display image? [y/n]: ','s');
 
 if lower(im_disp)=='y'
     f1 = figure; imshow(image_data); title(image_fname, 'Interpreter','none');
+    axis on, grid on;
 end
 
 % ROI
@@ -148,7 +151,7 @@ if lower(roi)=='r'
     if lower(mask) == 'n'
         % invoke the ROI selection utility
         if ~exist('f1','var')
-            f1 = figure; imshow(I_or); title(image_fname, 'Interpreter','none');
+            f1 = figure; imshow(image_data); title(image_fname, 'Interpreter','none');
         else
             figure(f1); 
         end
@@ -166,6 +169,7 @@ end
 % preprocessing parameters
 preproc_types(1) = input('Smooth? [0/1]: ');
 preproc_types(2) = input('Histogram equialize? [0/1]: ');
+disp('The radius of the approximating circle is : ');disp(radius);
 SE_size_factor_preproc = input('Enter the Structuring Element size factor (preprocessing): ');
 
 % region parameters
@@ -178,6 +182,7 @@ region_params = [SE_size_factor Area_factor];
 
 % saliency type
 holes = 1; islands = 1; indentations = 1; protrusions = 1;
+
 
 sal = input('Default saliency types [holes-Yes islands-Yes indent.-Yes protr.-Yes]? Y/N: ','s');
 
@@ -229,13 +234,12 @@ else
     visualise_minor = 0;
 end
 
-execution_flags = [verbose visualise_major visualise_minor];
+execution_params = [verbose visualise_major visualise_minor];
 
 disp('------------------------------------------------------------------');
 disp('                                                                  ');
 
-% Saliency detector
-% preprocessing
+%% Saliency detector
 tic
 image_data = smssr_preproc(image_data, preproc_types, SE_size_factor_preproc, visualise_major);
 [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
@@ -244,7 +248,7 @@ image_data = smssr_preproc(image_data, preproc_types, SE_size_factor_preproc, vi
 disp('                                                                  ');
 disp('------------------------------------------------------------------');
 toc;
-% saving the results
+%% saving the results
 sav = input('Save the extracted regions (for viewing/ processing)? [y/n]: ','s');
 if lower(sav)=='y'
     save_flag = 1;
@@ -261,6 +265,7 @@ if save_flag
         j = i(end);
         if isempty(ROI_mask_fname)
             if isempty(j)
+       
                 features_fname = [image_fname '.smssr'];    
                 regions_fname = [image_fname '_smartregions.mat'];    
             else
@@ -295,6 +300,7 @@ else
     return
 end
 
+%% visualization
 if vis_flag
     typ = input('Distinguish regions saliency type (hole/island/indentaion/protrusion)? [y/n]: ','s');
     if lower(typ)=='y'
