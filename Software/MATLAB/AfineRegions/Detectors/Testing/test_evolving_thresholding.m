@@ -2,8 +2,8 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 15-06-2015
-% last modification date: 
-% modification details: 
+% last modification date: 16-06-2015
+% modification details: simplifying the threshodling in 1 step
 %**************************************************************************
 %% paramaters
 interactive = false;
@@ -97,11 +97,11 @@ if interactive
     min_level = input('Enter minimum gray level: ');
     max_level = input('Enter maximum gray level: ');
     num_levels = input('Enter number of gray-levels: ');
-    thresh = input('Enter thresold: ');
+    thresh = input('Enter thresold vector: ');
 else
    min_level =  0; max_level = 255; 
-   num_levels = 255;
-   thresh = 0.7;
+   num_levels = 125;
+   thresh = [0.15 0.5 0.75];
 end
 
 %% derived parameters
@@ -137,33 +137,65 @@ for i = 1:len
     end    
     
     %% init binary and accumulation image
-    bw_up = zeros(size(image_data));
-    bw_up_acc = zeros(size(image_data));
+    bw = zeros(size(image_data));
+    bw_o = zeros(size(image_data));
+%    bw_acc = zeros(size(image_data));
     bw_thresh = zeros(size(image_data));
+ %   bw_thresh1 = zeros(size(image_data));
+    %% standart thresholding
+    level = graythresh(image_data);
+    bw_o =im2bw(image_data, level);
     
-    for level = min_level+1:step:max_level
-        %% threshold the gray image
-        bw_up = image_data <= level;
-        bw_up_acc = bw_up_acc + bw_up;
-        if visualize_major
-            figure(f); subplot(234);imshow(bw_up);
-            axis on; grid on; title(['Thresholded (up) image at level: ' num2str(level)]);    
-            freezeColors;
-            figure(f); subplot(235);imagesc(bw_up_acc);
-            axis image; axis on; grid on; colormap(mycmap);
-            title('Accumulated thresholded image (up)'); colorbar; 
-            freezeColors;
-           % pause(0.3);
-        end
-    end    
-    %% threshold accumulated image
-    bw_thresh = thresh_cumsum(bw_up_acc, thresh, 0);
     if visualize_major
-            figure(f); subplot(236);imshow(bw_thresh);
-            axis on; grid on; title(['Thresholded binary image at threshold: ' num2str(thresh)]);    
-            freezeColors;
-    end
+        % visualize thresholded image
+        figure(f); subplot(233); imshow(bw_o); 
+        axis on; grid on; title('Otsu thresholded image '); 
+        freezeColors;
+    end       
     
-    disp('Paused for next image');
-    pause;
+    %% evolution thresholding
+%     %x = 101; y = 802;
+%     for level = min_level+1:step:max_level
+%         bw = image_data > level;
+%       
+%         bw_acc = bw_acc + bw;
+%         
+% %         disp('Control values @ (101,802): ');
+% %         disp([level bw(x,y) bw_acc(x,y)]);
+% 
+%         if visualize_major
+% %             figure(f); subplot(234);imshow(bw);
+% %             axis on; grid on; title(['Thresholded (up) image at level: ' num2str(level)]);    
+% %             freezeColors;
+%             figure(f); subplot(234);imagesc(bw_acc);
+%             axis image; axis on; grid on; colormap(mycmap);
+%             title('Accumulated thresholded image (up)'); colorbar; 
+%             freezeColors;
+%            % pause(0.3);
+%         end
+%     end    
+%     %% threshold accumulated image
+%     bw_thresh = thresh_cumsum(bw_acc, thresh, 1);
+%     if visualize_major
+%             figure(f); subplot(235);imshow(bw_thresh);
+%             axis on; grid on; title(['Binarized accumulated image at threshold: ' num2str(thresh)]);    
+%             freezeColors;
+%     end
+    
+   %% threshold in 1 step
+   i=0;
+   for t = thresh
+       i =i+1;
+       %bw_thresh_old =  bw_thresh;
+       %bw_thresh = xor(bw_thresh_old, thresh_cumsum(double(image_data/step), t, 0));   
+       bw_thresh = thresh_cumsum(double(image_data/step), t, 0);   
+       if visualize_major
+                figure(f); subplot(2,3,3+i);imshow(bw_thresh);
+                axis on; grid on; title(['Cumsum thresholded gray image at threshold: ' num2str(t)]);    
+                freezeColors;
+       end
+   end
+  
+   disp('Paused for next image');
+   pause;
 end

@@ -95,15 +95,17 @@ end
 %--------------------------------------------------------------------------
 % histogram
 h = hist(data_nz,span);
-% if verbose 
-%     disp(['The histogram: ' num2str(h)]);
-% end
+%figure,hist(data_nz,span);
+if verbose 
+    disp(['The histogram: ' num2str(h)]);
+end
 %cumulative sum
 cs = cumsum(h);
 
-% if verbose 
-%     disp(['Cumulative sum: ' num2str(cs)]);
-% end
+%figure,bar(cs,span);
+if verbose 
+    disp(['Cumulative sum: ' num2str(cs)]);
+end
 
 % thresholding
 if isempty(cs)
@@ -112,9 +114,9 @@ else
     t = fix(cs(length(cs))*factor);
     tr = min(find(cs>=t)); %#ok<MXFND>
 end
-% if verbose 
-%     disp(['Location to cut the sum: ' num2str(t)]);
-% end
+if verbose 
+    disp(['Location to cut the sum: ' num2str(t)]);
+end
 
 if verbose 
     disp(['Threshold: ' num2str(tr)]);
