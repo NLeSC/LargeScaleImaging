@@ -96,7 +96,7 @@ end
 if interactive
     num_levels = input('Enter number of gray-levels: ');
 else
-   num_levels = 5;
+   num_levels = 3;
 end
 
     
@@ -136,14 +136,27 @@ for i = 1:len
     rgb_seg_data = label2rgb(seg_data);
     
     if visualize_major
-       figure(f); subplot(2,2,3);imshow(seg_data);
-       axis on; grid on; title(['Quantized image with num_levels: ' num2str(num_levels)]);    
-       freezeColors;
+%        figure(f); subplot(2,2,3);imshow(seg_data);
+%        axis on; grid on; title(['Quantized image with num_levels: ' num2str(num_levels)]);    
+%        freezeColors;
        subplot(2,2,4);imshow(rgb_seg_data);
        axis on; grid on; title(['RGB quantized image with num_levels: ' num2str(num_levels)]);    
        freezeColors;
    end
- 
+ %% threshold in 1 step
+    if visualize_major
+        f1 =figure;
+    end
+   i=0;
+   unique(seg_data)
+   for l = 1:num_levels + 1    
+       bw_thresh = seg_data==l;   
+       if visualize_major
+                figure(f1);subplot(2,2,l);imshow(bw_thresh);
+                axis on; grid on; title(['Thresholded quantized gray image at level: ' num2str(l)]);    
+                freezeColors;
+       end
+   end
    disp('Paused for next image');
    pause;
 end
