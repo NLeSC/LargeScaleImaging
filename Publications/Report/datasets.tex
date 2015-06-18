@@ -1,11 +1,11 @@
 \section{Datasets}
 \label{sec:db}
 
-The annotated segmentation and saliency datasets, which are used by the researchers to test the algorithms are often made available to the object saliency detection and segmentation community.
+The annotated segmentation, saliency, object and scenes classification datasets, which are produced and used by the researchers to test the algorithms are often made available to the community.
 
 \subsection{Image Saliency Datasets}
 \subsubsection{MSRA}\label{subsec:msra}
-The MSRA  Database form the Visual computing group of Microsoft Research Asia \cite{msra_db} is  first large-scale labeled dataset made publically availablefortraining andevaluaiton. It contains two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset.
+The MSRA  Database form the Visual computing group of Microsoft Research Asia \cite{msra_db} is  first large-scale labeled dataset made publically available for training and evaluation. It contains two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset.
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.95\textwidth]{fig/MSRA}
@@ -40,7 +40,7 @@ Later, the CSSD was extended to a larger dataset (ECSSD) of $1000$ images, which
 \label{fig:ecssd}
 \end{figure}
 
-\subsection{DUT-OMRON}
+\subsubsection{DUT-OMRON}
 The Dalian University of Technology and the Omron Corporation introduced in the DUT-OMRON dataset \cite{dut-omron_db} consisting of $5168$, manually selected from more than $140 000$ images. They are re-sized to $400 \times x$ or $x \times 400$, where  $x < 400$. They contain one or more salient objects with relatively complex background. Five people have labeled the pixel-wise ground truth along with bounding box and eye-fixation. The dataset is illustrated on Figure \ref{fig:dut-omron}. The results of the experiments on the collected dataset were published in \cite{yang2013saliency}.
 
 \begin{figure}[h]
@@ -51,7 +51,7 @@ The Dalian University of Technology and the Omron Corporation introduced in the 
 \label{fig:dut-omron}
 \end{figure}
 
-\subsection{PASCAL-S}
+\subsubsection{PASCAL-S}
 Another dataset, which aims at bridging the gap between fixations and salient objects is the PASCAL-S dataset \cite{pascal-s_db} provided by Georgia Tech, Caltech and UCLA. The dataset contains $850$ images from the PASCAL 2010 with $12$ subjects and $1296$ object instances. The images and the code are available for download. The dataset is is illustrated on Figure \ref{fig:pascal-s}.
 
 \begin{figure}[H]
@@ -68,3 +68,20 @@ The saliency segmentation method and the findings have been published at \cite{T
 \subsection{Multimedia Datasets}
 \subsubsection{MSRA-MM}
 In 2009, the reserachers from Micsosoft Research Asia have released 2 versions of large multimedia datasets- MSRA-MM \cite{msra-mm_db}. MSRA-MM 1.0 consists of two sub-datasets, i.e., an image dataset and a video dataset that are collected from the image and video search engines. For image dataset, there are about $1000$ images per query for $68$ representative queries based on the log of search engies. There are $65443$ images in total. For the video dataset, $165$ representative queries have been selected from a log resulting in total of $10277$ videos. Due to copyright issues, the raw image and video data are not available, but only features and annotations are provided. The dataset is explained in detail in a techical report \cite{export:79942}.
+
+\subsection{Object and Scene Recognition Datasets}
+
+An open annotation tool, which helps in building image datasets for computer vision research has been developed in the LabelMe project, which is described in \ref{subsec:labelme}. The already annotated dataset could aslo be downloaded from \cite{labelme_db}.
+ 
+The goal of the MIT-CSAIL dataset \cite{mit-csail_db} is to provide a large set of images of natural scenes (principally office and street scenes), together with manual segmentations/labelings of many types of objects, so that it becomes easier to work on general multi-object detection algorithms. The dataset contains indoor and outdoor objects in officeand urban environments. There are annotations for morethan30objects in cotext in thousands of images and sequences with 2500 annotaited frames. Examples of the dataset are shown in figure \ref{fig:mit-csail}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.95\textwidth]{fig/MIT-CSAIL}
+\end{center}
+\caption{Examples of the MIT-CSAIL dataset.}
+\label{fig:mit-csail}
+\end{figure}
+
+\subsubsection{Scene Datasets}
+\subsubsection{Object Datasets}
