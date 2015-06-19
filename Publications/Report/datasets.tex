@@ -70,9 +70,9 @@ The saliency segmentation method and the findings have been published at \cite{T
 In 2009, the reserachers from Micsosoft Research Asia have released 2 versions of large multimedia datasets- MSRA-MM \cite{msra-mm_db}. MSRA-MM 1.0 consists of two sub-datasets, i.e., an image dataset and a video dataset that are collected from the image and video search engines. For image dataset, there are about $1000$ images per query for $68$ representative queries based on the log of search engies. There are $65443$ images in total. For the video dataset, $165$ representative queries have been selected from a log resulting in total of $10277$ videos. Due to copyright issues, the raw image and video data are not available, but only features and annotations are provided. The dataset is explained in detail in a techical report \cite{export:79942}.
 
 \subsection{Object and Scene Recognition Datasets}
+\label{subsec:obj_scene_db}
 
-An open annotation tool, which helps in building image datasets for computer vision research has been developed in the LabelMe project, which is described in \ref{subsec:labelme}. The already annotated dataset could aslo be downloaded from \cite{labelme_db}.
- 
+\subsubsection{MIT-CSAIL}
 The goal of the MIT-CSAIL dataset \cite{mit-csail_db} is to provide a large set of images of natural scenes (principally office and street scenes), together with manual segmentations/labelings of many types of objects, so that it becomes easier to work on general multi-object detection algorithms. The dataset contains indoor and outdoor objects in officeand urban environments. There are annotations for morethan30objects in cotext in thousands of images and sequences with 2500 annotaited frames. Examples of the dataset are shown in figure \ref{fig:mit-csail}.
 
 \begin{figure}[H]
@@ -83,5 +83,11 @@ The goal of the MIT-CSAIL dataset \cite{mit-csail_db} is to provide a large set 
 \label{fig:mit-csail}
 \end{figure}
 
-\subsubsection{Scene Datasets}
-\subsubsection{Object Datasets}
+\subsubsection{LabelMe}
+An online annotated dataset incrementally filled up by users can be downloaded using the LabelME tool\ref{subsec:labelme} from \cite{labelme_db}. The LabelMe3D dataset contains labelled images of many everyday scenes and object categories in absolute real world 3D coordinates. The toolboxes designed to work with these datasets are described in \ref{subsec:labelme}.
+
+\subsubsection{SUN}
+Another large dataset of annotated images covering large vaiety of scenes, places and objects within, provided also by the Computer Science and Artificial Intelligence Laboratory (CSAIL) at MIT, is the SUN dataset, \cite{sun_db}. The SUN2012 contains $16 873$ images and SUN contains currently $131067$ images, $908$ Scene categories and $4479$ object categories with more than $310k$ segmented objects. The SUN397 benchmark for scene classification can de used incuding code, precomputed features etc. The SUN dataset can bee dowloaded also with the LabelMe MATLAB Toolbox (\ref{subsec:labelme}). The publication about the SUN dataset is \cite{Xiao2010}.
+
+\subsubsection{Places}
+One of the largest annotated datasets for scene recognition is the Places dataset (also by CSAIL, MIT), \cite{places_db}. It contains almost $2.5$ million images in $205$ scene categories. Along with the dataset, one can access the Places-CNNs, the convolutional neural networks trained on Places, DrawCNN- a visualization of the units' connections for the CNN, the online recognition demo and some sample MATLAB code forusing the synthetic receptive field of unit to segment image and visualize the activated regions. The pulications where the dataset is described are \cite{Zhou2014, Zhou2015}.
