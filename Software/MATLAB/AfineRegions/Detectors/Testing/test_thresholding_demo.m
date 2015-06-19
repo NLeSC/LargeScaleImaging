@@ -27,7 +27,11 @@ project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 data_path = fullfile(project_path, 'Data', 'Scientific');
 results_path = fullfile(project_path, 'Results', 'Scientific');
 
-test_domain = input('Enter test domain: [AnimalBiometrics|Medical|Forestry]: ','s');
+if interactive
+    test_domain = input('Enter test domain: [AnimalBiometrics|Medical|Forestry]: ','s');
+else
+    test_domain = 'medical';
+end
 
 switch lower(test_domain)
   case 'animalbiometrics'
@@ -36,16 +40,26 @@ switch lower(test_domain)
     test_case = input('Enter test case: [turtle|whale|newt]: ','s');
     switch lower(test_case)
       case 'turtle'
-	test_case_name = 'leatherback'
+    	test_case_name = 'leatherback'
+        thresh = 0.72;
       case 'whale'
-	test_case_name = 'tails'
+        test_case_name = 'tails'
+        thresh = 0.42;
       case 'newt'
-	test_case_name = 'newt'
+    	test_case_name = 'newt'
+        thresh = 0.27;
     end
   case 'medical'
     domain_path = fullfile(data_path,'Medical');
     domain_results_path = fullfile(results_path,'Medical');
     test_case_name = input('Enter test case: [MRI|CT|retina]: ','s');
+    switch lower(test_case_name)
+        case 'mri'
+            thresh = 0.4 % otsu?
+        case 'CT'
+            % otsu is just enough!
+        case 'retina'
+    end
   case 'forestry'
     domain_path = fullfile(data_path,'Forestry');
     domain_results_path = fullfile(results_path,'Forestry');
@@ -65,7 +79,8 @@ if interactive
 else
    min_level =  0; max_level = 255; 
    num_levels = 255;
-   thresh = [0.5];
+   thresh = 0.65
+   %input('Enter thresold vector: ');
 end
 
 %% derived parameters
