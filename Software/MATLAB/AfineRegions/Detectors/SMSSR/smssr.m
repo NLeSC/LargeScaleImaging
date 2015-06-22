@@ -6,8 +6,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 May 2015
-% last modification date: 
-% modification details:
+% last modification date: 22 June 2015
+% modification details: added parameter for the type of  thresholding- 
+%                       <m>ultithresholding or <h>ysteresis
 %**************************************************************************
 % INPUTS:
 % image_data        the input gray-level image data
@@ -18,8 +19,9 @@
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
-% [region_params]   salient region parameters [SE_size_factor, ...
-%                                                      area_factor, thresh]
+% [region_params]   salient region parameters [thresh_type, SE_size_factor, ...
+%                                              area_factor, thresh]
+%                   thresh_type - string 'multithr' or 'hyst'    
 %                   SE_size_factor- structuring element (SE) size factor  
 %                   area_factor- area factor for the significant CC, 
 %                   thresh- percentage of kept regions
@@ -80,7 +82,7 @@ if nargin < 6
     execution_flags = [0 0 0];
 end
 if nargin < 5 || isempty(region_params)
-    region_params = [0.02 0.03 0.7];
+    region_params = ['h', 0.02 0.03 0.7];
 end
 if nargin < 4 || isempty(saliency_type)
     saliency_type = [1 1 1 1];
@@ -102,17 +104,19 @@ end
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
+% type of thresholding
+thresh_type = region_params(1);
 % structuring element (SE) size factor  
-SE_size_factor=region_params(1);
-if ndims(region_params) > 1
+SE_size_factor=region_params(2);
+if ndims(region_params) > 2
     % area factor for the significant CC
-    area_factor = region_params(2);
+    area_factor = region_params(3);
 else
     area_factor = 0.03;
 end
-if ndims(region_params) > 2   
+if ndims(region_params) > 3   
     % thresholding the salient regions
-    thresh = region_params(3);
+    thresh = region_params(4);
 else
     thresh =  0.7;
 end
@@ -219,7 +223,9 @@ end
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
 % find optimal thresholds
-thresholds = multithresh(image_data, num_levels);
+if strcmp(thresh_type, 'm');
+    thresholds = multithresh(image_data, num_levels);
+end
 
 %--------------------------------------------------------------------------
 % core processing

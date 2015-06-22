@@ -2,7 +2,7 @@
 %
 % topic: Smart Morphologically-based Stable Salient Regions (SMSSR) detection 
 % author: Elena Ranguelova, NLeSc
-% date: May/June 2015
+% date: May/June/July 2015
 %
 %**************************************************************************
 % functions
