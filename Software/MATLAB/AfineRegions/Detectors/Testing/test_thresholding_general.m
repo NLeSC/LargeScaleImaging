@@ -1,9 +1,9 @@
-% test_thresholding.m- script to test gray-level image thresholding evolution
+% test_thresholding_general.m- gray-level image thresholding for general images
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
-% date created: 26-05-2015
-% last modification date: 27-05-2015
-% modification details: adaptation  to  workon Lisa
+% date created: 22-06-2015
+% last modification date: 
+% modification details: 
 %**************************************************************************
 %% paramaters
 interactive = false;
@@ -11,9 +11,9 @@ visualize_major = true;
 visualize_minor = false;
 lisa = true; 
 
-% if visualize_major
-%   load('MyColormaps','mycmap'); 
-% end
+if visualize_major
+  load('MyColormaps','mycmap'); 
+end
 
 %% image filename
 if ispc 
@@ -92,93 +92,101 @@ else
 
 
 end
+
+disp('Test case: ');disp(test_image);
  %% input parameters
 if interactive
-  %  min_level = input('Enter minimum gray level: ');
-  %  max_level = input('Enter maximum gray level');
-    num_levels = input('Enter number of gray-levels');
+    min_level = input('Enter minimum gray level: ');
+    max_level = input('Enter maximum gray level: ');
+    num_levels = input('Enter number of gray-levels: ');
+    thresh = input('Enter thresold vector: ');
 else
-   % min_level =  0; max_level = 255; 
-   num_levels = 25;
+   min_level =  0; max_level = 255; 
+   num_levels = 255;
+   threshHi = 15 : 10: 255;
+   threshLo = 5: 10: 245;
+   %input('Enter thresold vector: ');
 end
 
-% smoothing with morphology
-se = strel('disk',2);
-
+%% derived parameters
+step = fix((max_level - min_level)/num_levels);
+if step == 0
+    step = 1;
+end
+    
 %% find out the number of test files
 len = length(image_filename);
 
 %% loop over all test images
 for i = 1:len
-    %% load the image
-    image_data = imread(image_filename{i});
-    if ndims(image_data) > 2
-        image_data = rgb2gray(image_data);
-    end
-
-   % length(unique(image_data))
-    if visualize_minor
-        % visualize original image
-        f = figure; subplot(221); imshow(image_data); title('Original image ');
-    end
-    
-    %% smooth the image
-    image_data = imclose(image_data, se);
-    %% threshold the original image
-    level = graythresh(image_data);
-    
-    if visualize_minor
-        result = im2bw(image_data, level);
-        figure(f); subplot(223);imshow(result);
-            title('Thresholded original image');    
-    end
-   
-%     %% histogram equilization
-%     image_data = histeq(image_data);
-%     
-%     if visualize_minor
-%         % visualize original image
-%         figure(f); subplot(222); imshow(image_data); title('Adjusted image');
-%     end
-
-    %% threshold the adjusted data
-    level = graythresh(image_data);
-    
-    if visualize_minor
-        result = im2bw(image_data, level);
-        figure(f); subplot(224);imshow(result);
-            title('Thresholded adjusted image');
-    end
-
-
-    num_levels_counter = 0;
-    
     if visualize_major
-        f1=figure; 
+        f = figure;
     end
-    for n = num_levels
-        num_levels_counter = num_levels_counter + 1;
-        
-        %% convert to inxeded image using num_levels
-        ind_image = grayslice(image_data,n);
-%          thresholds = multithresh(image_data,n) 
-%         [ind_image, map] = gray2ind(image_data, n); 
-        %% visualize
-        if visualize_major
-            % visualize quantized image
-            figure(f1);
-            %subplot(2,3,num_levels_counter);
-            %rgb = label2rgb(ind_image);
-            %imshow(rgb); title(['Index image with number of levels: ' num2str(n)]);
-            %freezeColors;
-            %imshow(ind_image,map); title(['Index image with number of levels: ' num2str(n)]);
-
-            subplot(2,4,num_levels_counter+5);
-            %imhist(quantized_data);
-            imshow(quantized_data >= otsu_thr);
-            title('Thresholded his.eq. quantized image');
+       %% load the image
+        image_data = imread(image_filename{i});
+        if ndims(image_data) > 2
+            if visualize_major
+                % visualize original image
+                 figure(f); subplot(221); imshow(image_data);
+                 axis on; grid on; title('Color image '); freezeColors;
+            end
+            image_data = rgb2gray(image_data);
         end
-    %     clear thresh_data;%  acc_thresh_data;
-    end
-   % clear image_data;
+        if visualize_major
+            % visualize gray image
+            figure(f); subplot(222); imshow(image_data); 
+            axis on; grid on; title('Gray-scale image '); 
+            colormap(gray(256));
+            freezeColors;
+        end    
+        
+        %% init binary and accumulation image
+        bw = zeros(size(image_data));
+        bw_o = zeros(size(image_data));
+    %    bw_acc = zeros(size(image_data));
+        bw_thresh = zeros(size(image_data));
+     %   bw_thresh1 = zeros(size(image_data));
+        %% standart thresholding
+        level = graythresh(image_data);
+        bw_o =im2bw(image_data, level);
+
+        if visualize_major
+            % visualize thresholded image
+            figure(f); subplot(223); imshow(bw_o); 
+            axis on; grid on; title(['Otsu thresholded image at level: ' num2str(level)]); 
+            freezeColors;
+        end       
+
+
+       %% threshold in 1 step 
+       %i=0;
+       %for t = thresh
+       for i = 1:length(threshHi)
+           %i =i+1;
+           % bw_thresh = thresh_cumsum(double(image_data/step), t, 0);   
+           %bw_thresh = thresh_cumsum(double(image_data), t, 0);   
+           highmask = image_data>threshHi(i);
+           lowmask = bwlabel(~(image_data<threshLo(i)));
+           bw_thresh = ismember(lowmask,unique(lowmask(highmask)));
+           if visualize_major
+                    figure(f); subplot(2,2,4);imshow(bw_thresh);
+                   % figure; imshow(bw_thresh);
+                    axis on; grid on; 
+                    %title(['Cumsum thresholded gray image at threshold: ' num2str(t)]);    
+                    title(['Hysteresis thresholded gray image at thresholds: ' num2str(threshLo(i)) ' and ' num2str(threshHi(i))]);    
+                    pause;
+                    freezeColors;
+           end
+       end
+% %% fuzzy thresholding
+%     t=1;
+%     bw_thresh = thresholdImage(image_data, t);
+%     if visualize_major
+%         figure(f); subplot(2,2,4);imshow(bw_thresh);
+%         axis on; grid on; title(['Cumsum thresholded gray image at threshold: ' num2str(t)]);    
+%         freezeColors;
+%     end    
+%% pause
+       disp('Paused for next image');
+       pause;
 end

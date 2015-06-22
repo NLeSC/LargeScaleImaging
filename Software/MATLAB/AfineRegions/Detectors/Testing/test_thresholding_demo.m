@@ -30,7 +30,7 @@ results_path = fullfile(project_path, 'Results', 'Scientific');
 if interactive
     test_domain = input('Enter test domain: [AnimalBiometrics|Medical|Forestry]: ','s');
 else
-    test_domain = 'medical';
+    test_domain = 'forestry';
 end
 
 switch lower(test_domain)
@@ -41,13 +41,13 @@ switch lower(test_domain)
     switch lower(test_case)
       case 'turtle'
     	test_case_name = 'leatherback'
-        thresh = 0.72;
+       % thresh = 0.72;
       case 'whale'
         test_case_name = 'tails'
-        thresh = 0.42;
+        %thresh = 0.42;
       case 'newt'
     	test_case_name = 'newt'
-        thresh = 0.27;
+        %thresh = 0.27;
     end
   case 'medical'
     domain_path = fullfile(data_path,'Medical');
@@ -55,7 +55,7 @@ switch lower(test_domain)
     test_case_name = input('Enter test case: [MRI|CT|retina]: ','s');
     switch lower(test_case_name)
         case 'mri'
-            thresh = 0.4 % otsu?
+         %   thresh = 0.4; % otsu?
         case 'CT'
             % otsu is just enough!
         case 'retina'
@@ -79,7 +79,8 @@ if interactive
 else
    min_level =  0; max_level = 255; 
    num_levels = 255;
-   thresh = 0.65
+   threshHi = 245 : -10: 135;
+   threshLo = 15: 10: 125;
    %input('Enter thresold vector: ');
 end
 
@@ -135,20 +136,35 @@ for i = 1:len
         end       
 
 
-       %% threshold in 1 step
-       i=0;
-       for t = thresh
-           i =i+1;
-           %bw_thresh_old =  bw_thresh;
-           %bw_thresh = xor(bw_thresh_old, thresh_cumsum(double(image_data/step), t, 0));   
-           bw_thresh = thresh_cumsum(double(image_data/step), t, 0);   
+       %% threshold in 1 step 
+       %i=0;
+       %for t = thresh
+       for i = 1:length(threshHi)
+           %i =i+1;
+           % bw_thresh = thresh_cumsum(double(image_data/step), t, 0);   
+           %bw_thresh = thresh_cumsum(double(image_data), t, 0);   
+           highmask = image_data>threshHi(i);
+           lowmask = bwlabel(~(image_data<threshLo(i)));
+           bw_thresh = ismember(lowmask,unique(lowmask(highmask)));
            if visualize_major
-                    figure(f); subplot(2,2,3+i);imshow(bw_thresh);
-                    axis on; grid on; title(['Cumsum thresholded gray image at threshold: ' num2str(t)]);    
+                    figure(f); subplot(2,2,4);imshow(bw_thresh);
+                   % figure; imshow(bw_thresh);
+                    axis on; grid on; 
+                    %title(['Cumsum thresholded gray image at threshold: ' num2str(t)]);    
+                    title(['Hysteresis thresholded gray image at thresholds: ' num2str(threshLo(i)) ' and ' num2str(threshHi(i))]);    
+                    pause;
                     freezeColors;
            end
        end
-
+% %% fuzzy thresholding
+%     t=1;
+%     bw_thresh = thresholdImage(image_data, t);
+%     if visualize_major
+%         figure(f); subplot(2,2,4);imshow(bw_thresh);
+%         axis on; grid on; title(['Cumsum thresholded gray image at threshold: ' num2str(t)]);    
+%         freezeColors;
+%     end    
+%% pause
        disp('Paused for next image');
        pause;
     end

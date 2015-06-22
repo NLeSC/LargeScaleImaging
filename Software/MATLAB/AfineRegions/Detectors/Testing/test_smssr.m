@@ -183,13 +183,14 @@ for i = 1:len
         thresh = input('Enter the region threshold: ');
         
     else
-        preproc_types = [0 1];
+        preproc_types = [0 0];
         saliency_types = [1 1 1 1];
+        thresh_type = 'm';
         SE_size_factor = 0.02;
         SE_size_factor_preproc = 0.002;
         Area_factor = 0.03;
         num_levels = 20;
-        thersh = 0.75;
+        thresh = 0.75;
     end
     
     tic;
@@ -197,6 +198,7 @@ for i = 1:len
     disp('SMSSR');
       
     execution_params = [verbose visualize_major visualize_minor];
+    region_params = [thresh_type, SE_size_factor, Area_factor, thresh];
     image_data = smssr_preproc(image_data, preproc_types);
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
         num_levels, saliency_types, region_params, execution_params);
