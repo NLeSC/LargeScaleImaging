@@ -78,13 +78,13 @@ function [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 6
+if nargin < 6 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 5 || isempty(region_params)
+if nargin < 5 || isempty(region_params) || length(region_params) < 4
     region_params = ['h', 0.02 0.03 0.7];
 end
-if nargin < 4 || isempty(saliency_type)
+if nargin < 4 || isempty(saliency_type) || length(salienc_type) < 4
     saliency_type = [1 1 1 1];
 end
 if nargin < 3 || isempty(num_levels)
