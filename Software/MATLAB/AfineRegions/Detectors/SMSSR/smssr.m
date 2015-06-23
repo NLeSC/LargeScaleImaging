@@ -6,7 +6,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 May 2015
-% last modification date: 22 June 2015
+% last modification date: 23 June 2015
+% modification details: added hysteresis thresholding for binarization
+% modification date: 22 June 2015
 % modification details: added parameter for the type of  thresholding- 
 %                       <m>ultithresholding or <h>ysteresis
 %**************************************************************************
@@ -223,8 +225,12 @@ end
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
 % find optimal thresholds
-if strcmp(thresh_type, 'm');
+if strcmp(thresh_type, 'm')
     thresholds = multithresh(image_data, num_levels);
+elseif strcmp(thresh_type, 'h')
+    step = fix(255/num_levels);
+    high_thresholds  = step:step:255;
+    low_thresholds = 0:step:255-step;
 end
 
 %--------------------------------------------------------------------------
