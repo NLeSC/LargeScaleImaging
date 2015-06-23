@@ -27,6 +27,7 @@
 % smssr_open- function to open the saved results from the SMSSR detector
 % display_smart_regions.m- displays salient regions overlaid on the image
 % smssr_detector_one.m- script for applying the SMSSR detector on 1 image
+% hysteresis_thresholding- function forhysteresis thresholding
 %**************************************************************************
 % scripts
 %**************************************************************************
