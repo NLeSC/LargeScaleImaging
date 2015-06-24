@@ -180,16 +180,17 @@ for i = 1:len
         SE_size_factor = input('Enter the Structuring Element size factor: ');
         Area_factor = input('Enter the Connected Component size factor (processing): ');
         num_levels = input('Enter the number of gray-levels: ');
+        thrsh_type = input('Enter the thresholding type (s(ingle) or h(ysteresis)): ');
         thresh = input('Enter the region threshold: ');
         
     else
         preproc_types = [0 0];
         saliency_types = [1 1 1 1];
-        thresh_type = 'm';
         SE_size_factor = 0.02;
         SE_size_factor_preproc = 0.002;
         Area_factor = 0.03;
         num_levels = 20;
+        thresh_type = 'h';
         thresh = 0.75;
     end
     
