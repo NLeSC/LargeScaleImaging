@@ -1,4 +1,4 @@
-% hysteresis_thresholding- function forhysteresis thresholding
+% hysteresis_thresholding- function for hysteresis thresholding
 %**************************************************************************
 % [binary_image] = hysteresis_thresholding(image_data,ROI_mask, ...
 %                                               thresholds, execution_flags)

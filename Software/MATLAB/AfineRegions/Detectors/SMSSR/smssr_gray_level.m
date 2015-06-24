@@ -52,9 +52,15 @@ if nargin < 7
 elseif nargin < 6
     saliency_type = [1 1 1 1];
 elseif nargin <5
-    error('mssr_gray_level.m requires at least 5 input aruments!');
+    error('smssr_gray_level.m requires at least 5 input aruments!');
 end
 
+if length(levels) > 2 || length(levels) < 1
+    error('smssr_gray_level.m: the gray levels can be one or two!');
+end
+if ~strcmp(thresh_type,'s') || ~strcmp(thresh_type,'h')
+    error('smssr_gray_level.m: the thresh_type can be either s(ingle) or h(ysteresis)!');
+end
 %**************************************************************************
 % constants/hard-set parameters
 %--------------------------------------------------------------------------
@@ -62,6 +68,10 @@ end
 % input parameters -> variables
 %--------------------------------------------------------------------------
 [nrows,ncols] = size(image);
+if length(levels) == 1
+    level=levels;
+end
+    
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
@@ -73,11 +83,23 @@ saliency_masks = zeros(nrows,ncols,4);
 % pre-processing
 %--------------------------------------------------------------------------
 % cross-section
-ROI = image >= level;
-
-if visualise
-    figure;imshow(ROI);title(['Segmented image at gray level: ' num2str(level)]);
+switch thresh_type
+    case 's'
+        ROI = image >= level;
+        if visualise
+             figure;imshow(ROI);title(['Segmented image at gray level: ' ...
+                 num2str(level)]);
+        end
+    case 'h'
+        ROI = hysteresis_thrsholding(image, [], levels, [0 visualise 0]);
+        if visualise
+             figure;imshow(ROI);
+             title(['Segmented image with hysteresis between gray levels: '...
+                 num2str(level(2)) ' and ' num2str(level(1))]);
+        end
 end
+
+
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------

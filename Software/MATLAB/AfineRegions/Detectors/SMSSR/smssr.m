@@ -225,12 +225,15 @@ end
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
 % find optimal thresholds
-if strcmp(thresh_type, 'm')
-    thresholds = multithresh(image_data, num_levels);
-elseif strcmp(thresh_type, 'h')
-    step = fix(255/num_levels);
-    high_thresholds  = step:step:255;
-    low_thresholds = 0:step:255-step;
+switch thresh_type
+    case 'm'
+        thresholds = multithresh(image_data, num_levels);
+        num_thresholds = length(thresholds);
+    case 'h'
+        step = fix(255/num_levels);
+        high_thresholds  = step:step:255;
+        low_thresholds = 0:step:255-step;
+        num_thresholds = length(high_thresholds);
 end
 
 %--------------------------------------------------------------------------
@@ -252,13 +255,20 @@ tic;
 %..........................................................................
 % compute binary saliency for every sampled gray-level
 %..........................................................................
-for thresh = thresholds
 
+for it = 1:num_thresholds
+    switch thresh_type
+        case 'm'
+            thresh = thresholds(it);
+        case 'h'
+            thresh(1) = high_thresholds(it);
+            thresh(2) = high_thresholds(it);                
+    end
     wb_counter = wb_counter + 1;
     waitbar(wb_counter/length(thresholds));
     drawnow
     %pause
-    [saliency_masks_level] = mssr_gray_level(ROI_only, thresh, ...
+    [saliency_masks_level] = smssr_gray_level(ROI_only, thrseh_type, thresh, ...
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
     % cumulative saliency masks
