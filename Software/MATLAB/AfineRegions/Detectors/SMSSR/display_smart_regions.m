@@ -129,7 +129,6 @@ if nargin < 3
 end
 if nargin < 2
     error('display_smart_regions.m requires at least 2 input arguments!');
-    return
 end
 
 %**************************************************************************

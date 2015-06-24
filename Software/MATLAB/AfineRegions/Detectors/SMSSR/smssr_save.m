@@ -32,7 +32,6 @@ function smssr_save(features_fname, regions_fname, num_regions, features, ...
 %--------------------------------------------------------------------------
 if nargin < 5
     error('mssr_save.m requires 5 input arguments!');
-    return
 end
 %**************************************************************************
 % constants/hard-set parameters
@@ -45,7 +44,7 @@ i = find(features_fname == '.');
 if isempty(i)
     features_type_fname = [features_fname '_type.smssr'];
 else
-    j=i(end);
+%    j=i(end);
     features_type_fname = [features_fname(1:i-1) '_type.smssr'];
 end
 %**************************************************************************
@@ -59,7 +58,6 @@ end
 % leave out the saliency type
 num_features = size(features,2);
 
-features_notype = zeros(num_regions, num_features - 1);
 features_notype = features(:,1:num_features - 1);
 
 % parameters depending on pre-processing

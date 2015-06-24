@@ -2,6 +2,7 @@
 %**************************************************************************
 % [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
 %                                           num_levels, saliency_type, ...
+%                                           thresh_type, ...    
 %                                           region_params, execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
@@ -21,12 +22,12 @@
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
-% [region_params]   salient region parameters [thresh_type, SE_size_factor, ...
-%                                              area_factor, thresh]
-%                   thresh_type - string 'multithr' or 'hyst'    
+% [thresh_type]     character 'm' for multithresholding or 'h' for
+%                   hysteresis, [optional], if left out default is 'h'
+% [region_params]   region parameters [SE_size_factor, area_factor, saliency_thresh]
 %                   SE_size_factor- structuring element (SE) size factor  
 %                   area_factor- area factor for the significant CC, 
-%                   thresh- percentage of kept regions
+%                   saliency_thresh- percentage of kept regions
 % [execution_flags] vector with 3 flags [verbose, visualise_major, ...
 %                                                       visualise_minor]
 %                   [optional], if left out- default is [0 0 0]
@@ -60,8 +61,9 @@
 % finds all types of saleint regions for the image
 %--------------------------------------------------------------------------
 % [num_regions, features, saliency_masks] = ...
-%                        smssr(image_data,[],[],[1 1 1 1],[],[1 1 0 0]);
+%                        smssr(image_data,[],[],[1 1 1 1],'m',[],[1 1 0 0]);
 % finds only the 'holes' and 'islands' for the whole image in verbose mode
+% multithresholding is used as binarization method
 %--------------------------------------------------------------------------
 % load ROI_mask; 
 % [num_regions, features, saliency_masks] = ...
@@ -74,19 +76,23 @@
 %**************************************************************************
 function [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
                                            num_levels, saliency_type, ...
+                                           thresh_type,...
                                            region_params, execution_flags)
 
                                          
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 6 || length(execution_flags) <3
+if nargin < 7 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 5 || isempty(region_params) || length(region_params) < 4
-    region_params = ['h', 0.02 0.03 0.7];
+if nargin < 6 || isempty(region_params) || length(region_params) < 3
+    region_params = [0.02 0.03 0.7];
 end
-if nargin < 4 || isempty(saliency_type) || length(salienc_type) < 4
+if nargin < 5
+    thresh_type = 'h';
+end
+if nargin < 4 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
 end
 if nargin < 3 || isempty(num_levels)
@@ -106,21 +112,19 @@ end
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
-% type of thresholding
-thresh_type = region_params(1);
 % structuring element (SE) size factor  
-SE_size_factor=region_params(2);
-if ndims(region_params) > 2
+SE_size_factor=region_params(1);
+if ndims(region_params) > 1
     % area factor for the significant CC
-    area_factor = region_params(3);
+    area_factor = region_params(2);
 else
     area_factor = 0.03;
 end
-if ndims(region_params) > 3   
+if ndims(region_params) > 2   
     % thresholding the salient regions
-    thresh = region_params(4);
+    saliency_thresh = region_params(3);
 else
-    thresh =  0.7;
+    saliency_thresh =  0.7;
 end
 
 % saliency flags
@@ -228,12 +232,13 @@ end
 switch thresh_type
     case 'm'
         thresholds = multithresh(image_data, num_levels);
-        num_thresholds = length(thresholds);
+        num_levels = length(thresholds);
+        thresh_type ='s';
     case 'h'
         step = fix(255/num_levels);
         high_thresholds  = step:step:255;
         low_thresholds = 0:step:255-step;
-        num_thresholds = length(high_thresholds);
+        num_levels = length(high_thresholds);
 end
 
 %--------------------------------------------------------------------------
@@ -256,19 +261,21 @@ tic;
 % compute binary saliency for every sampled gray-level
 %..........................................................................
 
-for it = 1:num_thresholds
+for it = 1:num_levels
+     wb_counter = wb_counter + 1;
+     waitbar(wb_counter/num_levels);
+     drawnow
+
     switch thresh_type
         case 'm'
-            thresh = thresholds(it);
+            level = thresholds(it);
         case 'h'
-            thresh(1) = high_thresholds(it);
-            thresh(2) = high_thresholds(it);                
+            level(1) = high_thresholds(it);
+            level(2) = low_thresholds(it);                
     end
-    wb_counter = wb_counter + 1;
-    waitbar(wb_counter/length(thresholds));
-    drawnow
     %pause
-    [saliency_masks_level] = smssr_gray_level(ROI_only, thrseh_type, thresh, ...
+    [saliency_masks_level, binary_image] = smssr_gray_level(ROI_only, ...
+                                            thresh_type, level, ...
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
     % cumulative saliency masks
@@ -300,8 +307,13 @@ for it = 1:num_thresholds
          subplot(224);imagesc(protrusions_acc);axis image;axis on;
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
-        figure(f2);imshow(ROI_only >=thresh); 
-        title(['Segmented image at threshold: ' num2str(thresh)]);
+        figure(f2);imshow(binary_image);
+        if ndims(level > 1)
+            title(['Segmented image at thresholds: ' ...
+                num2str(level(2))  ' and ' num2str(level(1)) ]);
+        else
+            title(['Segmented image at threshold: ' num2str(level)]);
+        end
         axis image; axis on;
     end
 end
@@ -314,28 +326,28 @@ end
         if holes_flag
          figure(f3);
          subplot(221);imshow(image_data); freezeColors; title('Original image');axis image;axis on;
-         subplot(222);imshow(holes_acc,mycmap);
+         subplot(222);imshow(holes_acc);%imshow(holes_acc,mycmap);
          axis image;axis on;title('holes');freezeColors; 
         end
         % indentations
         if indentations_flag
          figure(f4);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(indentations_acc,mycmap);
+         subplot(222);imshow(indentations_acc); %imshow(indentations_acc,mycmap);
          axis image;axis on;title('indentations');freezeColors; 
         end
         % islands
         if islands_flag
          figure(f5);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(islands_acc,mycmap);
+         subplot(222);imshow(islands_acc);%imshow(islands_acc,mycmap);
          axis image;axis on;title('islands');freezeColors; 
         end
         % protrusions
         if protrusions_flag
          figure(f6);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(protrusions_acc,mycmap);
+         subplot(222);imshow(protrusions_acc);%imshow(protrusions_acc,mycmap);
          axis image;axis on; title('protrusions'); freezeColors; 
         end
     end
@@ -353,18 +365,18 @@ end
 tic;
 % the holes and islands
 if find(holes_acc)
-    holes_thresh = thresh_cumsum(holes_acc, thresh, verbose);
+    holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
 end
 if find(islands_acc)
-    islands_thresh = thresh_cumsum(islands_acc, thresh, verbose);
+    islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
 end
 
 % the indentations and protrusions
 if find(indentations_acc)
-    indentations_thresh = thresh_area(indentations_acc, thresh, verbose);
+    indentations_thresh = thresh_area(indentations_acc, saliency_thresh, verbose);
 end
 if find(protrusions_acc)
-    protrusions_thresh = thresh_area(protrusions_acc, thresh, verbose);
+    protrusions_thresh = thresh_area(protrusions_acc, saliency_thresh, verbose);
 end
   
 %visualisation
@@ -433,13 +445,13 @@ end
         yellow = [255 255 0];
         green = [0 255 0];
         red = [255 0 0];
-        
+
         % holes
         if holes_flag && ~isempty(find(holes_thresh, 1))
-           
+
             rgb = image_data;
             rgb = imoverlay(rgb, holes_thresh, blue);
-    
+
             figure(f3);
             subplot(223);imshow(holes_thresh);
             title('thresholded holes');axis image;axis on;
@@ -450,12 +462,12 @@ end
         if indentations_flag && ~isempty(find(indentations_thresh,1))
             rgb = image_data;
             rgb = imoverlay(rgb, indentations_thresh, green);
-    
+
             figure(f4);
             subplot(223);imshow(indentations_thresh);
             title('thresholded indentations');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected indentations');           
+            subplot(224); imshow(rgb); axis on; title('Detected indentations');
         end
         % islands
         if islands_flag && ~isempty(find(islands_thresh,1))
@@ -466,19 +478,19 @@ end
             subplot(223);imshow(islands_thresh);
             title('thresholded islands');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected islands'); 
+            subplot(224); imshow(rgb); axis on; title('Detected islands');
         end
         % protrusions
         if protrusions_flag && ~isempty(find(protrusions_thresh,1))
             rgb = image_data;
             rgb = imoverlay(rgb, protrusions_thresh, red);
-    
+
             figure(f6);
             subplot(223);imshow(protrusions_thresh);
             title('thresholded protrusions');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected protrusions'); 
+            subplot(224); imshow(rgb); axis on; title('Detected protrusions');
         end
     end
-    
+
 end

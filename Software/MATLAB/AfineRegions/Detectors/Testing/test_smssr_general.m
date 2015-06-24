@@ -181,17 +181,17 @@ for i = 1:len
         Area_factor = input('Enter the Connected Component size factor (processing): ');
         num_levels = input('Enter the number of gray-levels: ');
         thrsh_type = input('Enter the thresholding type (s(ingle) or h(ysteresis)): ');
-        thresh = input('Enter the region threshold: ');
+        saliency_thresh = input('Enter the region threshold: ');
         
     else
         preproc_types = [0 0];
         saliency_types = [1 1 1 1];
-        SE_size_factor = 0.02;
+        SE_size_factor = 0.15;
         SE_size_factor_preproc = 0.002;
-        Area_factor = 0.03;
+        Area_factor = 0.1;
         num_levels = 20;
         thresh_type = 'h';
-        thresh = 0.75;
+        saliency_thresh = 0.9;
     end
     
     tic;
@@ -199,14 +199,15 @@ for i = 1:len
     disp('SMSSR');
       
     execution_params = [verbose visualize_major visualize_minor];
-    region_params = [thresh_type, SE_size_factor, Area_factor, thresh];
-    image_data = smssr_preproc(image_data, preproc_types);
+    region_params = [SE_size_factor Area_factor saliency_thresh];
+    if find(preproc_types)
+        image_data = smssr_preproc(image_data, preproc_types);
+    end
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
-        num_levels, saliency_types, region_params, execution_params);
+        num_levels, saliency_types, thresh_type, region_params, execution_params);
     toc
     % save the features
     disp('Saving ...');
-    
     smssr_save(features_filename{i}, regions_filename{i}, num_smartregions, features, saliency_masks);
     
     
@@ -220,7 +221,7 @@ for i = 1:len
  %       f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
       
  %   end
-  if vis_flag
+    if vis_flag
       disp(' Displaying... ');
       
       type = 1; % distinguish region's types
@@ -239,7 +240,7 @@ for i = 1:len
     
       original = 0; % no original region's outline
     
-      display_features(image_filename{i}, features_filename{i}, mask_filename, ...
+      display_smart_regions(image_filename{i}, features_filename{i}, mask_filename, ...
 		    regions_filename{i},...  
 		    type, list_smartregions, scaling, labels, col_ellipse, ...
 		    line_width, col_label, original);

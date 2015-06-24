@@ -1,6 +1,6 @@
 % smssr_gray_level.m- salient regions in a cross-section of gray-level image
 %**************************************************************************
-% [saliency_masks] = smssr_gray_level(image, thresh_type, levels,
+% [saliency_masks, binary_image] = smssr_gray_level(image, thresh_type, levels,
 %                                   SE_size_factor,area_factor,
 %                                   saliency_type, visualise)
 %
@@ -11,7 +11,7 @@
 %**************************************************************************
 % INPUTS:
 % image - input gray-level image
-% thresh_type- character 's'- single or 'h'- hysteresis thresholds
+% thresh_type- character 's'- single threshold or 'h'- hysteresis thresholds
 % levels - the specific gray level(s). If hysteresis is desired, 
 %          2 element vector [hightr lowtr]  should be provided
 % SE_size_factor- structuring element (SE) size factor  
@@ -25,20 +25,21 @@
 % OUTPUTS:
 % saliency_masks - 3-D array of the binary saliency masks of the regions
 %                  for example saliency_masks(:,:,1) contains the holes
+% binary_image - the binarize dimage using the shoser thresholding type
 %**************************************************************************
 % EXAMPLES USAGE:
 % [saliency_masks_level] = mssr_gray_level(I, thresh_type, levels, SE_size_factor, ...
 %                                   area_factor, saliency_type, visualise_minor);
 % as called from smssr.m
 %--------------------------------------------------------------------------
-% [saliency_masks_level] = smssr_gray_level(I, 's',128, 0.5, 10);
+% [saliency_masks_level] = smssr_gray_level(I, 'multitr',128, 0.5, 10);
 % SMSSR regions (all types) for the cross section of image I (say 256 x 256)
 % at level 128, CC which occupies 50% of the cross-section is considered
 % significant; all 'holes' less than 10 pixels are removed, no visualisation
 %**************************************************************************
 % REFERENCES: based on mssr_gray_level.m
 %**************************************************************************
-function [saliency_masks] = smssr_gray_level(image, thresh_type, levels,... 
+function [saliency_masks, binary_image] = smssr_gray_level(image, thresh_type, levels,... 
                                             SE_size_factor,...
                                             area_factor, ...
                                             saliency_type, visualise)
@@ -58,7 +59,7 @@ end
 if length(levels) > 2 || length(levels) < 1
     error('smssr_gray_level.m: the gray levels can be one or two!');
 end
-if ~strcmp(thresh_type,'s') || ~strcmp(thresh_type,'h')
+if ~(strcmp(thresh_type,'s') || strcmp(thresh_type,'h'))
     error('smssr_gray_level.m: the thresh_type can be either s(ingle) or h(ysteresis)!');
 end
 %**************************************************************************
@@ -85,15 +86,15 @@ saliency_masks = zeros(nrows,ncols,4);
 % cross-section
 switch thresh_type
     case 's'
-        ROI = image >= level;
+        binary_image = image >= level;
         if visualise
-             figure;imshow(ROI);title(['Segmented image at gray level: ' ...
+             figure;imshow(binary_image);title(['Segmented image at gray level: ' ...
                  num2str(level)]);
         end
     case 'h'
-        ROI = hysteresis_thrsholding(image, [], levels, [0 visualise 0]);
+        binary_image = hysteresis_thresholding(image, [], levels, [0 visualise 0]);
         if visualise
-             figure;imshow(ROI);
+             figure;imshow(binary_image);
              title(['Segmented image with hysteresis between gray levels: '...
                  num2str(level(2)) ' and ' num2str(level(1))]);
         end
@@ -106,8 +107,8 @@ end
 % core processing
 %--------------------------------------------------------------------------
 % binary saliency
-if find(ROI)
-    [saliency_masks] = mssr_binary(ROI, SE_size_factor, area_factor, ...
+if find(binary_image)
+    [saliency_masks] = mssr_binary(binary_image, SE_size_factor, area_factor, ...
                                    saliency_type, visualise);
 end
    
