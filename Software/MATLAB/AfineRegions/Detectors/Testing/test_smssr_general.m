@@ -33,8 +33,29 @@ if interactive
     image_filename = input('Enter the test image filename: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    test_image = input('Enter test case: [boat|phantom|thorax|graffiti|leuven|bikes]: ','s');
+    test_image = input('Enter test case: [bark|bikes|boat|graffiti|leuven|trees|ubc|wall]: ','s');
     switch lower(test_image)
+        case 'bark'
+            image_filename{1} = fullfile(data_path,test_image,'bark1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'bark2.png');
+            image_filename{3} = fullfile(data_path,test_image,'bark3.png');
+            image_filename{4} = fullfile(data_path,test_image,'bark4.png');
+            image_filename{5} = fullfile(data_path,test_image,'bark5.png');
+            image_filename{6} = fullfile(data_path,test_image,'bark6.png');
+            if save_flag
+                features_filename{1} = fullfile(results_path,test_image,'bark1.smssr');
+                features_filename{2} = fullfile(results_path,test_image,'bark2.smssr');
+                features_filename{3} = fullfile(results_path,test_image,'bark3.smssr');
+                features_filename{4} = fullfile(results_path,test_image,'bark4.smssr');
+                features_filename{5} = fullfile(results_path,test_image,'bark5.smssr');
+                features_filename{6} = fullfile(results_path,test_image,'bark6.smssr');
+                regions_filename{1} = fullfile(results_path,test_image,'bark1_smartregions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'bark2_smartregions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'bark3_smartregions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'bark4_smartregions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'bark5_smartregions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'bark6_smartregions.mat');   
+            end
         case 'boat'
             image_filename{1} = fullfile(data_path,test_image,'boat1.png');    
             image_filename{2} = fullfile(data_path,test_image,'boat2.png');
@@ -77,21 +98,6 @@ else
                 regions_filename{5} = fullfile(results_path,test_image,'graffiti5_smartregions.mat');
                 regions_filename{6} = fullfile(results_path,test_image,'graffiti6_smartregions.mat');     
             end
-        case 'phantom'
-            image_filename{1} = fullfile(data_path,'Phantom','phantom.png');
-            image_filename{2} = fullfile(data_path,'Phantom','phantom_affine.png');
-            if save_flag
-                features_filename{1} = fullfile(results_path,'Phantom','phantom.smssr');
-                features_filename{2} = fullfile(results_path,'Phantom','phantom_affine.smssr');
-                regions_filename{1} = fullfile(results_path,'Phantom','phantom_smartregions.mat');
-                regions_filename{2} = fullfile(results_path,'Phantom','phantom_affine_smartregions.mat');    
-            end
-        case 'thorax'
-             image_filename{1} = fullfile(data_path,'CT','thorax1.jpg');
-            if save_flag
-                features_filename{1} = fullfile(results_path,'CT','thorax1.smssr');
-	      regions_filename{1} = fullfile(results_path,'CT','thorax1_smartregions.mat');
-            end
         case 'leuven'
             image_filename{1} = fullfile(data_path,test_image,'leuven1.png');    
             image_filename{2} = fullfile(data_path,test_image,'leuven2.png');
@@ -133,6 +139,69 @@ else
                 regions_filename{4} = fullfile(results_path,test_image,'bikes4_smartregions.mat');
                 regions_filename{5} = fullfile(results_path,test_image,'bikes5_smartregions.mat');
                 regions_filename{6} = fullfile(results_path,test_image,'bikes6_smartregions.mat');      
+            end
+            case 'trees'
+            image_filename{1} = fullfile(data_path,test_image,'trees1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'trees2.png');
+            image_filename{3} = fullfile(data_path,test_image,'trees3.png');    
+            image_filename{4} = fullfile(data_path,test_image,'trees4.png');
+            image_filename{5} = fullfile(data_path,test_image,'trees5.png');    
+            image_filename{6} = fullfile(data_path,test_image,'trees6.png');
+            if save_flag
+               features_filename{1} = fullfile(results_path,test_image,'trees1.smssr');
+                features_filename{2} = fullfile(results_path,test_image,'trees2.smssr');
+                features_filename{3} = fullfile(results_path,test_image,'trees3.smssr');
+                features_filename{4} = fullfile(results_path,test_image,'trees4.smssr');
+                features_filename{5} = fullfile(results_path,test_image,'trees5.smssr');
+                features_filename{6} = fullfile(results_path,test_image,'trees6.smssr'); 
+                regions_filename{1} = fullfile(results_path,test_image,'trees1_smartregions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'trees2_smartregions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'trees3_smartregions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'trees4_smartregions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'trees5_smartregions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'trees6_smartregions.mat');      
+            end
+            case 'ubc'
+            image_filename{1} = fullfile(data_path,test_image,'ubc1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'ubc2.png');
+            image_filename{3} = fullfile(data_path,test_image,'ubc3.png');    
+            image_filename{4} = fullfile(data_path,test_image,'ubc4.png');
+            image_filename{5} = fullfile(data_path,test_image,'ubc5.png');    
+            image_filename{6} = fullfile(data_path,test_image,'ubc6.png');
+            if save_flag
+               features_filename{1} = fullfile(results_path,test_image,'ubc1.smssr');
+                features_filename{2} = fullfile(results_path,test_image,'ubc2.smssr');
+                features_filename{3} = fullfile(results_path,test_image,'ubc3.smssr');
+                features_filename{4} = fullfile(results_path,test_image,'ubc4.smssr');
+                features_filename{5} = fullfile(results_path,test_image,'ubc5.smssr');
+                features_filename{6} = fullfile(results_path,test_image,'ubc6.smssr'); 
+                regions_filename{1} = fullfile(results_path,test_image,'ubc1_smartregions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'ubc2_smartregions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'ubc3_smartregions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'ubc4_smartregions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'ubc5_smartregions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'ubc6_smartregions.mat');      
+            end
+            case 'wall'
+            image_filename{1} = fullfile(data_path,test_image,'wall1.png');    
+            image_filename{2} = fullfile(data_path,test_image,'wall2.png');
+            image_filename{3} = fullfile(data_path,test_image,'wall3.png');    
+            image_filename{4} = fullfile(data_path,test_image,'wall4.png');
+            image_filename{5} = fullfile(data_path,test_image,'wall5.png');    
+            image_filename{6} = fullfile(data_path,test_image,'wall6.png');
+            if save_flag
+               features_filename{1} = fullfile(results_path,test_image,'wall1.smssr');
+                features_filename{2} = fullfile(results_path,test_image,'wall2.smssr');
+                features_filename{3} = fullfile(results_path,test_image,'wall3.smssr');
+                features_filename{4} = fullfile(results_path,test_image,'wall4.smssr');
+                features_filename{5} = fullfile(results_path,test_image,'wall5.smssr');
+                features_filename{6} = fullfile(results_path,test_image,'wall6.smssr'); 
+                regions_filename{1} = fullfile(results_path,test_image,'wall1_smartregions.mat');
+                regions_filename{2} = fullfile(results_path,test_image,'wall2_smartregions.mat');
+                regions_filename{3} = fullfile(results_path,test_image,'wall3_smartregions.mat');
+                regions_filename{4} = fullfile(results_path,test_image,'wall4_smartregions.mat');
+                regions_filename{5} = fullfile(results_path,test_image,'wall5_smartregions.mat');
+                regions_filename{6} = fullfile(results_path,test_image,'wall6_smartregions.mat');      
             end
     end
     mask_filename =[];
@@ -185,13 +254,13 @@ for i = 1:len
         
     else
         preproc_types = [0 0];
-        saliency_types = [1 1 1 1];
-        SE_size_factor = 0.15;
+        saliency_types = [1 1 0 0];
+        SE_size_factor = 0.05;
         SE_size_factor_preproc = 0.002;
-        Area_factor = 0.1;
+        Area_factor = 0.25;
         num_levels = 20;
         thresh_type = 'h';
-        saliency_thresh = 0.9;
+        saliency_thresh = 0.75;
     end
     
     tic;
@@ -239,7 +308,7 @@ for i = 1:len
       col_label = [];
     
       original = 0; % no original region's outline
-    
+          
       display_smart_regions(image_filename{i}, features_filename{i}, mask_filename, ...
 		    regions_filename{i},...  
 		    type, list_smartregions, scaling, labels, col_ellipse, ...
