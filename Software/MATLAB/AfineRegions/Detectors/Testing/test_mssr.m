@@ -12,7 +12,7 @@ visualize = true;
 visualize_major = false;
 visualize_minor = false;
 lisa = true;
-
+ 
 otsu = false;
 
 save_flag = 1;
