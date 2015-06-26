@@ -3,7 +3,7 @@
 %
 % author: Elena Ranguelova, TNO
 % date created: 4 Mar 08
-% last modification date: 27 Mar 08
+% last modification date: 27 Mar 08 
 % modification details: asking about displaying the original region
 %                       outlines before the feature filenames
 %**************************************************************************

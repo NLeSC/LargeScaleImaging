@@ -4,8 +4,8 @@
 %
 % author: Elena Ranguelova, TNO
 % date created: 8 May 08
-% last modification date: 
-% modification details: 
+% last modification date: 26 June 2015  
+% modification details: proper input argument handling
 %**************************************************************************
 % INPUTS:
 % image_fname- input image filename
@@ -116,7 +116,14 @@
 % Different colour for each region? [y/n]: y
 % --------------- The End ---------------------------------%
 
-function visualise(options)
+function visualise(image_fname, options)
+
+if nargin < 2
+    options = [];
+end
+if nargin < 1
+    image_fname = '';
+end
 
 clc; 
 disp('------------------------------------------------------------------');
@@ -125,12 +132,14 @@ disp('------------------------------------------------------------------');
 disp('                                                                  ');
 
 % input image and ROI
-image_fname = input('Enter the full filename of the input image: ','s');
+if isempty(image_fname)
+    image_fname = input('Enter the full filename of the input image: ','s');
+end;
 
 I_or = imread(image_fname);
 
 % display
-if isfield(options,'im_disp')
+if ~isempty(options) && isfield(options,'im_disp')
     im_disp = options.im_disp;
 else
     im_disp = input('Display image? [y/n]: ','s');
