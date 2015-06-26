@@ -109,6 +109,11 @@ features_dir = input('Enter the full path to the output features directory: ','s
 
 %--------------------------------------------------------------------------
 % parameters setting
+verbose = false;
+visualize = true;
+visualize_major = false;
+visualize_minor = false;
+otsu = false;
 
 % saliency type
 holes = 1; islands = 1; indentations = 1; protrusions = 1;
@@ -134,10 +139,15 @@ if (lower(sal)=='n')
      end               
  end
 
-saliency_type = [holes islands indentations protrusions];
+saliency_types = [holes islands indentations protrusions];
 
-% execusion flags
-execution_flags = [0 0 0];
+SE_size_factor = 0.05;
+Area_factor = 0.25;
+num_levels = 20;
+thersh = 0.75;
+
+region_params = [SE_size_factor Area_factor];
+execution_params = [verbose visualize_major visualize_minor];
 
 
 % run for many images
@@ -168,12 +178,34 @@ for i = indicies
             disp([' Processing image index # ' num2str(i) ' out of total ' num2str(length(indicies)) ' images...']);
 
 
+        % open the image & apply potential mask
+         %% load the image & convertto gray-scale if  color
+        image_data = imread(image_fname);
+        if ndims(image_data) > 2
+            image_data = rgb2gray(image_data);
+        end
 
-        % Saliency detector
-        [num_regions, features, saliency_masks] = mssr(image_fname, ...
-                                    ROI_mask_fname, saliency_type, execution_flags);
-
-    disp('------------------------------------------------------------------');
+        %% load the mask, if any
+        ROI = [];
+        if lower(roi) =='r'
+            s = load(ROI_mask_fname);
+            s_cell = struct2cell(s);
+            for k = 1:size(s_cell)
+                field = s_cell{k};
+                if islogical(field)
+                    ROI = field;
+                end
+            end
+            if isempty(ROI)
+                error('ROI_mask_fname does not contain binary mask!');
+            end
+        end
+            % Saliency detector
+            [num_regions, features, saliency_masks] = mssr(image_data, ...
+                                        ROI, num_levels, otsu, ...
+                                        saliency_types, ...
+                                        region_params, execution_params);
+        disp('------------------------------------------------------------------');
 
 
         mssr_save(features_fname, regions_fname, num_regions, features, saliency_masks);

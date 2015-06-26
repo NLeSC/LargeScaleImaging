@@ -51,12 +51,12 @@ FEAT_DIM_TYPE = 6;
 %--------------------------------------------------------------------------
 % in case we want to read the features incl. the saliency type
 if type
-    i = find(features_fname =='.')
-    j = i(end)
+    i = find(features_fname =='.');
+    j = i(end);
     if isempty(j)
-        features_type_fname = [features_fname '_type.mssr']
+        features_type_fname = [features_fname '_type.mssr'];
     else
-        features_type_fname = [features_fname(1:j-1) '_type.mssr']
+        features_type_fname = [features_fname(1:j-1) '_type.mssr'];
     end
 end
 %**************************************************************************
