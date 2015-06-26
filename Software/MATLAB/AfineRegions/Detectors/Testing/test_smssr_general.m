@@ -1,4 +1,4 @@
-% test_smssr.m- script to test the SMSSR detector
+% test_smssr_general.m- script to test the SMSSR detector on general images
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 27-05-2015
@@ -15,7 +15,7 @@ visualize_minor = false;
 lisa = true;
 
 save_flag = 1;
-vis_flag = 1;
+vis_flag = 0;
 
 %% image filename
 if ispc 

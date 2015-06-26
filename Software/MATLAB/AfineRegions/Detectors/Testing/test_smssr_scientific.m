@@ -1,4 +1,4 @@
-%% test_smssr_demo.m- script to test the SMSSR detector for demo purposes
+% test_smssr_scientific.m- testiing SMSSR detector on scientific images
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 03-06-2015

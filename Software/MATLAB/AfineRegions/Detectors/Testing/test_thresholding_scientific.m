@@ -1,4 +1,5 @@
-% test_thresholding_demo.m- gray-level image thresholding for demo images
+%% test_thresholding_scientific.m- testing gray-level image thresholding for
+%                                  scientific images
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 16-06-2015
