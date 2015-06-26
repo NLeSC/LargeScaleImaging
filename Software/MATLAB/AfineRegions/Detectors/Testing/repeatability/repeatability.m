@@ -1,4 +1,4 @@
-function [erro,repeat,corresp, match_score,matches, twi]=myrepeatability(file1,file2,Hom,imf1,imf2, common_part)
+function [erro,repeat,corresp, match_score,matches, twi]=repeatability(file1,file2,Hom,imf1,imf2, common_part)
 %
 %
 %Computes repeatability and overlap score between two lists of features
