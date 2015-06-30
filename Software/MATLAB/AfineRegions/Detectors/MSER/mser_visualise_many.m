@@ -24,12 +24,13 @@ disp('------------------------------------------------------------------');
 disp('                                                                  ');
 
 % fixed choice for visualization parameters (see mser_visualizatio_one for interactive version)
-list_regions =[];
+list_regions =[24 245 252 258]-2;
+step_list_regions = 5;
 scaling = 1;
-line_width = 2;
+line_width = 1;
 labels = 0;
 col_ellipse = 'y';
-col_label = [];
+col_label = 'b';
 
 % input image directory
 input_dir = input('Enter the full path to the input image directory: ','s');
@@ -78,9 +79,9 @@ for i = indicies
         k = find(base_fname =='.');
         l = k(end);
         if isempty(l)
-            features_fname = [features_dir base_fname '.mser']
+            features_fname = [features_dir base_fname '.mser'];
         else
-            features_fname = [features_dir base_fname(1:l-1) '.mser']
+            features_fname = [features_dir base_fname(1:l-1) '.mser'];
         end
    
 
@@ -88,7 +89,8 @@ for i = indicies
 
     % Show one image    
     display_features_mser(image_fname, features_fname, [],[],0, ...
-        list_regions, scaling, labels, col_ellipse, line_width, col_label, 0);
+        list_regions, step_list_regions, scaling, labels, ...
+        col_ellipse, line_width, col_label, 0);
 
     disp('------------------------------------------------------------------');
     

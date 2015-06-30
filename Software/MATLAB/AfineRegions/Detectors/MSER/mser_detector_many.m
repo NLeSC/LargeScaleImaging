@@ -26,7 +26,7 @@
 %**************************************************************************
 clc; 
 disp('------------------------------------------------------------------');
-disp('    Maximally Stable Extremal Regions (MSER) Detection      ');
+disp('    Maximally Stable Extremal Regions (MSER) Detection            ');
 disp('------------------------------------------------------------------');
 disp('                                                                  ');
 
@@ -73,14 +73,14 @@ features_dir = input('Enter the full path to the output features directory: ','s
 % run for the selected images
 for i = indicies
     base_fname = fnames{i};
-        image_fname = ['"' input_dir base_fname '"'];
-        k = find(base_fname =='.');
-        l = k(end);
-        if isempty(l)
-            features_fname = ['"' features_dir base_fname '.mser' '"'];
-        else
-            features_fname = ['"' features_dir base_fname(1:l-1) '.mser' '"'];
-        end
+    image_fname = ['"' input_dir base_fname '"'];
+    k = find(base_fname =='.');
+    l = k(end);
+    if isempty(l)
+        features_fname = ['"' features_dir base_fname '.mser' '"'];
+    else
+        features_fname = ['"' features_dir base_fname(1:l-1) '.mser' '"'];
+    end
    
 
     disp([' Processing image index # ' num2str(i) ' out of total ' num2str(length(indicies)) ' images...']);
