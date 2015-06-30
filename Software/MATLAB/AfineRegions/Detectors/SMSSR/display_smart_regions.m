@@ -2,7 +2,7 @@
 %**************************************************************************
 % display_smart_regions(image_fname, features_fname, ROI_mask_fname, ...
 %                  regions_fname,...
-%                  list_regions, scaling, labels, col_ellipse, ...
+%                  list_regions, step_list_regions, scaling, labels, col_ellipse, ...
 %                  line_width, col_label, original)
 %
 % author: Elena Ranguelova, NleSc
@@ -23,6 +23,8 @@
 %               if left out or empty default is 0 (no type) [optional]
 % [list_regions]- the list of regions to be displayed [optiona] if left out
 %               all regions from the features_fname file are displayed
+% [step_list_regions] - to show only fraction of the regions: step in the
+%              list, 1:step_num_regions, default is 1
 % [scaling]- ellipse scaling [optional] if left out default is 1
 % [labels]- flag - to display the region number next to it or no 
 %               if left out default is 0 (no labels) [optional]
@@ -42,50 +44,6 @@
 % EXAMPLES USAGE: see mssr_visualise_one!!
 %
 % display_smart_regions(image_fname, features_fname);
-%.........................................................................
-% (my laptop)
-%.........................................................................
-% image_fname = 'C:\ely\ceteceans\test_data\tails\na0016sn00069.jpg';
-% features_fname ='C:\ely\TNO\saliency\mssr-demo\test_results\tails\MSSR\na0016_1.mmsr';
-% display_smart_regions(image_fname, features_fname, [], [],0,[], 3, 1, [],2);
-%
-% shows original image (whole) overlaped with the ellipses and their labels
-% with thick (width 2) line in magenta colour (saliency type flag is 0)
-%.........................................................................
-% image_fname = 'C:\ely\ceteceans\test_data\tails\na0016sn00069.jpg';
-% features_fname = 'C:\ely\TNO\saliency\mssr-demo\test_results\tails\na0016_1';
-% ROI_mask_fname = 'C:\ely\TNO\saliency\mssr-demo\test_images\tails\na0016_1_tail';
-% display_smart_regions(image_fname, features_fname, ROI_mask_fname, [],1,[], 3, 1, [],2);
-%
-% shows original image (whole) overlaped with the ellipses and their labels
-% with thick (width 2) line in magenta colour (saliency type flag is 0)
-%.........................................................................
-% (TNO laptop)
-%.........................................................................
-% image_fname = '..\mssr_demo\test_images\tails\na0016_1_tail_image.jpg';
-% features_fname ='..\mssr_demo\test_results\tails\na0016_1.mssr';
-% regions_fname = '..\mssr_demo\test_results\tails\na0016_1_mssr.mat';
-% display_smart_regions(image_fname, features_fname, [], regions_fname,...
-%                                              0,[], 2, 0, [],1,1,1);
-% shows original image (whole) overlaped with the original regions and also
-% the ellipses (scale 3) and their labels with thick (width 2) line 
-% in magenta colour 
-%.........................................................................
-% image_fname = '..\mssr_demo\test_images\tails\na0016_1_tail_image.jpg';
-% features_fname ='..\mssr_demo\test_results\tails\MSSR\na0016_1.mssr';
-% display_smart_regions(image_fname, features_fname, [], [], 0,[], 3, 1, [],2);
-%
-% shows original image (whole) overlaped with the ellipses (scale 3) and
-% their labels with thick (width 2) line in magenta colour 
-% (saliency type flag is 0)
-%.........................................................................
-% image_fname = '..\mssr_demo\test_images\tails\na0016_1_tail_image.jpg';
-% features_fname ='..\mssr_demo\test_results\tails\na0016_1_type.mssr';
-% display_smart_regions(image_fname, features_fname, [],[], 1,[], 2, 0, [],1,1);
-%
-% shows original image (whole) overlaped with the ellipses (scale 2) 
-% with (width 1) line in 4 colours (saliency type flag is 1); no labels
-% shows also the original regions overlaid in the image
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
@@ -97,26 +55,29 @@ function display_smart_regions(image_fname, features_fname, ROI_mask_fname, ...
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
-if (nargin<12) || isempty(original)
+if (nargin<13) || isempty(original)
     original = 0;
 end
-if (nargin < 11) || isempty(col_label)
+if (nargin < 12) || isempty(col_label)
     col_label = 'm'; % magenta
 end
-if (nargin < 10 ) || isempty(line_width)
+if (nargin < 12 ) || isempty(line_width)
     line_width = 1;
 end
-if (nargin < 9) || isempty(col_ellipse)
+if (nargin < 10) || isempty(col_ellipse)
     col_ellipse =  [1 0 1]; % magenta
 end
-if (nargin < 8) || isempty(labels)
+if (nargin < 9) || isempty(labels)
     labels = 0;
 end
-if (nargin < 7) || isempty(scaling)
+if (nargin < 8) || isempty(scaling)
     scaling = 1;
 end
-if (nargin < 6) 
+if (nargin < 7) 
     list_regions = [];
+end
+if (nargin < 6) 
+    step_list_regions = 1;
 end
 if (nargin < 5) || isempty(type)
     type = 0;
@@ -145,6 +106,7 @@ end
 % features 
 [num_regions, features, saliency_masks] =...
     smssr_open(features_fname, regions_fname, type); 
+sprintf('There are %d number of regions detected.', num_regions)
 
 % image
 I_or = imread(image_fname);
@@ -170,14 +132,14 @@ end
 
 % regions
 if isempty(list_regions)
-    list_regions = 1:num_regions;
+    list_regions = 1:step_list_regions:num_regions;
+    sprintf('Showing every %d st/nd/th of the detected regions.', step_list_regions)
 end
 
 % check if colour of the ellipses is individually specified
 if size(col_ellipse,1) > 1 && ...
         size(col_ellipse,1) ~= length(list_regions)
     error('number of colours should be equal to the number of regions!');
-    return;
 end
 
 %**************************************************************************
@@ -223,7 +185,7 @@ if original
                  I_reg = uint8(I_reg);
             end
     
-    f0=figure; imshow(I_reg); axis on;
+    f0=figure; imshow(I_reg); axis on; title(['SMSSR for %s' image_fname]);
 end
 
 % display the (relevant part of the) image
@@ -289,7 +251,7 @@ for n=list_regions
     if labels
         hold on;
         plot(x,y,[col_label, '+']);
-        text(x + offset, y + offset, num2str(n),...
+        text(x + offset, y + offset, num2str(n+2),...
             'Color',col_label,'FontSize',9,'FontWeight','bold');
         hold off;
     end

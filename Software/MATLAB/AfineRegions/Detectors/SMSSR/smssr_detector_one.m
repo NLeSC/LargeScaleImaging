@@ -127,7 +127,7 @@ disp('                                                                         '
 % input image and ROI
 image_fname = input('Enter the full filename of the input image: ','s');
 
-%% load the image & convertto gray-scale if  color
+%% load the image & convert to gray-scale if  color
 image_data = imread(image_fname);
 if ndims(image_data) > 2
      image_data = rgb2gray(image_data);
@@ -176,6 +176,7 @@ SE_size_factor_preproc = input('Enter the Structuring Element size factor (prepr
 SE_size_factor = input('Enter the Structuring Element size factor: ');
 Area_factor = input('Enter the Connected Component size factor (processing): ');
 num_levels = input('Enter the number of gray-levels: ');
+thresh_type = input('Enter the thresholding type (m/h): ','s');
 thresh = input('Enter the region threshold: ');
 
 region_params = [SE_size_factor Area_factor];
@@ -243,7 +244,8 @@ disp('                                                                  ');
 tic
 image_data = smssr_preproc(image_data, preproc_types, SE_size_factor_preproc, visualise_major);
 [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
-        num_levels, saliency_types, region_params, execution_params);
+        num_levels, saliency_types, thresh_type, ...
+        region_params, execution_params);
       
 disp('                                                                  ');
 disp('------------------------------------------------------------------');
