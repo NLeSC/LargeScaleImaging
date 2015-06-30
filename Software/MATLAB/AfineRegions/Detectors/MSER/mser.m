@@ -46,9 +46,9 @@ if nargin < 2 || isempty(features_fname)
     i = find(image_fname =='.');
     j = i(end);
     if isempty(j)
-        features_fname = [image_fname '.mser'];    
+        features_fname = ['"' image_fname '.mser' '"']    
     else
-        features_fname = [image_fname(1:j-1) '.mser'];
+        features_fname = ['"' image_fname(1:j-1) '.mser' '"']
     end
 end
 if nargin < 1

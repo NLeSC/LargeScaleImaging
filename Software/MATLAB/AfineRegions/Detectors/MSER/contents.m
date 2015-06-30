@@ -28,6 +28,7 @@
 % mser_detector_one.m- script for applying MSER detector on 1 image
 % mser_detector_many.m- script for applying MSER detector on many images
 % mser_visualise_one.m- script for displaying the extracted MSER on 1 image
+% mser_visualise_many.m- displaying the extracted MSER detector on many images
 %**************************************************************************
 % misc
 %**************************************************************************

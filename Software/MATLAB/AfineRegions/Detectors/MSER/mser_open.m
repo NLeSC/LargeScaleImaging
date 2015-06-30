@@ -55,6 +55,7 @@ FEAT_DIM = 5;
 %--------------------------------------------------------------------------
 %..........................................................................
 % read off the features
+features_fname
 fid = fopen(features_fname,'r');
 t = fscanf(fid,'%f \n',1);
 num_regions = fscanf(fid,'%d \n',1);
