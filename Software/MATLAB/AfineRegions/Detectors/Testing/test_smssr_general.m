@@ -293,10 +293,7 @@ for i = 1:len
     if vis_flag
       disp(' Displaying... ');
       
-      type = 1; % distinguish region's types
-   
-      % open the saved regions
-      [num_smartregions, features, saliency_masks] = smssr_open(features_filename{i}, regions_filename{1}, type);
+      type = 1; % distinguish region's types         
     
       list_smartregions = [];     % display all regions
    
@@ -313,7 +310,6 @@ for i = 1:len
 		    regions_filename{i},...  
 		    type, list_smartregions, scaling, labels, col_ellipse, ...
 		    line_width, col_label, original);
-      title('SMSSR');
     end
     
      
