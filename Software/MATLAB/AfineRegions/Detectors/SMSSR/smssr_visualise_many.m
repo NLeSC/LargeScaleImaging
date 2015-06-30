@@ -28,10 +28,11 @@ list_regions =[];
 step_list_regions = [];
 scaling = 1;
 line_width = 1;
-labels = 0;
+labels = 1;
 type = 1;
 col_ellipse = 'y';
-col_label = 'b';
+col_label = 'g';
+original = 0;
 
 % input image directory
 input_dir = input('Enter the full path to the input image directory: ','s');
@@ -73,6 +74,9 @@ end
 % output (feature) directory
 features_dir = input('Enter the full path to the features (ellipse representation) directory: ','s');
 
+% no masks for now
+ROI_mask_fname = [];
+
 % visualise the selected images
 for i = indicies
     base_fname = fnames{i};
@@ -91,7 +95,8 @@ for i = indicies
     % Show one image    
     display_smart_regions(image_fname, features_fname, ROI_mask_fname, ...
                   regions_fname,type, ...
-                  list_regions, step_list_regions, scaling, labels, col_ellipse, ...
+                  list_regions, step_list_regions, ...
+                  scaling, labels, col_ellipse, ...
                   line_width, col_label, original);
 
     disp('------------------------------------------------------------------');
