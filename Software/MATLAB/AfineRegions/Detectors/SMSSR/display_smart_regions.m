@@ -253,7 +253,7 @@ for n=list_regions
         hold on;
         plot(x,y,[col_label, '+']);
         text(x + offset, y + offset, num2str(n+2),...
-            'Color',col_label,'FontSize',9,'FontWeight','bold');
+            'Color',col_label,'FontSize',8,'FontWeight','normal');
         hold off;
     end
 end

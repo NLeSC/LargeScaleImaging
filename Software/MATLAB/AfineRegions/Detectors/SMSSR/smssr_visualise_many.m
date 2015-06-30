@@ -84,9 +84,11 @@ for i = indicies
         k = find(base_fname =='.');
         l = k(end);
         if isempty(l)
-            features_fname = [features_dir base_fname '.mser'];
+            features_fname = [features_dir base_fname '.smssr'];
+            regions_fname = [features_dir base_fname '._smartregions.mat'];
         else
-            features_fname = [features_dir base_fname(1:l-1) '.mser'];
+            features_fname = [features_dir base_fname(1:l-1) '.smssr'];
+            regions_fname = [features_dir base_fname '_smartregions.mat'];
         end
    
 
