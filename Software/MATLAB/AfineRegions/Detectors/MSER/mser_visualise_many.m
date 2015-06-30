@@ -25,10 +25,10 @@ disp('                                                                  ');
 
 % fixed choice for visualization parameters (see mser_visualizatio_one for interactive version)
 list_regions =[];
-step_list_regions = 20;
+step_list_regions = 5;
 scaling = 1;
 line_width = 1;
-labels = 1;
+labels = 0;
 col_ellipse = 'y';
 col_label = 'g';
 

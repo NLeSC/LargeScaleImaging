@@ -28,7 +28,7 @@ list_regions =[];
 step_list_regions = [];
 scaling = 1;
 line_width = 1;
-labels = 1;
+labels = 0;
 type = 1;
 col_ellipse = 'y';
 col_label = 'g';
@@ -85,10 +85,10 @@ for i = indicies
         l = k(end);
         if isempty(l)
             features_fname = [features_dir base_fname '.smssr'];
-            regions_fname = [features_dir base_fname '._smartregions.mat'];
+            regions_fname = [];%[features_dir base_fname '._smartregions.mat'];
         else
             features_fname = [features_dir base_fname(1:l-1) '.smssr'];
-            regions_fname = [features_dir base_fname '_smartregions.mat'];
+            regions_fname = [];%[features_dir base_fname '_smartregions.mat'];
         end
    
 
