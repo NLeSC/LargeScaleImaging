@@ -10,24 +10,33 @@ The SaliencyToolbox is a collection of Matlab functions and scripts for computin
 \subsubsection{Frequency-tuned Saliency}
 The code used in the CVPR 2009 paper ``Frequency-tuned Salient Region Detection'' (\cite{LCAV-CONF-2009-012}) is accessible through the online presentation of the work at \cite{achantaCVPR09}.
 
-\subsection{Dataset annotation}
-\subsubsection{LabelMe}\label{subsec:labelme}
-LabelMe is a WEB-based image annotation tool that allows researchers to label images and share the annotations with the world. The images canbe organizated into collections, which canbe nested. Images can alsobe uploaded into the system andshared.
 
-The LabelMe MATLAB toolbox is used for interaction with the images and annotations in the LabelMe dataset \ref{subsec:obj_scene_db}. The tool is described in this paper
-\cite{Russell2008}. The toolbox also exists in 3D version, LabelMe3D which is described in \cite{Russell2009}. There is also a mobile App version and instructions how could the labelling be outsourced using the Amazon Mechanical Turk.
-
+\subsection{Salient regions}
+\subsubsection{VLFeat}\label{vlfeat:sec}
 \subsubsection{Photo-identification}
 
 
-\subsection{Convolutional Neural Networks}
+\subsection{Deep Learning}
 With the excellent performance of CNNs on the ImageNet classification dataset and many other recognition tasks, there is a boom of development of software tools implementing deep leanring and CNNs. 
 The tools are often free and open source. At \url{http://deeplearning.net/software_links/} there is an extensive list of such packages/libraries. Here, only the most popular are presented:
 \subsubsection{Caffe}
-Caffe (\cite{caffe_soft}) is BSD2-Clause license modular framework for deep leanring developed by the Berkeley Vision and Learning Center (BVLC). The framework is a C++ library with Python and MATLAB bindings fr training and deploying general-prurpose CNNs and other deep models on commodity architectures. It is a very popular framework, both in academia and industry due to its speed performance- it can process $60M$ images per day witha single NVIDIA K40 GPU. There is a large community of user and user groups and contributers on GitHub. A technical report for Caffe can be found at it's git repository: \url{https://github.com/BVLC/Caffe/}.
+Caffe (\cite{caffe_soft}) is BSD2-Clause license modular framework for deep leanring developed by the Berkeley Vision and Learning Center (BVLC). The framework is a C++ library with Python and MATLAB bindings fr training and deploying general-prurpose CNNs and other deep models on commodity architectures. It is a very popular framework, both in academia and industry due to its speed performance- it can process $60M$ images per day witha single NVIDIA K40 GPU. There is a large community of user and user groups and contributers on GitHub. A technical report for Caffe can be found at it's git repository: \url{https://github.com/BVLC/Caffe/}. It is the most popular open source project on computer vision and deep learning.  
 \subsubsection{Torch7}
 Torch (\cite{torch_soft}) is a scientific computing framework with wide support for machine learning algorithms. It is efficient due to the underlying C/CUDA implementations. It has interfaces to C, via LuaJIT, linear algebra routines, neural networks and numeric optimization routines. It runs on Mac OS X and Ubuntu 12+. There is a large community of contributors and users and the developers and mainteiners are from Facebook AI Research, Google DeepMind, Twitter etc. 
 \subsubsection{Theano}
-Theano (\cite{theano_soft})
-\subsubsection{DeepLearnToolbox}
+Theano (\cite{theano_soft}) is a Python library allowing you definition, optimization, and evaluation of mathematical expressions involving multi-dimensional arrays efficiently. It supports transparent usage of GPU. \cite{bergstra+al:2010-scipy} and \cite{Bastien-Theano-2012} are the initial publications about the library with a new academic publication comming up nearly every year. Many DeepLearning tutorials are based on Theano. The official Theano tutorial could be found at \url{http://deeplearning.net/software/theano/tutorial/}.
+\subsubsection{MATLAB Toolboxes}
+{\bf DeepLearnToolbox}(\cite{deeplearntoolbox_soft})is a Matlab/Octave toolbox for deep learning. Includes Deep Belief Nets, Stacked Autoencoders, Convolutional Neural Nets, Convolutional Autoencoders and vanilla Neural Nets. Each method has examples to help the starting process.\\
+{\bf MatConvNet} (\cite{matconvnet_soft}) is a MATLAB toolbox implementing Convolutional Neural Networks (CNNs) for computer vision applications. It is part of the VLFeat suite (\cite{vlfeat_soft}), which contains also salient feature extraction (see section \ref{vlfeat:sec}). MatConvNet is described in \cite{matconvnet_paper}.\\
+ There are many other MATLAB software which provide CNN implementaitons, some can be found at the MATLAB FileExchange, e.g. \url{http://www.mathworks.com/matlabcentral/fileexchange/24291-cnn-convolutional-neural-network-class}.
+
 \subsubsection{Deeplearning4j}
+Deeplearning4j 
+
+\subsubsection{Dataset annotation}\label{subsec:dbannot}
+A common problem of using Deep Lerning is the need for having large annotated datasets (though also unsupervised approaches exist). This is an issue for large-scale imaging problems. SOme software has been developed to tackle the issue.
+
+{\bf LabelMe} is a WEB-based image annotation tool that allows researchers to label images and share the annotations with the world. The images canbe organizated into collections, which can be nested. Images can alsobe uploaded into the system andshared.
+
+The LabelMe MATLAB toolbox is used for interaction with the images and annotations in the LabelMe dataset \ref{subsec:obj_scene_db}. The tool is described in this paper
+\cite{Russell2008}. The toolbox also exists in 3D version, LabelMe3D which is described in \cite{Russell2009}. There is also a mobile App version and instructions how could the labelling be outsourced using the Amazon Mechanical Turk.
