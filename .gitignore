@@ -1,7 +1,12 @@
 /Data/Test
 /Data/Scientific
 /Results/Scientific
+/Software/MATLAB/AfineRegions/ImageThresholdingFuzzyEntropy/
+
 *.aux
 *.toc
 *.*~
 *.log
+*.asv
+*.blg
+*.out
