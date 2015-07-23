@@ -1,0 +1,7 @@
+/Data/Test
+/Data/Scientific
+/Results/Scientific
+*.aux
+*.toc
+*.*~
+*.log
