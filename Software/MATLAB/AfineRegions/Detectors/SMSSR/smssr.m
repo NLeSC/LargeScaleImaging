@@ -22,7 +22,8 @@
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
-% [thresh_type]     character 'm' for multithresholding or 'h' for
+% [thresh_type]     character 's' for simple thresholding, 
+%                   'm' for multithresholding or 'h' for
 %                   hysteresis, [optional], if left out default is 'h'
 % [region_params]   region parameters [SE_size_factor, area_factor, saliency_thresh]
 %                   SE_size_factor- structuring element (SE) size factor  
@@ -90,7 +91,7 @@ if nargin < 6 || isempty(region_params) || length(region_params) < 3
     region_params = [0.02 0.03 0.7];
 end
 if nargin < 5
-    thresh_type = 'h';
+    thresh_type = 's';
 end
 if nargin < 4 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
@@ -230,6 +231,8 @@ end
 %--------------------------------------------------------------------------
 % find optimal thresholds
 switch thresh_type
+    case 's'
+        thresholds = fix(1:255/num_levels:255);
     case 'm'
         thresholds = multithresh(image_data, num_levels);
         num_levels = length(thresholds);
@@ -268,6 +271,7 @@ for it = 1:num_levels
 
     switch thresh_type
         case 'm'
+        case 's'
             level = thresholds(it);
         case 'h'
             level(1) = high_thresholds(it);
@@ -308,7 +312,7 @@ for it = 1:num_levels
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
         figure(f2);imshow(binary_image);
-        if ndims(level > 1)
+        if size(level) > 1
             title(['Segmented image at thresholds: ' ...
                 num2str(level(2))  ' and ' num2str(level(1)) ]);
         else
@@ -365,18 +369,22 @@ end
 tic;
 % the holes and islands
 if find(holes_acc)
-    holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
+   % holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
+    holes_thresh = uint8(holes_acc > 0);
 end
 if find(islands_acc)
-    islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
+   % islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
+    islands_thresh = uint8(islands_acc > 0);
 end
 
 % the indentations and protrusions
 if find(indentations_acc)
-    indentations_thresh = thresh_area(indentations_acc, saliency_thresh, verbose);
+   %indentations_thresh = thresh_area(indentations_acc, saliency_thresh, verbose);
+    indentations_thresh = uint8(indentaitons_acc > 0);
 end
 if find(protrusions_acc)
-    protrusions_thresh = thresh_area(protrusions_acc, saliency_thresh, verbose);
+   %protrusions_thresh = thresh_area(protrusions_acc, saliency_thresh, verbose);
+   protrusions_thresh = uint8(protrusions_acc > 0);
 end
   
 %visualisation
@@ -390,9 +398,9 @@ end
 
     
 %**************************************************************************
-% variables -> output parameters
+%variables -> output parameters
 %--------------------------------------------------------------------------
-% all saliency masks in one array
+%all saliency masks in one array
 saliency_masks(:,:,1) = holes_thresh;
 saliency_masks(:,:,2) = islands_thresh;
 saliency_masks(:,:,3) = protrusions_thresh;

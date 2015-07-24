@@ -11,7 +11,7 @@ verbose = false;
 visualize = true;
 visualize_major = false;
 visualize_minor = false;
-lisa = true;
+lisa = false;
  
 otsu = false;
 
@@ -218,7 +218,7 @@ for i = 1:len
        type = 1; % distinguish region's types
    
       % open the saved regions
-      [num_regions, features, saliency_masks] = mssr_open(features_filename{i}, regions_filename{1}, type);
+     % [num_regions, features, saliency_masks] = mssr_open(features_filename{i}, regions_filename{1}, type);
     
       list_regions = [];     % display all regions
    

@@ -134,7 +134,7 @@ end
 % regions
 if isempty(list_regions)
     list_regions = 1:step_list_regions:num_regions;
-    sprintf('Showing every %d st/nd/th of the detected regions.', step_list_regions)
+    sprintf('Showing every %d st/nd/th of the detected regions.', step_list_regions);
 end
 
 % check if colour of the ellipses is individually specified

@@ -12,10 +12,10 @@ verbose = false;
 visualize = true;
 visualize_major = false;
 visualize_minor = false;
-lisa = true;
+lisa = false;
 
 save_flag = 1;
-vis_flag = 0;
+vis_flag = 1;
 
 %% image filename
 if ispc 
@@ -259,7 +259,7 @@ for i = 1:len
         SE_size_factor_preproc = 0.002;
         Area_factor = 0.25;
         num_levels = 20;
-        thresh_type = 'h';
+        thresh_type = 's';
         saliency_thresh = 0.75;
     end
     
@@ -274,6 +274,7 @@ for i = 1:len
     end
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
         num_levels, saliency_types, thresh_type, region_params, execution_params);
+%    pause;
     toc
     % save the features
     disp('Saving ...');
@@ -290,27 +291,28 @@ for i = 1:len
  %       f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
       
  %   end
-    if vis_flag
-      disp(' Displaying... ');
-      
-      type = 1; % distinguish region's types         
-    
-      list_smartregions = [];     % display all regions
-   
-      scaling = 1;  % no scaling
-      line_width = 2; % thickness of the line
-      labels = 0; % no region's labels
-   
-      col_ellipse = [];
-      col_label = [];
-    
-      original = 0; % no original region's outline
-          
-      display_smart_regions(image_filename{i}, features_filename{i}, mask_filename, ...
-		    regions_filename{i},...  
-		    type, list_smartregions, scaling, labels, col_ellipse, ...
-		    line_width, col_label, original);
-    end
+if vis_flag
+     disp('Displaying... ');
+
+     type = 1; % distinguish region's types
+
+     list_smartregions = [];     % display all regions
+
+     scaling = 1;  % no scaling
+     line_width = 2; % thickness of the line
+     labels = 0; % no region's labels
+
+     col_ellipse = [];
+     col_label = [];
+     step_list_regions = [];
+
+     original = 0; % no original region's outline
+
+     display_smart_regions(image_filename{i}, features_filename{i}, mask_filename, ...
+         regions_filename{i},...
+         type, list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
+         line_width, col_label, original);
+ end
     
      
 end
