@@ -41,12 +41,17 @@ For the purpose of their research the authors made a new database available to t
 
 \subsection{Salient regions}
 
-In \cite{Forssen07} colour extension ot the popular {\em  Maximally Stable Extremal Regions (MSER)} detector is proposed. The author calles his detector {\em Maximally stable colour region (MSCR)}. In comparision on the well-known Visual Geometry Group in Oxford test image sets (\cite{vgg_soft_data}) with known homographies to the original MSER detector, the simple colour MSER extension (MSER3) and a colour blob detector, the MSCR performes better in most cases. The executables of the software for MSCR and blob detectors are available at the author's homepage \cite{forssen07_soft}.
+A decade ago, a seminal paper by the Visual Geometry Group in Oxford, compared the exsiting {\em affine-covariant} region detectors in \cite{Mikolajczyk:2005}. The affine covaiance property ofthe detected regions refers to the requirenment that these regions should correspond to the same pre-image for different viewpoints and geometric transformaitons. In the literature that property is often refered to as {\em affine invariance} to these transformations. A clear conclusion of this comparative study is the the  {\em  Maximally Stable Extremal Regions (MSER)} detector (\cite{Matas2002BMVC}) is the winner in many of the test scenarios and since then, the MSER detector has become a de-facto standart in the field (for example is now an intergral part of the MATLAB Computer Vision System Toolbox).
+
+After this comparative study, several reserachers have propossed improvements to the MSER detector though none of them increased the performance  drastically. 
+In \cite{Forssen07} an MSER colour extension is proposed. The author calles his detector {\em Maximally stable colour region (MSCR)}. In comparision on the well-known Visual Geometry Group in Oxford test image sets (\cite{vgg_soft_data}) with known homographies to the original MSER detector, the simple colour MSER extension (MSER3) and a colour blob detector, the MSCR performes better in most cases. The executables of the software for MSCR and blob detectors are available at the author's homepage \cite{forssen07_soft}.
 
 The MSER detectorhas been also extended in 3D to {\em Maximally Stable Volumes (MSVs)} in \cite{DonoserB06}. The MSVs have been used to sucessfully segment 3D medical images and paper fiber networks.
 
 In \cite{Fan08} a structure-guided salient region detector (SGSR) is introduced. It is based on entropy-based saliency theory and shows competitive performance.
 
-In \cite{Wang14} another enhancmenet of MSER is proposal, namely with Canny detector....
+In \cite{Wang14} another enhancmenet of MSER is proposal, namely with the Canny edge detector. The dilation operator is used on the detected edges to remove ambigous edges, which makes the interest regions more representative. The improved MSER shows better performance than the original MSER in image classification in the bag of words framework, though original comparision of repeatability (\cite{Mikolajczyk:2005}) is not presented. 
+
+Recently, an interesting aricle which compares the CNNs with matching with SIFT descriptor of salient regions have been published \cite{FischerDB14}. The authors have also recorded a new larger dataset, copared to the only $48$ images in the comparative study paper, coverring larger class of image transformation. Unfortunately, the datasetis not madepublic.
 
 \subsection{Convolutional Neural Networks}
