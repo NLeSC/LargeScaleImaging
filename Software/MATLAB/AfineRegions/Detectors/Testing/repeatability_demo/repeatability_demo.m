@@ -2,7 +2,7 @@ function repeatability_demo
 
 det_suffix={'mser';'mssr';'smssr'};
 
-lisa = false;
+lisa = true;
 %% image filename
 if ispc 
     starting_path = fullfile('C:','Projects');
