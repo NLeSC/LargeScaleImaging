@@ -69,6 +69,36 @@ The saliency segmentation method and the findings have been published at \cite{T
 \subsubsection{MSRA-MM}
 In 2009, the reserachers from Micsosoft Research Asia have released 2 versions of large multimedia datasets- MSRA-MM \cite{msra-mm_db}. MSRA-MM 1.0 consists of two sub-datasets, i.e., an image dataset and a video dataset that are collected from the image and video search engines. For image dataset, there are about $1000$ images per query for $68$ representative queries based on the log of search engies. There are $65443$ images in total. For the video dataset, $165$ representative queries have been selected from a log resulting in total of $10277$ videos. Due to copyright issues, the raw image and video data are not available, but only features and annotations are provided. The dataset is explained in detail in a techical report \cite{export:79942}.
 
+\subsection{Salient Regions Datasets}
+Surprisingly there are not many datasets available for testing saleint region detection.
+
+\subsubsection{Oxford Vision Group}
+
+For more than a decade the standart dataset was provided by Mikolajczyk et al. \cite{Mikolajczyk:2005} from the Oxford vision group. The dataset is rather small, contains only $48$ images, but real (not simulated). Illustration of the dataset can be seen on figure \ref{fig:mikdataset}. 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.95\textwidth]{fig/MikDataset}
+\end{center}
+\caption{Oxford vision group dataset: (a), (b) Viewpoint change, (c), (d) Zoom+rotation, (e), (f) Image blur, (g) JPEG compression, (h) Light change. In the
+case of viewpoint change, scale change and blur, the same change in imaging conditions is applied to two different scene types: structured and
+textured scenes. The left most image of each set is used as the reference image.}
+\label{fig:mikdataset}
+\end{figure}
+
+ Five different changes in imaging conditions are represented: viewpoint changes (a) \& (b); scale changes (c) \& (d); image blur (e) \& (f); JPEG compression (g); and illumination (h). The effect of changing the image conditions can be separated from
+the effect of changing the scene type. One scene type contains homogeneous regions with distinctive edge boundaries (e.g. graffiti, buildings), and the other contains
+repeated textures of different forms. The authors referred to these as structured versus textured scenes respectively. For example sequence (a) is of structured type, while (b) is example of textured sequence.
+
+In the viewpoint change test the camera varies from a fronto-parallel view to one with significant foreshortening
+at approximately 60 degrees to the camera. For details of the other image transformations, the reader is referred to the publication \cite{Mikolajczyk:2005} and the data description.   All images are of small resoluton for now a days standarts, but considered medium a decade ago (approximately 800 $\times$ 640 pixels).
+Since the images are either of planar scenes or the camera position is fixed during acquisition, the images are related by homographies (plane
+projective transformations). All homographies between the reference (leftmost) image and the other images in a particular dataset are provided.
+
+It is available under Test Data from \url{http://www.robots.ox.ac.uk/~vgg/research/affine/index.html}.
+\subsubsection{Freiburg University}
+More recently, Fissher 
+
 \subsection{Object and Scene Recognition Datasets}
 \label{subsec:obj_scene_db}
 

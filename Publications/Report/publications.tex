@@ -41,9 +41,22 @@ For the purpose of their research the authors made a new database available to t
 
 \subsection{Salient regions}
 
-A decade ago, a seminal paper by the Visual Geometry Group in Oxford, compared the exsiting {\em affine-covariant} region detectors in \cite{Mikolajczyk:2005}. The affine covaiance property ofthe detected regions refers to the requirenment that these regions should correspond to the same pre-image for different viewpoints and geometric transformaitons. In the literature that property is often refered to as {\em affine invariance} to these transformations. A clear conclusion of this comparative study is the the  {\em  Maximally Stable Extremal Regions (MSER)} detector (\cite{Matas2002BMVC}) is the winner in many of the test scenarios and since then, the MSER detector has become a de-facto standart in the field (for example is now an intergral part of the MATLAB Computer Vision System Toolbox).
+Detecting automatically {\em salient}, e.g.  interesting, disctinct, characteristic and repeatably findable regions from an image is a major reserach topic in the area of image {\em feature extraction}. The salient regions are one type of features which can offer useful representation of images along with interest points, edges, ridges etc. Usually the first step is automaticlly extracting salient regions using an salient/interest region {\em detector} follwed by describing each region/patch using a region {\em descriptor}. As a final step, two sets of region descriptors are compared and {\em matched} in order to establish correspondences between $2$ images. The main application areas are wide-baseline stereo matching, panoramas stiching,  and identification of scenes and objects. 
 
-After this comparative study, several reserachers have propossed improvements to the MSER detector though none of them increased the performance  drastically. 
+One very important and desired property of such region detection is {\em affine covaiance}.  The affine covaiance property refers to the requirenment that these regions should correspond to the same pre-image for different viewpoints and geometric transformaitons. In the literature that property is often refered to as {\em affine invariance} to these transformations. 
+This concept is shown on figure \ref{fig:affreg}. The figure illustrates that an affine salient regions detector has automatically and independantly detected the same pre-image regions on both images. Some detectors provide arbitrarily shaped regions, others detect elliptical regions. For the purpose of comparision, the (equivalent) elliptical regions are usually used and shown.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.95\textwidth]{fig/AffineRegions}
+\end{center}
+\caption{Example of affine regions detection. Image2 is affinely transformed version of Image1.}
+\label{fig:affreg}
+\end{figure}
+
+\subsubsection{Detectors}
+A decade ago, a seminal paper by the Visual Geometry Group in Oxford, compared the exsiting affine-covariant region detectors in \cite{Mikolajczyk:2005}. A clear conclusion of this comparative study is the the  {\em  Maximally Stable Extremal Regions (MSER)} detector (\cite{Matas2002BMVC}) is the winner in many of the test scenarios and since then, the MSER detector has become a de-facto standart in the field (for example is now an intergral part of the MATLAB Computer Vision System Toolbox). For common implementations of MSER, the reader is referred to \ref{soft:salreg:sec}.
+
+After this comparative study, several reserachers have propossed improvements to the MSER detector though none of them increased the performance drastically. 
 In \cite{Forssen07} an MSER colour extension is proposed. The author calles his detector {\em Maximally stable colour region (MSCR)}. In comparision on the well-known Visual Geometry Group in Oxford test image sets (\cite{vgg_soft_data}) with known homographies to the original MSER detector, the simple colour MSER extension (MSER3) and a colour blob detector, the MSCR performes better in most cases. The executables of the software for MSCR and blob detectors are available at the author's homepage \cite{forssen07_soft}.
 
 The MSER detectorhas been also extended in 3D to {\em Maximally Stable Volumes (MSVs)} in \cite{DonoserB06}. The MSVs have been used to sucessfully segment 3D medical images and paper fiber networks.
@@ -52,6 +65,12 @@ In \cite{Fan08} a structure-guided salient region detector (SGSR) is introduced.
 
 In \cite{Wang14} another enhancmenet of MSER is proposal, namely with the Canny edge detector. The dilation operator is used on the detected edges to remove ambigous edges, which makes the interest regions more representative. The improved MSER shows better performance than the original MSER in image classification in the bag of words framework, though original comparision of repeatability (\cite{Mikolajczyk:2005}) is not presented. 
 
-Recently, an interesting aricle which compares the CNNs with matching with SIFT descriptor of salient regions have been published \cite{FischerDB14}. The authors have also recorded a new larger dataset, copared to the only $48$ images in the comparative study paper, coverring larger class of image transformation. Unfortunately, the datasetis not madepublic.
+In the context of humpback whale identification, Ranguelova et al. \cite{RangMSSR06, RangHumpb06} have proposed {\em Morphology based Stable Salient Regions (MSSR) } detector whcih is not better than MSER on repeatability, but mostly on less number of regions (whcih is important in the matching step) and salient perception. Within the eStep, NLeSc's technology platform, some research is ongoing to improve MSSR. The related code is available in the (for now private) git NLeSc repository \url{https://github.com/NLeSC/LargeScaleImaging/tree/master/Software}.
+
+\subsubsection{Descriptors}
+
+\subsubsection{Matching}
 
 \subsection{Convolutional Neural Networks}
+
+Recently, an interesting aricle which compares the CNNs with matching with SIFT descriptor of salient regions have been published \cite{FischerDB14}. The authors have also recorded a new larger dataset, copared to the only $48$ images in the comparative study paper, coverring larger class of image transformation. 
