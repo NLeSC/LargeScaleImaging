@@ -68,9 +68,9 @@ In \cite{Wang14} another enhancmenet of MSER is proposal, namely with the Canny 
 In the context of humpback whale identification, Ranguelova et al. \cite{RangMSSR06, RangHumpb06} have proposed {\em Morphology based Stable Salient Regions (MSSR) } detector whcih is not better than MSER on repeatability, but mostly on less number of regions (whcih is important in the matching step) and salient perception. Within the eStep, NLeSc's technology platform, some research is ongoing to improve MSSR. The related code is available in the (for now private) git NLeSc repository \url{https://github.com/NLeSC/LargeScaleImaging/tree/master/Software}.
 
 \subsubsection{Descriptors}
-
+ANother important performance evaluation paper from the Oxford Vision group has compared the salient region descriptors \cite{}. 
 \subsubsection{Matching}
 
 \subsection{Convolutional Neural Networks}
 
-Recently, an interesting aricle which compares the CNNs with matching with SIFT descriptor of salient regions have been published \cite{FischerDB14}. The authors have also recorded a new larger dataset, copared to the only $48$ images in the comparative study paper, coverring larger class of image transformation. 
+Recently, an interesting aricle which compares the matching of salient regions  with CNNs with matching with SIFT descriptor have been published \cite{FischerDB14}. The authors have also recorded a new larger dataset, compared to the only $48$ images in the comparative study paper, coverring larger class of image transformations with more images (see \ref{sec:salregdb}). The goal of the paper is to study the regions/patches descriptors, not to evaluate detectors. For the detection step, the standart MSER detector have been used. The paper concludes that the CNN trained features are consistently better than the SIFT descriptor, for the price of a higher computational cost.
