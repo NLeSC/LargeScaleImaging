@@ -68,9 +68,13 @@ In the context of humpback whale identification, Ranguelova et al. \cite{RangMSS
 \subsubsection{Descriptors}
 Another important performance evaluation paper from the Oxford Vision group has compared the salient region descriptors \cite{MS05}. The conclusion of the performance evaluaiton was the the {\em Gradient location-orientation histogram (GLOH)} detector was performing best (recall and precision) followed closely by the {\em Scale Invariant Feature Transform (SIFT)} descriptor \cite{Lowe:2004}. The SIFT descriptor has been the most popular and widely used descriptor in CV for over a decade. 
 
-There are many variants of the SIFT descriptor, all based on floating point aritmetic, for example, SURF\cite{Bay:2008:SURF} and also GLOH \cite{MS05}, designed to improve distinctiveness....{{\bf TO DO: one line description}
+The idea behind SIFT Transform is finding the extrema in scale-space. These extrema found from all possible scales and image locations are the potential iterest points (another important class of features forimage description andmatching). Then only the most stable points are selected. One or more orientations are assigned to a point based onthe local gradient directions, while invariance to reansformations is achived by computing these orientaitons from all possible transformed versions of the data.  This histogram of (usually $128$) orientaitons are the keypoint descriptor. For applying SIFT descriptor on salient regions, only the descriptor steps are performed. 
+There are many variants of the SIFT descriptor, all based on floating point aritmetic, for example, SURF\cite{Bay:2008:SURF} and also GLOH \cite{MS05}, designed to improve distinctiveness.
 
-{\bf More recent descriptors: BOLDetc, see CVPRpaper by Mykolajczuk}
+There is an important class of descriptors which offer computationally more tractable solution to region/patch description, the {\em binary descriptors}. Examples of such descriptors are  {\em FAST} \cite{Rosten:2006}, {\em Binary robust independant elementary features (BRIEF)}\cite{Calonder:2010}, {\em Binary Robust Invariant Keypoints (BRISK)} \cite{Leutenegger:2011}, {\em  ORB} \cite{Rublee:2011}, etc.
+
+Another more recent performance paper compares their performance also in comparision to the established descriptors like SIFT or SURF \cite{conf/icpr/MiksikM12}.
+{\bf TO DO- main conclusions paper}.
 
 More recently simpler to compute, but also very rich and distinctive descriptors have been proposed. An important class is the so called binary descriptors. For example, the {\em Binary Online Learned Descriptor (BOLD)}, \cite{Balntas_2015_CVPR}.....
 
