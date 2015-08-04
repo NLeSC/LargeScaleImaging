@@ -37,9 +37,19 @@ For the purpose of their research the authors made a new database available to t
 
 \subsection{Salient regions}
 
-For the {\em object/scene identificaiton} task, the main question is whether two images taken at different times or under different viewing, lightig or acquizition conditions depict the same object/scene. One way of answerring this question is to compare sets of local characteristic features, extracted reliably and independantly from the two images.
+For the {\em object/scene identification} task, the main question is whether two images taken at different times or under different viewing, lighting or acquisition conditions depict the same object/scene. One way of answering this question is to compare sets of local characteristic features, extracted reliably and independently from the two images.
 
-Detecting automatically {\em salient}, e.g.  interesting, distinct, characteristic and repeatably find-able regions from an image is a major research topic in the area of image {\em feature extraction}. The salient regions are one type of features which can offer useful representation of images along with interest points, edges, ridges etc. Usually the first step is automatically extracting salient regions using an salient/interest region {\em detector} followed by describing each region/patch using a region {\em descriptor}. As a final step, two sets of region descriptors are compared and {\em matched} in order to establish correspondences between the images. The main application areas are wide-baseline stereo matching, panoramas stitching,  and identification of scenes and objects. 
+Detecting automatically {\em salient}, e.g.  interesting, distinct, characteristic and repeatably find-able regions from an image is a major research topic in the area of image {\em feature extraction}. The salient regions are one type of features which can offer useful representation of images along with interest points, edges, ridges etc. Usually the first step is automatically extracting salient regions using an salient/interest region {\em detector} followed by describing each region/patch using a region {\em descriptor}. As a final step, two sets of region descriptors are compared and {\em matched} in order to establish correspondences between the images. This is illustrated in Figure \ref{fig:keydescr}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{fig/KeypointsDescriptors}
+\end{center}
+\caption{Extracting descriptors from detected keypoints/regions.}
+\label{fig:keydescr}
+\end{figure}
+
+The main application areas are wide-baseline stereo matching, panoramas stitching,  and identification of scenes and objects. 
 
 One very important and desired property of such region detection is {\em affine covariance}.  The affine covariance property refers to the requirement that these regions should correspond to the same pre-image for different viewpoints and geometric transformations. In the literature that property is often referred to as {\em affine invariance} to these transformations. 
 This concept is shown on figure \ref{fig:affreg}. The figure illustrates that an affine salient regions detector has automatically and independently detected the same pre-image regions on both images. Some detectors provide arbitrarily shaped regions, others detect elliptical regions. For the purpose of comparison, the (equivalent) elliptical regions are usually used and shown.
@@ -66,19 +76,50 @@ In \cite{Wang14} another enhancement of MSER is proposal, namely with the Canny 
 In the context of humpback whale identification, Ranguelova et al. \cite{RangMSSR06, RangHumpb06} have proposed {\em Morphology based Stable Salient Regions (MSSR) } detector which is not better than MSER on repeatably, but mostly on less number of regions (which is important in the matching step) and salient perception. Within the eStep, NLeSc's technology platform, some research is ongoing to improve MSSR. The related code is available in the (for now private) \href{https://github.com/NLeSC/LargeScaleImaging/tree/master/Software}{git NLeSc repository}.
 
 \subsubsection{Descriptors}
-Another important performance evaluation paper from the Oxford Vision group has compared the salient region descriptors \cite{MS05}. The conclusion of the performance evaluaiton was the the {\em Gradient location-orientation histogram (GLOH)} detector was performing best (recall and precision) followed closely by the {\em Scale Invariant Feature Transform (SIFT)} descriptor \cite{Lowe:2004}. The SIFT descriptor has been the most popular and widely used descriptor in CV for over a decade. 
+Another important performance evaluation paper from the Oxford Vision group has compared the salient region descriptors \cite{MS05}. The conclusion of the performance evaluation was the the {\em Gradient location-orientation histogram (GLOH)} detector was performing best (recall and precision) followed closely by the {\em Scale Invariant Feature Transform (SIFT)} descriptor \cite{Lowe:2004}. The SIFT descriptor has been the most popular and widely used descriptor in CV for over a decade. 
 
-The idea behind SIFT Transform is finding the extrema in scale-space. These extrema found from all possible scales and image locations are the potential iterest points (another important class of features forimage description andmatching). Then only the most stable points are selected. One or more orientations are assigned to a point based onthe local gradient directions, while invariance to reansformations is achived by computing these orientaitons from all possible transformed versions of the data.  This histogram of (usually $128$) orientaitons are the keypoint descriptor. For applying SIFT descriptor on salient regions, only the descriptor steps are performed. 
-There are many variants of the SIFT descriptor, all based on floating point aritmetic, for example, SURF\cite{Bay:2008:SURF} and also GLOH \cite{MS05}, designed to improve distinctiveness.
+The idea behind SIFT Transform is finding the extrema in scale-space. These extrema found from all possible scales and image locations are the potential interest points (another important class of features for image description and matching). Then only the most stable points are selected. One or more orientations are assigned to a point based on the local gradient directions, while invariance to transformations is achieved by computing these orientations from all possible transformed versions of the data.  This histogram of (usually $128$) orientations are the keypoint descriptor (Figure \ref{fig:sift}). For applying SIFT descriptor on salient regions, only the descriptor steps are performed. 
 
-There is an important class of descriptors which offer computationally more tractable solution to region/patch description, the {\em binary descriptors}. Examples of such descriptors are  {\em FAST} \cite{Rosten:2006}, {\em Binary robust independant elementary features (BRIEF)}\cite{Calonder:2010}, {\em Binary Robust Invariant Keypoints (BRISK)} \cite{Leutenegger:2011}, {\em  ORB} \cite{Rublee:2011}, etc.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{fig/SIFT}
+\end{center}
+\caption{SIFT descriptor steps. From left to right: keypoint detection; image gradients; descriptor.}
+\label{fig:sift}
+\end{figure}
 
-Another more recent performance paper compares their performance also in comparision to the established descriptors like SIFT or SURF \cite{conf/icpr/MiksikM12}.
-{\bf TO DO- main conclusions paper}.
+There are many variants of the SIFT descriptor, all based on floating point arithmetic, for example, SURF\cite{Bay:2008:SURF} and also GLOH \cite{MS05}, designed to improve distinctiveness.
 
-More recently simpler to compute, but also very rich and distinctive descriptors have been proposed. An important class is the so called binary descriptors. For example, the {\em Binary Online Learned Descriptor (BOLD)}, \cite{Balntas_2015_CVPR}.....
+Other alternatives to SIFT are {\em FAST} \cite{Rosten:2006}, which compares pixels on a ring centered at a feature point. {\em  ORB} \cite{Rublee:2011} extends FAST by computing orientations based on the intensity centroid moment. Rotation invariance is also achieved with the MRRID and MROGH descriptors, \cite{journals:pami:FanWH12} by pooling local features based on their intensity orders. In the same group is the LIOP descriptor \cite{ZhenhuaWang:2011:LIO}. 
+
+Another important class of descriptors which offer computationally more tractable solution to region/patch description, the {\em binary descriptors}. Unlike SIFT or SURF and the expensive computation of gradients, a set of simple binary tests are used with the Hamming distance. Examples of such descriptors are {\em Binary robust independent elementary features (BRIEF)}\cite{Calonder:2010}, {\em Binary Robust Invariant Keypoints (BRISK)} \cite{Leutenegger:2011}, etc. A binary descriptor is composed of three parts:
+\begin{enumerate}
+\item{\bf Sampling pattern}. Where to sample points in the region around the interest point.
+\item{\bf Orientation compensation}. Measure the orientation of the keypoint and rotate it to compensate for rotation.
+\item{\bf Sampling pairs}. Which pairs to compare when building the final descriptor.
+\end{enumerate}
+For all possible sampling pairs and for each pair $(p_1, p_2)$ if the intensity at point $p_1$ is greater than the intensity at point $p_2$, the descriptor value for that pair is $1$, otherwise $0$ (Figure \ref{fig:bindescr}). A very good tutorial on binary descriptors can be found \href{https://gilscvblog.wordpress.com/?s=descriptors}{online}. 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{fig/BinDescr}
+\end{center}
+\caption{Binary descriptor.}
+\label{fig:bindescr}
+\end{figure}
+
+Another more recent performance paper compares their performance also in comparison to the established descriptors like SIFT or SURF \cite{conf:icpr:MiksikM12}. The main conclusions of the evaluation are:
+\begin{enumerate}
+\item{The real valued descriptors such as LIOP, MRRID and MROGH outperform SUFR and SIFT both in precision and recall, although with low efficiency.}
+\item{The binary descriptors are very efficient for time-constrained applications with good matching accuracy}
+\item{The binary descriptors are very fast with low memory requirements ($32$ bytes for BRIEF and ORB or $64$ bytes for BRISK). These provide comparable precision/recall to SIFT/SURF.}
+\end{enumerate}
+
+A very recent descriptor, {\em Binary Online Learned Descriptor (BOLD)}, \cite{Balntas_2015_CVPR} has been proposed. It combines the advantages of an efficient binary descriptor with the improved performance of learning-based descriptors. The binary tests are learned from the content of the patches themselves minimizing the intra-class distances leading to a more robust descriptor. BOLD has a good performance both in terms of accuracy as well as efficiency.
 
 \subsubsection{Matching}
+The extracted descriptors from the detected regions (as blobs or around keypoints) are usually compared via nearest neighborhood (NN) search. Much research is done for developing algorithms for faster matching. The most popular approaches are using kd-trees and hashing methods (see \cite{conf:icpr:MiksikM12} and the references within). For binary descriptors matching is performed efficiently using Hamming distance, {\em xor} and {\em population count}.
+
 
 \subsection{Convolutional Neural Networks}
 
