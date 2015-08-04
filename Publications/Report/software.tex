@@ -4,12 +4,18 @@
 The saliency detection, dataset annotation and recognition tools developed by the researchers are often made available to the community.
 
 \subsection{Saliency}
+
+\subsubsection{Saliency Map Algorithm} \label{subsec:salmap}
+The algorithms for the classical Itti  \cite{Itti_Koch01nrn} saliency maps as well as the GBVS maps \cite{Harel07graph-basedvisual} are available as MATLAB source code at the \href{subsec:salmap}{Saliency Map Algorithm page}, \cite{salmap_soft}.
+
 \subsubsection{SaliencyToolbox}\label{subsec:saltool}
-The SaliencyToolbox is a collection of Matlab functions and scripts for computing the saliency map for an image, for determining the extent of a proto-object, and for serially scanning the image with the focus of attention. 
+The \href{http://saliencytoolbox.net/index.html}{SaliencyToolbox} \cite{saltool_soft} is a collection of Matlab functions and scripts for computing the saliency map for an image, for determining the extent of a proto-object, and for serially scanning the image with the focus of attention. 
 
 \subsubsection{Frequency-tuned Saliency}
 The code used in the CVPR 2009 paper ``Frequency-tuned Salient Region Detection'' (\cite{LCAV-CONF-2009-012}) is accessible through the online presentation of the work at \cite{achantaCVPR09}.
 
+\subsubsection{FastSalience}\label{soft:fastsal:subsec}
+One of the few software tools which are not implemented in MATLAB is part of the \href{http://mplab.ucsd.edu/~nick/NMPT/main.html}{Nick's Machine Perception Toolbox (NMPT)}, \cite{nmpt_soft}.\href{http://mplab.ucsd.edu/~nick/NMPT/class_fast_salience.html}{FastSalience} is an implementation of the ``Fast Salience Using Natural-statistics'' algorithm from Butko et al., \cite{ButkoZCM08}.
 
 \subsection{Salient regions}\label{soft:salreg:sec}
 
@@ -52,7 +58,7 @@ For the more recent descriptors authors often publish code along with their pape
 With the excellent performance of CNNs on the ImageNet classification dataset and many other recognition tasks, there is a boom of development of software tools implementing deep learning and CNNs. 
 The tools are often free and open source. At \href{http://deeplearning.net/software_links/}{DeepLearning.net} there is an extensive list of such packages/libraries. Here, only the most popular are presented:
 \subsubsection{Caffe}
-Caffe (\cite{caffe_soft}) is BSD2-Clause license modular framework for deep learning developed by the Berkeley Vision and Learning Center (BVLC). The framework is a C++ library with Python and MATLAB bindings fr training and deploying general-purpose CNNs and other deep models on commodity architectures. It is a very popular framework, both in academia and industry due to its speed performance- it can process $60M$ images per day witha single NVIDIA K40 GPU. There is a large community of user and user groups and contributors on GitHub. A technical report for Caffe can be found at it's git repository: \url{https://github.com/BVLC/Caffe/}. It is the most popular open source project on computer vision and deep learning.  
+Caffe (\cite{caffe_soft}) is BSD2-Clause license modular framework for deep learning developed by the Berkeley Vision and Learning Center (BVLC). The framework is a C++ library with Python and MATLAB bindings fr training and deploying general-purpose CNNs and other deep models on commodity architectures. It is a very popular framework, both in academia and industry due to its speed performance- it can process $60M$ images per day with single NVIDIA K40 GPU. There is a large community of user and user groups and contributors on GitHub. A technical report for Caffe can be found at it's git repository: \url{https://github.com/BVLC/Caffe/}. It is the most popular open source project on computer vision and deep learning.  
 \subsubsection{Torch7}
 Torch (\cite{torch_soft}) is a scientific computing framework with wide support for machine learning algorithms. It is efficient due to the underlying C/CUDA implementations. It has interfaces to C, via LuaJIT, linear algebra routines, neural networks and numeric optimization routines. It runs on Mac OS X and Ubuntu 12+. There is a large community of contributors and users and the developers and maintainers are from Facebook AI Research, Google DeepMind, Twitter etc. 
 \subsubsection{Theano}
@@ -72,3 +78,6 @@ A common problem of using Deep Learning is the need for having large annotated d
 
 The LabelMe MATLAB toolbox is used for interaction with the images and annotations in the LabelMe dataset \ref{subsec:obj_scene_db}. The tool is described in this paper
 \cite{Russell2008}. The toolbox also exists in 3D version, LabelMe3D which is described in \cite{Russell2009}. There is also a mobile App version and instructions how could the labeling be outsourced using the Amazon Mechanical Turk.
+
+\subsection{Distributed software for CV}
+sensstorm...

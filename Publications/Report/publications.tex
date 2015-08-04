@@ -6,6 +6,9 @@ This section gives pointers to recent publications about the three CV tasks:  {\
 \subsection{Saliency}
 
 The research question is how can the CV system determine automatically the most visually {\em salient} region(s) in an image? Saliency refers to features like distinctiveness (standing out), catching the focus of attention, characteristic. Usually a salient object of interest is sought to be separated from the background. Automatic measures of saliency are based on measurable properties of the object,
+like texture, color, location and also simulating human visual attention.
+
+A bottom-up visual saliency model, the {\em Graph-Based Visual Saliency (GBVS)} is proposed in \cite{Harel07graph-basedvisual}. The model proposed is simple and biologically inspired based on activation maps o certain feature channels followed by normalization and combination with other maps. The GBVS outperforms by far the classical algorithms of Itti \& Koch \cite{Itti_Koch01nrn}. For the software, see \ref{subsec:salmap}.
 
 In \cite{LiuCVPR2007} the salient object detection is formulated as image segmentation problem. The object is separated from the background on the basis of several features including multi-scale contrast, center-surround histogram and color spatial distribution for the object description on several levels- locally, regionally and globally. The multi-scale contrast is the local feature, the center-surround histogram is the regional feature and the color spatial histogram- the global. These features are illustrated on Figure \ref{fig:sal_feat_liu07}.
 \begin{figure}[H]
@@ -17,6 +20,8 @@ In \cite{LiuCVPR2007} the salient object detection is formulated as image segmen
 \end{figure}
 A conditional Random Field is trained on these features. 
 For the purposes of this research the authors have compiled a large-scale database, MSRA (\cite{msra_db}), presented in section \ref{subsec:msra}. The database is publicly available, while the software is not. The proposed methods compared to two other algorithms ``FG" (fuzzy growing) and ``SM" (salient model as computed by the SalientToolbox, described in section \ref{subsec:saltool}). The authors' tends to produce smaller and more focused bounding boxes.
+
+Butko et al. in \cite{ButkoZCM08} propose fast approximation to a Bayesian model of visual saliency. The algorithm have been designed for efficiency in social robotics situations with the goal to orient a cameras as quickly as possible towards human faces. For the available software, see \ref{soft:fastsal:subsec}.
 
 In \cite{LCAV-CONF-2009-012} the authors perform a frequency-domain analysis on five state-of-the-art saliency methods, and compared the spatial frequency
 content retained from the original image, which is then used in the computation of the saliency maps. This analysis illustrated that the deficiencies of these techniques
@@ -34,6 +39,8 @@ In \cite{YanCVPR2013} the authors address a fundamental problem in saliency dete
 \end{figure}
 
 For the purpose of their research the authors made a new database available to the community, the Complex Scene Saliency dataset (CSSD) and the Extended CSSD (ECSSD), described in Section \ref{subsec:cssd}. The executable of their software is also available from the project link (\cite{ecssd_db}), but not the source code. The authors report better performance of their method on MSRA-1000 and (E)CSSD datasets compared to $11$ other state-of-the-art methods.
+
+Recently, a method for statistical textural distinctiveness for detecting saliency in natural images have been proposed \cite{texstatdist2013}. Textural representations are extracted and a sparse models learned. From this model, a weighted graphical model is constructed and used to distinguish between all texture atom pairs.
 
 \subsection{Salient regions}
 
@@ -78,7 +85,7 @@ In the context of humpback whale identification, Ranguelova et al. \cite{RangMSS
 \subsubsection{Descriptors}
 Another important performance evaluation paper from the Oxford Vision group has compared the salient region descriptors \cite{MS05}. The conclusion of the performance evaluation was the the {\em Gradient location-orientation histogram (GLOH)} detector was performing best (recall and precision) followed closely by the {\em Scale Invariant Feature Transform (SIFT)} descriptor \cite{Lowe:2004}. The SIFT descriptor has been the most popular and widely used descriptor in CV for over a decade. 
 
-The idea behind SIFT Transform is finding the extrema in scale-space. These extrema found from all possible scales and image locations are the potential interest points (another important class of features for image description and matching). Then only the most stable points are selected. One or more orientations are assigned to a point based on the local gradient directions, while invariance to transformations is achieved by computing these orientations from all possible transformed versions of the data.  This histogram of (usually $128$) orientations are the keypoint descriptor (Figure \ref{fig:sift}). The SIFT descriptor is exampleof descriptors based on Hostogram of Gradients (HoG). For applying SIFT descriptor on salient regions, only the descriptor steps are performed. 
+The idea behind SIFT Transform is finding the extrema in scale-space. These extrema found from all possible scales and image locations are the potential interest points (another important class of features for image description and matching). Then only the most stable points are selected. One or more orientations are assigned to a point based on the local gradient directions, while invariance to transformations is achieved by computing these orientations from all possible transformed versions of the data.  This histogram of (usually $128$) orientations are the keypoint descriptor (Figure \ref{fig:sift}). The SIFT descriptor is example of descriptors based on Histogram of Gradients (HoG). For applying SIFT descriptor on salient regions, only the descriptor steps are performed. 
 
 \begin{figure}[H]
 \begin{center}
@@ -88,7 +95,7 @@ The idea behind SIFT Transform is finding the extrema in scale-space. These extr
 \label{fig:sift}
 \end{figure}
 
-An algorithm for GPU-based video tracking and mathching has been published at \cite{Sinha06gpu-basedvideo}. There are many variants of the SIFT descriptor, all based on floating point arithmetic, for example, SURF\cite{Bay:2008:SURF} and also GLOH \cite{MS05}, designed to improve distinctiveness.  
+An algorithm for GPU-based video tracking and matching has been published at \cite{Sinha06gpu-basedvideo}. There are many variants of the SIFT descriptor, all based on floating point arithmetic, for example, SURF\cite{Bay:2008:SURF} and also GLOH \cite{MS05}, designed to improve distinctiveness.  
 
 Other alternatives to SIFT are {\em FAST} \cite{Rosten:2006}, which compares pixels on a ring centered at a feature point. {\em  ORB} \cite{Rublee:2011} extends FAST by computing orientations based on the intensity centroid moment. Rotation invariance is also achieved with the MRRID and MROGH descriptors, \cite{journals:pami:FanWH12} by pooling local features based on their intensity orders. In the same group is the {\em Local Intensity Order Pattern (LIOP)} descriptor \cite{ZhenhuaWang:2011:LIO}. 
 
