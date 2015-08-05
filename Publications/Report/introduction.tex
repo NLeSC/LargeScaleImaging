@@ -5,7 +5,7 @@ The goal of this report is to present a focused partial overview of the state of
 
 \subsection{Computer vision}
 
-Computer vision is the science and technology of machines that can see. As a scientific discipline, CV is concerned with the theory for building artificial systems that obtain information from images. It is a type of Arificial intelligence and intercepts a broad range of disciplines such as Optics, Robotics, Image Processing and Pattern recognition. 
+Computer vision is the science and technology of machines that can see. As a scientific discipline, CV is concerned with the theory for building artificial systems that obtain information from images. It is a type of Artificial intelligence and intercepts a broad range of disciplines such as Optics, Robotics, Image Processing and Pattern recognition. 
 
 \subsubsection{Why is it hard?}
 A computer vision researcher always faces the problem to explain why automating vision is a very hard problem, while humans solve it with ease (powered by $30\%$ of the cortex). It is also important to explain the limitations of CV to the potential user of a CV system, especially to scientists from other disciplines. The short answer is: because {\bf seeing is not perceiving}. This illustrated by Figure \ref{fig:CV}.
@@ -34,9 +34,10 @@ From projects and proposals at NLeSc, where the data for the object of scientifi
 \item {\bf Where is my object? (Localization).} For example, if the object of my study is a freely moving animal, while my camera is fixed somewhere in its habitat, can a CV system find automatically where (potentially) an animal appears on the recorded video, where most frames will probably be of no interest (also, can I keep only the meaningful data?). Technically, the problem is how to automatically find the object of interest or reduce the data to be processed further, so they contain the object of interest (also efficient storage) in large collections of images/videos.
 \item {\bf Is my object the same? (Identification).} For example, if I am studying a specific animal, named King Kong, which shares habitat with other animals of the same species, and all the habitat is monitored at different times, can a CV system find me the images where King Kong appears on, as I'm interested only in his movements? Technically, the problem is to (semi-) automatically determine if the study object is the same in multiple instances of photographing it, usually at different time, in different environment and under changing viewing conditions or camera equipment.
 \item {\bf What is my object? (Classification).} For example, if King Kong is a gorilla sharing a habitat with other gorillas and chimps, I might like to separate the data of the chimps from those of the gorillas, and even identify new gorillas/chimps captured on camera, as I'm interested in the whole family, friends and enemies of King Kong. Hence, the problem is to (semi-) automatically classify the study object to one of possible categories. Usually the same camera equipment and modality are used to obtain the images/videos.
+\item{\bf Large scale.} The common challenge for these questions is how to efficiently answer them from {\em large scale} scientific images/videos collections.
 \end{enumerate}
 
-At NLeSc there have been projects which illustrate these types of questions to be addressed. In the systems biology project \href{https://blog.surf.nl/en/eyr4-blog-5-using-big-data-solutions-to-understand-worm-behavior/}{``Using big data solutions to understand worm behavior''}, the object of research is the {\em C.elegans} worm (see Figure \ref{fig:Celegans}). The source data are high resolution and long videos capturing the behavior of the worm. The first step is to {\em localize} precisely the worm in the large volume of imaging data. 
+ At NLeSc there have been projects which illustrate these types of questions to be addressed. In the systems biology project \href{https://blog.surf.nl/en/eyr4-blog-5-using-big-data-solutions-to-understand-worm-behavior/}{``Using big data solutions to understand worm behavior''}, the object of research is the {\em C.elegans} worm (see Figure \ref{fig:Celegans}). The source data are high resolution and long videos capturing the behavior of the worm. The first step is to {\em localize} precisely the worm in the large volume of imaging data. 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.8\textwidth]{fig/Celegans}
@@ -104,6 +105,7 @@ To address the related scientific challenges, three  CV research questions can b
 \item {\bf Visual salience:} How can the CV system determine automatically the most visual salient region(s) in an image?\label{item:sal}
 \item {\bf Object/scene identification:} How can the CV system automatically determine whether two images, potentially taken with different cameras under different viewing conditions and transformations, represent the same object/scene?\label{item:ident}
 \item {\bf Object/scene detection/classification:} How can the computer recognize automatically to what visual category the object/scene captured in an image belongs to? \label{item:und}
+\item{\bf Large scale processing:} How can we perform saliency detection, identification and classification of large datasets.
 \end{enumerate}
 
 \subsubsection{Other applications}
@@ -148,6 +150,6 @@ This is a complex and high-level computer vision task, with the goal of making m
 \label{fig:mitdemo}
 \end{figure}
 
-In fact, the majority of CV researchers traditionally work on non-scientific applications, focusing on the third and most challenging problem. Addressing the problems faced by other domain scientist, while still conducting generic and widely applicable computer vision research, seems to fit best the strategy of NLeSc and eStep. 
+In fact, the majority of CV researchers traditionally work on non-scientific applications, focusing on the third and most challenging problem. Addressing the problems faced by other domain scientist, while still conducting generic and widely applicable computer vision research, seems to fit best the strategy of NLeSc and eStep. Another important aspect, where NLeSc can contribute a lot with expertise, is the development of {\em large scale} CV systems.
 
-The overview is by no means complete, it rather tries to summarize the research in the field along the above three questions in the last years. The report is structured along the main outputs of the CV research, namely, scientific publications in Section \ref{sec:pubs}, software in Section \ref{sec:soft} and datasets in Section \ref{sec:db}. Some potential scientific applications are shown in Section \ref{sec:app}. The conclusions and recommendations are given is section \ref{sec:conc}.
+The overview is by no means complete, it rather tries to summarize the research in the field along the above three questions in the last years. The report is structured along the main outputs of the CV research, namely, scientific publications (some of the topics are also explained) in Section \ref{sec:pubs}, software in Section \ref{sec:soft} and datasets in Section \ref{sec:db}. Some potential scientific applications are shown in Section \ref{sec:app}. The conclusions and recommendations are given is section \ref{sec:conc}.

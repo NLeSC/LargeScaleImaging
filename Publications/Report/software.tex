@@ -68,8 +68,10 @@ Theano (\cite{theano_soft}) is a Python library allowing you definition, optimiz
 {\bf MatConvNet} (\cite{matconvnet_soft}) is a MATLAB toolbox implementing Convolutional Neural Networks (CNNs) for computer vision applications. It is part of the VLFeat suite (\cite{vlfeat_soft}), which contains also salient feature extraction (see section \ref{soft:salregdet:subsec}). MatConvNet is described in \cite{matconvnet_paper}.\\
  There are many other MATLAB software which provide CNN implementations, some can be found at the \href{http://www.mathworks.com/matlabcentral/fileexchange/24291-cnn-convolutional-neural-network-class}{MATLAB FileExchange}.
 
-\subsubsection{Deeplearning4j}
-Deeplearning4j 
+\subsubsection{Deep Learning for Java}
+\href{http://deeplearning4j.org/}{Deeplearning4j}, \cite{dl4j} is a commercial-grade, open-source, distributed deep-learning library written for Java and Scala. Integrated with Hadoop and Spark, DL4J is designed to be used in business environments, rather than as a research tool. 
+Deeplearning4j aims to be cutting-edge plug and play, more convention than configuration, which allows for fast prototyping for non-researchers. DL4J is customizable at scale. It is released under the Apache 2.0 license. It's main features include n-dimensional array class, GPU integration,  Scalable on Hadoop, Spark and Akka + AWS et al and a linear algebra library twice as fast as Numpy. There are several neural networks available, including CNNs.
+
 
 \subsubsection{Dataset annotation}\label{subsec:dbannot}
 A common problem of using Deep Learning is the need for having large annotated datasets (though also unsupervised approaches exist). This is an issue for large-scale imaging problems. Some software has been developed to tackle the issue.
@@ -80,4 +82,13 @@ The LabelMe MATLAB toolbox is used for interaction with the images and annotatio
 \cite{Russell2008}. The toolbox also exists in 3D version, LabelMe3D which is described in \cite{Russell2009}. There is also a mobile App version and instructions how could the labeling be outsourced using the Amazon Mechanical Turk.
 
 \subsection{Distributed software for CV}
-sensstorm...
+
+\subsubsection{MapReduce}\label{subsubsec:MapReduce}
+The example code for the MapReduce implementations of several CV tasks for data mining application, presented in \cite{White:2010} is available in  GitHub repository \href{https://github.com/bwhite/hadoop_vision}{hadoop\_vision} \cite{hadoopvision_soft}.
+
+The \href{http://hipi.cs.virginia.edu}{\em Hadoop Image Processing Interface (HIPI)} \cite{hipi_soft} is an open source library, developed by a team from the \href{http://www.cs.virginia.edu/~gfx/pmwiki/index.php}{University of Virginia Graphics Lab}.
+\subsubsection{StormCV}
+While Hadoop MapReduce is suitable for batch processing, \href{https://storm.apache.org/}{Apache Storm},\cite{storm_soft} a free and open source distributed real-time computation system. Storm makes it easy to reliably process unbounded streams of data, doing for real-time processing what Hadoop did for batch processing.
+Developers at TNO have developed  \href{https://github.com/sensorstorm/StormCV}{StormCV},\cite{stormcv_soft}. StormCV enables the use of Apache Storm for video processing by adding computer vision (CV) specific operations and data model. The platform enables the development of distributed video processing pipelines which can be deployed on Storm clusters. It is available under the  Apache Software Foundation (ASF) license and some modules are under the \href{http://opencv.org/license.html}{OpenCV License}.
+\subsubsection{CloudCV}
+The Large-Scale distributed CV as a Cloud service, \href{http://cloudcv.org/}{CloudCV} \cite{cloudcv_soft} is not available as a software package, it is Software as a Service (SaaS). It's current functionality includes image stitching, object detection, decaf-server, classification and VIP finding application. As such it could be useful link for scientists which need to perform tasks for which functionality is supported, especially interesting looks the object detection and classification services. Some related feature computation code code and datasets are available.

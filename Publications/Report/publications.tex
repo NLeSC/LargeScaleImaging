@@ -1,7 +1,7 @@
 \section{Publications}
 \label{sec:pubs}
 
-This section gives pointers to recent publications about the three CV tasks:  {\em visual saliency, object/scene identification and image classification}.
+This section gives pointers to recent publications about the three CV tasks:  {\em visual saliency, object/scene identification and image classification} as well as some work on frameworks for {\em large-scale} CV systems.
 
 \subsection{Saliency}
 
@@ -130,4 +130,82 @@ The extracted descriptors from the detected regions (as blobs or around keypoint
 
 \subsection{Convolutional Neural Networks}
 
+{\bf TO DO: Overview paper,some explanations about what is it....}
 Recently, an interesting article which compares the matching of salient regions  with CNNs with matching with SIFT descriptor have been published \cite{FischerDB14}. The authors have also recorded a new larger dataset, compared to the only $48$ images in the comparative study paper, covering larger class of image transformations with more images (see \ref{sec:salregdb}). The goal of the paper is to study the regions/patches descriptors, not to evaluate detectors. For the detection step, the standard MSER detector have been used. The paper concludes that the CNN trained features are consistently better than the SIFT descriptor, for the price of a higher computational cost.
+
+\subsection{Large Scale CV Systems}
+One of the manifestations of the Big Data era is the proliferation of massive visual data. The key challenges in extracting a value from these data are:
+\begin{itemize}
+\item{ {\bf Scalability.} This is the key challenge in the world of Big Data. Lack of infrastructural support leaves researcher repeatedly to face the same difficulties when developing and porting  distributed CV algorithms.}
+\item{\bf Provably Correct Parallel/Distributed Implementations.} Designing and implementing
+efficient and correct parallel computer vision algorithms is extremely challenging. Some tasks like extracting statistics from image collections are embarrassingly parallel, i.e. can be parallelized simply by distributing
+the images to different machines. Unfortunately, most tasks in CV and
+machine learning such as training a face detector are not embarrassingly parallel
+– there are data and computational dependencies between images and various
+steps in the algorithm.
+\item{\bf Reusability.} Computer vision researchers have developed vision algorithms
+that solve specific tasks but software developers building end-to-end system
+find it extremely difficult to integrate these algorithms into the system due to
+different software stacks, dependencies and different data format.
+\end{itemize}
+Researchers are looking more and more at these challenges.
+
+\subsubsection{MapReduce}
+
+{\em MapReduce}, \cite{Dean:2008}, is a programming model and its implementation for processing large datasets, introduced by Google. The user specifies the computations in terms of {\em map} and {\em reduce} functions, and the system automatically parallelizes the computation across large clusters of machines at run-time. Generally CV algorithms are applied on one or more images, consisting of pixels with some set of potentially varying parameters. Parallelism can be exploited on any of these levels, across parameters the task is embarrassingly parallel (i.e.independant) and on image or pixel level,the parallization depends on weather the algorithm operates independently (e.g. SIFT, face detection).
+
+For example, in \cite{White:2010} addresses a web-scale multimedia mining task using MapReduce. The paper describes the low level implementation of several computer vision algorithms relevant for mining applications: classifier training, sliding windows, clustering, bag-of-features, background subtraction and image registration.  The paper gives guidelines and algorithms of how the mappers and reducers can be implemented in some CV tasks. For example, for classifier training, the mapper performs the feature computation in parallel, the features are collected for the reducer where the classifier training is performed. 
+
+A further development in that direction is the {\em Hadoop Image Processing Interface (HIPI)} library \cite{hipi_soft}. The undergraduate thesis of C. Sweeney is the publication about HIPI \cite{hipi_pub}. The goal of HIPI is to provide a simple and clean interface for high-throughput distributed image processing on the MapReduce platform. Figure \ref{fig:hipi} illustrates a typical MapReduce/HIPI workflow.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{fig/HIPI}
+\end{center}
+\caption{A typical MapReduce pipeline using HIPI with $n$ images, $i$ map nodes and $j$ reduce nodes.}
+\label{fig:hipi}
+\end{figure}
+HIPI is designed to abstract Hadoop's functionality into an image-centric system and to serve as a tool for efficient use of Hadoops MapReduce for image processing and computer vision.
+For the MapReduce/HIPI software, see Section \ref{subsubsec:MapReduce}.
+
+\subsubsection{Cognitive Computer Vision Systems}
+Apart from traditional research of CV algorithms, in the last decades much research has been done into integrating such algorithms into larger systems. For example, {\em cognitive computer vision (CVS) systems} does not only involve CV, but also {\em machine learning} and reasoning to extend priory knowledge or verify the consistency of results. An overview paper, \cite{WredeBSPV04}, studies the requirements and developments for large scale CVS. The existing systems have been evaluated along {\em functional , non-functional and additional requirements} illustrated on Figure \ref{fig:cvseval}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.45\textwidth]{fig/CVSEval}
+\end{center}
+\caption{Graphical evaluation scheme for CVS (ImaLab). Each assessment category has $5$ step scale: '--'- impossible, '-'- difficult, 'o'- neutral, '+'- supported and '++'- automatic.}
+\label{fig:cvseval}
+\end{figure}
+
+The study compares frameworks and groups them in $4$ major classes based on the evaluation.  
+
+\begin{enumerate}
+\item{{\em Visual Image Processing Environments}, e.g.ImaLab (see Figure \ref{fig:cvseval}) provides facilities to quickly develop pipelines and allows rapid prototyping, easy GUI. They lack support for distributed architectures}
+\item{{\em Middleware approaches}, e.g. COBRA implementation TAO. Very generic and powerful, but complicated use. Also do not support specific CV domain requirements.}
+\item{{\em Robotics domain}, e.g.SmartSoft or OROCOS. Satisfy many CV requirements, including distribution and transparency. However, their integration is is largely coupled with the robot control components.}
+\item{{\em CVS Frameworks}, {\bf XCF} \cite{Wrede2004-AXB} focuses on data management
+facilities, distribution and rapid prototyping, {\bf zwork} \cite{ponweiser2003reusable} mainly deals with the programmatic coordination and
+dynamic reconfiguration in the control aspect of CVS.}
+\end{enumerate}
+Therefore, the system engineers will have to carefully identify their needs and project requirements and correspondingly decide for a most suitable framework.
+
+\subsubsection{CloudCV}
+A very recent development, which tackles the large-scale CV challenges, is the \href{http://cloudcv.org/}{CloudCV},\cite{AgrawalMGCBMOB15}. The goal is to democratize computer vision, i.e. make the state-of-the-art distributed CV algorithms also available to non-experts (i.e. people who are not CV researchers or Big Data experts). Therefore, the platform aims at three different audiences: computer vision researcher, scientists which are not CV experts and non-scientists. 
+
+CloudCV consists of a group of virtual machines running on Amazon
+Web Services capable of running large number of tasks in a distributed and parallel
+setting. Popular datasets used are already cached on these servers to facilitate researchers
+trying to run popular computer vision algorithms on these datasets. For custom datasets the users
+can access these services through a web interface for uploading smaller sets or use Python and Matlab APIs for larger datasets. An overview of the system is shown on Figure \ref{fig:cloudcv}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{fig/CloudCV}
+\end{center}
+\caption{Overview of CloudCV.}
+\label{fig:cloudcv}
+\end{figure}
+
+The paper presents the back-end infrastructure (web servers,distributed processing and job schedulers), the used deep learning framework and the front-end platforms (web interface, Python and MATLAB APIs). It also presents in detail the CloudCV functionalities, namely classification, feature extraction, finding VIP in group images, gigapixel image stitching. A very concrete future plan is to integrate the \href{https://developer.nvidia.com/digits}{\em Deep Learning GPU Training System (DIGITS)}, \cite{digits_soft} with CloudCV. 
