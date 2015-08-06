@@ -1,14 +1,14 @@
 \section{Datasets}
 \label{sec:db}
 
-The annotated segmentation, saliency, object and scenes classification datasets, which are produced and used by the researchers to test the algorithms are often made available to the community.
+The annotated segmentation, saliency, object and scenes classification datasets, which are produced and used by the researchers to test the algorithms are often made available to the community. Scientific image datasets are much harder to obtain access to (factors like privacy, cost of collecting and value of the data, competitiveness play an important role), so the focus here is only on the datasets, gathered for CV research purposes by the community.
 
 \subsection{Image Saliency Datasets}
 \subsubsection{MSRA}\label{subsec:msra}
-The MSRA  Database form the Visual computing group of Microsoft Research Asia \cite{msra_db} is  first large-scale labeled dataset made publically available for training and evaluation. It contains two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset.
+The MSRA  Database form the Visual computing group of Microsoft Research Asia \cite{msra_db} is  first large-scale labeled dataset made publicly available for training and evaluation. It contains two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/MSRA}
+\includegraphics[width=0.75\textwidth]{fig/MSRA}
 \end{center}
 \caption{Examples of the MSRA dataset.}
 \label{fig:msra}
@@ -20,7 +20,7 @@ The results of the proposed method by the authors of the dataset, have been publ
 This is an extension of the MSRA dataset, which  addresses the coarse-grained limitation of the MSRA labeling (bounding boxes). The MSRA10k (\cite{msra10k_db}) dataset consists of $10000$ randomly selected MSRA images for which a pixel-level saliency labeling is available. Figure \ref{fig:msra10k} illustrates the dataset. 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/MSRA10k}
+\includegraphics[width=0.75\textwidth]{fig/MSRA10k}
 \end{center}
 \caption{Examples of the MSRA 10k dataset. First row: original images with ground truth rectangles from MSRA dataset. Second row: Ground truth with pixel accuracy.}
 \label{fig:msra10k}
@@ -34,7 +34,7 @@ Later, the CSSD was extended to a larger dataset (ECSSD) of $1000$ images, which
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/ECSSD}
+\includegraphics[width=0.75\textwidth]{fig/ECSSD}
 \end{center}
 \caption{Examples of the ECSSD dataset.}
 \label{fig:ecssd}
@@ -56,7 +56,7 @@ Another dataset, which aims at bridging the gap between fixations and salient ob
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/PASCAL-S}
+\includegraphics[width=0.75\textwidth]{fig/PASCAL-S}
 \end{center}
 \caption{Examples of the PASCAL-S dataset.}
 \label{fig:pascal-s}
@@ -67,18 +67,27 @@ The saliency segmentation method and the findings have been published at \cite{T
 
 \subsection{Multimedia Datasets}
 \subsubsection{MSRA-MM}
-In 2009, the reserachers from Micsosoft Research Asia have released 2 versions of large multimedia datasets- MSRA-MM \cite{msra-mm_db}. MSRA-MM 1.0 consists of two sub-datasets, i.e., an image dataset and a video dataset that are collected from the image and video search engines. For image dataset, there are about $1000$ images per query for $68$ representative queries based on the log of search engies. There are $65443$ images in total. For the video dataset, $165$ representative queries have been selected from a log resulting in total of $10277$ videos. Due to copyright issues, the raw image and video data are not available, but only features and annotations are provided. The dataset is explained in detail in a techical report \cite{export:79942}.
+In 2009, the researchers from Microsoft Research Asia have released 2 versions of large multimedia datasets- MSRA-MM \cite{msra-mm_db}. MSRA-MM 1.0 consists of two sub-datasets, i.e., an image dataset and a video dataset that are collected from the image and video search engines. For image dataset, there are about $1000$ images per query for $68$ representative queries based on the log of search engines. There are $65443$ images in total. For the video dataset, $165$ representative queries have been selected from a log resulting in total of $10277$ videos. Due to copyright issues, the raw image and video data are not available, but only features and annotations are provided. The dataset is explained in detail in a technical report \cite{export:79942}.
 
 \subsection{Salient Regions Datasets} \label{sec:salregdb}
-Surprisingly there are not many datasets available for testing saleint region detection.
+Surprisingly there are not many datasets available for testing salient region detection.
 
 \subsubsection{Oxford Vision Group}
 
-For more than a decade the standart dataset was provided by Mikolajczyk et al. \cite{Mikolajczyk:2005} from the Oxford vision group. The dataset is rather small, contains only $48$ images, but real (not simulated). Illustration of the dataset can be seen on figure \ref{fig:mikdataset}. 
+For more than a decade the standard dataset was provided by Mikolajczyk et al. \cite{Mikolajczyk:2005}. It is available under Test Data from the Oxford Vision Group \href{http://www.robots.ox.ac.uk/~vgg/research/affine/index.html}{\underline{page}}. The dataset is rather small, contains only $48$ images, but real (not simulated). Illustration of the dataset can be seen on figure \ref{fig:mikdataset}. 
+
+ Five different changes in imaging conditions are represented: viewpoint changes (a) \& (b); scale changes (c) \& (d); image blur (e) \& (f); JPEG compression (g); and illumination (h). The effect of changing the image conditions can be separated from
+the effect of changing the scene type. One scene type contains homogeneous regions with distinctive edge boundaries (e.g. graffiti, buildings), and the other contains
+repeated textures of different forms. The authors referred to these as structured versus textured scenes respectively. For example sequence (a) is of structured type, while (b) is example of textured sequence.
+
+In the viewpoint change test the camera varies from a front-parallel view to one with significant foreshortening
+at approximately 60 degrees to the camera. For details of the other image transformations, the reader is referred to the publication \cite{Mikolajczyk:2005} and the data description.   All images are of small resolution for now a days standards, but considered medium a decade ago (approximately 800 $\times$ 640 pixels).
+Since the images are either of planar scenes or the camera position is fixed during acquisition, the images are related by homographies (plane
+protective transformations). All homographies between the reference (leftmost) image and the other images in a particular dataset are provided.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/MikDataset}
+\includegraphics[width=0.75\textwidth]{fig/MikDataset}
 \end{center}
 \caption{Oxford vision group dataset: (a), (b) Viewpoint change, (c), (d) Zoom+rotation, (e), (f) Image blur, (g) JPEG compression, (h) Light change. In the
 case of viewpoint change, scale change and blur, the same change in imaging conditions is applied to two different scene types: structured and
@@ -86,39 +95,29 @@ textured scenes. The left most image of each set is used as the reference image.
 \label{fig:mikdataset}
 \end{figure}
 
- Five different changes in imaging conditions are represented: viewpoint changes (a) \& (b); scale changes (c) \& (d); image blur (e) \& (f); JPEG compression (g); and illumination (h). The effect of changing the image conditions can be separated from
-the effect of changing the scene type. One scene type contains homogeneous regions with distinctive edge boundaries (e.g. graffiti, buildings), and the other contains
-repeated textures of different forms. The authors referred to these as structured versus textured scenes respectively. For example sequence (a) is of structured type, while (b) is example of textured sequence.
-
-In the viewpoint change test the camera varies from a fronto-parallel view to one with significant foreshortening
-at approximately 60 degrees to the camera. For details of the other image transformations, the reader is referred to the publication \cite{Mikolajczyk:2005} and the data description.   All images are of small resoluton for now a days standarts, but considered medium a decade ago (approximately 800 $\times$ 640 pixels).
-Since the images are either of planar scenes or the camera position is fixed during acquisition, the images are related by homographies (plane
-projective transformations). All homographies between the reference (leftmost) image and the other images in a particular dataset are provided.
-
-It is available under Test Data from the \href{http://www.robots.ox.ac.uk/~vgg/research/affine/index.html}{Oxford Vision Group page}.
 
 \subsubsection{Freiburg University}
-More recently, in 2014, Fissher et al. from Freiburg University  proposed a new database dor evaluation of salient regions descriptors peformance \cite{FischerDB14}. 
+More recently, in 2014, Fissher et al. from Freiburg University  proposed a new database for evaluation of salient regions descriptors performance \cite{FischerDB14}. 
 The dataset contains $416$ images. It is generated by applying $6$ different types of transformations with varying strengths to $16$ base images we obtained from Flickr
-Figure \ref{fig:fischerDBdata} shows some of them.
+Figure \ref{fig:fischerDBdata} shows some of them. The dataset is available \href{http://lmb.informatik.uni-freiburg.de/resources/datasets/genmatch.en.html}{\underline{online}}.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/MatchDBFreiburgBase}
+\includegraphics[width=0.8\textwidth]{fig/MatchDBFreiburgBase}
 \end{center}
 \caption{Example base images of the Freiburg dataset.}
 \label{fig:fischerDBdata}
 \end{figure}
 
 To each base image geometric transformations (rotation, zoom, perspective, and nonlinear
-deformation) have been applied as well as changes to lighting and focus by adding blur. Each transformation was
-applied in various magnitudes. The transformations are shown in Figure \ref{fig:fischerDBtrans}. 
+deformation) have been applied in various magnitudes as well as changes to lighting and focus by adding blur.
+The transformations are shown in Figure \ref{fig:fischerDBtrans}. 
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/MatchDBFreiburgTrans}
+\includegraphics[width=0.8\textwidth]{fig/MatchDBFreiburgTrans}
 \end{center}
-\caption{Examples of extreme image tranformations. From left to
+\caption{Examples of extreme image transformations. From left to
 right: blur, lighting change, nonlinear deformation, perspective change, rotation, zoom.}
 \label{fig:fischerDBtrans}
 \end{figure}
@@ -127,27 +126,25 @@ While the Mikolajczyk et al. dataset  \cite{Mikolajczyk:2005} was not generated 
 from different viewpoints or with different camera settings, this dataset is artificially created. While the former reflects reality better than a
 synthetic dataset, the latter enables evaluation of the effect of each type of transformation independently of the image content. 
 
-The dataset is available from \url{http://lmb.informatik.uni-freiburg.de/resources/datasets/genmatch.en.html}.
-
 \subsection{Object and Scene Recognition Datasets}
 \label{subsec:obj_scene_db}
 
 \subsubsection{MIT-CSAIL}
-The goal of the MIT-CSAIL dataset \cite{mit-csail_db} is to provide a large set of images of natural scenes (principally office and street scenes), together with manual segmentations/labelings of many types of objects, so that it becomes easier to work on general multi-object detection algorithms. The dataset contains indoor and outdoor objects in officeand urban environments. There are annotations for morethan30objects in cotext in thousands of images and sequences with 2500 annotaited frames. Examples of the dataset are shown in figure \ref{fig:mit-csail}.
+The goal of the MIT-CSAIL dataset \cite{mit-csail_db} is to provide a large set of images of natural scenes (principally office and street scenes), together with manual segmentations/labelings of many types of objects, so that it becomes easier to work on general multi-object detection algorithms. The dataset contains indoor and outdoor objects in office and urban environments. There are annotations for more than $30$ objects in context in thousands of images and sequences with 2500 annotated frames. Examples of the dataset are shown in figure \ref{fig:mit-csail}.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{fig/MIT-CSAIL}
+\includegraphics[width=0.75\textwidth]{fig/MIT-CSAIL}
 \end{center}
 \caption{Examples of the MIT-CSAIL dataset.}
 \label{fig:mit-csail}
 \end{figure}
 
 \subsubsection{LabelMe}
-An online annotated dataset incrementally filled up by users can be downloaded using the LabelME tool from \cite{labelme_db}. The LabelMe3D dataset contains labelled images of many everyday scenes and object categories in absolute real world 3D coordinates. The toolboxes designed to work with these datasets are described in \ref{subsec:dbannot}.
+An online annotated dataset incrementally filled up by users can be downloaded using the LabelME tool from \cite{labelme_db}. The LabelMe3D dataset contains labeled images of many everyday scenes and object categories in absolute real world 3D coordinates. The toolboxes designed to work with these datasets are described in \ref{subsec:dbannot}.
 
 \subsubsection{SUN}
-Another large dataset of annotated images covering large vaiety of scenes, places and objects within, provided also by the Computer Science and Artificial Intelligence Laboratory (CSAIL) at MIT, is the SUN dataset, \cite{sun_db}. The SUN2012 contains $16 873$ images and SUN contains currently $131067$ images, $908$ Scene categories and $4479$ object categories with more than $310k$ segmented objects. The SUN397 benchmark for scene classification can de used incuding code, precomputed features etc. The SUN dataset can bee dowloaded also with the LabelMe MATLAB Toolbox. The publication about the SUN dataset is \cite{Xiao2010}.
+Another large dataset of annotated images covering large variety of scenes, places and objects within, provided also by the Computer Science and Artificial Intelligence Laboratory (CSAIL) at MIT, is the SUN dataset, \cite{sun_db}. The SUN2012 contains $16 873$ images and SUN contains currently $131067$ images, $908$ Scene categories and $4479$ object categories with more than $310k$ segmented objects. The SUN397 benchmark for scene classification can de used including code, pre-computed features etc. The SUN dataset can bee downloaded also with the LabelMe MATLAB Toolbox. The publication about the SUN dataset is \cite{Xiao2010}.
 
-\subsubsection{Places}
-One of the largest annotated datasets for scene recognition is the Places dataset (also by CSAIL, MIT), \cite{places_db}. It contains almost $2.5$ million images in $205$ scene categories. Along with the dataset, one can access the Places-CNNs, the convolutional neural networks trained on Places, DrawCNN- a visualization of the units' connections for the CNN, the online recognition demo and some sample MATLAB code forusing the synthetic receptive field of unit to segment image and visualize the activated regions. The pulications where the dataset is described are \cite{Zhou2014, Zhou2015}.
+\subsubsection{Places}\label{subsec:places}
+One of the largest annotated datasets for scene recognition is the Places dataset (also by CSAIL, MIT), \cite{places_db}. It contains almost $2.5$ million images in $205$ scene categories. Along with the dataset, one can access the Places-CNNs, the convolutional neural networks trained on Places, DrawCNN- a visualization of the units' connections for the CNN, the online recognition demo and some sample MATLAB code for using the synthetic receptive field of unit to segment image and visualize the activated regions. The publications where the dataset is described are \cite{Zhou2014, Zhou2015}.

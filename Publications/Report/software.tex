@@ -1,76 +1,78 @@
 \section{Software}
 \label{sec:soft}
-
-The saliency detection, dataset annotation and recognition tools developed by the researchers are often made available to the community.
+ 
+The saliency detection, salient regions detection and matching, (pre-trained) CNN architectures and large scale CV frameworks, developed by the researchers are often made available to the community. References to the research which led to the  development of the software, can be found in the corresponding parts of Section \fullref{sec:pubs}.
 
 \subsection{Saliency}
 
 \subsubsection{Saliency Map Algorithm} \label{subsec:salmap}
-The algorithms for the classical Itti  \cite{Itti_Koch01nrn} saliency maps as well as the GBVS maps \cite{Harel07graph-basedvisual} are available as MATLAB source code at the \href{subsec:salmap}{Saliency Map Algorithm page}, \cite{salmap_soft}.
+The algorithms for the classical Itti  \cite{Itti_Koch01nrn} saliency maps as well as the GBVS maps \cite{Harel07graph-basedvisual} are available as MATLAB source code at the Saliency Map Algorithm 
+\href{http://www.vision.caltech.edu/~harel/share/gbvs.php}{\underline{page}}, \cite{salmap_soft}.
 
 \subsubsection{SaliencyToolbox}\label{subsec:saltool}
-The \href{http://saliencytoolbox.net/index.html}{SaliencyToolbox} \cite{saltool_soft} is a collection of Matlab functions and scripts for computing the saliency map for an image, for determining the extent of a proto-object, and for serially scanning the image with the focus of attention. 
+The \href{http://saliencytoolbox.net/index.html}{\underline{SaliencyToolbox}}, \cite{saltool_soft} is a collection of Matlab functions and scripts for computing the saliency map for an image, for determining the extent of a proto-object, and for serially scanning the image with the focus of attention. 
 
-\subsubsection{Frequency-tuned Saliency}
+\subsubsection{Frequency-tuned Saliency}\label{subsec:freqsal}
 The code used in the CVPR 2009 paper ``Frequency-tuned Salient Region Detection'' (\cite{LCAV-CONF-2009-012}) is accessible through the online presentation of the work at \cite{achantaCVPR09}.
 
 \subsubsection{FastSalience}\label{soft:fastsal:subsec}
-One of the few software tools which are not implemented in MATLAB is part of the \href{http://mplab.ucsd.edu/~nick/NMPT/main.html}{Nick's Machine Perception Toolbox (NMPT)}, \cite{nmpt_soft}.\href{http://mplab.ucsd.edu/~nick/NMPT/class_fast_salience.html}{FastSalience} is an implementation of the ``Fast Salience Using Natural-statistics'' algorithm from Butko et al., \cite{ButkoZCM08}.
+One of the few software tools which are not implemented in MATLAB is part of the Nick's Machine Perception Toolbox \href{http://mplab.ucsd.edu/~nick/NMPT/main.html}{\underline{(NMPT)}}, \cite{nmpt_soft}.\href{http://mplab.ucsd.edu/~nick/NMPT/class_fast_salience.html}{\underline{FastSalience}} is an implementation of the ``Fast Salience Using Natural-statistics'' algorithm from Butko et al., \cite{ButkoZCM08}.
 
 \subsection{Salient regions}\label{soft:salreg:sec}
 
-{The software used for performance evaluation and comparison of salient region detectors and descriptors \cite{Mikolajczyk:2005} as well as the test datasets (\ref{sec:salregdb}) can be found online from the \href{http://www.robots.ox.ac.uk/~vgg/research/affine/index.html}{Oxford Vision Group page} (\cite{vgg_soft_data}). The comparison scripts are MATLAB code, while some of the detectors (IBR,EBR, MSER) are available only as executables. Specific detector and descriptor software is given below.
+{The software used for performance evaluation and comparison of salient region detectors and descriptors \cite{Mikolajczyk:2005} as well as the test datasets (\ref{sec:salregdb}) can be found online from the Oxford Vision Group \href{http://www.robots.ox.ac.uk/~vgg/research/affine/index.html}{\underline{page}} (\cite{vgg_soft_data}). The comparison scripts are MATLAB code, while some of the detectors (IBR,EBR, MSER) are available only as executables. Specific detector and descriptor software is given below.
 
 \subsubsection{Detectors}\label{soft:salregdet:subsec}
 
 The most popular affine covariant region detector {\em Maximally Stable Extremal Regions MSER} (\cite{Matas2002BMVC}) has several available implementations, most popular of which are:
 \begin{enumerate}
-\item{\bf MATLAB Computer Vision Systems Toolbox}. The MSER detector is implemented as a function \href{http://nl.mathworks.com/help/vision/ref/detectmserfeatures.html}{\textsf{detectMSERFeatures}} in the MATLAB CVS Toolbox since release R2012a. 
-\item{\bf OpenCV}. There is MSER class descendant from the \textsf{FeatureDetector} class in the \href{http://docs.opencv.org/modules/features2d/doc/feature_detection_and_description.html}{Feature Detection and Description} functionality in the open source OpenCV library.
-\item{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/mser.html}{MSER} is part of the VLFeat library.
+\item{\bf MATLAB Computer Vision Systems Toolbox}. The MSER detector is implemented as a function \href{http://nl.mathworks.com/help/vision/ref/detectmserfeatures.html}{\underline{\textsf{detectMSERFeatures}}} in the MATLAB CVS Toolbox since release R2012a. 
+\item{\bf OpenCV}. There is MSER class descendant from the \textsf{FeatureDetector} class in the Feature Detection and Description \href{http://docs.opencv.org/modules/features2d/doc/feature_detection_and_description.html}{ \underline{functionality}} in the open source OpenCV library.
+\item{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/mser.html}{\underline{MSER}} is part of the VLFeat library.
 \end{enumerate}
-The software for the  {\em Maximally stable color region (MSCR)} detector, \cite{Forssen07}, is available at the Forssen's \href{http://www.cs.ubc.ca/~perfo/mscr/}{homepage} \cite{forssen07_soft}.
+The software for the  {\em Maximally stable color region (MSCR)} detector, \cite{Forssen07}, is available at the Forssen's \href{http://www.cs.ubc.ca/~perfo/mscr/}{\underline{homepage}} \cite{forssen07_soft}.
 No code for the {\em Maximally Stable Volumes (MSVs)}, \cite{DonoserB06} and for the {\em Structure-Guided Salient Region detector (SGSR)}, \cite{Fan08} or the enhanced MSER with Canny,\cite{Wang14}  was found online.
-The code for the  {\em Morphology based Stable Salient Regions (MSSR) } detector, Ranguelova et al. \cite{RangMSSR06, RangHumpb06} is available in the (for now private) \href{https://github.com/NLeSC/LargeScaleImaging/tree/master/Software}{git NLeSc repository}.
+The code for the  {\em Morphology based Stable Salient Regions (MSSR) } detector, Ranguelova et al. \cite{RangMSSR06, RangHumpb06} is available in the (for now private) \href{https://github.com/NLeSC/LargeScaleImaging/tree/master/Software}{\underline{git NLeSC repository}}.
 
-\subsubsection{Descriptors}
+\subsubsection{Descriptors}\label{soft:salregdescr:subsec}
 
 There are numerous implementations of the {\em SIFT} descriptor, \cite{Lowe:2004}:
 \begin{enumerate}
-\item{\bf Lowe's own executable} is available at \href{http://www.cs.ubc.ca/~lowe/keypoints/}{Demo Software SIFT Keypoint page}, \cite{lowe_sift_soft}.
-\item{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/sift.html}{SIFT} is part of the VLFeat library. It includes implementations of both the SIFT detector and descriptor.
-\item{\bf OpenCV}. This \href{http://docs.opencv.org/master/da/df5/tutorial_py_sift_intro.html}{OpenCV tutorial} explains the SIFT Python API in OpenCV.
-\item{\bf GPU} implementation of SIFT, \cite{Sinha06gpu-basedvideo} is available at \href{http://cs.unc.edu/~ccwu/siftgpu/}{SiftGPU}, \cite{sift_gpu_soft}. 
+\item{\bf Lowe's own executable} is available at the Demo Software SIFT Keypoint\href{http://www.cs.ubc.ca/~lowe/keypoints/}{\underline{page}}, \cite{lowe_sift_soft}.
+\item{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/sift.html}{\underline{SIFT}} is part of the VLFeat library. It includes implementations of both the SIFT detector and descriptor.
+\item{\bf OpenCV}. This OpenCV \href{http://docs.opencv.org/master/da/df5/tutorial_py_sift_intro.html}{\underline{tutorial}} explains the SIFT Python API in OpenCV.
+\item{\bf GPU} implementation of SIFT, \cite{Sinha06gpu-basedvideo} is available at \href{http://cs.unc.edu/~ccwu/siftgpu/}{\underline{SiftGPU}}, \cite{sift_gpu_soft}. 
 \end{enumerate}
 
-The related HoG detector,{\em SURF}  is implemented as a function \href{http://nl.mathworks.com/help/vision/ref/detectsurffeatures.html}{\textsf{detectSURFFeatures}} in the MATLAB CVS Toolbox since release R2011b. The \href{http://docs.opencv.org/master/df/dd2/tutorial_py_surf_intro.html}{SURF Tutorial} describes the SURF Python API in OpenCV.
+The related HoG detector,{\em SURF}  is implemented as a function \href{http://nl.mathworks.com/help/vision/ref/detectsurffeatures.html}{\underline{\textsf{detectSURFFeatures}}} in the MATLAB CVS Toolbox since release R2011b. The \href{http://docs.opencv.org/master/df/dd2/tutorial_py_surf_intro.html}{\underline{SURF Tutorial}} describes the SURF Python API in OpenCV.
 
 Many {\em binary descriptors} have also become standard in many Computer vision software libraries:
 \begin{enumerate}
-\item{\bf MATLAB's Computer Vision Systems (CSV) Toolbox} contains many feature detectors and their descriptors (Harris, FAST, FREAK, BRISK in addition to SURF and MSER) and possibility to match and display matched features. The \href{http://nl.mathworks.com/help/vision/feature-detection-extraction-and-matching.html}{Feature Detection and Extraction functionality} contains binary descriptors since release R2013a.
-\item{\bf} {\bf VLFeat Library} supports three local descriptors- SIFT, LIOP and raw patches (from which any other descriptor can be computed). Their use with the  detectors is described in the \href{http://www.vlfeat.org/overview/covdet.html}{Covariant feature detectors tutorial}. 
-\item{\bf} {\bf OpenCV library} contains \href{http://docs.opencv.org/modules/features2d/doc/common_interfaces_of_descriptor_extractors.html?highlight=descriptorextractor#descriptorextractor}{\textsf{DescriptorExtractor class}} which supports the following descriptors-SIFT, SURF, BRIEF, BRISK, ORB and FREAK. It supports also descriptor matchers.
+\item{{\bf MATLAB's Computer Vision Systems (CSV) Toolbox} contains many feature detectors and their descriptors (Harris, FAST, FREAK, BRISK in addition to SURF and MSER) and possibility to match and display matched features. The Feature Detection and Extraction \href{http://nl.mathworks.com/help/vision/feature-detection-extraction-and-matching.html}{\underline{functionality}} contains binary descriptors since release R2013a.}
+\item{ {\bf VLFeat Library} supports three local descriptors- SIFT, LIOP and raw patches (from which any other descriptor can be computed). Their use with the  detectors is described in the Covariant feature detectors \href{http://www.vlfeat.org/overview/covdet.html}{\underline{tutorial}} }. 
+\item{ {\bf OpenCV library} contains \href{http://docs.opencv.org/modules/features2d/doc/common_interfaces_of_descriptor_extractors.html?highlight=descriptorextractor#descriptorextractor}{\underline{\textsf{DescriptorExtractor class}} } which supports the following descriptors-SIFT, SURF, BRIEF, BRISK, ORB and FREAK. It supports also descriptor matchers.}
 \end{enumerate}
 
-For the more recent descriptors authors often publish code along with their paper, e.g. the code for the {\em BOLD}, \cite{Balntas_2015_CVPR} can be obtained \href{http://vbalnt.io/projects/bold/}{online}.
+For the more recent descriptors authors often publish code along with their paper, e.g. the code for the {\em BOLD}, \cite{Balntas_2015_CVPR} can be obtained \href{http://vbalnt.io/projects/bold/}{\underline{online}}.
 
-\subsection{Deep Learning}
+\subsection{Deep Learning}\label{soft:DL:subsec}
 With the excellent performance of CNNs on the ImageNet classification dataset and many other recognition tasks, there is a boom of development of software tools implementing deep learning and CNNs. 
-The tools are often free and open source. At \href{http://deeplearning.net/software_links/}{DeepLearning.net} there is an extensive list of such packages/libraries. Here, only the most popular are presented:
+The tools are often free and open source. At \href{http://deeplearning.net/software_links/}{\underline{DeepLearning.net}} there is an extensive list of such packages/libraries. Here, only the most popular are presented:
 \subsubsection{Caffe}
-Caffe (\cite{caffe_soft}) is BSD2-Clause license modular framework for deep learning developed by the Berkeley Vision and Learning Center (BVLC). The framework is a C++ library with Python and MATLAB bindings fr training and deploying general-purpose CNNs and other deep models on commodity architectures. It is a very popular framework, both in academia and industry due to its speed performance- it can process $60M$ images per day with single NVIDIA K40 GPU. There is a large community of user and user groups and contributors on GitHub. A technical report for Caffe can be found at it's git repository: \url{https://github.com/BVLC/Caffe/}. It is the most popular open source project on computer vision and deep learning.  
+Caffe (\cite{caffe_soft}) is BSD2-Clause license modular framework for deep learning developed by the Berkeley Vision and Learning Center (BVLC). The framework is a C++ library with Python and MATLAB bindings fr training and deploying general-purpose CNNs and other deep models on commodity architectures. It is a very popular framework, both in academia and industry due to its speed performance- it can process $60M$ images per day with single NVIDIA K40 GPU. There is a large community of user and user groups and contributors on GitHub. A technical report for Caffe can be found at it's \href{https://github.com/BVLC/Caffe/}{\underline{git repository}}. It is the most popular open source project on computer vision and deep learning.  
 \subsubsection{Torch7}
 Torch (\cite{torch_soft}) is a scientific computing framework with wide support for machine learning algorithms. It is efficient due to the underlying C/CUDA implementations. It has interfaces to C, via LuaJIT, linear algebra routines, neural networks and numeric optimization routines. It runs on Mac OS X and Ubuntu 12+. There is a large community of contributors and users and the developers and maintainers are from Facebook AI Research, Google DeepMind, Twitter etc. 
 \subsubsection{Theano}
-Theano (\cite{theano_soft}) is a Python library allowing you definition, optimization, and evaluation of mathematical expressions involving multi-dimensional arrays efficiently. It supports transparent usage of GPU. \cite{bergstra+al:2010-scipy} and \cite{Bastien-Theano-2012} are the initial publications about the library with a new academic publication coming up nearly every year. Many DeepLearning tutorials are based on Theano. The official Theano tutorial could be found at \url{http://deeplearning.net/software/theano/tutorial/}.
+Theano (\cite{theano_soft}) is a Python library allowing you definition, optimization, and evaluation of mathematical expressions involving multi-dimensional arrays efficiently. It supports transparent usage of GPU. \cite{bergstra+al:2010-scipy} and \cite{Bastien-Theano-2012} are the initial publications about the library with a new academic publication coming up nearly every year. Many DeepLearning tutorials are based on Theano (Theano tutorial could be found \href{http://deeplearning.net/software/theano/tutorial/}{\underline{online}}.
+
 \subsubsection{MATLAB Toolboxes}
 {\bf DeepLearnToolbox}(\cite{deeplearntoolbox_soft})is a Matlab/Octave toolbox for deep learning. Includes Deep Belief Nets, Stacked Autoencoders, Convolutional Neural Nets, Convolutional Autoencoders and vanilla Neural Nets. Each method has examples to help the starting process.\\
-{\bf MatConvNet} (\cite{matconvnet_soft}) is a MATLAB toolbox implementing Convolutional Neural Networks (CNNs) for computer vision applications. It is part of the VLFeat suite (\cite{vlfeat_soft}), which contains also salient feature extraction (see section \ref{soft:salregdet:subsec}). MatConvNet is described in \cite{matconvnet_paper}.\\
- There are many other MATLAB software which provide CNN implementations, some can be found at the \href{http://www.mathworks.com/matlabcentral/fileexchange/24291-cnn-convolutional-neural-network-class}{MATLAB FileExchange}.
+{\bf MatConvNet} (\cite{matconvnet_soft}) is a MATLAB toolbox implementing Convolutional Neural Networks (CNNs) for computer vision applications. It is part of the VLFeat suite (\cite{vlfeat_soft}), which contains also salient feature extraction (see section \fullref{soft:salregdet:subsec}). MatConvNet is described in \cite{matconvnet_paper}.\\
+ There are many other MATLAB software which provide CNN implementations, some can be found at the \href{http://www.mathworks.com/matlabcentral/fileexchange/24291-cnn-convolutional-neural-network-class}{\underline{MATLAB FileExchange}}.
 
 \subsubsection{Deep Learning for Java}
-\href{http://deeplearning4j.org/}{Deeplearning4j}, \cite{dl4j} is a commercial-grade, open-source, distributed deep-learning library written for Java and Scala. Integrated with Hadoop and Spark, DL4J is designed to be used in business environments, rather than as a research tool. 
-Deeplearning4j aims to be cutting-edge plug and play, more convention than configuration, which allows for fast prototyping for non-researchers. DL4J is customizable at scale. It is released under the Apache 2.0 license. It's main features include n-dimensional array class, GPU integration,  Scalable on Hadoop, Spark and Akka + AWS et al and a linear algebra library twice as fast as Numpy. There are several neural networks available, including CNNs.
+\href{http://deeplearning4j.org/}{\underline{Deeplearning4j}}, \cite{dl4j} is a commercial-grade, open-source, distributed deep-learning library written for Java and Scala. Integrated with Hadoop and Spark, DL4J is designed to be used in business environments, rather than as a research tool. 
+Deeplearning4j aims to be cutting-edge plug and play, more convention than configuration, which allows for fast prototyping for non-researchers. DL4J is customizable at scale. It is released under the Apache 2.0 license. It's main features include n-dimensional array class, GPU integration,  Salable on Hadoop, Spark and Akka + AWS et al and a linear algebra library twice as fast as Numpy. There are several neural networks available, including CNNs.
 
 
 \subsubsection{Dataset annotation}\label{subsec:dbannot}
@@ -78,17 +80,19 @@ A common problem of using Deep Learning is the need for having large annotated d
 
 {\bf LabelMe} is a WEB-based image annotation tool that allows researchers to label images and share the annotations with the world. The images can be organized into collections, which can be nested. Images can also be uploaded into the system and shared.
 
-The LabelMe MATLAB toolbox is used for interaction with the images and annotations in the LabelMe dataset \ref{subsec:obj_scene_db}. The tool is described in this paper
+The LabelMe MATLAB toolbox is used for interaction with the images and annotations in the LabelMe dataset, section \fullref{subsec:obj_scene_db}. The tool is described in this paper
 \cite{Russell2008}. The toolbox also exists in 3D version, LabelMe3D which is described in \cite{Russell2009}. There is also a mobile App version and instructions how could the labeling be outsourced using the Amazon Mechanical Turk.
 
 \subsection{Distributed software for CV}
 
 \subsubsection{MapReduce}\label{subsubsec:MapReduce}
-The example code for the MapReduce implementations of several CV tasks for data mining application, presented in \cite{White:2010} is available in  GitHub repository \href{https://github.com/bwhite/hadoop_vision}{hadoop\_vision} \cite{hadoopvision_soft}.
+The example code for the MapReduce implementations of several CV tasks for data mining application, presented in \cite{White:2010} is available in  GitHub repository \href{https://github.com/bwhite/hadoop_vision}{\underline{hadoop\_vision}} \cite{hadoopvision_soft}.
 
-The \href{http://hipi.cs.virginia.edu}{\em Hadoop Image Processing Interface (HIPI)} \cite{hipi_soft} is an open source library, developed by a team from the \href{http://www.cs.virginia.edu/~gfx/pmwiki/index.php}{University of Virginia Graphics Lab}.
-\subsubsection{StormCV}
-While Hadoop MapReduce is suitable for batch processing, \href{https://storm.apache.org/}{Apache Storm},\cite{storm_soft} a free and open source distributed real-time computation system. Storm makes it easy to reliably process unbounded streams of data, doing for real-time processing what Hadoop did for batch processing.
-Developers at TNO have developed  \href{https://github.com/sensorstorm/StormCV}{StormCV},\cite{stormcv_soft}. StormCV enables the use of Apache Storm for video processing by adding computer vision (CV) specific operations and data model. The platform enables the development of distributed video processing pipelines which can be deployed on Storm clusters. It is available under the  Apache Software Foundation (ASF) license and some modules are under the \href{http://opencv.org/license.html}{OpenCV License}.
+The {\em Hadoop Image Processing Interface} \href{http://hipi.cs.virginia.edu}{\em \underline{(HIPI)}} \cite{hipi_soft} is an open source library, developed by a team from the University of Virginia \href{http://www.cs.virginia.edu/~gfx/pmwiki/index.php}{\underline{Graphics Lab}}.
+
+\subsubsection{StormCV}\label{subsubsec:StormCV}
+While Hadoop MapReduce is suitable for batch processing, \href{https://storm.apache.org/}{\underline{Apache Storm}},\cite{storm_soft} a free and open source distributed real-time computation system. Storm makes it easy to reliably process unbounded streams of data, doing for real-time processing what Hadoop did for batch processing.
+Developers at TNO have developed  \href{https://github.com/sensorstorm/StormCV}{\underline{StormCV}},\cite{stormcv_soft}. StormCV enables the use of Apache Storm for video processing by adding computer vision (CV) specific operations and data model. The platform enables the development of distributed video processing pipelines which can be deployed on Storm clusters. It is available under the  Apache Software Foundation (ASF) license and some modules are under the \href{http://opencv.org/license.html}{\underline{OpenCV License}}.
+
 \subsubsection{CloudCV}
-The Large-Scale distributed CV as a Cloud service, \href{http://cloudcv.org/}{CloudCV} \cite{cloudcv_soft} is not available as a software package, it is Software as a Service (SaaS). It's current functionality includes image stitching, object detection, decaf-server, classification and VIP finding application. As such it could be useful link for scientists which need to perform tasks for which functionality is supported, especially interesting looks the object detection and classification services. Some related feature computation code code and datasets are available.
+The Large-Scale distributed CV as a Cloud service, \href{http://cloudcv.org/}{\underline{CloudCV}} \cite{cloudcv_soft} is not available as a software package, it is Software as a Service (SaaS). It's current functionality includes image stitching, object detection, decaf-server, classification and VIP finding application. As such it could be useful link for scientists which need to perform tasks for which functionality is supported, especially interesting looks the object detection and classification services. Some related feature computation code code and datasets are available.
