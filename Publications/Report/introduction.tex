@@ -1,7 +1,7 @@
 \section{Introduction}
 \label{sec:intro}
   
-The goal of this report is to present a focused partial overview of the state of the art in large scale computer vision (CV).  It aims at identifying areas of expertise in CV which are required or expected to be required in e-science projects at the Netherlands eScience Center \href{https://www.esciencecenter.nl/}{\underline{(NLeSC)}} as well as defining own research line(s) within the eScience Technology and (applied) research Platform \href{https://www.esciencecenter.nl/site/project/estep}{(\underline{eStep})} at the NLeSC.
+The goal of this document is to present a focused partial overview of the state of the art in large scale computer vision (CV).  It aims at identifying areas of expertise in CV which are required or expected to be required in e-science projects at the Netherlands eScience Center \href{https://www.esciencecenter.nl/}{\underline{(NLeSC)}} as well as defining own research line(s) within the eScience Technology and (applied) research Platform \href{https://www.esciencecenter.nl/site/project/estep}{(\underline{eStep})} at the NLeSC.
 
 \subsection{Computer vision}
 
@@ -17,7 +17,7 @@ A computer vision researcher always faces the problem to explain why automating 
 \label{fig:CV}
 \end{figure}
 
-Below some factors for deeper understanding of this difficulty are given \cite{Sonka99}:
+Below some factors for deeper understanding of this difficulty are given (\cite{Sonka99}):
 
 \begin{enumerate}
 \item {\bf Loss of information 3D $\rightarrow$ 2D}. This is a phenomena which occurs in typical image capture device such as camera or a single eye. The corresponding mathematical model is the one of perspective projection- it maps points along rays, but does not preserve angles and collinearity.
@@ -25,19 +25,19 @@ Below some factors for deeper understanding of this difficulty are given \cite{S
 \item {\bf Noise} is inherently present in each measurement in the real world. 
 \item {\bf Large data volumes}. This is a main challenge in large scale CV systems.
 \item {\bf Brightness measurements} comes by complicated image formation physics. The radiance (brightness, image intensity) depends on irradiance (light source type, intensity and position), observer's position, surface geometry and reflectance properties.
-\item {\bf Local window vs. global view.} Usually image analysis algorithms analyze a local part of an image (pixel, neighborhood, region), e.g. the computer sees the image trough e keyhole, which makes it hard to understand the global context.
+\item {\bf Local window vs. global view.} Usually image processing algorithms analyze a local part of an image (pixel, neighborhood, region), e.g. the computer sees the image trough e keyhole, which makes it hard to understand the global context.
 \end{enumerate}
  
 \subsection{Computer vision challenges in other scientific disciplines}
-From projects and proposals at NLeSc, where the data for the object of scientific research are captured as 2D/3D images, the main applications of CV can be identified:
+From projects and proposals at NLeSc, where the data for the object of scientific research are captured as 2D/3D images, some main applications of CV can be identified:
 \begin{enumerate}
 \item {\bf Where is my object? (Localization).} For example, if the object of my study is a freely moving animal, while my camera is fixed somewhere in its habitat, can a CV system find automatically where (potentially) an animal appears on the recorded video, where most frames will probably be of no interest (also, can I keep only the meaningful data?)? Technically, the problem is how to automatically find the object of interest or reduce the data to be processed further, so they contain the object of interest (also efficient storage) in large collections of images/videos.
-\item {\bf Is my object the same? (Identification).} For example, if I am studying a specific animal, named King Kong, which shares habitat with other animals of the same species, and all the habitat is monitored at different times, can a CV system find me the images where King Kong appears on, as I'm interested only in his movements? Technically, the problem is to (semi-) automatically determine if the study object is the same in multiple instances of photographing it, usually at different time, in different environment and under changing viewing conditions or camera equipment.
+\item {\bf Is my object the same? (Identification).} For example, if I am studying a specific animal, named King Kong, which shares habitat with other animals of the same species, and all the habitat is monitored at different times, can a CV system find me the images where King Kong appears on, as I'm interested only in his movements? Technically, the problem is to (semi-) automatically determine if the study object is the same in multiple instances of photographing it, usually at different times, in different environment and under changing viewing conditions or camera equipment.
 \item {\bf What is my object? (Classification).} For example, if King Kong is a gorilla sharing a habitat with other gorillas and chimps, I might like to separate the data of the chimps from those of the gorillas, and even identify new gorillas/chimps captured on camera, as I'm interested in the whole family, friends and enemies of King Kong. Hence, the problem is to (semi-) automatically classify the study object to one of possible categories. Usually the same camera equipment and modality are used to obtain the images/videos.
 \item{\bf Large scale.} The common challenge for these questions is how to efficiently answer them from {\em large scale} scientific images/videos collections.
 \end{enumerate}
 
- At NLeSC there have been projects which illustrate these types of questions to be addressed. In the systems biology  \href{https://blog.surf.nl/en/eyr4-blog-5-using-big-data-solutions-to-understand-worm-behavior/}{project} ``Using big data solutions to understand worm behavior'', the object of research is the {\em C.elegans} worm (see Figure \ref{fig:Celegans}). The source data are high resolution and long videos capturing the behavior of the worm. The first step is to {\em localize} precisely the worm in the large volume of imaging data. 
+ At NLeSC there have been projects which illustrate these types of questions to be addressed. In the systems biology  \href{https://blog.surf.nl/en/eyr4-blog-5-using-big-data-solutions-to-understand-worm-behavior/}{\underline{project}}, ``Using big data solutions to understand worm behavior'', the object of research is the {\em C.elegans} worm (see Figure \ref{fig:Celegans}). The source data are high resolution and long videos capturing the behavior of the worm. The first step is to {\em localize} precisely the worm in the large volume of imaging data. 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.8\textwidth]{fig/Celegans}
@@ -47,7 +47,7 @@ From projects and proposals at NLeSc, where the data for the object of scientifi
 \end{figure}
 This is a good example of how the object of interest is often studied in a controlled environment and one can assume that the most prominent ({\em salient}) object captured on images/videos is the object of interest. In this case, the lab plate ensures relatively uniform background where one can easily find the object of interest in foreground, the worm. The challenge is to find it automatically and to process efficiently large amounts of data.
 
-The localization problem is often related to the {\em segmentation} problem, which is most challenging in the medical imaging domain. Illustration of the difficulty can be seen in Figures \ref{fig:hippo} and \ref{fig:oct}. There is little perceptual difference between the hippocampus and the surrounding brain tissue as well as between some of the retina layers, making it difficult to distinguish even for the human eye.
+The localization problem is often related to the {\em segmentation} problem, which is most challenging in the medical imaging domain. Illustration of the difficulty can be seen in Figures \ref{fig:hippo} and \ref{fig:oct}. There is little perceptual difference between the hippocampus and the surrounding brain tissue as well as between some of the retina layers, making it difficult to distinguish them even by a human eye.
 
 \begin{figure}[H]
 \begin{center}
@@ -66,7 +66,7 @@ The localization problem is often related to the {\em segmentation} problem, whi
 \label{fig:oct}
 \end{figure}
 
-Because of the complexity of the problem, the large number of imaging modalities, equipment and even image formats, usually specific algorithms are developed to segment different body organs and tissues. Since specific solutions are required, which are hard to generalize for other structures, modalities, even less across scientific domains, the image segmentation is left out of the scope of this report.
+Because of the complexity of the problem, the large number of imaging modalities, equipment and even image formats, usually specific algorithms are developed to segment different body organs and tissues. Since specific solutions are required, which are hard to generalize for other structures, modalities, even less across scientific domains, the image segmentation is left out of the scope of this document.
 
 
 An example of the {\em identification} problem, is the individual photo-identification of wildlife. This is illustrated on Figure \ref{fig:photoid}. Many species are individually recognizable by characteristic patterns or shape, i.e. by their phenotype.
@@ -81,7 +81,7 @@ An example of the {\em identification} problem, is the individual photo-identifi
 \label{fig:photoid}
 \end{figure}
 
-An example of the {\em classification} problem is shown on Figure \ref{fig:woodphotoid}. The question is to identify the tree species from microscopic images of wood samples. The {\em Acer} has a different appearance than {\em Toona}, but also within the family there are many species of {\em Toona} which differ- for example {\em Toona ciliata} differs subtly from {\em Toona sinesis} (Figure \ref{fig:treeid}), hence the classification problem could be hierarchical and increasingly difficult.
+An example of the {\em classification} problem is shown on Figures \ref{fig:woodphotoid} and \ref{fig:treeid}. The question is to identify the tree species from microscopic images of wood samples. The {\em Acer} has a different appearance than {\em Toona}, but also within the family there are many species of {\em Toona} which differ- for example {\em Toona ciliata} differs subtly from {\em Toona sinesis} (Figure \ref{fig:treeid}), hence the classification problem could be hierarchical and increasingly difficult.
 
 \begin{figure}[H]
 \begin{center}
@@ -134,7 +134,7 @@ Few of the numerous applications related to {\em object/scene identification} (\
 \item Automatic reconstruction of 3D scenes, etc.
 \end{itemize}
 
-Automatically understating the {\em semantics of an object/scene} (\ref{item:und}) in the form of image classification, have many applications like:
+Automatically understating the {\em semantics of an object/scene} (\ref{item:und}) b the means of image classification, have many applications like:
 \begin{itemize}
 \item Image search engines
 \item Organizing photo collections
@@ -152,11 +152,11 @@ This is a complex and high-level computer vision task, with the goal of making m
 \label{fig:mitdemo}
 \end{figure}
 
-In fact, the majority of CV researchers traditionally work on non-scientific applications, focusing on the third and most challenging problem. Addressing the problems faced by other domain scientists, while still conducting generic and widely applicable computer vision research, seems to fit best the strategy of NLeSC and eStep. Another important aspect, where NLeSC can contribute a lot with expertise, is the development of {\em large scale} CV systems.
+In fact, the majority of CV researchers traditionally work on non-scientific applications, focusing on the third and most challenging problem. Addressing the problems faced by other domain scientists, while still conducting generic and widely applicable computer vision research, seems to fit best the strategy of NLeSC and eStep. Another important aspect, where NLeSC can contribute a lot with expertise, is the development of {\em large scale} CV systems, i.e. the last research question.
 
 \subsection{Structure}
-The overview is by no means complete, it rather tries to summarize the research in the field along the above topics in the last years. The report is structured along the main outputs of the CV research, namely, scientific research (some of the topics are explained) and publications in Section \ref{sec:pubs}, software in Section \ref{sec:soft} and datasets in Section \ref{sec:db}. Some potential scientific applications are shown in Section \ref{sec:app}. The conclusions and recommendations are given is Section \ref{sec:conc}.
+The overview is by no means complete, it rather tries to summarize the research in the field along the above topics in the last years. The document is structured along the main outputs of the CV research, namely, scientific research (some of the topics are explained) and publications in Section \ref{sec:pubs}, software in Section \ref{sec:soft} and datasets in Section \ref{sec:db}. Some potential scientific applications are shown in Section \ref{sec:app}. The conclusions and recommendations are given is Section \ref{sec:conc}.
 
-The CV researchers can benefit most from the \nameref{sec:pubs} for overview of current research trends,\nameref{sec:soft} and \nameref{sec:db} for development and testing sections.
-The engineers can start by looking at section \nameref{sec:soft}.
-Readers interested in the application and directions of NLeSC are referred to sections \nameref{sec:app} and \nameref{sec:conc}.
+The CV researchers can benefit most from the \underline{\nameref{sec:pubs}} for overview of current research trends. The interested reader can also learn some of the terminology and methods in the field from that section.  For development and testing the most useful sections are \underline{\nameref{sec:soft}} and \underline{\nameref{sec:db}}.
+The engineers can start by looking at section \underline{\nameref{sec:soft}}.
+Readers interested in the application and directions of NLeSC are referred to sections \underline{\nameref{sec:app}} and \underline{\nameref{sec:conc}}.

@@ -1,12 +1,12 @@
 \section{Datasets}
 \label{sec:db}
 
-The annotated segmentation, saliency, object and scenes classification datasets, which are produced and used by the researchers to test the algorithms are often made available to the community. Scientific image datasets are much harder to obtain access to (factors like privacy, cost of collecting and value of the data, competitiveness play an important role), so the focus here is only on the datasets, gathered for CV research purposes by the community.
+The datasets (databases is the term used in the field), which are often gathered and used by the CV researchers to test the algorithms, are often made available to the community. Here links to the annotated segmentation and saliency datasets (see sections \underline{\fullref{db:subsec:sal}} and  \underline{\fullref{db:subsec:mmsal}}), interest regions (section \underline{\fullref{sec:salregdb}}) and object and scenes classification datasets (section \underline{\fullref{subsec:obj_scene_db}}) are given. Scientific image datasets are much harder to obtain access to (factors like privacy, cost of collecting and value of the data and competitiveness play an important role), so the focus here is only on the datasets, gathered for CV research purposes by the community.
 
-\subsection{Image Saliency Datasets}
+\subsection{Image Saliency Datasets}\label{db:subsec:sal}
 \subsubsection{MSRA}\label{subsec:msra}
-The MSRA  Database form the Visual computing group of Microsoft Research Asia \cite{msra_db} is  first large-scale labeled dataset made publicly available for training and evaluation. It contains two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset.
-\begin{figure}[H]
+The MSRA  Database form the Visual computing group of Microsoft Research Asia \cite{msra_db} is  the first large-scale labeled dataset made publicly available for training and evaluation. It contains two image sets. The first set consists of $20 000$ images labeled by three users, while the second set consists of $5000$ images labeled by nine users. The labeling are available as bounding boxes. Figure \ref{fig:msra} illustrates the dataset. The results of the proposed method by the authors of the dataset, have been published in \cite{LiuCVPR2007}.
+\begin{figure}[h]
 \begin{center}
 \includegraphics[width=0.75\textwidth]{fig/MSRA}
 \end{center}
@@ -14,13 +14,12 @@ The MSRA  Database form the Visual computing group of Microsoft Research Asia \c
 \label{fig:msra}
 \end{figure}
 
-The results of the proposed method by the authors of the dataset, have been published in \cite{LiuCVPR2007}.
 
 \subsubsection{MSRA10k}
 This is an extension of the MSRA dataset, which  addresses the coarse-grained limitation of the MSRA labeling (bounding boxes). The MSRA10k (\cite{msra10k_db}) dataset consists of $10000$ randomly selected MSRA images for which a pixel-level saliency labeling is available. Figure \ref{fig:msra10k} illustrates the dataset. 
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{fig/MSRA10k}
+\includegraphics[width=0.55\textwidth]{fig/MSRA10k}
 \end{center}
 \caption{Examples of the MSRA 10k dataset. First row: original images with ground truth rectangles from MSRA dataset. Second row: Ground truth with pixel accuracy.}
 \label{fig:msra10k}
@@ -34,7 +33,7 @@ Later, the CSSD was extended to a larger dataset (ECSSD) of $1000$ images, which
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{fig/ECSSD}
+\includegraphics[width=0.5\textwidth]{fig/ECSSD}
 \end{center}
 \caption{Examples of the ECSSD dataset.}
 \label{fig:ecssd}
@@ -43,29 +42,29 @@ Later, the CSSD was extended to a larger dataset (ECSSD) of $1000$ images, which
 \subsubsection{DUT-OMRON}
 The Dalian University of Technology and the Omron Corporation introduced in the DUT-OMRON dataset \cite{dut-omron_db} consisting of $5168$, manually selected from more than $140 000$ images. They are re-sized to $400 \times x$ or $x \times 400$, where  $x < 400$. They contain one or more salient objects with relatively complex background. Five people have labeled the pixel-wise ground truth along with bounding box and eye-fixation. The dataset is illustrated on Figure \ref{fig:dut-omron}. The results of the experiments on the collected dataset were published in \cite{yang2013saliency}.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{fig/DUT-OMRON}
+\includegraphics[width=0.4\textwidth]{fig/DUT-OMRON}
 \end{center}
-\caption{Samples of the DUT-OMRON dataset.From top to bottom: original image, bounding box ground truth, pixel-wise ground truth,average of the five binary masks and eye-fixation ground truth. }
+\caption{Samples of the DUT-OMRON dataset. From top to bottom: original image, bounding box ground truth, pixel-wise ground truth, average of the five binary masks and eye-fixation ground truth. }
 \label{fig:dut-omron}
 \end{figure}
 
 \subsubsection{PASCAL-S}
-Another dataset, which aims at bridging the gap between fixations and salient objects is the PASCAL-S dataset \cite{pascal-s_db} provided by Georgia Tech, Caltech and UCLA. The dataset contains $850$ images from the PASCAL 2010 with $12$ subjects and $1296$ object instances. The images and the code are available for download. The dataset is is illustrated on Figure \ref{fig:pascal-s}.
+Another dataset, which aims at bridging the gap between fixations (human visual attention) and salient objects is the PASCAL-S dataset \cite{pascal-s_db} provided by Georgia Tech, Caltech and UCLA. The dataset contains $850$ images from the PASCAL 2010 with $12$ subjects and $1296$ object instances. The dataset is illustrated on Figure \ref{fig:pascal-s}. The saliency segmentation method and the findings have been published at \cite{TPAMI.2012.147}.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.75\textwidth]{fig/PASCAL-S}
+\includegraphics[width=0.6\textwidth]{fig/PASCAL-S}
 \end{center}
 \caption{Examples of the PASCAL-S dataset.}
 \label{fig:pascal-s}
 \end{figure}
 
 
-The saliency segmentation method and the findings have been published at \cite{TPAMI.2012.147}.  
+  
 
-\subsection{Multimedia Datasets}
+\subsection{Multimedia Datasets} \label{db:subsec:mmsal}
 \subsubsection{MSRA-MM}
 In 2009, the researchers from Microsoft Research Asia have released 2 versions of large multimedia datasets- MSRA-MM \cite{msra-mm_db}. MSRA-MM 1.0 consists of two sub-datasets, i.e., an image dataset and a video dataset that are collected from the image and video search engines. For image dataset, there are about $1000$ images per query for $68$ representative queries based on the log of search engines. There are $65443$ images in total. For the video dataset, $165$ representative queries have been selected from a log resulting in total of $10277$ videos. Due to copyright issues, the raw image and video data are not available, but only features and annotations are provided. The dataset is explained in detail in a technical report \cite{export:79942}.
 
@@ -74,14 +73,14 @@ Surprisingly there are not many datasets available for testing salient region de
 
 \subsubsection{Oxford Vision Group}
 
-For more than a decade the standard dataset was provided by Mikolajczyk et al. \cite{Mikolajczyk:2005}. It is available under Test Data from the Oxford Vision Group \href{http://www.robots.ox.ac.uk/~vgg/research/affine/index.html}{\underline{page}}. The dataset is rather small, contains only $48$ images, but real (not simulated). Illustration of the dataset can be seen on figure \ref{fig:mikdataset}. 
+For more than a decade the standard dataset was provided by Mikolajczyk et al. \cite{Mikolajczyk:2005}. It is available under Test Data from the Oxford Vision Group \href{http://www.robots.ox.ac.uk/~vgg/research/affine/index.html}{\underline{page}}. The dataset is rather small, contains only $48$ images, but real (not simulated). The dataset is illustrated Figure \ref{fig:mikdataset}. 
 
  Five different changes in imaging conditions are represented: viewpoint changes (a) \& (b); scale changes (c) \& (d); image blur (e) \& (f); JPEG compression (g); and illumination (h). The effect of changing the image conditions can be separated from
 the effect of changing the scene type. One scene type contains homogeneous regions with distinctive edge boundaries (e.g. graffiti, buildings), and the other contains
-repeated textures of different forms. The authors referred to these as structured versus textured scenes respectively. For example sequence (a) is of structured type, while (b) is example of textured sequence.
+repeated textures of different forms. The authors referred to these as {\em structured} versus {\em textured} scenes respectively. For example sequence (a) is of structured type, while (b) is example of textured sequence.
 
 In the viewpoint change test the camera varies from a front-parallel view to one with significant foreshortening
-at approximately 60 degrees to the camera. For details of the other image transformations, the reader is referred to the publication \cite{Mikolajczyk:2005} and the data description.   All images are of small resolution for now a days standards, but considered medium a decade ago (approximately 800 $\times$ 640 pixels).
+at approximately 60 degrees to the camera. For details of the other image transformations, the reader is referred to the publication \cite{Mikolajczyk:2005} and the data description.   All images are of small resolution for today's standards, but considered medium a decade ago (approximately 800 $\times$ 640 pixels).
 Since the images are either of planar scenes or the camera position is fixed during acquisition, the images are related by homographies (plane
 protective transformations). All homographies between the reference (leftmost) image and the other images in a particular dataset are provided.
 

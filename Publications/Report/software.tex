@@ -1,9 +1,9 @@
 \section{Software}
 \label{sec:soft}
  
-The saliency detection, salient regions detection and matching, (pre-trained) CNN architectures and large scale CV frameworks, developed by the researchers are often made available to the community. References to the research which led to the  development of the software, can be found in the corresponding parts of Section \fullref{sec:pubs}.
+The saliency detection (see section \underline{\fullref{subsec:salsoft}}), salient regions detection and matching  (section \underline{\fullref{soft:salreg:sec}}), (pre-trained) CNN architectures  (section \underline{\fullref{soft:DL:subsec}})and large scale CV frameworks (section \underline{\fullref{subsec:largescalesoft}}), developed by the researchers are often made available to the community. References to the research which led to the  development of the software, can be found in the corresponding parts of Section \fullref{sec:pubs}.
 
-\subsection{Saliency}
+\subsection{Saliency}\label{subsec:salsoft}
 
 \subsubsection{Saliency Map Algorithm} \label{subsec:salmap}
 The algorithms for the classical Itti  \cite{Itti_Koch01nrn} saliency maps as well as the GBVS maps \cite{Harel07graph-basedvisual} are available as MATLAB source code at the Saliency Map Algorithm 
@@ -26,9 +26,9 @@ One of the few software tools which are not implemented in MATLAB is part of the
 
 The most popular affine covariant region detector {\em Maximally Stable Extremal Regions MSER} (\cite{Matas2002BMVC}) has several available implementations, most popular of which are:
 \begin{enumerate}
-\item{\bf MATLAB Computer Vision Systems Toolbox}. The MSER detector is implemented as a function \href{http://nl.mathworks.com/help/vision/ref/detectmserfeatures.html}{\underline{\textsf{detectMSERFeatures}}} in the MATLAB CVS Toolbox since release R2012a. 
-\item{\bf OpenCV}. There is MSER class descendant from the \textsf{FeatureDetector} class in the Feature Detection and Description \href{http://docs.opencv.org/modules/features2d/doc/feature_detection_and_description.html}{ \underline{functionality}} in the open source OpenCV library.
-\item{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/mser.html}{\underline{MSER}} is part of the VLFeat library.
+\item{{\bf MATLAB Computer Vision Systems Toolbox}. The MSER detector is implemented as a function \href{http://nl.mathworks.com/help/vision/ref/detectmserfeatures.html}{\underline{\textsf{detectMSERFeatures}}} in the MATLAB CVS Toolbox since release R2012a.} 
+\item{{\bf OpenCV}. There is MSER class descendant from the \textsf{FeatureDetector} class in the Feature Detection and Description \href{http://docs.opencv.org/modules/features2d/doc/feature_detection_and_description.html}{ \underline{functionality}} in the open source OpenCV library.}
+\item{{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/mser.html}{\underline{MSER}} is part of the VLFeat library.}
 \end{enumerate}
 The software for the  {\em Maximally stable color region (MSCR)} detector, \cite{Forssen07}, is available at the Forssen's \href{http://www.cs.ubc.ca/~perfo/mscr/}{\underline{homepage}} \cite{forssen07_soft}.
 No code for the {\em Maximally Stable Volumes (MSVs)}, \cite{DonoserB06} and for the {\em Structure-Guided Salient Region detector (SGSR)}, \cite{Fan08} or the enhanced MSER with Canny,\cite{Wang14}  was found online.
@@ -38,10 +38,10 @@ The code for the  {\em Morphology based Stable Salient Regions (MSSR) } detector
 
 There are numerous implementations of the {\em SIFT} descriptor, \cite{Lowe:2004}:
 \begin{enumerate}
-\item{\bf Lowe's own executable} is available at the Demo Software SIFT Keypoint\href{http://www.cs.ubc.ca/~lowe/keypoints/}{\underline{page}}, \cite{lowe_sift_soft}.
-\item{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/sift.html}{\underline{SIFT}} is part of the VLFeat library. It includes implementations of both the SIFT detector and descriptor.
-\item{\bf OpenCV}. This OpenCV \href{http://docs.opencv.org/master/da/df5/tutorial_py_sift_intro.html}{\underline{tutorial}} explains the SIFT Python API in OpenCV.
-\item{\bf GPU} implementation of SIFT, \cite{Sinha06gpu-basedvideo} is available at \href{http://cs.unc.edu/~ccwu/siftgpu/}{\underline{SiftGPU}}, \cite{sift_gpu_soft}. 
+\item{{\bf Lowe's own executable} is available at the Demo Software SIFT Keypoint\href{http://www.cs.ubc.ca/~lowe/keypoints/}{\underline{page}}, \cite{lowe_sift_soft}.}
+\item{{\bf Vision Lab Features Library (VLFeat)},\cite{vlfeat_soft}. The \href{http://www.vlfeat.org/api/sift.html}{\underline{SIFT}} is part of the VLFeat library. It includes implementations of both the SIFT detector and descriptor.}
+\item{{\bf OpenCV}. This OpenCV \href{http://docs.opencv.org/master/da/df5/tutorial_py_sift_intro.html}{\underline{tutorial}} explains the SIFT Python API in OpenCV.}
+\item{{\bf GPU} implementation of SIFT, \cite{Sinha06gpu-basedvideo} is available at \href{http://cs.unc.edu/~ccwu/siftgpu/}{\underline{SiftGPU}}, \cite{sift_gpu_soft}.} 
 \end{enumerate}
 
 The related HoG detector,{\em SURF}  is implemented as a function \href{http://nl.mathworks.com/help/vision/ref/detectsurffeatures.html}{\underline{\textsf{detectSURFFeatures}}} in the MATLAB CVS Toolbox since release R2011b. The \href{http://docs.opencv.org/master/df/dd2/tutorial_py_surf_intro.html}{\underline{SURF Tutorial}} describes the SURF Python API in OpenCV.
@@ -66,8 +66,10 @@ Torch (\cite{torch_soft}) is a scientific computing framework with wide support 
 Theano (\cite{theano_soft}) is a Python library allowing you definition, optimization, and evaluation of mathematical expressions involving multi-dimensional arrays efficiently. It supports transparent usage of GPU. \cite{bergstra+al:2010-scipy} and \cite{Bastien-Theano-2012} are the initial publications about the library with a new academic publication coming up nearly every year. Many DeepLearning tutorials are based on Theano (Theano tutorial could be found \href{http://deeplearning.net/software/theano/tutorial/}{\underline{online}}.
 
 \subsubsection{MATLAB Toolboxes}
-{\bf DeepLearnToolbox}(\cite{deeplearntoolbox_soft})is a Matlab/Octave toolbox for deep learning. Includes Deep Belief Nets, Stacked Autoencoders, Convolutional Neural Nets, Convolutional Autoencoders and vanilla Neural Nets. Each method has examples to help the starting process.\\
-{\bf MatConvNet} (\cite{matconvnet_soft}) is a MATLAB toolbox implementing Convolutional Neural Networks (CNNs) for computer vision applications. It is part of the VLFeat suite (\cite{vlfeat_soft}), which contains also salient feature extraction (see section \fullref{soft:salregdet:subsec}). MatConvNet is described in \cite{matconvnet_paper}.\\
+\begin{enumerate}
+\item{{\bf DeepLearnToolbox}(\cite{deeplearntoolbox_soft})is a Matlab/Octave toolbox for deep learning. Includes Deep Belief Nets, Stacked Autoencoders, Convolutional Neural Nets, Convolutional Autoencoders and vanilla Neural Nets. Each method has examples to help the starting process.}
+\item{{\bf MatConvNet} (\cite{matconvnet_soft}) is a MATLAB toolbox implementing Convolutional Neural Networks (CNNs) for computer vision applications. It is part of the VLFeat suite (\cite{vlfeat_soft}), which contains also salient feature extraction (see section \fullref{soft:salregdet:subsec}). MatConvNet is described in \cite{matconvnet_paper}.}
+\end{enumerate}
  There are many other MATLAB software which provide CNN implementations, some can be found at the \href{http://www.mathworks.com/matlabcentral/fileexchange/24291-cnn-convolutional-neural-network-class}{\underline{MATLAB FileExchange}}.
 
 \subsubsection{Deep Learning for Java}
@@ -83,7 +85,7 @@ A common problem of using Deep Learning is the need for having large annotated d
 The LabelMe MATLAB toolbox is used for interaction with the images and annotations in the LabelMe dataset, section \fullref{subsec:obj_scene_db}. The tool is described in this paper
 \cite{Russell2008}. The toolbox also exists in 3D version, LabelMe3D which is described in \cite{Russell2009}. There is also a mobile App version and instructions how could the labeling be outsourced using the Amazon Mechanical Turk.
 
-\subsection{Distributed software for CV}
+\subsection{Distributed software for CV}\label{subsec:largescalesoft}
 
 \subsubsection{MapReduce}\label{subsubsec:MapReduce}
 The example code for the MapReduce implementations of several CV tasks for data mining application, presented in \cite{White:2010} is available in  GitHub repository \href{https://github.com/bwhite/hadoop_vision}{\underline{hadoop\_vision}} \cite{hadoopvision_soft}.
