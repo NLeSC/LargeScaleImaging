@@ -49,7 +49,7 @@ for d=1:3
     figure(f2);  plot([20 30 40 50 60],seqcorresp,mark(d,:));
 end
 
-figure(1);legend(det_suffix{1},det_suffix{2},det_suffix{3});
+figure(f1);legend(det_suffix{1},det_suffix{2},det_suffix{3});
 axis([10 70 0 100]);
-figure(2);legend(det_suffix{1},det_suffix{2},det_suffix{3});
+figure(f2);legend(det_suffix{1},det_suffix{2},det_suffix{3});
 
