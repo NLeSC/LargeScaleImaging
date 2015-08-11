@@ -7,7 +7,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 May 2015
-% last modification date: 23 June 2015
+% last modification date: 11 August 2015
+% modification details: more modular code
+% last modification date: 11 June 2015
 % modification details: added hysteresis thresholding for binarization
 % modification date: 22 June 2015
 % modification details: added parameter for the type of  thresholding- 
@@ -193,12 +195,6 @@ end
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
-% saliency masks per gray level
-holes_level = zeros(nrows,ncols);
-islands_level = zeros(nrows,ncols);
-indentations_level = zeros(nrows,ncols);
-protrusions_level = zeros(nrows,ncols);
-
 % accumulative saliency masks
 holes_acc = zeros(nrows,ncols);
 islands_acc = zeros(nrows,ncols);
@@ -233,141 +229,17 @@ else
     ROI_only = image_data;
 end
 
-
-%--------------------------------------------------------------------------
-% parameters depending on pre-processing
-%--------------------------------------------------------------------------
-% find optimal thresholds
-switch thresh_type
-    case 's'
-        thresholds = fix(1:255/num_levels:255);
-    case 'm'
-        thresholds = multithresh(image_data, num_levels);
-        num_levels = length(thresholds);
-        thresh_type ='s';
-    case 'h'
-        step = fix(255/num_levels);
-        high_thresholds  = step:step:255;
-        low_thresholds = 0:step:255-step;
-        num_levels = length(high_thresholds);
-end
-
-%--------------------------------------------------------------------------
-% core processing
-%--------------------------------------------------------------------------
-if verbose
-    disp('Processing per gray level...');
-end
-
-tic;
-
-% waitbar
-%if visualise_major
-    wb_handle = waitbar(0,'SMSSR detection computaitons: please wait...',...
-                        'Position',wait_pos);
-    wb_counter = 0;
-%end
-
 %..........................................................................
-% compute binary saliency for every sampled gray-level
+% segment each thresholded image and obtain the accumulated saliency masks
 %..........................................................................
+[acc_masks] = smssr_acc_masks(ROI_only, num_levels, thresh_type,...
+                               SE_size_factor, area_factor,...
+                               saliency_type, execution_flags);
+holes_acc = acc_masks(:,:,1);
+islands_acc = acc_masks(:,:,2);
+indentaitons_acc = acc_masks(:,:,3);
+protrusions_acc = acc_masks(:,:,4);
 
-for it = 1:num_levels
-     wb_counter = wb_counter + 1;
-     waitbar(wb_counter/num_levels);
-     drawnow
-
-    switch thresh_type
-        case 'm'
-        case 's'
-            level = thresholds(it);
-        case 'h'
-            level(1) = high_thresholds(it);
-            level(2) = low_thresholds(it);                
-    end
-    %pause
-    [saliency_masks_level, binary_image] = smssr_gray_level(ROI_only, ...
-                                            thresh_type, level, ...
-                                            SE_size_factor, area_factor,...
-                                            saliency_type, visualise_minor);
-    % cumulative saliency masks
-    holes_level = saliency_masks_level(:,:,1);
-    islands_level = saliency_masks_level(:,:,2);
-    indentations_level = saliency_masks_level(:,:,3);
-    protrusions_level = saliency_masks_level(:,:,4);
-    
-    holes_acc = holes_acc + holes_level;
-    islands_acc = islands_acc + islands_level;
-    indentations_acc = indentations_acc + indentations_level;
-    protrusions_acc = protrusions_acc + protrusions_level;
-
-    pause;
-    % visualisation
-    if visualise_major
-        if holes_flag
-         figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on;
-         set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');         
-        end
-        if islands_flag
-         subplot(222);imagesc(islands_acc);axis image;axis on;
-         set(gcf, 'Colormap',mycmap);title('islands');colorbar('South');
-        end
-        if indentations_flag
-         subplot(223);imagesc(indentations_acc);axis image;axis on;
-         set(gcf, 'Colormap',mycmap);title('indentations');colorbar('South');
-        end
-        if protrusions_flag
-         subplot(224);imagesc(protrusions_acc);axis image;axis on;
-         set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
-        end
-        figure(f2);imshow(binary_image);
-        if size(level) > 1
-            title(['Segmented image at thresholds: ' ...
-                num2str(level(2))  ' and ' num2str(level(1)) ]);
-        else
-            title(['Segmented image at threshold: ' num2str(level)]);
-        end
-        axis image; axis on;
-    end
-end
-    if verbose
-        disp('Elapsed time for the core processing: ');toc
-    end
-
-    %visualisation
-    if visualise_major
-        if holes_flag
-         figure(f3);
-         subplot(221);imshow(image_data); freezeColors; title('Original image');axis image;axis on;
-         subplot(222);imshow(holes_acc);%imshow(holes_acc,mycmap);
-         axis image;axis on;title('holes');freezeColors; 
-        end
-        % indentations
-        if indentations_flag
-         figure(f4);
-         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(indentations_acc); %imshow(indentations_acc,mycmap);
-         axis image;axis on;title('indentations');freezeColors; 
-        end
-        % islands
-        if islands_flag
-         figure(f5);
-         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(islands_acc);%imshow(islands_acc,mycmap);
-         axis image;axis on;title('islands');freezeColors; 
-        end
-        % protrusions
-        if protrusions_flag
-         figure(f6);
-         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(protrusions_acc);%imshow(protrusions_acc,mycmap);
-         axis image;axis on; title('protrusions'); freezeColors; 
-        end
-    end
-    
-
-% close the waitbar
-  close(wb_handle);
 %..........................................................................
 % threshold the cumulative saliency masks 
 %..........................................................................
