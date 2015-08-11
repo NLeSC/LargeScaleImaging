@@ -1,4 +1,4 @@
-% mssr- main function of the SMSSR detector 
+% smssr- main function of the SMSSR detector 
 %**************************************************************************
 % [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
 %                                           num_levels, saliency_type, ...
@@ -172,13 +172,21 @@ if visualise_minor || visualise_major
          bdwidth,...
          pos1(3),...
          pos1(4)];
-     
+
     f1 = figure('Position',pos1);
     f2 = figure('Position',pos3);
-    f3 = figure('Position',pos2);
-    f4 = figure('Position',pos3);
-    f5 = figure('Position',pos2);
-    f6 = figure('Position',pos3);
+    if holes_flag
+       f3 = figure('Position',pos2);
+    end
+    if indentations_flag
+        f4 = figure('Position',pos3);
+    end
+    if islands_flag
+        f5 = figure('Position',pos2);
+    end
+    if protrusions_flag
+        f6 = figure('Position',pos3);
+    end
     load('MyColormaps','mycmap'); 
 end
 
@@ -293,6 +301,7 @@ for it = 1:num_levels
     indentations_acc = indentations_acc + indentations_level;
     protrusions_acc = protrusions_acc + protrusions_level;
 
+    pause;
     % visualisation
     if visualise_major
         if holes_flag
