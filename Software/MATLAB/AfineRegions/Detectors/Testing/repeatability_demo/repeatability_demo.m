@@ -19,19 +19,19 @@ test_case = input('Enter the test case : [bark|bikes|boat|graffiti|leuven|trees|
 feature_filename = fullfile(results_path,test_case,test_case);
 image_filename = fullfile(data_path,test_case,'img');
 %% repeatabiliy figures
-
-figure(1);clf;
+f1 = figure; f2 =  figure;
+figure(f1);clf;
 grid on;
 ylabel('repeatebility %')
 xlabel('viewpoint angle');
 hold on;
-figure(2);clf;
+figure(f2);clf;
 grid on;
 ylabel('nb of correspondences')
 xlabel('viewpoint angle');
 hold on;
 
-mark=['-bx';'-rv';'-gs'];
+mark=['-gs';'-bv';'-rp'];
 for d=1:3
     seqrepeat=[];
     seqcorresp=[];
@@ -45,8 +45,8 @@ for d=1:3
         seqrepeat=[seqrepeat repeat(4)];
         seqcorresp=[seqcorresp corresp(4)];
     end
-    figure(1);  plot([20 30 40 50 60],seqrepeat,mark(d,:));
-    figure(2);  plot([20 30 40 50 60],seqcorresp,mark(d,:));
+    figure(f1);  plot([20 30 40 50 60],seqrepeat,mark(d,:));
+    figure(f2);  plot([20 30 40 50 60],seqcorresp,mark(d,:));
 end
 
 figure(1);legend(det_suffix{1},det_suffix{2},det_suffix{3});
