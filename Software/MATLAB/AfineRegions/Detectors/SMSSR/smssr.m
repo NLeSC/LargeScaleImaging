@@ -192,6 +192,28 @@ if visualise_minor || visualise_major
     load('MyColormaps','mycmap'); 
 end
 
+figs = [f1 f2];
+if holes_flag
+    figs(3) = f3;
+else
+    figs(3) = -1;
+end
+if indentations_flag
+    figs(4) = f4;
+else
+    figs(4) = -1;
+end
+if islands_flag
+    figs(5) = f5;
+else
+    figs(5) = -1;
+end
+if protrusions_flag
+    figs(6) =  f6;
+else
+    figs(6) = -1;
+end
+    
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
@@ -234,7 +256,7 @@ end
 %..........................................................................
 [acc_masks] = smssr_acc_masks(ROI_only, num_levels, thresh_type,...
                                SE_size_factor, area_factor,...
-                               saliency_type, execution_flags);
+                               saliency_type, execution_flags, figs);
 holes_acc = acc_masks(:,:,1);
 islands_acc = acc_masks(:,:,2);
 indentaitons_acc = acc_masks(:,:,3);

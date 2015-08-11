@@ -2,7 +2,7 @@
 %**************************************************************************
 % [acc_masks] = smssr_acc_masks(image_ROI, num_levels, thresh_type,...
 %                               SE_size_factor, area_factor,...
-%                               saliency_type, execution_flags)
+%                               saliency_type, execution_flags, figs)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 11 August 2015
@@ -24,6 +24,7 @@
 %                                                       visualise_minor]
 %                   [optional], if left out- default is [0 0 0]
 %                   visualise_major "overrides" visualise_minor
+% figs             figure handles
 %**************************************************************************
 % OUTPUTS:
 % acc_masks    3-D array of the accumulated saliency masks of the regions
@@ -36,7 +37,7 @@
 %**************************************************************************
 function [acc_masks] = smssr_acc_masks(image_ROI, num_levels, thresh_type,...
                                SE_size_factor, area_factor,...
-                               saliency_type, execution_flags)
+                               saliency_type, execution_flags, figs)
 
                                          
 %**************************************************************************
@@ -84,6 +85,21 @@ if visualise_minor
     visualise_major = 1;  
 end
 
+f1 = figs(1);
+f2 = figs(2);
+if holes_flag
+    f3 = figs(3);
+end
+if indentations_flag
+    f4 = figs(4);
+end
+if islands_flag
+    f5 = figs(5);
+end
+if protrusions_flag
+    f6 = figs(6);
+end
+
 %**************************************************************************
 % parameters
 %--------------------------------------------------------------------------
@@ -99,35 +115,6 @@ scnsize = get(0,'ScreenSize');
 wait_pos = [0.2*scnsize(3), 0.2*scnsize(4),scnsize(3)/4, scnsize(4)/20 ];
 
 if visualise_minor || visualise_major
-    pos1  = [bdwidth,... 
-        1/2*scnsize(4) + bdwidth,...
-        scnsize(3)/2 - 2*bdwidth,...
-        scnsize(4)/2 - (topbdwidth + bdwidth)];
-
-         pos2 = [pos1(1) + scnsize(3)/2,...
-         pos1(2),...
-         pos1(3),...
-         pos1(4)];
-    
-        pos3 = [pos1(1) + scnsize(3)/2,...
-         bdwidth,...
-         pos1(3),...
-         pos1(4)];
-
-    f1 = figure('Position',pos1);
-    f2 = figure('Position',pos3);
-    if holes_flag
-       f3 = figure('Position',pos2);
-    end
-    if indentations_flag
-        f4 = figure('Position',pos3);
-    end
-    if islands_flag
-        f5 = figure('Position',pos2);
-    end
-    if protrusions_flag
-        f6 = figure('Position',pos3);
-    end
     load('MyColormaps','mycmap'); 
 end
 
