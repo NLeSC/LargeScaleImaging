@@ -217,19 +217,9 @@ end
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
-% accumulative saliency masks
-holes_acc = zeros(nrows,ncols);
-islands_acc = zeros(nrows,ncols);
-indentations_acc = zeros(nrows,ncols);
-protrusions_acc = zeros(nrows,ncols);
 
-% thresholded saliency masks
-holes_thresh = zeros(nrows,ncols);
-islands_thresh = zeros(nrows,ncols);
-indentations_thresh = zeros(nrows,ncols);
-protrusions_thresh = zeros(nrows,ncols);
-
-% final saliency masks
+% saliency masks
+acc_masks = zeros(nrows,ncols,4);
 saliency_masks = zeros(nrows,ncols,4);
 
 %**************************************************************************
@@ -257,58 +247,24 @@ end
 [acc_masks] = smssr_acc_masks(ROI_only, num_levels, thresh_type,...
                                SE_size_factor, area_factor,...
                                saliency_type, execution_flags, figs);
-holes_acc = acc_masks(:,:,1);
-islands_acc = acc_masks(:,:,2);
-indentaitons_acc = acc_masks(:,:,3);
-protrusions_acc = acc_masks(:,:,4);
+
 
 %..........................................................................
 % threshold the cumulative saliency masks 
 %..........................................................................
-if verbose
-    disp('Thresholding the saliency maps...');
-end
+[saliency_masks] = smssr_thresh_masks(acc_masks, saliency_thresh, verbose);
 
-tic;
-% the holes and islands
-if find(holes_acc)
-   % holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
-    holes_thresh = uint8(holes_acc > 0);
-end
-if find(islands_acc)
-   % islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
-    islands_thresh = uint8(islands_acc > 0);
-end
-
-% the indentations and protrusions
-if find(indentations_acc)
-   %indentations_thresh = thresh_area(indentations_acc, saliency_thresh, verbose);
-    indentations_thresh = uint8(indentaitons_acc > 0);
-end
-if find(protrusions_acc)
-   %protrusions_thresh = thresh_area(protrusions_acc, saliency_thresh, verbose);
-   protrusions_thresh = uint8(protrusions_acc > 0);
-end
   
 %visualisation
 if visualise_major
+    holes_thresh = saliency_masks(:,:,1);
+    islands_thresh = saliency_masks(:,:,2);
+    indentations_thresh = saliency_masks(:,:,3);
+    protrusions_thresh = saliency_masks(:,:,4); 
     visualise_regions();
 end
 
-if verbose
-   disp('Elapsed time for the thresholding: ');toc
-end
-
     
-%**************************************************************************
-%variables -> output parameters
-%--------------------------------------------------------------------------
-%all saliency masks in one array
-saliency_masks(:,:,1) = holes_thresh;
-saliency_masks(:,:,2) = islands_thresh;
-saliency_masks(:,:,3) = protrusions_thresh;
-saliency_masks(:,:,4) = indentations_thresh;
-
 %..........................................................................
 % get the equivalent ellipses
 %..........................................................................
