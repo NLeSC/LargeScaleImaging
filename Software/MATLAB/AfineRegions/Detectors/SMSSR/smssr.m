@@ -268,37 +268,28 @@ end
 %..........................................................................
 % get the equivalent ellipses
 %..........................................................................
+if verbose
+    disp('Computing the equivalent ellipses...');
+end
+
+tic;
+
+
+if verbose
+   disp('Elapsed time for computing the equivalent ellipses: ');toc
+end
+
 num_regions = 0;
+sub_features = [];
+features = [];
 
 for i=1:4
-    if find(saliency_masks(:,:,i))
-        [LE, num_reg] = bwlabel(saliency_masks(:,:,i),4);
-          stats = regionprops(LE, 'Centroid','MajorAxisLength',...
-                                          'MinorAxisLength','Orientation');
-
-            for j = 1:num_reg
-
-                %ellipse parameters
-                  a = fix(getfield(stats,{j},'MajorAxisLength')/2);  
-                  b = fix(getfield(stats,{j},'MinorAxisLength')/2);
-
-                  if ((a>0) && (b>0))
-                      num_regions = num_regions+1;
-                      C = getfield(stats,{j},'Centroid');
-                      x0 = C(1); y0= C(2);
-                      phi_deg = getfield(stats,{j},'Orientation');
-                      if (phi_deg==0)
-                          phi_deg = 180;
-                      end
-                      phi = phi_deg*pi/180;
-
-                      % compute the MSER features 
-                      [A, B, C] = conversion_ellipse(a, b, -phi);
-                      features(num_regions,:) = [x0; y0; A; B; C; i]'; %#ok<AGROW>
-
-                  end
-            end % for j
-     end
+    binary_mask = saliency_masks(:,:,i);
+    if find(binary_mask)
+        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, i);
+        num_regions = num_regions + num_sub_regions;
+        features = [features; sub_features];
+    end
 end
 
 if verbose

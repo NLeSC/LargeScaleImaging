@@ -1,4 +1,4 @@
-% mssr- main function of the SMSSR detector 
+% smssr- main function of the SMSSR detector 
 %**************************************************************************
 % [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
 %                                           num_levels, saliency_type, ...
@@ -7,7 +7,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 May 2015
-% last modification date: 23 June 2015
+% last modification date: 11 August 2015
+% modification details: more modular code
+% last modification date: 11 June 2015
 % modification details: added hysteresis thresholding for binarization
 % modification date: 22 June 2015
 % modification details: added parameter for the type of  thresholding- 
@@ -172,38 +174,52 @@ if visualise_minor || visualise_major
          bdwidth,...
          pos1(3),...
          pos1(4)];
-     
+
     f1 = figure('Position',pos1);
     f2 = figure('Position',pos3);
-    f3 = figure('Position',pos2);
-    f4 = figure('Position',pos3);
-    f5 = figure('Position',pos2);
-    f6 = figure('Position',pos3);
+    if holes_flag
+       f3 = figure('Position',pos2);
+    end
+    if indentations_flag
+        f4 = figure('Position',pos3);
+    end
+    if islands_flag
+        f5 = figure('Position',pos2);
+    end
+    if protrusions_flag
+        f6 = figure('Position',pos3);
+    end
     load('MyColormaps','mycmap'); 
 end
 
+figs = [f1 f2];
+if holes_flag
+    figs(3) = f3;
+else
+    figs(3) = -1;
+end
+if indentations_flag
+    figs(4) = f4;
+else
+    figs(4) = -1;
+end
+if islands_flag
+    figs(5) = f5;
+else
+    figs(5) = -1;
+end
+if protrusions_flag
+    figs(6) =  f6;
+else
+    figs(6) = -1;
+end
+    
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
-% saliency masks per gray level
-holes_level = zeros(nrows,ncols);
-islands_level = zeros(nrows,ncols);
-indentations_level = zeros(nrows,ncols);
-protrusions_level = zeros(nrows,ncols);
 
-% accumulative saliency masks
-holes_acc = zeros(nrows,ncols);
-islands_acc = zeros(nrows,ncols);
-indentations_acc = zeros(nrows,ncols);
-protrusions_acc = zeros(nrows,ncols);
-
-% thresholded saliency masks
-holes_thresh = zeros(nrows,ncols);
-islands_thresh = zeros(nrows,ncols);
-indentations_thresh = zeros(nrows,ncols);
-protrusions_thresh = zeros(nrows,ncols);
-
-% final saliency masks
+% saliency masks
+acc_masks = zeros(nrows,ncols,4);
 saliency_masks = zeros(nrows,ncols,4);
 
 %**************************************************************************
@@ -225,218 +241,53 @@ else
     ROI_only = image_data;
 end
 
-
-%--------------------------------------------------------------------------
-% parameters depending on pre-processing
-%--------------------------------------------------------------------------
-% find optimal thresholds
-switch thresh_type
-    case 's'
-        thresholds = fix(1:255/num_levels:255);
-    case 'm'
-        thresholds = multithresh(image_data, num_levels);
-        num_levels = length(thresholds);
-        thresh_type ='s';
-    case 'h'
-        step = fix(255/num_levels);
-        high_thresholds  = step:step:255;
-        low_thresholds = 0:step:255-step;
-        num_levels = length(high_thresholds);
-end
-
-%--------------------------------------------------------------------------
-% core processing
-%--------------------------------------------------------------------------
-if verbose
-    disp('Processing per gray level...');
-end
-
-tic;
-
-% waitbar
-%if visualise_major
-    wb_handle = waitbar(0,'SMSSR detection computaitons: please wait...',...
-                        'Position',wait_pos);
-    wb_counter = 0;
-%end
-
 %..........................................................................
-% compute binary saliency for every sampled gray-level
+% segment each thresholded image and obtain the accumulated saliency masks
 %..........................................................................
+[acc_masks] = smssr_acc_masks(ROI_only, num_levels, thresh_type,...
+                               SE_size_factor, area_factor,...
+                               saliency_type, execution_flags, figs);
 
-for it = 1:num_levels
-     wb_counter = wb_counter + 1;
-     waitbar(wb_counter/num_levels);
-     drawnow
 
-    switch thresh_type
-        case 'm'
-        case 's'
-            level = thresholds(it);
-        case 'h'
-            level(1) = high_thresholds(it);
-            level(2) = low_thresholds(it);                
-    end
-    %pause
-    [saliency_masks_level, binary_image] = smssr_gray_level(ROI_only, ...
-                                            thresh_type, level, ...
-                                            SE_size_factor, area_factor,...
-                                            saliency_type, visualise_minor);
-    % cumulative saliency masks
-    holes_level = saliency_masks_level(:,:,1);
-    islands_level = saliency_masks_level(:,:,2);
-    indentations_level = saliency_masks_level(:,:,3);
-    protrusions_level = saliency_masks_level(:,:,4);
-    
-    holes_acc = holes_acc + holes_level;
-    islands_acc = islands_acc + islands_level;
-    indentations_acc = indentations_acc + indentations_level;
-    protrusions_acc = protrusions_acc + protrusions_level;
-
-    % visualisation
-    if visualise_major
-        if holes_flag
-         figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on;
-         set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');         
-        end
-        if islands_flag
-         subplot(222);imagesc(islands_acc);axis image;axis on;
-         set(gcf, 'Colormap',mycmap);title('islands');colorbar('South');
-        end
-        if indentations_flag
-         subplot(223);imagesc(indentations_acc);axis image;axis on;
-         set(gcf, 'Colormap',mycmap);title('indentations');colorbar('South');
-        end
-        if protrusions_flag
-         subplot(224);imagesc(protrusions_acc);axis image;axis on;
-         set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
-        end
-        figure(f2);imshow(binary_image);
-        if size(level) > 1
-            title(['Segmented image at thresholds: ' ...
-                num2str(level(2))  ' and ' num2str(level(1)) ]);
-        else
-            title(['Segmented image at threshold: ' num2str(level)]);
-        end
-        axis image; axis on;
-    end
-end
-    if verbose
-        disp('Elapsed time for the core processing: ');toc
-    end
-
-    %visualisation
-    if visualise_major
-        if holes_flag
-         figure(f3);
-         subplot(221);imshow(image_data); freezeColors; title('Original image');axis image;axis on;
-         subplot(222);imshow(holes_acc);%imshow(holes_acc,mycmap);
-         axis image;axis on;title('holes');freezeColors; 
-        end
-        % indentations
-        if indentations_flag
-         figure(f4);
-         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(indentations_acc); %imshow(indentations_acc,mycmap);
-         axis image;axis on;title('indentations');freezeColors; 
-        end
-        % islands
-        if islands_flag
-         figure(f5);
-         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(islands_acc);%imshow(islands_acc,mycmap);
-         axis image;axis on;title('islands');freezeColors; 
-        end
-        % protrusions
-        if protrusions_flag
-         figure(f6);
-         subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(protrusions_acc);%imshow(protrusions_acc,mycmap);
-         axis image;axis on; title('protrusions'); freezeColors; 
-        end
-    end
-    
-
-% close the waitbar
-  close(wb_handle);
 %..........................................................................
 % threshold the cumulative saliency masks 
 %..........................................................................
-if verbose
-    disp('Thresholding the saliency maps...');
-end
+[saliency_masks] = smssr_thresh_masks(acc_masks, saliency_thresh, verbose);
 
-tic;
-% the holes and islands
-if find(holes_acc)
-   % holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
-    holes_thresh = uint8(holes_acc > 0);
-end
-if find(islands_acc)
-    islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
-end
-
-% the indentations and protrusions
-if find(indentations_acc)
-    indentations_thresh = thresh_area(indentations_acc, saliency_thresh, verbose);
-end
-if find(protrusions_acc)
-    protrusions_thresh = thresh_area(protrusions_acc, saliency_thresh, verbose);
-end
   
 %visualisation
 if visualise_major
+    holes_thresh = saliency_masks(:,:,1);
+    islands_thresh = saliency_masks(:,:,2);
+    indentations_thresh = saliency_masks(:,:,3);
+    protrusions_thresh = saliency_masks(:,:,4); 
     visualise_regions();
 end
 
-if verbose
-   disp('Elapsed time for the thresholding: ');toc
-end
-
     
-**************************************************************************
-variables -> output parameters
---------------------------------------------------------------------------
-all saliency masks in one array
-saliency_masks(:,:,1) = holes_thresh;
-saliency_masks(:,:,2) = islands_thresh;
-saliency_masks(:,:,3) = protrusions_thresh;
-saliency_masks(:,:,4) = indentations_thresh;
-
 %..........................................................................
 % get the equivalent ellipses
 %..........................................................................
+if verbose
+    disp('Computing the equivalent ellipses...');
+end
+
+tic;
+
+
+if verbose
+   disp('Elapsed time for computing the equivalent ellipses: ');toc
+end
+
 num_regions = 0;
+sub_features = [];
 
 for i=1:4
-    if find(saliency_masks(:,:,i))
-        [LE, num_reg] = bwlabel(saliency_masks(:,:,i),4);
-          stats = regionprops(LE, 'Centroid','MajorAxisLength',...
-                                          'MinorAxisLength','Orientation');
-
-            for j = 1:num_reg
-
-                %ellipse parameters
-                  a = fix(getfield(stats,{j},'MajorAxisLength')/2);  
-                  b = fix(getfield(stats,{j},'MinorAxisLength')/2);
-
-                  if ((a>0) && (b>0))
-                      num_regions = num_regions+1;
-                      C = getfield(stats,{j},'Centroid');
-                      x0 = C(1); y0= C(2);
-                      phi_deg = getfield(stats,{j},'Orientation');
-                      if (phi_deg==0)
-                          phi_deg = 180;
-                      end
-                      phi = phi_deg*pi/180;
-
-                      % compute the MSER features 
-                      [A, B, C] = conversion_ellipse(a, b, -phi);
-                      features(num_regions,:) = [x0; y0; A; B; C; i]'; %#ok<AGROW>
-
-                  end
-            end % for j
-     end
+    binary_mask = saliency_masks(:,:,i);
+    if find(binary_mask)
+        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4);
+        num
+    end
 end
 
 if verbose

@@ -10,7 +10,7 @@
 interactive = false;
 verbose = false;
 visualize = true;
-visualize_major = false;
+visualize_major = true;
 visualize_minor = false;
 lisa = false;
 
@@ -274,7 +274,7 @@ for i = 1:len
     end
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
         num_levels, saliency_types, thresh_type, region_params, execution_params);
-%    pause;
+
     toc
     % save the features
     disp('Saving ...');
@@ -314,6 +314,6 @@ if vis_flag
          line_width, col_label, original);
  end
     
-     
+%pause;    
 end
 disp('--------------- The End ---------------------------------');
