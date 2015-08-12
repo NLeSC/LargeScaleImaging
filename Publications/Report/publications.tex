@@ -129,7 +129,7 @@ A very recent descriptor, {\em Binary Online Learned Descriptor (BOLD)}, \cite{B
 
 Links to the implementations of the detectors are given in section \fullref{soft:salregdescr:subsec}.
 \subsubsection{Matching}
-The extracted descriptors from the detected regions (as blobs or around keypoints) are usually compared via nearest neighborhood (NN) search. Much research is done for developing algorithms for faster matching. The most popular approaches are using kd-trees and hashing methods (see \cite{conf:icpr:MiksikM12} and the references within). For binary descriptors matching is performed efficiently using Hamming distance, {\em xor} and {\em population count}.
+The extracted descriptors from the detected regions (as blobs or around keypoints) are usually compared via nearest neighborhood (NN) search. Much research is done for developing algorithms for faster matching (e.g. the fast Viola-Jones object detecor \cite{Viola01robustreal-time}). The most popular approaches are using kd-trees and hashing methods (see \cite{conf:icpr:MiksikM12} and the references within). For binary descriptors matching is performed efficiently using Hamming distance.
 
 
 \subsection{Convolutional Neural Networks}\label{subsec:cnn}
@@ -181,8 +181,7 @@ detection results along with the confidence based on the units’ activation and
 \end{figure}
 
 Another approach for trying to understand the CNNs is by ``fooling'' them! Researchers have shown that  it is easy to produce images that are
-completely unrecognizable to humans, but that CNNs believe to be recognizable objects with $99.99\%$ confidence (e.g. labeling with certainty that white noise
-static is a lion). These are called  “fooling images” (Figure \ref{fig:cnn_fool}), \cite{NguyenYC14}. These results shed light on interesting differences
+completely unrecognizable to humans, but that CNNs believe to be recognizable objects with $99.99\%$ confidence (e.g. applying the label lion with certainty to an image that humans perceive as white noise static). These are called  “fooling images” (Figure \ref{fig:cnn_fool}), \cite{NguyenYC14}. These results shed light on interesting differences
 between human vision and current CNNs, and raise questions about the generality of CNN computer vision.
 
 \begin{figure}[H]
