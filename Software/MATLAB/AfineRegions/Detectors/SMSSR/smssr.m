@@ -219,8 +219,9 @@ end
 %--------------------------------------------------------------------------
 
 % saliency masks
-acc_masks = zeros(nrows,ncols,4);
-saliency_masks = zeros(nrows,ncols,4);
+num_saliency_types = length(find(saliency_type));
+acc_masks = zeros(nrows,ncols,num_saliency_types);
+saliency_masks = zeros(nrows,ncols,num_saliency_types);
 
 %**************************************************************************
 % computations
@@ -252,15 +253,28 @@ end
 %..........................................................................
 % threshold the cumulative saliency masks 
 %..........................................................................
-[saliency_masks] = smssr_thresh_masks(acc_masks, saliency_thresh, verbose);
+[saliency_masks] = smssr_thresh_masks(acc_masks, saliency_type, saliency_thresh, verbose);
 
   
 %visualisation
 if visualise_major
-    holes_thresh = saliency_masks(:,:,1);
-    islands_thresh = saliency_masks(:,:,2);
-    indentations_thresh = saliency_masks(:,:,3);
-    protrusions_thresh = saliency_masks(:,:,4); 
+    i = 0;
+    if holes_flag
+        i =i+1;
+        holes_thresh = saliency_masks(:,:,i);
+    end
+    if islands_flag
+        i =i+1;
+        islands_thresh = saliency_masks(:,:,i);
+    end
+    if indentations_flag
+        i =i+1;
+        indentations_thresh = saliency_masks(:,:,i);
+    end
+    if protrusions_flag
+        i =i+1;
+        protrusions_thresh = saliency_masks(:,:,i); 
+    end
     visualise_regions();
 end
 
@@ -283,10 +297,39 @@ num_regions = 0;
 sub_features = [];
 features = [];
 
-for i=1:4
+i = 0;
+if holes_flag
+    i = i+1;
     binary_mask = saliency_masks(:,:,i);
     if find(binary_mask)
-        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, i);
+        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 1);
+        num_regions = num_regions + num_sub_regions;
+        features = [features; sub_features];
+    end
+end
+if islands_flag
+    i = i+1;
+    binary_mask = saliency_masks(:,:,i);
+    if find(binary_mask)
+        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 2);
+        num_regions = num_regions + num_sub_regions;
+        features = [features; sub_features];
+    end
+end
+if indentations_flag
+    i = i+1;
+    binary_mask = saliency_masks(:,:,i);
+    if find(binary_mask)
+        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 3);
+        num_regions = num_regions + num_sub_regions;
+        features = [features; sub_features];
+    end
+end
+if protrusions_flag
+    i = i+1;
+    binary_mask = saliency_masks(:,:,i);
+    if find(binary_mask)
+        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 4);
         num_regions = num_regions + num_sub_regions;
         features = [features; sub_features];
     end

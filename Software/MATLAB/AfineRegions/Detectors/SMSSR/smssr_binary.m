@@ -1,18 +1,12 @@
-% mssr_binary.m- binary MSSR detector
+% smssr_binary.m- binary SMSSR detector
 %**************************************************************************
-% [saliency_masks] = mssr_binary(ROI, SE_size_factor, area_factor, ...
+% [saliency_masks] = smssr_binary(ROI, SE_size_factor, area_factor, ...
 %                                saliency_type, visualise)
 %
 % author: Elena Ranguelova, NLeSc
-% date created: 25 Feb 2008
-% last modification date: 15-05-2015
-% modification details: the se_size_factor added as a parameter
-%                       the visualization of the final result is taken out
-%                       of the function into visualize_mssr_binary
-%                       Major bug fix: islands are now comupted properly
-%                       Protrusions and indentations are now computed also  
-%                       from the found (significant) islands and holes.
-%                       Second SE with smaller size for holes and islands.
+% date created: 14 Aug 2015
+% last modification date: 
+% modification details: 
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
@@ -32,7 +26,7 @@
 %                  and i =4-"protrusions"  if saliency_types is [1 1 1 1]
 %**************************************************************************
 % EXAMPLES USAGE:
-% [saliency_masks] = mssr_binary(ROI, se_size_factor, area_factor, ...
+% [saliency_masks] = smssr_binary(ROI, se_size_factor, area_factor, ...
 %                                saliency_type, visualise);
 %                    as called from mssr_gray_level.m- TO DO!
 %**************************************************************************
@@ -41,7 +35,7 @@
 % Computing New Zealand (IVCNZ'06), Great Barrier Island, New Zealand,
 % November 2006, pp.97-102
 %**************************************************************************
-function [saliency_masks] = mssr_binary(ROI, SE_size_factor, area_factor,...
+function [saliency_masks] = smssr_binary(ROI, SE_size_factor, area_factor,...
                                         saliency_type, visualise)
 
 %**************************************************************************
@@ -86,12 +80,21 @@ lambdahi = fix(SE_size/2);
 % initialisations
 %--------------------------------------------------------------------------
 % saleincy masks
-saliency_masks = zeros(nrows, ncols, 4);
+num_saliency_types = length(find(saliency_type));
+saliency_masks = zeros(nrows, ncols, num_saliency_types);
 % by type
-holes = zeros(nrows,ncols);
-islands = zeros(nrows,ncols);
-indentations = zeros(nrows,ncols);
-protrusions = zeros(nrows,ncols);
+if holes_flag
+    holes = zeros(nrows,ncols);
+end
+if islands_flag
+    islands = zeros(nrows,ncols);
+end
+if indentations_flag
+    indentations = zeros(nrows,ncols);
+end
+if protrusions_flag
+    protrusions = zeros(nrows,ncols);
+end
 
 CCL = zeros(nrows,ncols);
 CCLH = zeros(nrows,ncols);
@@ -262,10 +265,23 @@ end
 %**************************************************************************
 % variables -> output parameters
 %--------------------------------------------------------------------------
-saliency_masks(:,:,1) = holes;
-saliency_masks(:,:,2) = islands;
-saliency_masks(:,:,3) = indentations;
-saliency_masks(:,:,4) = protrusions;
+i = 0;
+if holes_flag
+    i = i+1;
+    saliency_masks(:,:,i) = holes;
+end
+if islands_flag
+   i = i+1;
+    saliency_masks(:,:,i) = islands;
+end
+if indentations_flag
+    i = i+1;    
+    saliency_masks(:,:,i) = indentations;
+end
+if protrusions_flag
+    i = i+1;
+    saliency_masks(:,:,i) = protrusions;
+end
 
 
 end

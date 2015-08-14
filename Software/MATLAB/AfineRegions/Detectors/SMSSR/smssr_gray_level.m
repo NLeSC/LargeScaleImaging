@@ -6,9 +6,6 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 23 June 20105
-% last modification date: 12.08.205
-% modification details: the third dimension of the output depends on the
-%                       saliency types requested
 %**************************************************************************
 % INPUTS:
 % image - input gray-level image
@@ -77,7 +74,8 @@ end
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
-saliency_masks = zeros(nrows,ncols,4);
+num_saliency_types = length(find(saliency_type));
+saliency_masks = zeros(nrows,ncols,num_saliency_types);
 
 %**************************************************************************
 % computations
@@ -109,7 +107,7 @@ end
 %--------------------------------------------------------------------------
 % binary saliency
 if find(binary_image)
-    [saliency_masks] = mssr_binary(binary_image, SE_size_factor, area_factor, ...
+    [saliency_masks] = smssr_binary(binary_image, SE_size_factor, area_factor, ...
                                    saliency_type, visualise);
 end
    

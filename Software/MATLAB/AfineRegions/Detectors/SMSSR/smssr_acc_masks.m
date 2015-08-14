@@ -6,6 +6,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 11 August 2015
+% last modification date: 14.08.205
+% modification details: 
 % last modification date: 12.08.205
 % modification details: the third dimension of the output depends on the
 %                       saliency types requested
@@ -122,17 +124,19 @@ end
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
-% saliency masks per gray level
-holes_level = zeros(nrows,ncols);
-islands_level = zeros(nrows,ncols);
-indentations_level = zeros(nrows,ncols);
-protrusions_level = zeros(nrows,ncols);
-
 % accumulative saliency masks
-holes_acc = zeros(nrows,ncols);
-islands_acc = zeros(nrows,ncols);
-indentations_acc = zeros(nrows,ncols);
-protrusions_acc = zeros(nrows,ncols);
+if holes_flag
+    holes_acc = zeros(nrows,ncols);
+end
+if islands_flag
+    islands_acc = zeros(nrows,ncols);
+end
+if indentations_flag
+    indentations_acc = zeros(nrows,ncols);
+end
+if protrusions_flag
+    protrusions_acc = zeros(nrows,ncols);
+end
 
 % final saliency masks
 num_saliency_types = length(find(saliency_type));
@@ -194,15 +198,23 @@ for it = 1:num_levels
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
     % cumulative saliency masks
-    holes_level = saliency_masks_level(:,:,1);
-    islands_level = saliency_masks_level(:,:,2);
-    indentations_level = saliency_masks_level(:,:,3);
-    protrusions_level = saliency_masks_level(:,:,4);
-    
-    holes_acc = holes_acc + holes_level;
-    islands_acc = islands_acc + islands_level;
-    indentations_acc = indentations_acc + indentations_level;
-    protrusions_acc = protrusions_acc + protrusions_level;
+    i =0;
+    if holes_flag    
+        i = i+1;
+        holes_acc = holes_acc + saliency_masks_level(:,:,i);
+    end
+    if islands_flag    
+        i = i+1;
+        islands_acc = islands_acc + saliency_masks_level(:,:,i);
+    end
+    if indentations_flag    
+        i = i+1;
+        indentations_acc = indentations_acc + saliency_masks_level(:,:,i);
+    end
+    if protrusions_flag    
+        i = i+1;
+        protrusions_acc = protrusions_acc + saliency_masks_level(:,:,i);
+    end
 
 
     % visualisation
@@ -232,7 +244,7 @@ for it = 1:num_levels
         end
         axis image; axis on;
     end
-    pause;
+    %pause;
 end
     if verbose
         disp('Elapsed time for the core processing: ');toc
@@ -277,7 +289,20 @@ end
 %variables -> output parameters
 %--------------------------------------------------------------------------
 %all saliency masks in one array
-acc_masks(:,:,1) = holes_acc;
-acc_masks(:,:,2) = islands_acc;
-acc_masks(:,:,3) = protrusions_acc;
-acc_masks(:,:,4) = indentations_acc;
+i = 0;
+if holes_flag
+    i =i+1;
+    acc_masks(:,:,i) = holes_acc;
+end
+if islands_flag
+    i =i+1;
+    acc_masks(:,:,i) = islands_acc;
+end
+if protrusions_flag
+    i =i+1;
+    acc_masks(:,:,i) = protrusions_acc;
+end
+if indentations_flag
+    i =i+1;
+    acc_masks(:,:,i) = indentations_acc;
+end
