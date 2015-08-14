@@ -6,8 +6,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 23 June 20105
-% last modification date: 
-% modification details: 
+% last modification date: 12.08.205
+% modification details: the third dimension of the output depends on the
+%                       saliency types requested
 %**************************************************************************
 % INPUTS:
 % image - input gray-level image

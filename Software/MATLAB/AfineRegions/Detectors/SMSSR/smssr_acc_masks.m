@@ -6,8 +6,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 11 August 2015
-% last modification date: 
-% modification details: 
+% last modification date: 12.08.205
+% modification details: the third dimension of the output depends on the
+%                       saliency types requested
 %**************************************************************************
 % INPUTS:
 % image_ROI        the input ROI image data
@@ -134,7 +135,8 @@ indentations_acc = zeros(nrows,ncols);
 protrusions_acc = zeros(nrows,ncols);
 
 % final saliency masks
-acc_masks = zeros(nrows,ncols,4);
+num_saliency_types = length(find(saliency_type));
+acc_masks = zeros(nrows,ncols,num_saliency_types);
 
 %**************************************************************************
 % computations
@@ -202,7 +204,7 @@ for it = 1:num_levels
     indentations_acc = indentations_acc + indentations_level;
     protrusions_acc = protrusions_acc + protrusions_level;
 
-    %pause;
+
     % visualisation
     if visualise_major
         if holes_flag
@@ -230,6 +232,7 @@ for it = 1:num_levels
         end
         axis image; axis on;
     end
+    pause;
 end
     if verbose
         disp('Elapsed time for the core processing: ');toc
