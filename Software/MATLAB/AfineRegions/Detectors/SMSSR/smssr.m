@@ -253,27 +253,28 @@ end
 %..........................................................................
 % threshold the cumulative saliency masks 
 %..........................................................................
-[thresh_masks] = smssr_thresh_masks(acc_masks, saliency_type, saliency_thresh, verbose);
-%[saliency_masks] = smssr_saliency_masks(acc_masks, saliency_type)
+[saliency_masks] = smssr_thresh_masks(acc_masks, saliency_type, saliency_thresh, verbose);
+num_masks =5;
+[feature_masks] = smssr_saliency_masks(acc_masks, saliency_type, num_masks);
 
 %visualisation
 if visualise_major
     i = 0;
     if holes_flag
         i =i+1;
-        holes_thresh = thresh_masks(:,:,i);
+        holes_thresh = saliency_masks(:,:,i);
     end
     if islands_flag
         i =i+1;
-        islands_thresh = thresh_masks(:,:,i);
+        islands_thresh = saliency_masks(:,:,i);
     end
     if indentations_flag
         i =i+1;
-        indentations_thresh = thresh_masks(:,:,i);
+        indentations_thresh = saliency_masks(:,:,i);
     end
     if protrusions_flag
         i =i+1;
-        protrusions_thresh = thresh_masks(:,:,i); 
+        protrusions_thresh = saliency_masks(:,:,i); 
     end
     visualise_regions();
 end
@@ -282,57 +283,63 @@ end
 %..........................................................................
 % get the equivalent ellipses
 %..........................................................................
-if verbose
-    disp('Computing the equivalent ellipses...');
-end
-
-tic;
-
-
-if verbose
-   disp('Elapsed time for computing the equivalent ellipses: ');toc
-end
-
 num_regions = 0;
 sub_features = [];
 features = [];
 
+if verbose
+    disp('Creating the saliency maps...');
+end
+
+tic;
 i = 0;
 if holes_flag
     i = i+1;
-    binary_mask = thresh_masks(:,:,i);
-    if find(binary_mask)
-        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 1);
-        num_regions = num_regions + num_sub_regions;
-        features = [features; sub_features];
+    for j = 1:num_masks
+        binary_mask = feature_masks(:,:,j,i);
+        if find(binary_mask)
+            [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 1);
+            num_regions = num_regions + num_sub_regions;
+            features = [features; sub_features];
+        end
     end
 end
 if islands_flag
     i = i+1;
-    binary_mask = thresh_masks(:,:,i);
-    if find(binary_mask)
-        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 2);
-        num_regions = num_regions + num_sub_regions;
-        features = [features; sub_features];
+    for j = 1:num_masks
+        binary_mask = feature_masks(:,:,j,i);
+        if find(binary_mask)
+            [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 2);
+            num_regions = num_regions + num_sub_regions;
+            features = [features; sub_features];
+        end
     end
 end
 if indentations_flag
     i = i+1;
-    binary_mask = thresh_masks(:,:,i);
-    if find(binary_mask)
-        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 3);
-        num_regions = num_regions + num_sub_regions;
-        features = [features; sub_features];
+    for j = 1:num_masks
+        binary_mask = feature_masks(:,:,j,i);
+        if find(binary_mask)
+            [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 3);
+            num_regions = num_regions + num_sub_regions;
+            features = [features; sub_features];
+        end
     end
 end
 if protrusions_flag
     i = i+1;
-    binary_mask = thresh_masks(:,:,i);
-    if find(binary_mask)
-        [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 4);
-        num_regions = num_regions + num_sub_regions;
-        features = [features; sub_features];
+    for j = 1:num_masks 
+        binary_mask = feature_masks(:,:,j,i);
+        if find(binary_mask)
+            [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 4);
+            num_regions = num_regions + num_sub_regions;
+            features = [features; sub_features];
+        end
     end
+end
+
+if verbose
+   disp('Elapsed time for the computation of the saliency maps: ');toc
 end
 
 if verbose
