@@ -106,7 +106,6 @@ if verbose
 end
 
 tic;
-t0 = clock;
 
 % the holes and islands
 if logical(holes_flag) & logical(find(holes_acc))
@@ -144,13 +143,15 @@ if holes_flag
 end
 if islands_flag
     i =i+1;
-    thresh_masks(:,:,2) = islands_thresh;
+    thresh_masks(:,:,i) = islands_thresh;
 end
 if protrusions_flag
     i =i+1;
-    thresh_masks(:,:,3) = protrusions_thresh;
+    thresh_masks(:,:,i) = protrusions_thresh;
 end
 if indentations_flag
     i =i+1;
-    thresh_masks(:,:,4) = indentations_thresh;
+    thresh_masks(:,:,i) = indentations_thresh;
 end
+
+toc

@@ -253,27 +253,27 @@ end
 %..........................................................................
 % threshold the cumulative saliency masks 
 %..........................................................................
-[saliency_masks] = smssr_thresh_masks(acc_masks, saliency_type, saliency_thresh, verbose);
+[thresh_masks] = smssr_thresh_masks(acc_masks, saliency_type, saliency_thresh, verbose);
+%[saliency_masks] = smssr_saliency_masks(acc_masks, saliency_type)
 
-  
 %visualisation
 if visualise_major
     i = 0;
     if holes_flag
         i =i+1;
-        holes_thresh = saliency_masks(:,:,i);
+        holes_thresh = thresh_masks(:,:,i);
     end
     if islands_flag
         i =i+1;
-        islands_thresh = saliency_masks(:,:,i);
+        islands_thresh = thresh_masks(:,:,i);
     end
     if indentations_flag
         i =i+1;
-        indentations_thresh = saliency_masks(:,:,i);
+        indentations_thresh = thresh_masks(:,:,i);
     end
     if protrusions_flag
         i =i+1;
-        protrusions_thresh = saliency_masks(:,:,i); 
+        protrusions_thresh = thresh_masks(:,:,i); 
     end
     visualise_regions();
 end
@@ -300,7 +300,7 @@ features = [];
 i = 0;
 if holes_flag
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
+    binary_mask = thresh_masks(:,:,i);
     if find(binary_mask)
         [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 1);
         num_regions = num_regions + num_sub_regions;
@@ -309,7 +309,7 @@ if holes_flag
 end
 if islands_flag
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
+    binary_mask = thresh_masks(:,:,i);
     if find(binary_mask)
         [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 2);
         num_regions = num_regions + num_sub_regions;
@@ -318,7 +318,7 @@ if islands_flag
 end
 if indentations_flag
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
+    binary_mask = thresh_masks(:,:,i);
     if find(binary_mask)
         [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 3);
         num_regions = num_regions + num_sub_regions;
@@ -327,7 +327,7 @@ if indentations_flag
 end
 if protrusions_flag
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
+    binary_mask = thresh_masks(:,:,i);
     if find(binary_mask)
         [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 4);
         num_regions = num_regions + num_sub_regions;
