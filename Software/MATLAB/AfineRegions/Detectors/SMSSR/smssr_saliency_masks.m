@@ -94,32 +94,34 @@ num_saliency_types = length(find(saliency_type));
 saliency_masks = zeros(nrows,ncols,num_masks, num_saliency_types);
 
 %**************************************************************************
-% computations
+% grouping evidence from the accumulatted masks
 %--------------------------------------------------------------------------
 
-% % the holes and islands
-% if logical(holes_flag) & logical(find(holes_acc))
-%    % holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
-%     holes_thresh = uint8(holes_acc > 0);
-% end
-% if logical(islands_flag) & logical(find(islands_acc))
-%    % islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
-%     islands_thresh = uint8(islands_acc > 0);
-% end
-% 
-% % the indentations and protrusions
-% if logical(indentations_flag) & logical(find(indentations_acc))
-%    %indentations_thresh = thresh_area(indentations_acc, saliency_thresh, verbose);
-%     indentations_thresh = uint8(indentaitons_acc > 0);
-% end
-% if logical(protrusions_flag) & logical(find(protrusions_acc))
-%    %protrusions_thresh = thresh_area(protrusions_acc, saliency_thresh, verbose);
-%    protrusions_thresh = uint8(protrusions_acc > 0);
-% end
+i = 0;
+if holes_flag
+    for j = 2:num_masks
+        holes(:,:,j) = summarize_masks(holes_acc,num_masks, j);
+    end
+end
+if islands_flag
+    for j = 2:num_masks
+        islands(:,:,j) = summarize_masks(islands_acc,num_masks,j);
+    end
+end
+if protrusions_flag
+    for j = 2:num_masks
+        protrusions(:,:,j) = summarize_masks(protrusions_acc,num_masks,j);
+    end
+end
+if indentations_flag
+    for j = 2:num_masks
+        indentations(:,:,j) = summarize_masks(indentations_acc,num_masks,j);
+    end
+end
 
 
 %**************************************************************************
-%variables -> output parameters
+% variables -> output parameters
 %--------------------------------------------------------------------------
 %all saliency masks in one array
 i = 0;
@@ -140,4 +142,16 @@ if indentations_flag
     saliency_masks(:,:,:,i) = indentations;
 end
 
+    function [out_mask] = summarize_masks(in_mask,number,index)
+        % the output should contain logical OR of the mask non-zero values
+        % between num_masks*index - 1: num_masks*index
+        [rows, cols] = size(in_mask);
+        out_mask = zeros(rows, cols);
+        for value = num_masks*index-1: num_masks*index
+            binary_mask = in_mask == value;
+            out_mask = out_mask + binary_mask;
+        end
+    end
+
 toc
+end

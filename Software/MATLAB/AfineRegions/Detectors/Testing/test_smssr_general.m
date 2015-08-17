@@ -258,7 +258,8 @@ for i = 1:len
         SE_size_factor = 0.05;
         SE_size_factor_preproc = 0.002;
         Area_factor = 0.25;
-        num_levels = 20;
+        num_levels = 25;
+        num_level_groups = 5;
         thresh_type = 's';
         saliency_thresh = 0.75;
     end
@@ -273,7 +274,7 @@ for i = 1:len
         image_data = smssr_preproc(image_data, preproc_types);
     end
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
-        num_levels, saliency_types, thresh_type, region_params, execution_params);
+        num_levels, num_level_groups, saliency_types, thresh_type, region_params, execution_params);
 
     toc
     % save the features
