@@ -4,13 +4,14 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 14 August 2015
-% last modification date: 
-% modification details: 
+% last modification date: 17 August 2015 
+% modification details: made the output saliency masks 4D, 3th dim is per
+%                       group of gray levels, 4this per saliency type
 %**************************************************************************
 % INPUTS:
 % acc_masks    3-D array of the accumulated saliency masks of the regions
 %                   for example acc_masks(:,:,1) contains the holes
-%[saliency_type]  array with 4 flags for the 4 saliency types 
+% [saliency_type]  array with 4 flags for the 4 saliency types 
 %                  (Holes, Islands, Indentations, Protrusions)
 %                  [optional], if left out- default is [1 1 1 1]
 % [num_masks]    number of masks (clusters of levels)
@@ -23,7 +24,8 @@
 %**************************************************************************
 % RERERENCES:
 %**************************************************************************
-function [saliency_masks] = smssr_saliency_masks(acc_masks, saliency_type, num_masks)
+function [saliency_masks] = smssr_saliency_masks(acc_masks, saliency_type,...
+                                                                 num_masks)
 
                                          
 %**************************************************************************
@@ -131,11 +133,11 @@ if islands_flag
 end
 if protrusions_flag
     i =i+1;
-    saliency_masks(:,:,i) = protrusions;
+    saliency_masks(:,:,:,i) = protrusions;
 end
 if indentations_flag
     i =i+1;
-    saliency_masks(:,:,i) = indentations;
+    saliency_masks(:,:,:,i) = indentations;
 end
 
 toc

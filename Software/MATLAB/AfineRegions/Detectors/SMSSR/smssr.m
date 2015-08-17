@@ -1,12 +1,14 @@
 % smssr- main function of the SMSSR detector 
 %**************************************************************************
 % [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
-%                                           num_levels, saliency_type, ...
-%                                           thresh_type, ...    
+%                                           num_levels, num_level_groups, ...
+%                                           saliency_type, thresh_type, ...    
 %                                           region_params, execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 May 2015
+% last modification date: 17 August 2015
+% modification details: added new parameter- number of gray levels group
 % last modification date: 11 August 2015
 % modification details: more modular code
 % last modification date: 11 June 2015
@@ -21,6 +23,7 @@
 %                   if specified should contain the binary array ROI
 %                   if left out or empty [], the whole image is considered
 % [num_levels]      number of gray levels to consider
+% [num_level_groups]number of gray level groups
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
@@ -78,25 +81,28 @@
 % RERERENCES:
 %**************************************************************************
 function [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
-                                           num_levels, saliency_type, ...
-                                           thresh_type,...
+                                           num_levels, num_level_groups, ...
+                                           saliency_type, thresh_type,...
                                            region_params, execution_flags)
 
                                          
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 7 || length(execution_flags) <3
+if nargin < 8 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 6 || isempty(region_params) || length(region_params) < 3
+if nargin < 7 || isempty(region_params) || length(region_params) < 3
     region_params = [0.02 0.03 0.7];
 end
-if nargin < 5
+if nargin < 6
     thresh_type = 's';
 end
-if nargin < 4 || isempty(saliency_type) || length(saliency_type) < 4
+if nargin < 5 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
+end
+if nargin < 4 || isempty(num_level_groups)
+    num_level_groups = 5;
 end
 if nargin < 3 || isempty(num_levels)
     num_levels = 25;
@@ -110,6 +116,9 @@ if nargin < 1
     featurs = [];
     saliency_masks = [];
     return
+end
+if num_level_groups >= num_levels
+    error('smssr: the number of gray level groups shouldbe smaller than the number of gray levels!');
 end
 
 %**************************************************************************
@@ -254,8 +263,7 @@ end
 % threshold the cumulative saliency masks 
 %..........................................................................
 [saliency_masks] = smssr_thresh_masks(acc_masks, saliency_type, saliency_thresh, verbose);
-num_masks =5;
-[feature_masks] = smssr_saliency_masks(acc_masks, saliency_type, num_masks);
+[feature_masks] = smssr_saliency_masks(acc_masks, saliency_type, num_level_groups);
 
 %visualisation
 if visualise_major
@@ -295,7 +303,7 @@ tic;
 i = 0;
 if holes_flag
     i = i+1;
-    for j = 1:num_masks
+    for j = 1:num_level_groups
         binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 1);
@@ -306,7 +314,7 @@ if holes_flag
 end
 if islands_flag
     i = i+1;
-    for j = 1:num_masks
+    for j = 1:num_level_groups
         binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 2);
@@ -317,7 +325,7 @@ if islands_flag
 end
 if indentations_flag
     i = i+1;
-    for j = 1:num_masks
+    for j = 1:num_level_groups
         binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 3);
@@ -328,7 +336,7 @@ if indentations_flag
 end
 if protrusions_flag
     i = i+1;
-    for j = 1:num_masks 
+    for j = 1:num_level_groups 
         binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 4);
