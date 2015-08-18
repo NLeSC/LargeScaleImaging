@@ -220,29 +220,31 @@ for it = 1:num_levels
     % visualisation
     if visualise_major
         if holes_flag
-         figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on;
+         figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on; grid on;
          set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');         
         end
         if islands_flag
-         subplot(222);imagesc(islands_acc);axis image;axis on;
+         subplot(222);imagesc(islands_acc);axis image;axis on; grid on;
          set(gcf, 'Colormap',mycmap);title('islands');colorbar('South');
         end
         if indentations_flag
-         subplot(223);imagesc(indentations_acc);axis image;axis on;
+         subplot(223);imagesc(indentations_acc);axis image;axis on; grid on;
          set(gcf, 'Colormap',mycmap);title('indentations');colorbar('South');
         end
         if protrusions_flag
-         subplot(224);imagesc(protrusions_acc);axis image;axis on;
+         subplot(224);imagesc(protrusions_acc);axis image;axis on; grid on;
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
-        figure(f2);imshow(binary_image);
-        if size(level) > 1
-            title(['Segmented image at thresholds: ' ...
-                num2str(level(2))  ' and ' num2str(level(1)) ]);
-        else
-            title(['Segmented image at threshold: ' num2str(level)]);
+        if visualise_minor
+            figure(f2);imshow(binary_image);
+            if size(level) > 1
+                title(['Segmented image at thresholds: ' ...
+                    num2str(level(2))  ' and ' num2str(level(1)) ]);
+            else
+                title(['Segmented image at threshold: ' num2str(level)]);
+            end
+            axis image; axis on;
         end
-        axis image; axis on;
     end
     %pause;
 end
