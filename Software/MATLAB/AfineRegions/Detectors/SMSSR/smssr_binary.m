@@ -5,8 +5,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 14 Aug 2015
-% last modification date: 
-% modification details: 
+% last modification date: 19 August 2015    
+% modification details: connected visualization to saliecy types (flags)
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
@@ -114,9 +114,9 @@ filled_ROI_inv = imfill(imcomplement(ROI),'holes');
 
 % visualisation
 if visualise
-    figure;subplot(221);imshow(ROI); title('ROI');
-    subplot(223);imshow(filled_ROI);title('filled ROI');
-    subplot(224);imshow(filled_ROI_inv);title('filled ROI (inverted)');
+    figure;subplot(221);imshow(ROI); title('ROI'); grid on;
+    subplot(223);imshow(filled_ROI);title('filled ROI'); grid on;
+    subplot(224);imshow(filled_ROI_inv);title('filled ROI (inverted)'); grid on;
 end
 
 
@@ -129,9 +129,12 @@ end
 %..........................................................................
 if islands_flag  
     islands = (filled_ROI_inv.*ROI);
+    imshow(islands);title('Before');pause;
     % remove small isolated bits
     islands = bwareaopen(islands,lambda,4);
-    %islands = imopen(islands,strel('disk',2));
+    imshow(islands);title('After1');pause;
+    islands = imclose(islands,strel('disk',2));
+    imshow(islands);title('After2');
 end
 
 if holes_flag
@@ -140,14 +143,19 @@ if holes_flag
     % remove small isolated bits
     holes = bwareaopen(holes,lambda,4);
     %imshow(holes);title('After1');pause;
-    %holes = imopen(holes, strel('disk',2'));
+    holes = imclose(holes, strel('disk',2'));
     %imshow(holes);title('After2');
 end
 
 % visualisation
 if visualise
-    f2 = figure;subplot(221);imshow(holes);title('holes');
-    subplot(222);imshow(islands);title('islands');
+    f2 = figure;
+    if holes_flag
+        subplot(221);imshow(holes);title('holes'); grid on;
+    end
+    if islands_flag
+        subplot(222);imshow(islands);title('islands'); grid on;
+    end
 end
 
 %..........................................................................
@@ -185,8 +193,8 @@ if (indentations_flag || protrusions_flag)
         end
     end
     if visualise
-        ff= figure;subplot(221);imshow(CCLH);title('Significant components (from holes) labelled');
-        subplot(222);imshow(CCLI);title('Significant components (from islands) labelled');
+        ff= figure;subplot(221);imshow(CCLH);title('Significant components (from holes) labelled'); grid on;
+        subplot(222);imshow(CCLI);title('Significant components (from islands) labelled'); grid on;
     end
 
     if not(already_detected)
@@ -237,7 +245,7 @@ if (indentations_flag || protrusions_flag)
       for j = 1:num_CCL
             SCCL = (CCL==j);
             if visualise
-                figure(ff); subplot(223);imshow(SCCL); title('Significant components large');
+                figure(ff); subplot(223);imshow(SCCL); title('Significant components large'); grid on;
             end
 
            if indentations_flag
@@ -258,8 +266,13 @@ if (indentations_flag || protrusions_flag)
 end
 
 if visualise
-    figure;subplot(223);imshow(indentations);title('indentations');
-    subplot(224);imshow(protrusions);title('protrusions');
+    figure(f2);
+    if indentations_flag
+        subplot(223);imshow(indentations);title('indentations');grid on;
+    end
+    if protrusions_flag
+        subplot(224);imshow(protrusions);title('protrusions'); grid on;
+    end
 end
 
 %**************************************************************************

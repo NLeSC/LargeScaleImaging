@@ -235,18 +235,18 @@ for it = 1:num_levels
          subplot(224);imagesc(protrusions_acc);axis image;axis on; grid on;
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
-        if visualise_minor
-            figure(f2);imshow(binary_image);
-            if size(level) > 1
-                title(['Segmented image at thresholds: ' ...
-                    num2str(level(2))  ' and ' num2str(level(1)) ]);
-            else
-                title(['Segmented image at threshold: ' num2str(level)]);
-            end
-            axis image; axis on;
-        end
+%         if visualise_minor
+%             figure(f2);imshow(binary_image);
+%             if size(level) > 1
+%                 title(['Segmented image at thresholds: ' ...
+%                     num2str(level(2))  ' and ' num2str(level(1)) ]);
+%             else
+%                 title(['Segmented image at threshold: ' num2str(level)]);
+%             end
+%             axis image; axis on;
+%         end
     end
-    %pause;
+    pause;
 end
     if verbose
         disp('Elapsed time for the core processing: ');toc
