@@ -2,11 +2,14 @@
 %**************************************************************************
 % [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
 %                                           num_levels, num_level_groups, ...
+%                                           steps,...
 %                                           saliency_type, thresh_type, ...    
 %                                           region_params, execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 May 2015
+% last modification date: 18 August 2015
+% modification details: added new parameter- gray-level steps
 % last modification date: 17 August 2015
 % modification details: added new parameter- number of gray levels group
 % last modification date: 11 August 2015
@@ -24,6 +27,7 @@
 %                   if left out or empty [], the whole image is considered
 % [num_levels]      number of gray levels to consider
 % [num_level_groups]number of gray level groups
+% [steps]           steps between gray levels
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
@@ -82,6 +86,7 @@
 %**************************************************************************
 function [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
                                            num_levels, num_level_groups, ...
+                                           steps,...
                                            saliency_type, thresh_type,...
                                            region_params, execution_flags)
 
@@ -89,17 +94,20 @@ function [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 8 || length(execution_flags) <3
+if nargin < 9 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 7 || isempty(region_params) || length(region_params) < 3
+if nargin < 8 || isempty(region_params) || length(region_params) < 3
     region_params = [0.02 0.03 0.7];
 end
-if nargin < 6
+if nargin < 7
     thresh_type = 's';
 end
-if nargin < 5 || isempty(saliency_type) || length(saliency_type) < 4
+if nargin < 6 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
+end
+if nargin < 5 || isempty(steps)
+    steps = [5 10 20 50];
 end
 if nargin < 4 || isempty(num_level_groups)
     num_level_groups = 5;
@@ -260,7 +268,7 @@ end
 %..........................................................................
 % segment each thresholded image and obtain the accumulated saliency masks
 %..........................................................................
-[acc_masks] = smssr_acc_masks(ROI_only, num_levels, thresh_type,...
+[acc_masks] = smssr_acc_masks(ROI_only, num_levels, steps, thresh_type,...
                                SE_size_factor, area_factor,...
                                saliency_type, execution_flags, figs);
 

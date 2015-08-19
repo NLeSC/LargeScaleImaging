@@ -129,12 +129,12 @@ end
 %..........................................................................
 if islands_flag  
     islands = (filled_ROI_inv.*ROI);
-    imshow(islands);title('Before');pause;
+    %imshow(islands);title('Before');pause;
     % remove small isolated bits
     islands = bwareaopen(islands,lambda,4);
-    imshow(islands);title('After1');pause;
-    islands = imclose(islands,strel('disk',2));
-    imshow(islands);title('After2');
+    %imshow(islands);title('After1');pause;
+    islands = imclose(islands,strel('disk',1));
+    %imshow(islands);title('After2');
 end
 
 if holes_flag
@@ -143,7 +143,7 @@ if holes_flag
     % remove small isolated bits
     holes = bwareaopen(holes,lambda,4);
     %imshow(holes);title('After1');pause;
-    holes = imclose(holes, strel('disk',2'));
+    holes = imclose(holes, strel('disk',1));
     %imshow(holes);title('After2');
 end
 

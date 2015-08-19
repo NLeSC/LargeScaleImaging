@@ -1,13 +1,13 @@
 % smssr_acc_masks- obtain the accumulated masks of the SMSSR detector 
 %**************************************************************************
-% [acc_masks] = smssr_acc_masks(image_ROI, num_levels, thresh_type,...
+% [acc_masks] = smssr_acc_masks(image_ROI, num_levels, steps, thresh_type,...
 %                               SE_size_factor, area_factor,...
 %                               saliency_type, execution_flags, figs)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 11 August 2015
-% last modification date: 14.08.205
-% modification details: 
+% last modification date: 19.08.205
+% modification details: added number of gray level steps as parameters
 % last modification date: 12.08.205
 % modification details: the third dimension of the output depends on the
 %                       saliency types requested
@@ -15,6 +15,7 @@
 % INPUTS:
 % image_ROI        the input ROI image data
 % [num_levels]      number of gray levels to consider
+% [steps]           number of gray level steps
 % [thresh_type]    character 's' for simple thresholding, 
 %                  'm' for multithresholding or 'h' for
 %                  hysteresis, [optional], if left out default is 'h'
@@ -38,7 +39,7 @@
 %**************************************************************************
 % RERERENCES:
 %**************************************************************************
-function [acc_masks] = smssr_acc_masks(image_ROI, num_levels, thresh_type,...
+function [acc_masks] = smssr_acc_masks(image_ROI, num_levels, steps, thresh_type,...
                                SE_size_factor, area_factor,...
                                saliency_type, execution_flags, figs)
 
@@ -46,20 +47,23 @@ function [acc_masks] = smssr_acc_masks(image_ROI, num_levels, thresh_type,...
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 7 || length(execution_flags) <3
+if nargin < 8 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 6 || isempty(saliency_type) || length(saliency_type) < 4
+if nargin < 7 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
 end
-if nargin < 5
+if nargin < 6
     area_factor = 0.03;
 end
-if nargin < 4
+if nargin < 5
     SE_size_factor = 0.02;
 end
-if nargin < 3
+if nargin < 4
     thresh_type = 's';
+end
+if nargin < 3
+    steps = [5 10 20 50];
 end
 if nargin < 2 || isempty(num_levels)
     num_levels = 25;
@@ -126,16 +130,16 @@ end
 %--------------------------------------------------------------------------
 % accumulative saliency masks
 if holes_flag
-    holes_acc = zeros(nrows,ncols);
+    holes_acc = zeros(nrows,ncols,length(steps)+1);
 end
 if islands_flag
-    islands_acc = zeros(nrows,ncols);
+    islands_acc = zeros(nrows,ncols,length(steps)+1);
 end
 if indentations_flag
-    indentations_acc = zeros(nrows,ncols);
+    indentations_acc = zeros(nrows,ncols,length(steps)+1);
 end
 if protrusions_flag
-    protrusions_acc = zeros(nrows,ncols);
+    protrusions_acc = zeros(nrows,ncols,length(steps)+1);
 end
 
 % final saliency masks
@@ -179,74 +183,78 @@ end
 % compute binary saliency for every sampled gray-level
 %..........................................................................
 
-for it = 1:num_levels
-     wb_counter = wb_counter + 1;
-     waitbar(wb_counter/num_levels);
-     drawnow
+j =0;
+for st = [1 steps]
+    j = j+1;
+    for it = 1:st:num_levels
+         wb_counter = wb_counter + 1;
+         waitbar(wb_counter/length(1:st:num_levels));
+         drawnow
 
-    switch thresh_type
-        case 'm'
-        case 's'
-            level = thresholds(it);
-        case 'h'
-            level(1) = high_thresholds(it);
-            level(2) = low_thresholds(it);                
-    end
-    %pause
-    [saliency_masks_level, binary_image] = smssr_gray_level(image_ROI, ...
-                                            thresh_type, level, ...
-                                            SE_size_factor, area_factor,...
-                                            saliency_type, visualise_minor);
-    % cumulative saliency masks
-    i =0;
-    if holes_flag    
-        i = i+1;
-        holes_acc = holes_acc + saliency_masks_level(:,:,i);
-    end
-    if islands_flag    
-        i = i+1;
-        islands_acc = islands_acc + saliency_masks_level(:,:,i);
-    end
-    if indentations_flag    
-        i = i+1;
-        indentations_acc = indentations_acc + saliency_masks_level(:,:,i);
-    end
-    if protrusions_flag    
-        i = i+1;
-        protrusions_acc = protrusions_acc + saliency_masks_level(:,:,i);
-    end
+        switch thresh_type
+            case 'm'
+            case 's'
+                level = thresholds(it);
+            case 'h'
+                level(1) = high_thresholds(it);
+                level(2) = low_thresholds(it);                
+        end
+        %pause
+        [saliency_masks_level, binary_image] = smssr_gray_level(image_ROI, ...
+                                                thresh_type, level, ...
+                                                SE_size_factor, area_factor,...
+                                                saliency_type, visualise_minor);
+        % cumulative saliency masks
+        i =0;
+        if holes_flag    
+            i = i+1;
+            holes_acc(:,:,j) = holes_acc(:,:,j) + saliency_masks_level(:,:,i);
+        end
+        if islands_flag    
+            i = i+1;
+            islands_acc(:,:,j) = islands_acc(:,:,j) + saliency_masks_level(:,:,i);
+        end
+        if indentations_flag    
+            i = i+1;
+            indentations_acc(:,:,j) = indentations_acc(:,:,j) + saliency_masks_level(:,:,i);
+        end
+        if protrusions_flag    
+            i = i+1;
+            protrusions_acc(:,:,j) =  protrusions_acc(:,:,j) + saliency_masks_level(:,:,i);
+        end
 
 
-    % visualisation
-    if visualise_major
-        if holes_flag
-         figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on; grid on;
-         set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');         
-        end
-        if islands_flag
-         subplot(222);imagesc(islands_acc);axis image;axis on; grid on;
-         set(gcf, 'Colormap',mycmap);title('islands');colorbar('South');
-        end
-        if indentations_flag
-         subplot(223);imagesc(indentations_acc);axis image;axis on; grid on;
-         set(gcf, 'Colormap',mycmap);title('indentations');colorbar('South');
-        end
-        if protrusions_flag
-         subplot(224);imagesc(protrusions_acc);axis image;axis on; grid on;
-         set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
-        end
-%         if visualise_minor
-%             figure(f2);imshow(binary_image);
-%             if size(level) > 1
-%                 title(['Segmented image at thresholds: ' ...
-%                     num2str(level(2))  ' and ' num2str(level(1)) ]);
-%             else
-%                 title(['Segmented image at threshold: ' num2str(level)]);
-%             end
-%             axis image; axis on;
-%         end
+        % visualisation
+        if visualise_major
+            if holes_flag
+             figure(f1);subplot(221);imagesc(holes_acc(:,:,j)); axis image; axis on; grid on;
+             set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');         
+            end
+            if islands_flag
+             subplot(222);imagesc(islands_acc(:,:,j));axis image;axis on; grid on;
+             set(gcf, 'Colormap',mycmap);title('islands');colorbar('South');
+            end
+            if indentations_flag
+             subplot(223);imagesc(indentations_acc(:,:,j));axis image;axis on; grid on;
+             set(gcf, 'Colormap',mycmap);title('indentations');colorbar('South');
+            end
+            if protrusions_flag
+             subplot(224);imagesc(protrusions_acc(:,:,j));axis image;axis on; grid on;
+             set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
+            end
+    %         if visualise_minor
+    %             figure(f2);imshow(binary_image);
+    %             if size(level) > 1
+    %                 title(['Segmented image at thresholds: ' ...
+    %                     num2str(level(2))  ' and ' num2str(level(1)) ]);
+    %             else
+    %                 title(['Segmented image at threshold: ' num2str(level)]);
+    %             end
+    %             axis image; axis on;
+    %         end
+       end
     end
-    pause;
+    %pause;
 end
     if verbose
         disp('Elapsed time for the core processing: ');toc
@@ -294,17 +302,41 @@ end
 i = 0;
 if holes_flag
     i =i+1;
-    acc_masks(:,:,i) = holes_acc;
+    acc_masks(:,:,i) = sum(holes_acc,3);
 end
 if islands_flag
     i =i+1;
-    acc_masks(:,:,i) = islands_acc;
+    acc_masks(:,:,i) = sum(islands_acc,3);
 end
 if protrusions_flag
     i =i+1;
-    acc_masks(:,:,i) = protrusions_acc;
+    acc_masks(:,:,i) = sum(protrusions_acc,3);
 end
 if indentations_flag
     i =i+1;
-    acc_masks(:,:,i) = indentations_acc;
+    acc_masks(:,:,i) = sum(indentations_acc,3);
+end
+
+if visualise_major
+    i = 0;
+    if holes_flag
+        i = i+1;
+        figure(f1);subplot(221);imagesc(acc_masks(:,:,i)); axis image; axis on; grid on;
+        set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');
+    end
+    if islands_flag
+        i = i+1;
+        subplot(222);imagesc(acc_masks(:,:,i));axis image;axis on; grid on;
+        set(gcf, 'Colormap',mycmap);title('islands');colorbar('South');
+    end
+    if indentations_flag
+        i = i+1;
+        subplot(223);imagesc(acc_masks(:,:,i));axis image;axis on; grid on;
+        set(gcf, 'Colormap',mycmap);title('indentations');colorbar('South');
+    end
+    if protrusions_flag
+        i = i+1;
+        subplot(224);imagesc(acc_masks(:,:,i));axis image;axis on; grid on;
+        set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');
+    end
 end

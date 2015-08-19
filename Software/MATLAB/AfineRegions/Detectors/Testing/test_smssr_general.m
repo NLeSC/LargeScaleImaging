@@ -11,7 +11,7 @@ interactive = false;
 verbose = false;
 visualize = true;
 visualize_major = true;
-visualize_minor = true;
+visualize_minor = false;
 lisa = false;
 
 save_flag = 1;
@@ -259,8 +259,9 @@ for i = 1
         SE_size_factor = 0.05;
         SE_size_factor_preproc = 0.002;
         Area_factor = 0.25;
-        num_levels = 10;
+        num_levels = 255;
         num_level_groups = 5;
+        steps = [5 10 20 50];
         thresh_type = 's';
         saliency_thresh = 0.5;
     end
@@ -275,7 +276,7 @@ for i = 1
         image_data = smssr_preproc(image_data, preproc_types);
     end
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
-        num_levels, num_level_groups, saliency_types, thresh_type, region_params, execution_params);
+        num_levels, num_level_groups, steps, saliency_types, thresh_type, region_params, execution_params);
 
     toc
     % save the features
