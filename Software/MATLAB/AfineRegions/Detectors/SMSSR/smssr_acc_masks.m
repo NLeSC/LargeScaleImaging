@@ -173,18 +173,15 @@ end
 %--------------------------------------------------------------------------
 % core processing
 %--------------------------------------------------------------------------
-% waitbar
-%if visualise_major
-    wb_handle = waitbar(0,'SMSSR detection computaitons: please wait...',...
-                        'Position',wait_pos);
-    wb_counter = 0;
-%end
 %..........................................................................
 % compute binary saliency for every sampled gray-level
 %..........................................................................
 
 j =0;
 for st = [1 steps]
+    wb_handle = waitbar(0,'SMSSR detection computaitons: please wait...',...
+                        'Position',wait_pos);
+    wb_counter = 0;
     j = j+1;
     for it = 1:st:num_levels
          wb_counter = wb_counter + 1;
@@ -255,46 +252,16 @@ for st = [1 steps]
        end
     end
     %pause;
+    % close the waitbar
+    close(wb_handle);
 end
-    if verbose
-        disp('Elapsed time for the core processing: ');toc
-    end
 
-    %visualisation
-    if visualise_major
-        if holes_flag
-         figure(f3);
-         subplot(221);imshow(image_ROI); freezeColors; title('Original image');axis image;axis on;
-         subplot(222);imshow(holes_acc);%imshow(holes_acc,mycmap);
-         axis image;axis on;title('holes');freezeColors; 
-        end
-        % indentations
-        if indentations_flag
-         figure(f4);
-         subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(indentations_acc); %imshow(indentations_acc,mycmap);
-         axis image;axis on;title('indentations');freezeColors; 
-        end
-        % islands
-        if islands_flag
-         figure(f5);
-         subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(islands_acc);%imshow(islands_acc,mycmap);
-         axis image;axis on;title('islands');freezeColors; 
-        end
-        % protrusions
-        if protrusions_flag
-         figure(f6);
-         subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(protrusions_acc);%imshow(protrusions_acc,mycmap);
-         axis image;axis on; title('protrusions'); freezeColors; 
-        end
-    end
-    
+if verbose
+    disp('Elapsed time for the core processing: ');toc
+end
 
-% close the waitbar
-  close(wb_handle);
-  
+
+ 
 %**************************************************************************
 %variables -> output parameters
 %--------------------------------------------------------------------------
@@ -338,5 +305,41 @@ if visualise_major
         i = i+1;
         subplot(224);imagesc(acc_masks(:,:,i));axis image;axis on; grid on;
         set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');
+    end
+end
+
+%visualisation
+i =0;
+if visualise_major
+    if holes_flag
+        i = i + 1;
+        figure(f3);
+        subplot(221);imshow(image_ROI); freezeColors; title('Original image');axis image;axis on;
+        subplot(222);imshow(acc_masks(:,:,i));%imshow(holes_acc,mycmap);
+        axis image;axis on;title('holes');freezeColors;
+    end
+    % indentations
+    if indentations_flag
+        i = i+1;
+        figure(f4);
+        subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
+        subplot(222);imshow(acc_masks(:,:,i)); %imshow(indentations_acc,mycmap);
+        axis image;axis on;title('indentations');freezeColors;
+    end
+    % islands
+    if islands_flag
+        i =i+1;
+        figure(f5);
+        subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
+        subplot(222);imshow(acc_masks(:,:,i));%imshow(islands_acc,mycmap);
+        axis image;axis on;title('islands');freezeColors;
+    end
+    % protrusions
+    if protrusions_flag
+        i = i+1;
+        figure(f6);
+        subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
+        subplot(222);imshow(acc_masks(:,:,i));%imshow(protrusions_acc,mycmap);
+        axis image;axis on; title('protrusions'); freezeColors;
     end
 end

@@ -213,8 +213,8 @@ disp('**************************** Testing SMSSR detector *****************');
 len = length(image_filename);
 
 %% loop over all test images
-%for i = 1:len
-for i = 1
+for i = 1:len
+%for i = 1
     %% load the image & convertto gray-scale if  color
     image_data = imread(image_filename{i});
     if ndims(image_data) > 2
