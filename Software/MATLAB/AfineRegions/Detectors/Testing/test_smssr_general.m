@@ -213,8 +213,8 @@ disp('**************************** Testing SMSSR detector *****************');
 len = length(image_filename);
 
 %% loop over all test images
-for i = 1:len
-%for i = 1
+%for i = 1:len
+for i = 1
     %% load the image & convertto gray-scale if  color
     image_data = imread(image_filename{i});
     if ndims(image_data) > 2
@@ -259,11 +259,12 @@ for i = 1:len
         SE_size_factor = 0.05;
         SE_size_factor_preproc = 0.002;
         Area_factor = 0.25;
-        num_levels = 255;
-        num_level_groups = 5;
-        steps = [5 10 20 50];
+        %num_levels = 255;
+        %steps = [5 10 20 50];
+        num_levels = 50;
+        steps = [10 20];
         thresh_type = 's';
-        saliency_thresh = 0.5;
+        saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
     end
     
     tic;
@@ -271,12 +272,12 @@ for i = 1:len
     disp('SMSSR');
       
     execution_params = [verbose visualize_major visualize_minor];
-    region_params = [SE_size_factor Area_factor saliency_thresh];
+    region_params = [SE_size_factor Area_factor];
     if find(preproc_types)
         image_data = smssr_preproc(image_data, preproc_types);
     end
     [num_smartregions, features, saliency_masks] = smssr(image_data, ROI, ...
-        num_levels, num_level_groups, steps, saliency_types, thresh_type, region_params, execution_params);
+        num_levels, steps, saliency_thresh, saliency_types, thresh_type, region_params, execution_params);
 
     toc
     % save the features

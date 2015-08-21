@@ -1,15 +1,15 @@
 % smssr_saliency_masks- obtain the saliency masks of the SMSSR detector 
 %**************************************************************************
 % [saliency_masks] = smssr_saliency_masks(acc_masks, saliency_type, ...
-%                                                    saliency_thresh, num_masks)
+%                                                    saliency_thresh)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 14 August 2015
-% last modification date: 18 August 2015 
-% modification details: added number of gray levels as parameter
+% last modification date: 21 August 2015 
+% modification details: adapted code to multiple saliency threhsolds
 % last modification date: 17 August 2015 
 % modification details: made the output saliency masks 4D, 3th dim is per
-%                       group of gray levels, 4this per saliency type
+%                       group of gray levels, 4th is per saliency type
 %**************************************************************************
 % INPUTS:
 % acc_masks    3-D array of the accumulated saliency masks of the regions
@@ -17,7 +17,7 @@
 % [saliency_type]  array with 4 flags for the 4 saliency types 
 %                  (Holes, Islands, Indentations, Protrusions)
 %                  [optional], if left out- default is [1 1 1 1]
-% [saliency_thresh] saliency threshold
+% [saliency_thresh] saliency thresholds
 % [num_masks]    number of masks (clusters of levels)
 %**************************************************************************
 % OUTPUTS:
@@ -29,17 +29,14 @@
 % RERERENCES:
 %**************************************************************************
 function [saliency_masks] = smssr_saliency_masks(acc_masks, saliency_type,...
-                                                      saliency_thresh,num_masks)
+                                                      saliency_thresh)
 
                                          
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 4 || isempty(num_masks)
-    num_masks = 5;
-end
 if nargin < 3 || isempty(saliency_thresh)
-    saliency_thresh = 0.75;
+    saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
 end
 
 if nargin < 2 || isempty(saliency_type)
@@ -54,6 +51,9 @@ end
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
+% number of masks
+num_masks = length(saliency_thresh);
+
 % saliency flags
 holes_flag = saliency_type(1);
 islands_flag = saliency_type(2);
@@ -105,27 +105,27 @@ saliency_masks = zeros(nrows,ncols,num_masks, num_saliency_types);
 % grouping evidence from the accumulatted masks
 %--------------------------------------------------------------------------
 if holes_flag
-%    [max_value, start_value] = range_mask(holes_acc, saliency_thresh);
-    for j = 2 : num_masks
-       holes(:,:,j) = summarize_masks(holes_acc,num_masks, j);
+    [thresh_values] = mask_values(holes_acc, saliency_thresh);
+    for j = 1 : num_masks
+       holes(:,:,j) = thresh_masks(holes_acc,thresh_values(j), thresh_value(j+1));
     end
 end
 if islands_flag
-%    [max_value, start_value] = range_mask(islands_acc, saliency_thresh);
-     for j = 2 : num_masks
-        islands(:,:,j) = summarize_masks(islands_acc,num_masks,j);
+    [thresh_values] = mask_values(islands_acc, saliency_thresh);
+    for j = 1 : num_masks
+       islands(:,:,j) = thresh_masks(islands_acc,thresh_values(j), thresh_value(j+1));
     end
 end
 if protrusions_flag
-%    [max_value, start_value] = range_mask(protrusions_acc, saliency_thresh);
-     for j = 2 : num_masks
-        protrusions(:,:,j) = summarize_masks(protrusions_acc,num_masks,j);
+    [thresh_values] = mask_values(protrusions_acc, saliency_thresh);
+    for j = 1 : num_masks
+       protrusions(:,:,j) = thresh_masks(protrusions_acc,thresh_values(j), thresh_value(j+1));
     end
 end
 if indentations_flag
-%    [max_value, start_value] = range_mask(indentations_acc, saliency_thresh);
-     for j = 2 : num_masks
-        indentations(:,:,j) = summarize_masks(indentations_acc,num_masks,j);
+    [thresh_values] = mask_values(indentations_acc, saliency_thresh);
+    for j = 1 : num_masks
+       indentations(:,:,j) = thresh_masks(indentations_acc,thresh_values(j), thresh_value(j+1));
     end
 end
 
@@ -152,20 +152,20 @@ if indentations_flag
     saliency_masks(:,:,:,i) = indentations;
 end
 
-    function [max_value, start_value] = range_mask(in_mask, saliency_thresh)
-        max_value = max(max(in_mask));  
-        start_value = fix(saliency_thresh*max_value);
+    function [thresh_values] = mask_values(in_mask, saliency_thresh)
+        num_thresh = length(saliency_thresh);
+        thresh_values = zeros(1, num_thresh + 1);
+        max_value = max(max(in_mask));
+        thresh_values(1) = max_value;
+        for i = 1:num_thresh
+            thresh_value(i+1) = max_value*(1 - saliency_thresh(i));
+        end                     
     end
 
-    function [out_mask] = summarize_masks(in_mask, num_masks,index)
-        % the output should contain logical OR of the mask non-zero values
-        % between index - num_masks: index 
-        [rows, cols] = size(in_mask);
-        out_mask = zeros(rows, cols);
-        for value = num_masks*index-1: num_masks*index
-            binary_mask = in_mask == value;
-            out_mask = out_mask + binary_mask;
-        end
+    function [out_mask] = thresh_masks(in_mask, high_value, low_value)
+        high_mask = in_mask < high_value;
+        low_mask =  in_mask > low_value;
+        out_mask = and(high_mask, low_mask);               
     end
 
 toc

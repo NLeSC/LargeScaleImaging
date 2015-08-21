@@ -1,17 +1,17 @@
 % smssr- main function of the SMSSR detector 
 %**************************************************************************
 % [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
-%                                           num_levels, num_level_groups, ...
-%                                           steps,...
+%                                           num_levels, steps,...
+%                                           saliency_thresh, ...
 %                                           saliency_type, thresh_type, ...    
 %                                           region_params, execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 May 2015
+% last modification date: 21 August 2015
+% modification details: implemented saliency threhsolding
 % last modification date: 18 August 2015
 % modification details: added new parameter- gray-level steps
-% last modification date: 17 August 2015
-% modification details: added new parameter- number of gray levels group
 % last modification date: 11 August 2015
 % modification details: more modular code
 % last modification date: 11 June 2015
@@ -26,8 +26,8 @@
 %                   if specified should contain the binary array ROI
 %                   if left out or empty [], the whole image is considered
 % [num_levels]      number of gray levels to consider
-% [num_level_groups]number of gray level groups
 % [steps]           steps between gray levels
+% [saliency_thresh] array with saliency thresholds
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
@@ -85,8 +85,8 @@
 % RERERENCES:
 %**************************************************************************
 function [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
-                                           num_levels, num_level_groups, ...
-                                           steps,...
+                                           num_levels, steps,...
+                                           saliency_thresh, ...
                                            saliency_type, thresh_type,...
                                            region_params, execution_flags)
 
@@ -97,8 +97,8 @@ function [num_regions, features, saliency_masks] = smssr(image_data,ROI_mask,...
 if nargin < 9 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 8 || isempty(region_params) || length(region_params) < 3
-    region_params = [0.02 0.03 0.7];
+if nargin < 8 || isempty(region_params) || length(region_params) < 2
+    region_params = [0.02 0.03];
 end
 if nargin < 7
     thresh_type = 's';
@@ -106,11 +106,11 @@ end
 if nargin < 6 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
 end
-if nargin < 5 || isempty(steps)
-    steps = [5 10 20 50];
+if nargin < 5 || isempty(saliency_thresh)
+    saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
 end
-if nargin < 4 || isempty(num_level_groups)
-    num_level_groups = 5;
+if nargin < 4 || isempty(steps)
+    steps = [5 10 20 50];
 end
 if nargin < 3 || isempty(num_levels)
     num_levels = 25;
@@ -125,9 +125,6 @@ if nargin < 1
     saliency_masks = [];
     return
 end
-if num_level_groups >= num_levels
-    error('smssr: the number of gray level groups shouldbe smaller than the number of gray levels!');
-end
 
 %**************************************************************************
 % input parameters -> variables
@@ -139,12 +136,6 @@ if ndims(region_params) > 1
     area_factor = region_params(2);
 else
     area_factor = 0.03;
-end
-if ndims(region_params) > 2   
-    % thresholding the salient regions
-    saliency_thresh = region_params(3);
-else
-    saliency_thresh =  0.7;
 end
 
 % saliency flags
@@ -245,6 +236,8 @@ end
 num_saliency_types = length(find(saliency_type));
 acc_masks = zeros(nrows,ncols,num_saliency_types);
 saliency_masks = zeros(nrows,ncols,num_saliency_types);
+num_masks = length(saliency_thresh);
+feature_masks = zeros(nrows, ncols, num_masks, num_saliency_types);
 
 %**************************************************************************
 % computations
@@ -277,7 +270,7 @@ end
 % threshold the cumulative saliency masks 
 %..........................................................................
 [saliency_masks] = smssr_thresh_masks(acc_masks, saliency_type, saliency_thresh, verbose);
-%[feature_masks] = smssr_saliency_masks(acc_masks, saliency_type, saliency_thresh, num_level_groups);
+[feature_masks] = smssr_saliency_masks(acc_masks, saliency_type, saliency_thresh);
 
 
 %visualisation
@@ -285,19 +278,19 @@ if visualise_major
     i = 0;
     if holes_flag
         i =i+1;
-        holes_thresh = saliency_masks(:,:,i);
+        holes = saliency_masks(:,:,i);
     end
     if islands_flag
         i =i+1;
-        islands_thresh = saliency_masks(:,:,i);
+        islands = saliency_masks(:,:,i);
     end
     if indentations_flag
         i =i+1;
-        indentations_thresh = saliency_masks(:,:,i);
+        indentations = saliency_masks(:,:,i);
     end
     if protrusions_flag
         i =i+1;
-        protrusions_thresh = saliency_masks(:,:,i); 
+        protrusions = saliency_masks(:,:,i); 
     end
     visualise_regions();
 end
@@ -318,51 +311,51 @@ tic;
 i = 0;
 if holes_flag
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
-  %  for j = 1:num_level_groups
-  %      binary_mask = feature_masks(:,:,j,i);
+ %   binary_mask = saliency_masks(:,:,i);
+    for j = 1:num_masks
+        binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 1);
             num_regions = num_regions + num_sub_regions;
             features = [features; sub_features];
         end
-  %  end
+    end
 end
 if islands_flag
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
-   % for j = 1:num_level_groups
-    %    binary_mask = feature_masks(:,:,j,i);
+    %binary_mask = saliency_masks(:,:,i);
+    for j = 1:num_masks
+        binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 2);
             num_regions = num_regions + num_sub_regions;
             features = [features; sub_features];
         end
-   % end
+    end
 end
 if indentations_flag   
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
-    %for j = 1:num_level_groups
-     %   binary_mask = feature_masks(:,:,j,i);
+    %binary_mask = saliency_masks(:,:,i);
+    for j = 1:num_masks
+        binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 3);
             num_regions = num_regions + num_sub_regions;
             features = [features; sub_features];
         end
-    %end
+    end
 end
 if protrusions_flag
     i = i+1;
-    binary_mask = saliency_masks(:,:,i);
-    %for j = 1:num_level_groups 
-     %   binary_mask = feature_masks(:,:,j,i);
+    %binary_mask = saliency_masks(:,:,i);
+    for j = 1:num_level_groups 
+        binary_mask = feature_masks(:,:,j,i);
         if find(binary_mask)
             [num_sub_regions, sub_features] = binary_mask2features(binary_mask,4, 4);
             num_regions = num_regions + num_sub_regions;
             features = [features; sub_features];
         end
-    %end
+    end
 end
 
 if verbose
@@ -382,47 +375,47 @@ end
         red = [255 0 0];
 
         % holes
-        if holes_flag && ~isempty(find(holes_thresh, 1))
+        if holes_flag && ~isempty(find(holes, 1))
 
             rgb = image_data;
-            rgb = imoverlay(rgb, holes_thresh, blue);
+            rgb = imoverlay(rgb, holes, blue);
 
             figure(f3);
-            subplot(223);imshow(holes_thresh);
-            title('thresholded holes');axis image;axis on;
+            subplot(223);imshow(holes);
+            title(' holes');axis image;axis on;
             drawnow;
             subplot(224); imshow(rgb); axis on; title('Detected holes');
         end
         % indentations
-        if indentations_flag && ~isempty(find(indentations_thresh,1))
+        if indentations_flag && ~isempty(find(indentations,1))
             rgb = image_data;
-            rgb = imoverlay(rgb, indentations_thresh, green);
+            rgb = imoverlay(rgb, indentations, green);
 
             figure(f4);
-            subplot(223);imshow(indentations_thresh);
-            title('thresholded indentations');axis image;axis on;
+            subplot(223);imshow(indentations);
+            title('indentations');axis image;axis on;
             drawnow;
             subplot(224); imshow(rgb); axis on; title('Detected indentations');
         end
         % islands
-        if islands_flag && ~isempty(find(islands_thresh,1))
+        if islands_flag && ~isempty(find(islands,1))
             rgb = image_data;
-            rgb = imoverlay(rgb, islands_thresh, yellow);
+            rgb = imoverlay(rgb, islands, yellow);
 
             figure(f5);
-            subplot(223);imshow(islands_thresh);
-            title('thresholded islands');axis image;axis on;
+            subplot(223);imshow(islands);
+            title('islands');axis image;axis on;
             drawnow;
             subplot(224); imshow(rgb); axis on; title('Detected islands');
         end
         % protrusions
-        if protrusions_flag && ~isempty(find(protrusions_thresh,1))
+        if protrusions_flag && ~isempty(find(protrusions,1))
             rgb = image_data;
-            rgb = imoverlay(rgb, protrusions_thresh, red);
+            rgb = imoverlay(rgb, protrusions, red);
 
             figure(f6);
-            subplot(223);imshow(protrusions_thresh);
-            title('thresholded protrusions');axis image;axis on;
+            subplot(223);imshow(protrusions);
+            title('protrusions');axis image;axis on;
             drawnow;
             subplot(224); imshow(rgb); axis on; title('Detected protrusions');
         end
