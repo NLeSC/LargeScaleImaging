@@ -270,18 +270,22 @@ i = 0;
 if holes_flag
     i =i+1;
     acc_masks(:,:,i) = sum(holes_acc,3);
+    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));
 end
 if islands_flag
     i =i+1;
     acc_masks(:,:,i) = sum(islands_acc,3);
+    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 if protrusions_flag
     i =i+1;
     acc_masks(:,:,i) = sum(protrusions_acc,3);
+    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 if indentations_flag
     i =i+1;
     acc_masks(:,:,i) = sum(indentations_acc,3);
+    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 
 if visualise_major
