@@ -145,22 +145,22 @@ if islands_flag
 
     end
 end
-if protrusions_flag
-    [thresh_values] = mask_values(protrusions_acc, saliency_thresh);
-    for j = 1 : num_masks
-       protrusions(:,:,j) = thresh_masks(protrusions_acc,thresh_values(j), thresh_values(j+1));
-       if vis
-           figure(f3); imshow(protrusions(:,:,j)); title(['protrusions between: ' num2str(thresh_values(j)) ' and ' num2str(thresh_values(j+1))]);
-           pause;
-       end       
-    end
-end
 if indentations_flag
     [thresh_values] = mask_values(indentations_acc, saliency_thresh);
     for j = 1 : num_masks
        indentations(:,:,j) = thresh_masks(indentations_acc,thresh_values(j), thresh_values(j+1));
        if vis
            figure(f4); imshow(indentations(:,:,j)); title(['indentations between: ' num2str(thresh_values(j)) ' and ' num2str(thresh_values(j+1))]);
+           pause;
+       end       
+    end
+end
+if protrusions_flag
+    [thresh_values] = mask_values(protrusions_acc, saliency_thresh);
+    for j = 1 : num_masks
+       protrusions(:,:,j) = thresh_masks(protrusions_acc,thresh_values(j), thresh_values(j+1));
+       if vis
+           figure(f3); imshow(protrusions(:,:,j)); title(['protrusions between: ' num2str(thresh_values(j)) ' and ' num2str(thresh_values(j+1))]);
            pause;
        end       
     end

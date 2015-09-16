@@ -260,12 +260,12 @@ for i = 1:len
         SE_size_factor_preproc = 0.002;
         Area_factor = 0.25;
         %num_levels = 255;
-        %steps = [5 10 20 50];
-        num_levels = 50;
-        steps = [5 10 20];
+        %steps = [5 10 20 25 35 50];
+        num_levels = 100;
+        steps = [5 10 20 25];
         thresh_type = 's';
         %saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
-        saliency_thresh = [0.05 0.75];
+        saliency_thresh = [0 1];
     end
     
     tic;

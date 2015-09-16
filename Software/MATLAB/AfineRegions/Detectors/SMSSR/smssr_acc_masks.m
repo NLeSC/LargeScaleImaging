@@ -207,19 +207,22 @@ for st = [1 steps]
             i = i+1;
             holes_acc(:,:,j) = holes_acc(:,:,j) + saliency_masks_level(:,:,i);
         end
+   %     holes_acc(:,:,j) = medfilt2(holes_acc(:,:,j)); 
         if islands_flag    
             i = i+1;
             islands_acc(:,:,j) = islands_acc(:,:,j) + saliency_masks_level(:,:,i);
         end
+  %      islands_acc(:,:,j) = medfilt2(islands_acc(:,:,j)); 
         if indentations_flag    
             i = i+1;
             indentations_acc(:,:,j) = indentations_acc(:,:,j) + saliency_masks_level(:,:,i);
         end
+%        holes_acc(:,:,j) = medfilt2(holes_acc(:,:,j)); 
         if protrusions_flag    
             i = i+1;
             protrusions_acc(:,:,j) =  protrusions_acc(:,:,j) + saliency_masks_level(:,:,i);
         end
-
+%        holes_acc(:,:,j) = medfilt2(holes_acc(:,:,j)); 
 
         % visualisation
         if visualise_major
@@ -269,22 +272,22 @@ end
 i = 0;
 if holes_flag
     i =i+1;
-    acc_masks(:,:,i) = sum(holes_acc,3);
+    acc_masks(:,:,i) = prod(holes_acc,3);
     acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));
 end
 if islands_flag
     i =i+1;
-    acc_masks(:,:,i) = sum(islands_acc,3);
-    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
-end
-if protrusions_flag
-    i =i+1;
-    acc_masks(:,:,i) = sum(protrusions_acc,3);
+    acc_masks(:,:,i) = prod(islands_acc,3);
     acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 if indentations_flag
     i =i+1;
     acc_masks(:,:,i) = sum(indentations_acc,3);
+    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
+end
+if protrusions_flag
+    i =i+1;
+    acc_masks(:,:,i) = sum(protrusions_acc,3);
     acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 
