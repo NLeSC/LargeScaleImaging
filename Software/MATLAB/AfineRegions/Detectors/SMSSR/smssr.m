@@ -300,11 +300,10 @@ end
 % get the equivalent ellipses
 %..........................................................................
 num_regions = 0;
-sub_features = [];
 features = [];
 
 if verbose
-    disp('Creating the saliency maps...');
+    disp('Creating the saliency masks...');
 end
 
 tic;
@@ -382,7 +381,7 @@ end
 
             figure(f3);
             subplot(223);imshow(holes);
-            title(' holes');axis image;axis on;
+            title('holes');axis image;axis on;
             drawnow;
             subplot(224); imshow(rgb); axis on; title('Detected holes');
         end
