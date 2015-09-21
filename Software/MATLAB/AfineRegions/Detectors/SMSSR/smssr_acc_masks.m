@@ -242,19 +242,19 @@ for st = [1 steps]
              subplot(224);imagesc(protrusions_acc(:,:,j));axis image;axis on; grid on;
              set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
             end
-    %         if visualise_minor
-    %             figure(f2);imshow(binary_image);
-    %             if size(level) > 1
-    %                 title(['Segmented image at thresholds: ' ...
-    %                     num2str(level(2))  ' and ' num2str(level(1)) ]);
-    %             else
-    %                 title(['Segmented image at threshold: ' num2str(level)]);
-    %             end
-    %             axis image; axis on;
-    %         end
+            if visualise_major
+                figure(f3);imshow(binary_image);
+                if size(level) > 1
+                    title(['Segmented image at thresholds: ' ...
+                        num2str(level(2))  ' and ' num2str(level(1)) ]);
+                else
+                    title(['Segmented image at threshold: ' num2str(level)]);
+                end
+                axis image; axis on; grid on;
+            end
        end
     end
-    %pause;
+    pause;
     % close the waitbar
     close(wb_handle);
 end
@@ -272,12 +272,12 @@ end
 i = 0;
 if holes_flag
     i =i+1;
-    acc_masks(:,:,i) = prod(holes_acc,3);
+    acc_masks(:,:,i) = sum(holes_acc,3);
     acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));
 end
 if islands_flag
     i =i+1;
-    acc_masks(:,:,i) = prod(islands_acc,3);
+    acc_masks(:,:,i) = sum(islands_acc,3);
     acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 if indentations_flag

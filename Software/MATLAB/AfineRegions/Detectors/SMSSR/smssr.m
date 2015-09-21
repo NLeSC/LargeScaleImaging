@@ -209,23 +209,23 @@ else
 end
 if holes_flag
     figs(3) = f3;
-else
-    figs(3) = -1;
+% else
+%    figs(3) = NaN;
 end
 if indentations_flag
     figs(4) = f4;
-else
-    figs(4) = -1;
+% else
+%     figs(4) = NaN;
 end
 if islands_flag
     figs(5) = f5;
-else
-    figs(5) = -1;
+% else
+%     figs(5) = NaN;
 end
 if protrusions_flag
     figs(6) =  f6;
-else
-    figs(6) = -1;
+% else
+%     figs(6) = NaN;
 end
     
 %**************************************************************************

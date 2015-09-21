@@ -77,6 +77,10 @@ end
 num_saliency_types = length(find(saliency_type));
 saliency_masks = zeros(nrows,ncols,num_saliency_types);
 
+if visualise
+    f = figure;
+end
+
 %**************************************************************************
 % computations
 %--------------------------------------------------------------------------
@@ -87,13 +91,13 @@ switch thresh_type
     case 's'
         binary_image = image >= level;
         if visualise
-             figure;imshow(binary_image);title(['Segmented image at gray level: ' ...
+             figure(f);imshow(binary_image);axis on; grid on; title(['Segmented image at gray level: ' ...
                  num2str(level)]);
         end
     case 'h'
         binary_image = hysteresis_thresholding(image, [], levels, [0 visualise 0]);
         if visualise
-             figure;imshow(binary_image);
+             figure(f);imshow(binary_image);
              title(['Segmented image with hysteresis between gray levels: '...
                  num2str(level(2)) ' and ' num2str(level(1))]);
         end

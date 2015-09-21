@@ -213,8 +213,8 @@ disp('**************************** Testing SMSSR detector *****************');
 len = length(image_filename);
 
 %% loop over all test images
-for i = 1:len
-%for i = 1
+%for i = 1:len
+for i = 1
     %% load the image & convertto gray-scale if  color
     image_data = imread(image_filename{i});
     if ndims(image_data) > 2
@@ -262,7 +262,7 @@ for i = 1:len
         %num_levels = 255;
         %steps = [5 10 20 25 35 50];
         num_levels = 100;
-        steps = [5 10 20 25];
+        steps = [5];
         thresh_type = 's';
         %saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
         saliency_thresh = [0 1];

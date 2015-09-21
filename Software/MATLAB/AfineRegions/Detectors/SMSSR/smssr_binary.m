@@ -96,6 +96,10 @@ if protrusions_flag
     protrusions = zeros(nrows,ncols);
 end
 
+if visualise
+    f = figure;
+end
+
 CCL = zeros(nrows,ncols);
 CCLH = zeros(nrows,ncols);
 CCLI = zeros(nrows,ncols);
@@ -114,7 +118,7 @@ filled_ROI_inv = imfill(imcomplement(ROI),'holes');
 
 % visualisation
 if visualise
-    figure;subplot(221);imshow(ROI); title('ROI'); grid on;
+    figure(f);subplot(221);imshow(ROI); title('ROI'); grid on;
     subplot(223);imshow(filled_ROI);title('filled ROI'); grid on;
     subplot(224);imshow(filled_ROI_inv);title('filled ROI (inverted)'); grid on;
 end
