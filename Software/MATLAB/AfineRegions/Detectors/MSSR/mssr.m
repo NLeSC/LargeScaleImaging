@@ -230,14 +230,16 @@ end
 if otsu
     min_level =  mean_level1; max_level = mean_level2;
 else
-    min_level =  0; max_level = 255;
+    min_level =  1; max_level = 255;
 end
 
-step = fix((max_level - min_level)/num_levels);
+disp('min_level: ');disp(min_level);
+disp('max_level: ');disp(max_level);
+step = (max_level - min_level)/num_levels;
 if step == 0
     step = 1;
 end
-    
+%disp('step: ');disp(step);
 if verbose
     disp('Elapsed time for pre-processing: ');toc
 end
@@ -261,13 +263,16 @@ tic;
 %..........................................................................
 % compute binary saliency for every sampled gray-level
 %..........................................................................
-for level = min_level : step:  max_level
+%disp('number of levels: '); disp(length(min_level:step:max_level-step));
+for level = min_level : step:  max_level - step
+    
+    %disp('Level: '); disp(fix(level));
 
     wb_counter = wb_counter + 1;
     waitbar(wb_counter/length(min_level:step:max_level));
     drawnow
     %pause
-    [saliency_masks_level] = mssr_gray_level(ROI_only, level, ...
+    [saliency_masks_level] = mssr_gray_level(ROI_only, fix(level), ...
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
     % cumulative saliency masks
@@ -360,10 +365,10 @@ end
 
 % the indentations and protrusions
 if find(indentations_acc)
-    indentations_thresh = thresh_area(indentations_acc, thresh, verbose);
+    indentations_thresh = thresh_cumsum(indentations_acc, thresh, verbose);
 end
 if find(protrusions_acc)
-    protrusions_thresh = thresh_area(protrusions_acc, thresh, verbose);
+    protrusions_thresh = thresh_cumsum(protrusions_acc, thresh, verbose);
 end
   
 %visualisation
@@ -382,8 +387,9 @@ end
 % all saliency masks in one array
 saliency_masks(:,:,1) = holes_thresh;
 saliency_masks(:,:,2) = islands_thresh;
-saliency_masks(:,:,3) = protrusions_thresh;
-saliency_masks(:,:,4) = indentations_thresh;
+saliency_masks(:,:,3) = indentations_thresh;
+saliency_masks(:,:,4) = protrusions_thresh;
+
 
 %..........................................................................
 % get the equivalent ellipses

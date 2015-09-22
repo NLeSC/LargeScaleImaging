@@ -137,7 +137,7 @@ if islands_flag
     % remove small isolated bits
     islands = bwareaopen(islands,lambda,4);
     %imshow(islands);title('After1');pause;
-    islands = imclose(islands,strel('disk',1));
+    %islands = imclose(islands,strel('disk',1));
     %imshow(islands);title('After2');
 end
 
@@ -147,7 +147,7 @@ if holes_flag
     % remove small isolated bits
     holes = bwareaopen(holes,lambda,4);
     %imshow(holes);title('After1');pause;
-    holes = imclose(holes, strel('disk',1));
+    %holes = imclose(holes, strel('disk',1));
     %imshow(holes);title('After2');
 end
 

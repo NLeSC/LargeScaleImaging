@@ -109,22 +109,22 @@ tic;
 
 % the holes and islands
 if logical(holes_flag) & logical(find(holes_acc))
-   % holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
-    holes_thresh = uint8(holes_acc > 0);
+    holes_thresh = thresh_cumsum(holes_acc, saliency_thresh, verbose);
+   % holes_thresh = uint8(holes_acc > 0);
 end
 if logical(islands_flag) & logical(find(islands_acc))
-   % islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
-    islands_thresh = uint8(islands_acc > 0);
+    islands_thresh = thresh_cumsum(islands_acc, saliency_thresh, verbose);
+   % islands_thresh = uint8(islands_acc > 0);
 end
 
 % the indentations and protrusions
 if logical(indentations_flag) & logical(find(indentations_acc))
-   %indentations_thresh = thresh_area(indentations_acc, saliency_thresh, verbose);
-    indentations_thresh = uint8(indentaitons_acc > 0);
+   indentations_thresh = thresh_cumsum(indentations_acc, saliency_thresh, verbose);
+   % indentations_thresh = uint8(indentaitons_acc > 0);
 end
 if logical(protrusions_flag) & logical(find(protrusions_acc))
-   %protrusions_thresh = thresh_area(protrusions_acc, saliency_thresh, verbose);
-   protrusions_thresh = uint8(protrusions_acc > 0);
+   protrusions_thresh = thresh_cumsum(protrusions_acc, saliency_thresh, verbose);
+   %protrusions_thresh = uint8(protrusions_acc > 0);
 end
 
 if verbose

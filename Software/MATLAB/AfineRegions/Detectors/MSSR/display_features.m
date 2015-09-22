@@ -146,7 +146,7 @@ end
 % features 
 [num_regions, features, saliency_masks] =...
     mssr_open(features_fname, regions_fname, type); 
-
+sprintf('There are %d number of regions detected.', num_regions)
 % image
 I_or = imread(image_fname);
 nrows = size(I_or,1);

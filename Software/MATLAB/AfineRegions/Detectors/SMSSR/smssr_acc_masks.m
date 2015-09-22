@@ -92,21 +92,22 @@ if visualise_minor
     visualise_major = 1;  
 end
 
-f1 = figs(1);
-f2 = figs(2);
-if holes_flag
-    f3 = figs(3);
+if visualise_major
+    f1 = figs(1);
+    f2 = figs(2);
+    if holes_flag
+        f3 = figs(3);
+    end
+    if indentations_flag
+        f4 = figs(4);
+    end
+    if islands_flag
+        f5 = figs(5);
+    end
+    if protrusions_flag
+        f6 = figs(6);
+    end
 end
-if indentations_flag
-    f4 = figs(4);
-end
-if islands_flag
-    f5 = figs(5);
-end
-if protrusions_flag
-    f6 = figs(6);
-end
-
 %**************************************************************************
 % parameters
 %--------------------------------------------------------------------------
@@ -156,9 +157,16 @@ t0 = clock;
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
 % find optimal thresholds
+min_level =  1; max_level = 255;
+step = (max_level - min_level)/num_levels;
+if step == 0
+    step = 1;
+end
+%disp('step: ');disp(step);
+
 switch thresh_type
-    case 's'
-        thresholds = fix(1:255/num_levels:255);
+    case 's'        
+        thresholds = fix(min_level:step:max_level-step);
     case 'm'
         thresholds = multithresh(image_data, num_levels);
         num_levels = length(thresholds);
@@ -169,7 +177,7 @@ switch thresh_type
         low_thresholds = 0:step:255-step;
         num_levels = length(high_thresholds);
 end
-
+%disp('thresholds'); disp(thresholds);
 %--------------------------------------------------------------------------
 % core processing
 %--------------------------------------------------------------------------
@@ -178,11 +186,12 @@ end
 %..........................................................................
 
 j =0;
-for st = [1 steps]
+for st = [steps]
     wb_handle = waitbar(0,'SMSSR detection computaitons: please wait...',...
                         'Position',wait_pos);
     wb_counter = 0;
     j = j+1;
+    %disp('number of levels: '); disp(length(1:st:num_levels));
     for it = 1:st:num_levels
          wb_counter = wb_counter + 1;
          waitbar(wb_counter/length(1:st:num_levels));
@@ -197,6 +206,8 @@ for st = [1 steps]
                 level(2) = low_thresholds(it);                
         end
         %pause
+        %disp('Level: '); disp(level);
+        
         [saliency_masks_level, binary_image] = smssr_gray_level(image_ROI, ...
                                                 thresh_type, level, ...
                                                 SE_size_factor, area_factor,...
@@ -254,7 +265,7 @@ for st = [1 steps]
             end
        end
     end
-    pause;
+    %pause;
     % close the waitbar
     close(wb_handle);
 end
@@ -273,22 +284,22 @@ i = 0;
 if holes_flag
     i =i+1;
     acc_masks(:,:,i) = sum(holes_acc,3);
-    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));
+    %acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));
 end
 if islands_flag
     i =i+1;
     acc_masks(:,:,i) = sum(islands_acc,3);
-    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
+    %acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 if indentations_flag
     i =i+1;
     acc_masks(:,:,i) = sum(indentations_acc,3);
-    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
+    %acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 if protrusions_flag
     i =i+1;
     acc_masks(:,:,i) = sum(protrusions_acc,3);
-    acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
+    %acc_masks(:,:,i) = medfilt2(acc_masks(:,:,i));    
 end
 
 if visualise_major
@@ -325,14 +336,6 @@ if visualise_major
         subplot(222);imshow(acc_masks(:,:,i));%imshow(holes_acc,mycmap);
         axis image;axis on;title('holes');freezeColors;
     end
-    % indentations
-    if indentations_flag
-        i = i+1;
-        figure(f4);
-        subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
-        subplot(222);imshow(acc_masks(:,:,i)); %imshow(indentations_acc,mycmap);
-        axis image;axis on;title('indentations');freezeColors;
-    end
     % islands
     if islands_flag
         i =i+1;
@@ -340,7 +343,15 @@ if visualise_major
         subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
         subplot(222);imshow(acc_masks(:,:,i));%imshow(islands_acc,mycmap);
         axis image;axis on;title('islands');freezeColors;
-    end
+    end   
+    % indentations
+    if indentations_flag
+        i = i+1;
+        figure(f4);
+        subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
+        subplot(222);imshow(acc_masks(:,:,i)); %imshow(indentations_acc,mycmap);
+        axis image;axis on;title('indentations');freezeColors;
+    end    
     % protrusions
     if protrusions_flag
         i = i+1;
