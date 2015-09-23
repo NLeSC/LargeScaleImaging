@@ -210,23 +210,15 @@ if visualise_major
     end
     if holes_flag
         figs(3) = f3;
-    % else
-    %    figs(3) = NaN;
     end
     if indentations_flag
         figs(4) = f4;
-    % else
-    %     figs(4) = NaN;
     end
     if islands_flag
         figs(5) = f5;
-    % else
-    %     figs(5) = NaN;
     end
     if protrusions_flag
         figs(6) =  f6;
-    % else
-    %     figs(6) = NaN;
     end
 else
     figs =[];
@@ -260,6 +252,10 @@ if ~isempty(ROI_mask)
     ROI_only = image_data.*uint8(ROI_mask);
 else
     ROI_only = image_data;
+end
+
+if verbose
+    disp('Elapsed time for pre-processing: ');toc
 end
 
 %..........................................................................
@@ -385,9 +381,9 @@ end
 
             figure(f3);
             subplot(223);imshow(holes);
-            title('holes');axis image;axis on;
+            title('Thresholded holes');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected holes');
+            subplot(224); imshow(rgb); axis on; title('Holes');
         end
         % indentations
         if indentations_flag && ~isempty(find(indentations,1))
@@ -396,9 +392,9 @@ end
 
             figure(f4);
             subplot(223);imshow(indentations);
-            title('indentations');axis image;axis on;
+            title('Thresholded indentations');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected indentations');
+            subplot(224); imshow(rgb); axis on; title('Indentations');
         end
         % islands
         if islands_flag && ~isempty(find(islands,1))
@@ -407,9 +403,9 @@ end
 
             figure(f5);
             subplot(223);imshow(islands);
-            title('islands');axis image;axis on;
+            title('Thresholded islands');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected islands');
+            subplot(224); imshow(rgb); axis on; title('Islands');
         end
         % protrusions
         if protrusions_flag && ~isempty(find(protrusions,1))
@@ -418,9 +414,9 @@ end
 
             figure(f6);
             subplot(223);imshow(protrusions);
-            title('protrusions');axis image;axis on;
+            title('Thresholded protrusions');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected protrusions');
+            subplot(224); imshow(rgb); axis on; title('Protrusions');
         end
     end
 

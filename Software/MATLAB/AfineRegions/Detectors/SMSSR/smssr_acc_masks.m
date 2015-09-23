@@ -162,7 +162,6 @@ step = (max_level - min_level)/num_levels;
 if step == 0
     step = 1;
 end
-%disp('step: ');disp(step);
 
 switch thresh_type
     case 's'        
@@ -177,7 +176,7 @@ switch thresh_type
         low_thresholds = 0:step:255-step;
         num_levels = length(high_thresholds);
 end
-%disp('thresholds'); disp(thresholds);
+
 %--------------------------------------------------------------------------
 % core processing
 %--------------------------------------------------------------------------
@@ -191,7 +190,6 @@ for st = [steps]
                         'Position',wait_pos);
     wb_counter = 0;
     j = j+1;
-    %disp('number of levels: '); disp(length(1:st:num_levels));
     for it = 1:st:num_levels
          wb_counter = wb_counter + 1;
          waitbar(wb_counter/length(1:st:num_levels));
@@ -205,8 +203,6 @@ for st = [steps]
                 level(1) = high_thresholds(it);
                 level(2) = low_thresholds(it);                
         end
-        %pause
-        %disp('Level: '); disp(level);
         
         [saliency_masks_level, binary_image] = smssr_gray_level(image_ROI, ...
                                                 thresh_type, level, ...
@@ -256,10 +252,10 @@ for st = [steps]
             if visualise_major
                 figure(f3);imshow(binary_image);
                 if size(level) > 1
-                    title(['Segmented image at thresholds: ' ...
+                    title(['Segmented image at gray levels: ' ...
                         num2str(level(2))  ' and ' num2str(level(1)) ]);
                 else
-                    title(['Segmented image at threshold: ' num2str(level)]);
+                    title(['Segmented image at gray level: ' num2str(level)]);
                 end
                 axis image; axis on; grid on;
             end
@@ -333,7 +329,7 @@ if visualise_major
         i = i + 1;
         figure(f3);
         subplot(221);imshow(image_ROI); freezeColors; title('Original image');axis image;axis on;
-        subplot(222);imshow(acc_masks(:,:,i));%imshow(holes_acc,mycmap);
+        subplot(222);imshow(acc_masks(:,:,i));
         axis image;axis on;title('holes');freezeColors;
     end
     % islands
@@ -341,7 +337,7 @@ if visualise_major
         i =i+1;
         figure(f5);
         subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
-        subplot(222);imshow(acc_masks(:,:,i));%imshow(islands_acc,mycmap);
+        subplot(222);imshow(acc_masks(:,:,i));
         axis image;axis on;title('islands');freezeColors;
     end   
     % indentations
@@ -349,7 +345,7 @@ if visualise_major
         i = i+1;
         figure(f4);
         subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
-        subplot(222);imshow(acc_masks(:,:,i)); %imshow(indentations_acc,mycmap);
+        subplot(222);imshow(acc_masks(:,:,i)); 
         axis image;axis on;title('indentations');freezeColors;
     end    
     % protrusions
@@ -357,7 +353,7 @@ if visualise_major
         i = i+1;
         figure(f6);
         subplot(221);imshow(image_ROI); freezeColors;title('Original image');axis image;axis on;
-        subplot(222);imshow(acc_masks(:,:,i));%imshow(protrusions_acc,mycmap);
+        subplot(222);imshow(acc_masks(:,:,i));
         axis image;axis on; title('protrusions'); freezeColors;
     end
 end

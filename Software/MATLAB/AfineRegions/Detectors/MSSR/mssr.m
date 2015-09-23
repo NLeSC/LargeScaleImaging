@@ -115,13 +115,13 @@ if ndims(region_params) > 1
 else
     area_factor = 0.03;
 end
-if ndims(region_params) > 2   
+
+if length(region_params) > 2   
     % thresholding the salient regions
     thresh = region_params(3);
 else
     thresh =  0.7;
 end
-
 % saliency flags
 holes_flag = saliency_type(1);
 islands_flag = saliency_type(2);
@@ -168,11 +168,21 @@ if visualise_minor || visualise_major
          pos1(4)];
      
     f1 = figure('Position',pos1);
-    f2 = figure('Position',pos3);
-    f3 = figure('Position',pos2);
-    f4 = figure('Position',pos3);
-    f5 = figure('Position',pos2);
-    f6 = figure('Position',pos3);
+    if visualise_minor
+        f2 = figure('Position',pos3);
+    end;
+    if holes_flag
+       f3 = figure('Position',pos2);
+    end
+    if indentations_flag
+        f4 = figure('Position',pos3);
+    end
+    if islands_flag
+        f5 = figure('Position',pos2);
+    end
+    if protrusions_flag
+        f6 = figure('Position',pos3);
+    end
     load('MyColormaps','mycmap'); 
 end
 
@@ -233,13 +243,11 @@ else
     min_level =  1; max_level = 255;
 end
 
-disp('min_level: ');disp(min_level);
-disp('max_level: ');disp(max_level);
 step = (max_level - min_level)/num_levels;
 if step == 0
     step = 1;
 end
-%disp('step: ');disp(step);
+
 if verbose
     disp('Elapsed time for pre-processing: ');toc
 end
@@ -263,11 +271,8 @@ tic;
 %..........................................................................
 % compute binary saliency for every sampled gray-level
 %..........................................................................
-%disp('number of levels: '); disp(length(min_level:step:max_level-step));
 for level = min_level : step:  max_level - step
     
-    %disp('Level: '); disp(fix(level));
-
     wb_counter = wb_counter + 1;
     waitbar(wb_counter/length(min_level:step:max_level));
     drawnow
@@ -289,23 +294,23 @@ for level = min_level : step:  max_level - step
     % visualisation
     if visualise_major
         if holes_flag
-         figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on;
+         figure(f1);subplot(221);imagesc(holes_acc); axis image; axis on;grid on;
          set(gcf, 'Colormap',mycmap);title('holes');colorbar('South');         
         end
         if islands_flag
-         subplot(222);imagesc(islands_acc);axis image;axis on;
+         subplot(222);imagesc(islands_acc);axis image;axis on;grid on;
          set(gcf, 'Colormap',mycmap);title('islands');colorbar('South');
         end
         if indentations_flag
-         subplot(223);imagesc(indentations_acc);axis image;axis on;
+         subplot(223);imagesc(indentations_acc);axis image;axis on;grid on;
          set(gcf, 'Colormap',mycmap);title('indentations');colorbar('South');
         end
         if protrusions_flag
-         subplot(224);imagesc(protrusions_acc);axis image;axis on;
+         subplot(224);imagesc(protrusions_acc);axis image;axis on;grid on;
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
         figure(f2);imshow(ROI_only >= level); 
-        title(['Segmented image at gray level: ' num2str(level)]);
+        title(['Segmented image at gray level: ' num2str(fix(level))]);
         axis image; axis on;
     end
 end
@@ -318,28 +323,28 @@ end
         if holes_flag
          figure(f3);
          subplot(221);imshow(image_data); freezeColors; title('Original image');axis image;axis on;
-         subplot(222);imshow(holes_acc,mycmap);
+         subplot(222);imshow(holes_acc); %,mycmap);
          axis image;axis on;title('holes');freezeColors; 
         end
         % indentations
         if indentations_flag
          figure(f4);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(indentations_acc,mycmap);
+         subplot(222);imshow(indentations_acc); %,mycmap);
          axis image;axis on;title('indentations');freezeColors; 
         end
         % islands
         if islands_flag
          figure(f5);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(islands_acc,mycmap);
+         subplot(222);imshow(islands_acc); %,mycmap);
          axis image;axis on;title('islands');freezeColors; 
         end
         % protrusions
         if protrusions_flag
          figure(f6);
          subplot(221);imshow(image_data); freezeColors;title('Original image');axis image;axis on;
-         subplot(222);imshow(protrusions_acc,mycmap);
+         subplot(222);imshow(protrusions_acc); %,mycmap);
          axis image;axis on; title('protrusions'); freezeColors; 
         end
     end
@@ -447,9 +452,9 @@ end
     
             figure(f3);
             subplot(223);imshow(holes_thresh);
-            title('thresholded holes');axis image;axis on;
+            title('Thresholded holes');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected holes');
+            subplot(224); imshow(rgb); axis on; title('Holes');
         end
         % indentations
         if indentations_flag && ~isempty(find(indentations_thresh,1))
@@ -458,9 +463,9 @@ end
     
             figure(f4);
             subplot(223);imshow(indentations_thresh);
-            title('thresholded indentations');axis image;axis on;
+            title('Thresholded indentations');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected indentations');           
+            subplot(224); imshow(rgb); axis on; title('Indentations');           
         end
         % islands
         if islands_flag && ~isempty(find(islands_thresh,1))
@@ -469,9 +474,9 @@ end
 
             figure(f5);
             subplot(223);imshow(islands_thresh);
-            title('thresholded islands');axis image;axis on;
+            title('Thresholded islands');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected islands'); 
+            subplot(224); imshow(rgb); axis on; title('Islands'); 
         end
         % protrusions
         if protrusions_flag && ~isempty(find(protrusions_thresh,1))
@@ -480,9 +485,9 @@ end
     
             figure(f6);
             subplot(223);imshow(protrusions_thresh);
-            title('thresholded protrusions');axis image;axis on;
+            title('Thresholded protrusions');axis image;axis on;
             drawnow;
-            subplot(224); imshow(rgb); axis on; title('Detected protrusions'); 
+            subplot(224); imshow(rgb); axis on; title('Protrusions'); 
         end
     end
     

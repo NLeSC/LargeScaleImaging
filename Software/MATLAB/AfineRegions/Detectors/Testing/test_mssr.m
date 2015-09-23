@@ -8,15 +8,15 @@
 %% paramaters
 interactive = false;
 verbose = false;
-visualize = true;
-visualize_major = true;
+visualize = false;
+visualize_major = false;
 visualize_minor = false;
 lisa = false;
  
 otsu = false;
 
 save_flag = 1;
-vis_flag = 1;
+vis_flag = 0;
 
 %% image filename
 
@@ -215,8 +215,8 @@ disp('**************************** Testing MSSR detector *****************');
 len = length(image_filename);
 
 %% loop over all test images
-%for i = 1:len
- for i =1   
+for i = 1:len
+% for i =1   
     %% load the image & convertto gray-scale if  color
     image_data = imread(image_filename{i});
     if ndims(image_data) > 2
@@ -256,15 +256,15 @@ len = length(image_filename);
         saliency_types = [1 1 0 0];
         SE_size_factor = 0.02;
         Area_factor = 0.03;
-        num_levels = 20;
-        thersh = 0.75;
+        num_levels = 100;
+        thresh = 0.7;
     end
     
     
     disp('Test case: ');disp(test_image);
     
     disp('MSSR');
-    region_params = [SE_size_factor Area_factor];
+    region_params = [SE_size_factor Area_factor thresh];
     execution_params = [verbose visualize_major visualize_minor];
     [num_regions, features, saliency_masks] = mssr(image_data, ROI, ...
         num_levels, otsu, saliency_types, region_params, execution_params);
@@ -279,17 +279,10 @@ len = length(image_filename);
     if vis_flag
 	disp(' Displaying... ');
 	
-       % f1 = figure; set(f1,'WindowStyle','docked');visualize_mssr(image_data);
-       % f2 = figure; set(f2,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
-       % f3 = figure; set(f3,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
-       % f4 = figure; set(f4,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
-       % f5 = figure; set(f5,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
-       % f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
        
        type = 1; % distinguish region's types
    
       % open the saved regions
-     % [num_regions, features, saliency_masks] = mssr_open(features_filename{i}, regions_filename{1}, type);
     
       list_regions = [];     % display all regions
    

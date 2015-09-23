@@ -9,13 +9,13 @@
 %% paramaters
 interactive = false;
 verbose = false;
-visualize = true;
-visualize_major = true;
+visualize = false;
+visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
 save_flag = 1;
-vis_flag = 1;
+vis_flag = 0;
 
 %% image filename
 if ispc 
@@ -213,8 +213,8 @@ disp('**************************** Testing SMSSR detector *****************');
 len = length(image_filename);
 
 %% loop over all test images
-%for i = 1:len
-for i = 1
+for i = 1:len
+%for i = 1
     %% load the image & convertto gray-scale if  color
     image_data = imread(image_filename{i});
     if ndims(image_data) > 2
@@ -266,7 +266,7 @@ for i = 1
         thresh_type = 's';
         %saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
         %saliency_thresh = [0 1];
-        saliency_thresh = 0.75;
+        saliency_thresh = 0.7;
     end
     
     tic;
@@ -287,16 +287,8 @@ for i = 1
     smssr_save(features_filename{i}, regions_filename{i}, num_smartregions, features, saliency_masks);
     
     
-    %% visualize
- %   if visualize
- %       f1 = figure; set(f1,'WindowStyle','docked');visualize_mssr(image_data);
- %       f2 = figure; set(f2,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, saliency_types, region_params);
- %       f3 = figure; set(f3,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [1 0 0 0], region_params);
- %       f4 = figure; set(f4,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 1 0 0], region_params);
- %       f5 = figure; set(f5,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 1 0], region_params);
- %       f6 = figure; set(f6,'WindowStyle','docked');visualize_mssr(image_data, saliency_masks, [0 0 0 1], region_params);
-      
- %   end
+ %% visualize
+ 
 if vis_flag
      disp('Displaying... ');
 

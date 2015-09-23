@@ -88,7 +88,6 @@ end
 % read off the features
 if type
     % features including the 
-       features_type_fname
        fid = fopen(features_type_fname,'r');
        t = fscanf(fid,'%d \n',1);
        num_regions = fscanf(fid,'%d \n',1);

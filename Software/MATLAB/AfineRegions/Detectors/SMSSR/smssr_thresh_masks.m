@@ -145,13 +145,13 @@ if islands_flag
     i =i+1;
     thresh_masks(:,:,i) = islands_thresh;
 end
-if protrusions_flag
-    i =i+1;
-    thresh_masks(:,:,i) = protrusions_thresh;
-end
 if indentations_flag
     i =i+1;
     thresh_masks(:,:,i) = indentations_thresh;
+end
+if protrusions_flag
+    i =i+1;
+    thresh_masks(:,:,i) = protrusions_thresh;
 end
 
 toc
