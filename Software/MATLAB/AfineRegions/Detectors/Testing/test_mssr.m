@@ -12,6 +12,8 @@ visualize = false;
 visualize_major = false;
 visualize_minor = false;
 lisa = false;
+
+batch_structural = true;
  
 otsu = false;
 
@@ -32,276 +34,115 @@ data_path = fullfile(project_path, 'Data', 'AffineRegions');
 results_path = fullfile(project_path, 'Results', 'AffineRegions');
 
 if interactive 
-    image_filename = input('Enter the test image filename: ','s');
+    test_images = input('Enter test case: [bark|bikes|boat|graffiti|leuven|trees|ubc|wall]: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
-    test_image = input('Enter test case: [bark|bikes|boat|graffiti|leuven|trees|ubc|wall]: ','s');
-    switch lower(test_image)
-        case 'bark'
-            image_filename{1} = fullfile(data_path,test_image,'bark1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'bark2.png');
-            image_filename{3} = fullfile(data_path,test_image,'bark3.png');
-            image_filename{4} = fullfile(data_path,test_image,'bark4.png');
-            image_filename{5} = fullfile(data_path,test_image,'bark5.png');
-            image_filename{6} = fullfile(data_path,test_image,'bark6.png');
-            if save_flag
-                features_filename{1} = fullfile(results_path,test_image,'bark1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'bark2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'bark3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'bark4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'bark5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'bark6.mssr');
-                regions_filename{1} = fullfile(results_path,test_image,'bark1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'bark2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'bark3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'bark4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'bark5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'bark6_regions.mat');   
-            end
-        case 'boat'
-            image_filename{1} = fullfile(data_path,test_image,'boat1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'boat2.png');
-            image_filename{3} = fullfile(data_path,test_image,'boat3.png');
-            image_filename{4} = fullfile(data_path,test_image,'boat4.png');
-            image_filename{5} = fullfile(data_path,test_image,'boat5.png');
-            image_filename{6} = fullfile(data_path,test_image,'boat6.png');
-            if save_flag
-                features_filename{1} = fullfile(results_path,test_image,'boat1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'boat2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'boat3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'boat4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'boat5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'boat6.mssr');
-                regions_filename{1} = fullfile(results_path,test_image,'boat1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'boat2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'boat3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'boat4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'boat5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'boat6_regions.mat');   
-            end
-        case 'graffiti'
-            image_filename{1} = fullfile(data_path,test_image,'graffiti1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'graffiti2.png');
-            image_filename{3} = fullfile(data_path,test_image,'graffiti3.png');
-            image_filename{4} = fullfile(data_path,test_image,'graffiti4.png');
-            image_filename{5} = fullfile(data_path,test_image,'graffiti5.png');
-            image_filename{6} = fullfile(data_path,test_image,'graffiti6.png');  
-            if save_flag
-                features_filename{1} = fullfile(results_path,test_image,'graffiti1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'graffiti2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'graffiti3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'graffiti4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'graffiti5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'graffiti6.mssr');
-                regions_filename{1} = fullfile(results_path,test_image,'graffiti1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'graffiti2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'graffiti3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'graffiti4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'graffiti5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'graffiti6_regions.mat');     
-            end
-        case 'leuven'
-            image_filename{1} = fullfile(data_path,test_image,'leuven1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'leuven2.png');
-            image_filename{3} = fullfile(data_path,test_image,'leuven3.png');    
-            image_filename{4} = fullfile(data_path,test_image,'leuven4.png');
-            image_filename{5} = fullfile(data_path,test_image,'leuven5.png');    
-            image_filename{6} = fullfile(data_path,test_image,'leuven6.png');
-            if save_flag
-                features_filename{1} = fullfile(results_path,test_image,'leuven1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'leuven2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'leuven3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'leuven4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'leuven5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'leuven6.mssr');
-                regions_filename{1} = fullfile(results_path,test_image,'leuven1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'leuven2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'leuven3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'leuven4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'leuven5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'leuven6_regions.mat');    
-            end
-        case 'bikes'
-            image_filename{1} = fullfile(data_path,test_image,'bikes1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'bikes2.png');
-            image_filename{3} = fullfile(data_path,test_image,'bikes3.png');    
-            image_filename{4} = fullfile(data_path,test_image,'bikes4.png');
-            image_filename{5} = fullfile(data_path,test_image,'bikes5.png');    
-            image_filename{6} = fullfile(data_path,test_image,'bikes6.png');
-            if save_flag
-               features_filename{1} = fullfile(results_path,test_image,'bikes1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'bikes2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'bikes3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'bikes4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'bikes5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'bikes6.mssr'); 
-                regions_filename{1} = fullfile(results_path,test_image,'bikes1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'bikes2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'bikes3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'bikes4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'bikes5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'bikes6_regions.mat');      
-            end
-            case 'trees'
-            image_filename{1} = fullfile(data_path,test_image,'trees1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'trees2.png');
-            image_filename{3} = fullfile(data_path,test_image,'trees3.png');    
-            image_filename{4} = fullfile(data_path,test_image,'trees4.png');
-            image_filename{5} = fullfile(data_path,test_image,'trees5.png');    
-            image_filename{6} = fullfile(data_path,test_image,'trees6.png');
-            if save_flag
-               features_filename{1} = fullfile(results_path,test_image,'trees1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'trees2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'trees3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'trees4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'trees5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'trees6.mssr'); 
-                regions_filename{1} = fullfile(results_path,test_image,'trees1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'trees2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'trees3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'trees4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'trees5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'trees6_regions.mat');      
-            end
-            case 'ubc'
-            image_filename{1} = fullfile(data_path,test_image,'ubc1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'ubc2.png');
-            image_filename{3} = fullfile(data_path,test_image,'ubc3.png');    
-            image_filename{4} = fullfile(data_path,test_image,'ubc4.png');
-            image_filename{5} = fullfile(data_path,test_image,'ubc5.png');    
-            image_filename{6} = fullfile(data_path,test_image,'ubc6.png');
-            if save_flag
-               features_filename{1} = fullfile(results_path,test_image,'ubc1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'ubc2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'ubc3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'ubc4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'ubc5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'ubc6.mssr'); 
-                regions_filename{1} = fullfile(results_path,test_image,'ubc1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'ubc2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'ubc3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'ubc4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'ubc5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'ubc6_regions.mat');      
-            end
-            case 'wall'
-            image_filename{1} = fullfile(data_path,test_image,'wall1.png');    
-            image_filename{2} = fullfile(data_path,test_image,'wall2.png');
-            image_filename{3} = fullfile(data_path,test_image,'wall3.png');    
-            image_filename{4} = fullfile(data_path,test_image,'wall4.png');
-            image_filename{5} = fullfile(data_path,test_image,'wall5.png');    
-            image_filename{6} = fullfile(data_path,test_image,'wall6.png');
-            if save_flag
-               features_filename{1} = fullfile(results_path,test_image,'wall1.mssr');
-                features_filename{2} = fullfile(results_path,test_image,'wall2.mssr');
-                features_filename{3} = fullfile(results_path,test_image,'wall3.mssr');
-                features_filename{4} = fullfile(results_path,test_image,'wall4.mssr');
-                features_filename{5} = fullfile(results_path,test_image,'wall5.mssr');
-                features_filename{6} = fullfile(results_path,test_image,'wall6.mssr'); 
-                regions_filename{1} = fullfile(results_path,test_image,'wall1_regions.mat');
-                regions_filename{2} = fullfile(results_path,test_image,'wall2_regions.mat');
-                regions_filename{3} = fullfile(results_path,test_image,'wall3_regions.mat');
-                regions_filename{4} = fullfile(results_path,test_image,'wall4_regions.mat');
-                regions_filename{5} = fullfile(results_path,test_image,'wall5_regions.mat');
-                regions_filename{6} = fullfile(results_path,test_image,'wall6_regions.mat');      
-            end
+    if batch_structural 
+        test_images = {'boat', 'bikes', 'graffiti', 'leuven' ,'ubc'};
+    else
+        test_images = {'graffiti'};    
     end
     mask_filename =[];
 
 end
 
-disp('**************************** Testing MSSR detector *****************');
-%% find out the number of test files
-len = length(image_filename);
+%% run for all test cases
+for test_image = test_images
+    [image_filenames, features_filenames, regions_filenames] = ...
+               get_test_filenames(test_image, 'mssr', data_path, results_path);
+    disp('**************************** Testing MSSR detector *****************');
+    %% find out the number of test files
+    len = length(image_filenames);
 
-%% loop over all test images
-for i = 1:len
-% for i =1   
-    %% load the image & convertto gray-scale if  color
-    image_data = imread(image_filename{i});
-    if ndims(image_data) > 2
-        image_data = rgb2gray(image_data);
-    end
-    
-    %% load the mask, if any
-    ROI = [];
-    if ~isempty(mask_filename)
-        s = load(ROI_mask_fname);
-        s_cell = struct2cell(s);
-        for k = 1:size(s_cell)
-            field = s_cell{k};
-            if islogical(field)
-                ROI = field;
+    %% loop over all test images
+    for i = 1:len
+    % for i =1   
+        %% load the image & convertto gray-scale if  color
+        image_data = imread(char(image_filenames{i}));
+        if ndims(image_data) > 2
+            image_data = rgb2gray(image_data);
+        end
+
+        %% load the mask, if any
+        ROI = [];
+        if ~isempty(mask_filename)
+            s = load(ROI_mask_fname);
+            s_cell = struct2cell(s);
+            for k = 1:size(s_cell)
+                field = s_cell{k};
+                if islogical(field)
+                    ROI = field;
+                end
+            end
+            if isempty(ROI)
+               error('ROI_mask_fname does not contain binary mask!');
             end
         end
-        if isempty(ROI)
-           error('ROI_mask_fname does not contain binary mask!');
-        end
-    end
 
-    %% run the MSSR detector
-    
-    tic;
-    
-    if interactive
-        saliency_types(1) = input('Detect "holes"? [0/1]: ');
-        saliency_types(2) = input('Detect "islands"? [0/1]: ');
-        saliency_types(3) = input('Detect "indentations"? [0/1]: ');
-        saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
-        SE_size_factor = input('Enter the Structuring Element size factor: ');
-        Area_factor = input('Enter the Connected Component size factor: ');
-        num_levels = input('Enter the number of gray-levels: ');
-        thresh = input('Enter the region threshold: ');
-    else
-        saliency_types = [1 1 0 0];
-        SE_size_factor = 0.02;
-        Area_factor = 0.03;
-        num_levels = 100;
-        thresh = 0.7;
+        %% run the MSSR detector
+
+        tic;
+
+        if interactive
+            saliency_types(1) = input('Detect "holes"? [0/1]: ');
+            saliency_types(2) = input('Detect "islands"? [0/1]: ');
+            saliency_types(3) = input('Detect "indentations"? [0/1]: ');
+            saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
+            SE_size_factor = input('Enter the Structuring Element size factor: ');
+            Area_factor = input('Enter the Connected Component size factor: ');
+            num_levels = input('Enter the number of gray-levels: ');
+            thresh = input('Enter the region threshold: ');
+        else
+            saliency_types = [1 1 0 0];
+            SE_size_factor = 0.02;
+            Area_factor = 0.03;
+            num_levels = 100;
+            thresh = 0.7;
+        end
+
+
+        disp('Test case: ');disp(test_image);
+
+        disp('MSSR');
+        region_params = [SE_size_factor Area_factor thresh];
+        execution_params = [verbose visualize_major visualize_minor];
+        [num_regions, features, saliency_masks] = mssr(image_data, ROI, ...
+            num_levels, otsu, saliency_types, region_params, execution_params);
+        toc
+
+        %% save the features
+        disp('Saving ...');
+
+        mssr_save(char(features_filenames{i}), char(regions_filenames{i}), num_regions, features, saliency_masks);
+
+        %% visualize
+        if vis_flag
+        disp(' Displaying... ');
+
+
+           type = 1; % distinguish region's types
+
+          % open the saved regions
+
+          list_regions = [];     % display all regions
+
+          scaling = 1;  % no scaling
+          line_width = 2; % thickness of the line
+          labels = 0; % no region's labels
+
+          col_ellipse = [];
+          col_label = [];
+
+          original = 0; % no original region's outline
+
+          display_features(image_filename{i}, features_filename{i}, mask_filename, ...
+                regions_filename{i},...  
+                type, list_regions, scaling, labels, col_ellipse, ...
+                line_width, col_label, original);
+          title('MSSR');
+        end
+
     end
-    
-    
-    disp('Test case: ');disp(test_image);
-    
-    disp('MSSR');
-    region_params = [SE_size_factor Area_factor thresh];
-    execution_params = [verbose visualize_major visualize_minor];
-    [num_regions, features, saliency_masks] = mssr(image_data, ROI, ...
-        num_levels, otsu, saliency_types, region_params, execution_params);
-    toc
-    
-    %% save the features
-    disp('Saving ...');
-    
-    mssr_save(features_filename{i}, regions_filename{i}, num_regions, features, saliency_masks);
-    
-    %% visualize
-    if vis_flag
-	disp(' Displaying... ');
-	
-       
-       type = 1; % distinguish region's types
-   
-      % open the saved regions
-    
-      list_regions = [];     % display all regions
-   
-      scaling = 1;  % no scaling
-      line_width = 2; % thickness of the line
-      labels = 0; % no region's labels
-   
-      col_ellipse = [];
-      col_label = [];
-    
-      original = 0; % no original region's outline
-    
-      display_features(image_filename{i}, features_filename{i}, mask_filename, ...
-		    regions_filename{i},...  
-		    type, list_regions, scaling, labels, col_ellipse, ...
-		    line_width, col_label, original);
-      title('MSSR');
-    end
-       
 end
  disp('--------------- The End ---------------------------------');
 
