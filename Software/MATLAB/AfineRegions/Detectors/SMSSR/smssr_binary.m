@@ -79,6 +79,7 @@ lambdahi = fix(SE_size/2);
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
+
 % saleincy masks
 num_saliency_types = length(find(saliency_type));
 saliency_masks = zeros(nrows, ncols, num_saliency_types);
@@ -299,6 +300,5 @@ if protrusions_flag
     i = i+1;
     saliency_masks(:,:,i) = protrusions;
 end
-
 
 end

@@ -97,7 +97,7 @@ for test_image = test_images
             SE_size_factor = 0.02;
             Area_factor = 0.03;
             num_levels = 100;
-            thresh = 0.7;
+            thresh = 0.5;
         end
 
 

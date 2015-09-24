@@ -96,18 +96,16 @@ for test_image = test_images
             
         else
             preproc_types = [0 0];
-            saliency_types = [1 1 1 1];
+            saliency_types = [1 1 0 0];
             SE_size_factor = 0.02;
             SE_size_factor_preproc = 0.002;
             Area_factor = 0.03;
-            num_levels = 100;
-            %steps = [5 10 20 25 35 50];
-            %num_levels = 50;
-            steps = [1];
+            num_levels = 200;
+            steps = [2 5 10 15 20 25 30 40 45 50];
+            %steps = [1];
             thresh_type = 's';
             %saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
-            %saliency_thresh = [0 1];
-            saliency_thresh = 0.7;
+            saliency_thresh = 0.6;
         end
         
         tic;
