@@ -9,12 +9,12 @@
 %% paramaters
 interactive = false;
 verbose = false;
-visualize = false;
-visualize_major = false;
+visualize = true;
+visualize_major = true;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
+batch_structural = false;
 
 save_flag = 1;
 vis_flag = 0;
@@ -54,8 +54,8 @@ for test_image = test_images
     len = length(image_filenames);
     
     %% loop over all test images
-    for i = 1:len
-        %for i = 1
+    %for i = 1:len
+        for i = 1
         %% load the image & convertto gray-scale if  color
         image_data = imread(char(image_filenames{i}));
         if ndims(image_data) > 2
@@ -101,8 +101,8 @@ for test_image = test_images
             SE_size_factor_preproc = 0.002;
             Area_factor = 0.03;
             num_levels = 200;
-            steps = [2 5 10 15 20 25 30 40 45 50];
-            %steps = [1];
+            %steps = [2 5 10 15 20 25 30 40 45 50];
+            steps = [10];
             thresh_type = 's';
             %saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
             saliency_thresh = 0.6;

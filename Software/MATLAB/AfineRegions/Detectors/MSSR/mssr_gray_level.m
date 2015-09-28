@@ -84,7 +84,7 @@ end
 %--------------------------------------------------------------------------
 % binary saliency
 if find(ROI)
-    [saliency_masks] = mssr_binary(ROI, SE_size_factor, area_factor, ...
+    [saliency_masks] = binary_detector(ROI, SE_size_factor, area_factor, ...
                                    saliency_type, visualise);
 end
    

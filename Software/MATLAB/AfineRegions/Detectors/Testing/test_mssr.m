@@ -8,12 +8,12 @@
 %% paramaters
 interactive = false;
 verbose = false;
-visualize = false;
-visualize_major = false;
+visualize = true;
+visualize_major = true;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
+batch_structural = false;
  
 otsu = false;
 
@@ -55,8 +55,8 @@ for test_image = test_images
     len = length(image_filenames);
 
     %% loop over all test images
-    for i = 1:len
-    % for i =1   
+    %for i = 1:len
+     for i =1   
         %% load the image & convertto gray-scale if  color
         image_data = imread(char(image_filenames{i}));
         if ndims(image_data) > 2

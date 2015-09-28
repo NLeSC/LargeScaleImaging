@@ -111,7 +111,7 @@ end
 %--------------------------------------------------------------------------
 % binary saliency
 if find(binary_image)
-    [saliency_masks] = smssr_binary(binary_image, SE_size_factor, area_factor, ...
+    [saliency_masks] = binary_detector(binary_image, SE_size_factor, area_factor, ...
                                    saliency_type, visualise);
 end
    

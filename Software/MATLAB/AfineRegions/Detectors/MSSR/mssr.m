@@ -166,7 +166,7 @@ if visualise_minor || visualise_major
          bdwidth,...
          pos1(3),...
          pos1(4)];
-     
+    f= figure; 
     f1 = figure('Position',pos1);
     if visualise_minor
         f2 = figure('Position',pos3);
@@ -281,15 +281,23 @@ for level = min_level : step:  max_level - step
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
     % cumulative saliency masks
-    holes_level = saliency_masks_level(:,:,1);
-    islands_level = saliency_masks_level(:,:,2);
-    indentations_level = saliency_masks_level(:,:,3);
-    protrusions_level = saliency_masks_level(:,:,4);
-    
-    holes_acc = holes_acc + holes_level;
-    islands_acc = islands_acc + islands_level;
-    indentations_acc = indentations_acc + indentations_level;
-    protrusions_acc = protrusions_acc + protrusions_level;
+    if holes_flag
+        holes_level = saliency_masks_level(:,:,1);
+        holes_acc = holes_acc + holes_level;
+    end
+    if islands_flag
+        islands_level = saliency_masks_level(:,:,2);
+        islands_acc = islands_acc + islands_level;
+    end
+    if indentations_flag
+        indentations_level = saliency_masks_level(:,:,3);
+        indentations_acc = indentations_acc + indentations_level;
+    end
+    if protrusions_flag
+        protrusions_level = saliency_masks_level(:,:,4);
+         protrusions_acc = protrusions_acc + protrusions_level;
+    end
+     
 
     % visualisation
     if visualise_major
@@ -309,7 +317,7 @@ for level = min_level : step:  max_level - step
          subplot(224);imagesc(protrusions_acc);axis image;axis on;grid on;
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
-        figure(f2);imshow(ROI_only >= level); 
+        figure(f);imshow(ROI_only >= level); 
         title(['Segmented image at gray level: ' num2str(fix(level))]);
         axis image; axis on;
     end
@@ -390,10 +398,23 @@ end
 % variables -> output parameters
 %--------------------------------------------------------------------------
 % all saliency masks in one array
-saliency_masks(:,:,1) = holes_thresh;
-saliency_masks(:,:,2) = islands_thresh;
-saliency_masks(:,:,3) = indentations_thresh;
-saliency_masks(:,:,4) = protrusions_thresh;
+i = 0;
+if holes_flag
+    i =i+1;
+    saliency_masks(:,:,i) = holes_thresh;
+end
+if islands_flag
+    i =i+1;
+    saliency_masks(:,:,i) = islands_thresh;
+end
+if indentations_flag
+    i =i+1;
+    saliency_masks(:,:,i) = indentations_thresh;
+end
+if protrusions_flag
+    i =i+1;
+    saliency_masks(:,:,i) = protrusions_thresh;
+end
 
 
 %..........................................................................
@@ -401,7 +422,7 @@ saliency_masks(:,:,4) = protrusions_thresh;
 %..........................................................................
 num_regions = 0;
 
-for i=1:4
+for i=1:size(saliency_masks,3)
     if find(saliency_masks(:,:,i))
         [LE, num_reg] = bwlabel(saliency_masks(:,:,i),4);
           stats = regionprops(LE, 'Centroid','MajorAxisLength',...

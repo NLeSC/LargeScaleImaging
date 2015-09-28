@@ -1,12 +1,12 @@
-% smssr_binary.m- binary SMSSR detector
+% binary_detector.m- binary morphological detector
 %**************************************************************************
-% [saliency_masks] = smssr_binary(ROI, SE_size_factor, area_factor, ...
+% [saliency_masks] = binary_detector(ROI, SE_size_factor, area_factor, ...
 %                                saliency_type, visualise)
 %
 % author: Elena Ranguelova, NLeSc
-% date created: 14 Aug 2015
-% last modification date: 19 August 2015    
-% modification details: connected visualization to saliecy types (flags)
+% date created: 28 Sept 2015
+% last modification date: 
+% modification details: 
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
@@ -26,16 +26,16 @@
 %                  and i =4-"protrusions"  if saliency_types is [1 1 1 1]
 %**************************************************************************
 % EXAMPLES USAGE:
-% [saliency_masks] = smssr_binary(ROI, se_size_factor, area_factor, ...
+% [saliency_masks] = binary_detector(ROI, se_size_factor, area_factor, ...
 %                                saliency_type, visualise);
-%                    as called from mssr_gray_level.m- TO DO!
+%                    as called from a gray level detector
 %**************************************************************************
 % REFERENCES: Ranguelova, E., Pauwels, E. J. ``Morphology-based Stable
 % Salient Regions Detector'', International conference on Image and Vision 
 % Computing New Zealand (IVCNZ'06), Great Barrier Island, New Zealand,
 % November 2006, pp.97-102
 %**************************************************************************
-function [saliency_masks] = smssr_binary(ROI, SE_size_factor, area_factor,...
+function [saliency_masks] = binary_detector(ROI, SE_size_factor, area_factor,...
                                         saliency_type, visualise)
 
 %**************************************************************************
@@ -46,7 +46,7 @@ if nargin < 5
 elseif nargin < 4
     saliency_type = [1 1 1 1];
 elseif nargin < 3
-    error('mssr_binary.m requires at least 3 input aruments!');
+    error('binary_detector.m requires at least 3 input arguments!');
     saliency_masks = [];
     return
 end
