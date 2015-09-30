@@ -1,12 +1,17 @@
 % mssr- main function of the MSSR detector 
 %**************************************************************************
 % [num_regions, features, saliency_masks] = mssr(image_data,ROI_mask,...
-%                                           num_levels,otsu,saliency_type, ...
+%                                           num_levels,saliency_type,... 
+%                                           thresh_type, ...
 %                                           region_params, execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 May 2015
-% last modification date: 22 May 2015
+% last modification date: 30 September 2015
+% modification details: otsu thresholding parameter removed, 
+%                       thresholding type introduced. Compliant with the 
+%                       generic gray_level_detector now.
+% modification date: 22 May 2015
 % modification details: visualization of the binary images added
 %**************************************************************************
 % INPUTS:
@@ -15,10 +20,12 @@
 %                   if specified should contain the binary array ROI
 %                   if left out or empty [], the whole image is considered
 % [num_levels]      number of gray levels to consider
-% [otsu]            flag indcating weather toconsider Otsu's threshold,[false]
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
+% [thresh_type]     character 's' for simple thresholding, 
+%                   'm' for multithresholding or 'h' for
+%                   hysteresis, [optional], if left out default is 'h'
 % [region_params]   salient region parameters [SE_size_factor, ...
 %                                                      area_factor, thresh]
 %                   SE_size_factor- structuring element (SE) size factor  
@@ -71,7 +78,8 @@
 % for photo-ID of humpback whales", IJGVIP, Special issue on features, 2006
 %**************************************************************************
 function [num_regions, features, saliency_masks] = mssr(image_data,ROI_mask,...
-                                           num_levels, otsu, saliency_type, ...
+                                           num_levels, saliency_type, ...
+                                           thresh_type, ...
                                            region_params, execution_flags)
 
                                          
@@ -84,11 +92,11 @@ end
 if nargin < 6 || isempty(region_params)
     region_params = [0.02 0.03 0.7];
 end
-if nargin < 5 || isempty(saliency_type)
-    saliency_type = [1 1 1 1];
+if nargin < 5
+    thresh_type = 's';
 end
-if nargin < 4 || isempty(otsu)
-    otsu = false;
+if nargin < 4 || isempty(saliency_type)
+    saliency_type = [1 1 1 1];
 end
 if nargin < 3 || isempty(num_levels)
     num_levels = 25;
@@ -229,24 +237,31 @@ else
     ROI_only = image_data;
 end
 
-if otsu
-[otsu_thr,qual, mean_level1, mean_level2] = ...
-                              otsu_threshold(double(ROI_only(ROI_only>0)));
-end
+
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
 % gray-level step
-if otsu
-    min_level =  mean_level1; max_level = mean_level2;
-else
-    min_level =  1; max_level = 255;
-end
-
+min_level =  1; max_level = 255;
 step = (max_level - min_level)/num_levels;
 if step == 0
     step = 1;
 end
+
+switch thresh_type
+    case 's'        
+        thresholds = fix(min_level:step:max_level-step);
+    case 'm'
+        thresholds = multithresh(image_data, num_levels);
+        num_levels = length(thresholds);
+        thresh_type ='s';
+    case 'h'
+        step = fix(255/num_levels);
+        high_thresholds  = step:step:255;
+        low_thresholds = 0:step:255-step;
+        num_levels = length(high_thresholds);
+end
+
 
 if verbose
     disp('Elapsed time for pre-processing: ');toc
@@ -271,13 +286,22 @@ tic;
 %..........................................................................
 % compute binary saliency for every sampled gray-level
 %..........................................................................
-for level = min_level : step:  max_level - step
-    
-    wb_counter = wb_counter + 1;
-    waitbar(wb_counter/length(min_level:step:max_level));
-    drawnow
+for it = 1:num_levels
+         wb_counter = wb_counter + 1;
+         waitbar(wb_counter/length(1:num_levels));
+         drawnow
+
+        switch thresh_type
+            case 'm'
+            case 's'
+                level = thresholds(it);
+            case 'h'
+                level(1) = high_thresholds(it);
+                level(2) = low_thresholds(it);                
+        end
     %pause
-    [saliency_masks_level] = mssr_gray_level(ROI_only, fix(level), ...
+    [saliency_masks_level, binary_image] = gray_level_detector(ROI_only, ...
+                                            thresh_type, level, ...
                                             SE_size_factor, area_factor,...
                                             saliency_type, visualise_minor);
     % cumulative saliency masks

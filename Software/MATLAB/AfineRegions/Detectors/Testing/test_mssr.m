@@ -15,8 +15,6 @@ lisa = false;
 
 batch_structural = false;
  
-otsu = false;
-
 save_flag = 1;
 vis_flag = 0;
 
@@ -96,8 +94,9 @@ for test_image = test_images
             saliency_types = [1 1 0 0];
             SE_size_factor = 0.02;
             Area_factor = 0.03;
-            num_levels = 100;
+            num_levels = 20;
             thresh = 0.5;
+            thresh_type = 's';
         end
 
 
@@ -107,7 +106,7 @@ for test_image = test_images
         region_params = [SE_size_factor Area_factor thresh];
         execution_params = [verbose visualize_major visualize_minor];
         [num_regions, features, saliency_masks] = mssr(image_data, ROI, ...
-            num_levels, otsu, saliency_types, region_params, execution_params);
+            num_levels, saliency_types, thresh_type, region_params, execution_params);
         toc
 
         %% save the features

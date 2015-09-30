@@ -7,6 +7,7 @@
 % functions
 %**************************************************************************
 % binary_detector.m- binary morphological detector
+% gray_level_detector.m- salient regions in a cross-section of gray-level image
 %**************************************************************************
 % misc
 %**************************************************************************
