@@ -45,9 +45,10 @@ for i = 1:6
     switch lower(detector)
         case 'mssr'
             name = strcat(test_case, num2str(i), '_regions.mat' );     
-        case 'smmsr'
+        case 'smssr'
             name = strcat(test_case, num2str(i), '_salientregions.mat' ); 
-            
+        otherwise
+            error('Unknown detector!');
     end
     regions_filenames{i} = fullfile(results_path,test_case,name);
 end
