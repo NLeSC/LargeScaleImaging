@@ -8,6 +8,7 @@
 %**************************************************************************
 % binary_detector.m- binary morphological detector
 % gray_level_detector.m- salient regions in a cross-section of gray-level image
+% binary_mask2features- obtain the equivalent elipses from a binary mask
 %**************************************************************************
 % misc
 %**************************************************************************

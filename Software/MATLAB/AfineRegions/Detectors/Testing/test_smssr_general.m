@@ -10,14 +10,14 @@
 interactive = false;
 verbose = false;
 visualize = true;
-visualize_major = true;
+visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
 batch_structural = false;
 
 save_flag = 1;
-vis_flag = 0;
+vis_flag = 1;
 
 %% image filename
 if ispc
@@ -145,9 +145,9 @@ for test_image = test_images
             
             original = 0; % no original region's outline
             
-            display_smart_regions(image_filename{i}, features_filename{i}, mask_filename, ...
-                regions_filename{i},...
-                type, list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
+            display_smart_regions(char(image_filenames{i}), char(features_filenames{i}), mask_filename, ...
+                char(regions_filenames{i}), type, ...
+                list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);
         end
         

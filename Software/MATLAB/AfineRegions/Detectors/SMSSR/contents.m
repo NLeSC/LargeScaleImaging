@@ -24,7 +24,6 @@
 % smssr_saliency_masks- obtain the saliency masks of the SMSSR detector 
 % smssr_acc_masks- obtain the accumulated masks of the SMSSR detector 
 % smssr_thresh_masks- obtain the thresholded masks of the SMSSR detector 
-% binary_mask2features- obtain the equivalent elipses from a binary mask
 %
 % clahe_clip.m- Contrast-Limited Adaptive Histogram Equalization 
 % IMOVERLAY Create a mask-based image overlay.
