@@ -5,12 +5,12 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 23 Sept 2015
-% last modification date: 
-% modification details: 
+% last modification date: 1 Oct 2015    
+% modification details: added the DSMR detector
 %**************************************************************************
 % INPUTS:
 % test_case- test case from the VGG test suite, e.g. 'graffitti'
-% detector - salience regions detector, e.g. 'MSSR', 'SMSSR'
+% detector - salience regions detector, e.g. 'MSSR', 'SMSSR', 'DMSR'
 % data_path- path to the image data
 % results_path - path to the resulting files
 %**************************************************************************
@@ -46,7 +46,9 @@ for i = 1:6
         case 'mssr'
             name = strcat(test_case, num2str(i), '_regions.mat' );     
         case 'smssr'
-            name = strcat(test_case, num2str(i), '_salientregions.mat' ); 
+            name = strcat(test_case, num2str(i), '_smartregions.mat' ); 
+        case 'dmsr'
+            name = strcat(test_case, num2str(i), '_dmsrregions.mat' );
         otherwise
             error('Unknown detector!');
     end
