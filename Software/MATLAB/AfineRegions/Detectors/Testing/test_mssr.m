@@ -9,14 +9,14 @@
 interactive = false;
 verbose = false;
 visualize = true;
-visualize_major = true;
+visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
 batch_structural = false;
  
 save_flag = 1;
-vis_flag = 0;
+vis_flag = 1;
 
 %% image filename
 
@@ -95,7 +95,7 @@ for test_image = test_images
             SE_size_factor = 0.02;
             Area_factor = 0.03;
             num_levels = 20;
-            thresh = 0.5;
+            thresh = 0.6;
             thresh_type = 's';
         end
 
@@ -134,8 +134,8 @@ for test_image = test_images
 
           original = 0; % no original region's outline
 
-          display_features(image_filename{i}, features_filename{i}, mask_filename, ...
-                regions_filename{i},...  
+          display_features(char(image_filenames{i}), char(features_filenames{i}), mask_filename, ...
+                char(regions_filenames{i}),...  
                 type, list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);
           title('MSSR');
