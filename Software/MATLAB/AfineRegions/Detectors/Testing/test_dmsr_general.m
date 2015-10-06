@@ -13,7 +13,7 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = false;
+batch_structural = true;
 
 save_flag = 1;
 vis_flag = 1;
@@ -35,9 +35,9 @@ if interactive
     mask_filename = input('Enter the mask filename (.mat): ', 's');
 else
     if batch_structural
-        test_images = {'boat', 'bikes', 'graffiti', 'leuven' ,'ubc'};
+        test_images = {'boat', 'bikes', 'graffiti', 'leuven'};
     else
-        test_images = {'graffiti'};
+        test_images = {'boat'};
     end
     mask_filename =[];
     
@@ -98,14 +98,21 @@ for test_image = test_images
 %             saliency_types = [1 1 0 0];
              SE_size_factor = 0.02;
 %             SE_size_factor_preproc = 0.002;
-%             Area_factor = 0.03;
+             Area_factor_very_large = 0.01;
+             Area_factor_large = 0.001;
+             lambda_factor = 3;
              num_levels = 255;
 %             %steps = [2 5 10 15 20 25 30 40 45 50];
 %             steps = [1];
 %             thresh_type = 's';
 %             %saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
 %             saliency_thresh = 0.6;
-             pref_offset = 20;
+%             pref_offset = 20;
+              conn = 8;
+              weight_all = 0.33;
+              weight_large = 0.33;
+              weight_very_large = 0.33;                
+                
 %         end
         
         load('MyColormaps','mycmap'); 
@@ -115,8 +122,14 @@ for test_image = test_images
         disp('DMSR');
         [nrows,ncols] =  size(image_data);
         Area = nrows*ncols;
-        lambda = 2* fix(SE_size_factor*sqrt(Area/pi));
+        Area_size_large = Area * Area_factor_large;
+        Area_size_very_large = Area * Area_factor_very_large;
+        lambda = lambda_factor* fix(SE_size_factor*sqrt(Area/pi));      
         binary_masks = zeros(nrows,ncols, num_levels);
+        num_cc = zeros(1,num_levels);
+        num_large_cc = zeros(1,num_levels);
+        num_very_large_cc = zeros(1,num_levels);
+        num_combined_cc = zeros(1,num_levels);
         
         % otsu thresholding
         otsu = fix(num_levels*graythresh(image_data));
@@ -124,78 +137,79 @@ for test_image = test_images
         
         
         for level = 1:num_levels
-            binary = image_data >= level;
-            binary_filt = bwareaopen(binary, lambda, 8);
-            binary_filt = 1- bwareaopen(1- binary_filt, lambda, 8);
-            binary_masks(:,:,level) = binary_filt;
+           binary = image_data >= level;
+           binary_filt = bwareaopen(binary, lambda, conn);
+           binary_filt2 = 1- bwareaopen(1- binary_filt, lambda, conn);
+           binary_masks(:,:,level) = binary_filt2;
+          % binary_masks(:,:,level) = image_data >= level;
         end
         
         for l = 1 :num_levels
-              CC{l} = bwconncomp(binary_masks(:,:,l),8);
-              ncc = CC{l}.NumObjects;
-              if ncc > 20
-                num_cc(l) = ncc;
-              else
-                num_cc(l) =NaN;
-              end;
-             % RP{l} = regionprops( CC , 'Area');
+              CC = bwconncomp(binary_masks(:,:,l),conn);
+              RP = regionprops(CC, 'Area');
+              num = CC.NumObjects;
+              num_cc(l) = num;
+              ln = 0; vln = 0;
+              for r = 1:  num
+                  regionArea =  RP(r).Area;
+                  if regionArea >= Area_size_very_large
+                      ln = ln+1;
+                      vln = vln + 1;
+                  else
+                      if regionArea >= Area_size_large
+                          ln = ln + 1;
+                      end
+                  end
+              end
+              num_large_cc(l) = ln;
+              num_very_large_cc(l) = vln;
         end
-       
-        offset = 20; 
-        for l = offset+1 : num_levels - offset;
-            d = 0;
-            for o = 1:offset
-              diff_f = abs(num_cc(l) - num_cc(l+o));
-              diff_b = abs(num_cc(l) - num_cc(l-o));
-              d = [d (diff_f + diff_b)/2];
-            end              
-              diff(l) = sum(d(:));
-        end
-                
-%         [max_l, max_ind] = max(diff(otsu - offset:otsu + offset));
-%         thresh = max_ind + (otsu - (offset + 1));
-        
-%         [min_l, min_ind] = min(diff(otsu - offset:otsu + offset));
-%         thresh = min_ind + (otsu - (offset+1));
-        
-         cropped_diff = diff(pref_offset:255 - pref_offset); 
-         [val, ind] = max(cropped_diff(:));
-         thresh = ind + (pref_offset - 1);
-       
-        
-%           disp('Ratio between max and mean of the differences: ');
-%           disp(max_l/mean(cropped_diff(:)));
-%           disp('Standart deviation of the differences');
-%           disp(std(cropped_diff(:)));
+             
+         [max_num, thresh_all] = max(num_cc(:));
+         [max_large_num, thresh_large] = max(num_large_cc(:));
+         [max_very_large_num, thresh_very_large] = max(num_very_large_cc(:));
+         
+         % normalize 
+         norm_num_cc = num_cc/max_num;
+         norm_large_num_cc = num_large_cc/max_large_num;
+         norm_very_large_num_cc = num_very_large_cc/max_very_large_num;
+         num_combined_cc = (weight_all*norm_num_cc + ...
+             weight_large* norm_large_num_cc+ ...
+             weight_very_large*norm_very_large_num_cc);
+
+         [max_combined, thresh] = max(num_combined_cc);
           
         [counts, centers]= hist(double(image_data(:)), num_levels); 
         
         figure('Position',get(0,'ScreenSize'))
-        subplot(221); bar(centers, counts); title('Gray-level histogram');
+        subplot(221); plot(centers, counts,'k'); title('Gray-level histogram with Otsu threshold');
                 hold on; line('XData',[otsu otsu], ...
                     'YData', [0 max(counts)], 'Color', 'r'); hold off;axis on;grid on;
+                legend;
         subplot(222);imshow(binary_otsu); axis on;grid on;
         title(['Image thresholded at Otsu s level ' num2str(otsu)]);
         
-        subplot(223); plot(diff, 'k'); title('Differences num_regions.')
-        hold on; line('XData',[thresh thresh], ...
-                    'YData', [0 max(diff)], 'Color', 'r'); 
-                line('XData',[pref_offset pref_offset], ...
-                    'YData', [0 max(diff)], 'Color', 'g'); 
-                line('XData',[255- pref_offset 255 - pref_offset], ...
-                    'YData', [0 max(diff)], 'Color', 'g');
-                hold off;axis on; grid on;
+        subplot(223); plot(1:num_levels, norm_num_cc, 'k',...
+            1:num_levels, norm_large_num_cc,'b',...
+            1:num_levels, norm_very_large_num_cc,'m',...
+            1:num_levels, num_combined_cc, 'r'); 
+        legend('all','large', 'very large', 'combined');
+        
+        title('Normalized number of Connected Components and maximum');
+%         hold on; line('XData',[thresh_all thresh_all], ...
+%                     'YData', [0 max_num], 'Color', 'k'); 
+%         hold on; line('XData',[thresh_large thresh_large], ...
+%                     'YData', [0 max_num], 'Color', 'b');
+%         hold on; line('XData',[thresh_very_large thresh_very_large], ...
+%                     'YData', [0 max_num], 'Color', 'r');                 
+         hold on; line('XData',[thresh thresh], ...
+                    'YData', [0 1.2], 'Color', 'r');         
+                
+        hold off;axis on; grid on;
                                                 
         subplot(224); imshow(binary_masks(:,:,thresh)); axis on;grid on;
-        title(['Image thresholded at diff threshold ' num2str(thresh)]);
+        title(['Image thresholded at level ' num2str(thresh)]);
     
-%         acc_mask = integral_masks(binary_masks);
-%         
-%         figure; imagesc(acc_mask); axis image;axis on;grid on;
-%          set(gcf, 'Colormap',mycmap);title('Acc. masks');colorbar('South');
-%         figure; imagesc(acc_mask); axis image;axis on;grid on;
-%          set(gcf, 'Colormap',gray(256));title('Acc. masks');colorbar('South');
-         
         
 %         execution_params = [verbose visualize_major visualize_minor];
 %         region_params = [SE_size_factor Area_factor];
@@ -235,7 +249,7 @@ for test_image = test_images
 %                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
 %                 line_width, col_label, original);
 %         end
-        clear binary binary_otsu binary_masks RP CC image_data
+        clear binary binary_filt binary_filt2 binary_otsu binary_masks CC RP image_data
     end
 end
 disp('--------------- The End ---------------------------------');
