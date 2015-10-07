@@ -1,6 +1,6 @@
 % max_conncomp_thresholding.m- connected component(CC)-based thresholding
 %**************************************************************************
-% [binary_image, otsu, thresh] = max_conncomp_thresholding(gray_image, 
+% [binary_image, otsu, num_combined_cc, thresh] = max_conncomp_thresholding(gray_image, 
 %                               num_levels, offset, 
 %                               morpholigy_parameters, weights,  
 %                               execution_flags)
@@ -39,6 +39,7 @@
 % OUTPUTS:
 % binary_image      the binarized gray level image
 % otsu              the Otsuthreshold (gray level)
+% num_combined_cc            combined number of connected components
 % thresh            the threshold used for binarization- the max of
 %                   the weighted combination among the 3 number of CCs
 %**************************************************************************
@@ -47,9 +48,9 @@
 %**************************************************************************
 % REFERENCES: 
 %**************************************************************************
-function [binary_image, otsu, thresh] = max_conncomp_thresholding(gray_image, ...
+function [binary_image, otsu, num_combined_cc, thresh] = max_conncomp_thresholding(gray_image, ...
                                num_levels, offset, ...
-                               morpholigy_parameters, weights, ... 
+                               morphology_parameters, weights, ... 
                                execution_flags)
                            
  %**************************************************************************
@@ -74,12 +75,12 @@ end
 %--------------------------------------------------------------------------
 % execution flags
 verbose = execution_flags(1);
-visualize = execution_flags(2);
+visualization = execution_flags(2);
 
 % weights
 weight_all = weights(1);
 weight_large = weights(2);
-weight_very_large = weight(3);
+weight_very_large = weights(3);
 
 % morphology parameters
 SE_size_factor = morphology_parameters(1);
@@ -90,17 +91,160 @@ connectivity = morphology_parameters(5);
 
 % gray levels
 min_level =  1; max_level = 255;
-step = (max_level - min_level)/num_levels;
-if step == 0
+step = (max_level - min_level)/(num_levels - 1);
+if step < 1
     step = 1;
 end
+
 
 % image dimensions
 [nrows, ncols] = size(gray_image);
 
 % image area
 Area = nrows*ncols;
-
+% areas for large and very large CCs
+Area_size_large = Area * Area_factor_large;
+Area_size_very_large = Area * Area_factor_very_large;
 
 % area opening parameter
-lambda = ;
+lambda = lambda_factor* fix(SE_size_factor*sqrt(Area/pi));
+
+%**************************************************************************
+% initialisations
+%--------------------------------------------------------------------------
+binary = zeros(nrows, ncols);
+binary_image = zeros(nrows, ncols);
+binary_masks = zeros(nrows,ncols, max_level);
+num_cc = zeros(1,max_level);
+num_large_cc = zeros(1,max_level);
+num_very_large_cc = zeros(1,max_level);
+num_combined_cc = zeros(1,max_level);
+
+%**************************************************************************
+% computations
+%--------------------------------------------------------------------------
+% pre-processing
+
+% Otsu thresholding
+if verbose
+    disp('Standart Otsu gray level thresholding...');
+    tic
+end
+otsu = fix(255*graythresh(gray_image));
+off = min(otsu-1, offset);
+if visualization 
+    binary_otsu = gray_image >= otsu;
+end
+
+% thresholding for set of levels
+if verbose
+    disp('Thresholding and denoising for the specified range of gray levels...');
+end
+for level = otsu - off: step: otsu + off
+    binary = gray_image >= level;
+    binary_filt = bwareaopen(binary, lambda, connectivity);
+    
+    binary_filt2 = 1- bwareaopen(1- binary_filt, lambda, connectivity);
+    binary_masks(:,:,fix(level)) = binary_filt2;
+    clear binary_filt binary_filt2
+end
+
+% count number of all and large and very large connected components
+if verbose
+    disp('Counting the number of CCes per gray level...');
+end
+for level = otsu - off: step: otsu + off
+    l = fix(level);
+    CC = bwconncomp(binary_masks(:,:,l),connectivity);
+    RP = regionprops(CC, 'Area');
+    num = CC.NumObjects;
+    num_cc(l) = num;
+    ln = 0; vln = 0;
+    for r = 1:  num
+        regionArea =  RP(r).Area;
+        if regionArea >= Area_size_very_large
+            ln = ln+1;
+            vln = vln + 1;
+        else
+            if regionArea >= Area_size_large
+                ln = ln + 1;
+            end
+        end
+    end
+    num_large_cc(l) = ln;
+    num_very_large_cc(l) = vln;
+end
+
+% normalize the counts
+if verbose
+    disp('Normalizing the counts...');
+end
+[max_num, thresh_all] = max(num_cc(:)); %#ok<ASGLU>
+[max_large_num, thresh_large] = max(num_large_cc(:)); %#ok<ASGLU>
+[max_very_large_num, thresh_very_large] = max(num_very_large_cc(:)); %#ok<ASGLU>
+
+norm_num_cc = num_cc/max_num;
+norm_large_num_cc = num_large_cc/max_large_num;
+norm_very_large_num_cc = num_very_large_cc/max_very_large_num;
+
+% compute the final measure and find the maximum
+if verbose
+    disp('Combining the counts and finding the maximum...');
+end
+
+num_combined_cc = (weight_all*norm_num_cc + ...
+    weight_large* norm_large_num_cc+ ...
+    weight_very_large*norm_very_large_num_cc);
+
+%**************************************************************************
+% variables -> output parameters
+%--------------------------------------------------------------------------
+[max_combined, thresh] = max(num_combined_cc);
+
+if verbose
+    disp('Combined maximum number of CCs:'); disp(max_combined);
+end
+
+binary_image = binary_masks(:,:,thresh);
+clear binary_masks
+
+if verbose
+    disp('Done.')
+    disp('Elapsed time: ');
+    toc
+end
+
+%**************************************************************************
+% visualization
+%--------------------------------------------------------------------------
+if visualization
+    figure('Position',get(0,'ScreenSize'));
+    [counts, centers] = hist(double(gray_image(:)),num_levels);
+    subplot(221); plot(centers, counts,'k'); title('Gray-level histogram with Otsu threshold');
+    hold on; line('XData',[otsu otsu], ...
+        'YData', [0 max(counts)], 'Color', 'r'); hold off;axis on;grid on;
+    legend;
+    subplot(222);imshow(binary_otsu); axis on;grid on;
+    title(['Image thresholded at Otsu s level ' num2str(otsu)]);
+    
+    subplot(223); plot(1:num_levels, norm_num_cc, 'k',...
+        1:max_level, norm_large_num_cc,'b',...
+        1:max_level, norm_very_large_num_cc,'m',...
+        1:max_level, num_combined_cc, 'r');
+    
+    title('Normalized number of Connected Components');
+    hold on; line('XData',[thresh thresh], ...
+        'YData', [0 1.2], 'Color', 'r');
+    hold on; line('XData',[thresh_all thresh_all], ...
+        'YData', [0 1.2], 'Color', 'k');
+    hold on; line('XData',[thresh_large thresh_large], ...
+        'YData', [0 1.2], 'Color', 'b');
+    hold on; line('XData',[thresh_very_large thresh_very_large], ...
+        'YData', [0 1.2], 'Color', 'm');
+    hold off;axis on; grid on;
+    legend('all','large', 'very large', 'combined');
+    subplot(224); imshow(binary_image); axis on;grid on;
+    title(['Binarized image at level ' num2str(thresh)]);
+    
+        
+end

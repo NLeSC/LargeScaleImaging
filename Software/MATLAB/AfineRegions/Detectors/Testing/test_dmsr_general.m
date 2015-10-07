@@ -2,7 +2,7 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 01-10-2015
-% last modification date: 
+% last modification date: cl
 % modification details: 
 %**************************************************************************
 %% paramaters
@@ -37,7 +37,7 @@ else
     if batch_structural
         test_images = {'boat', 'bikes', 'graffiti', 'leuven'};
     else
-        test_images = {'boat'};
+        test_images = {'leuven'};
     end
     mask_filename =[];
     
@@ -54,7 +54,7 @@ for test_image = test_images
     
     %% loop over all test images
     for i = 1:len
-        %for i = 1
+       % for i = 1
         %% load the image & convert to gray-scale if  color
         image_data_or = imread(char(image_filenames{i}));
         if ndims(image_data_or) > 2
@@ -81,139 +81,61 @@ for test_image = test_images
         
         %% run the DMSR detector
         
-%         if interactive
-%             preproc_types(1) = input('Smooth? [0/1]: ');
-%             preproc_types(2) = input('Histogram equialize? [0/1]: ');
-%             SE_size_factor_preproc = input('Enter the Structuring Element size factor (preprocessing): ');
-%             saliency_types(1) = input('Detect "holes"? [0/1]: ');
-%             saliency_types(2) = input('Detect "islands"? [0/1]: ');
-%             saliency_types(3) = input('Detect "indentations"? [0/1]: ');
-%             saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
-%             SE_size_factor = input('Enter the Structuring Element size factor: ');
-%             Area_factor = input('Enter the Connected Component size factor (processing): ');
-%             num_levels = input('Enter the number of gray-levels: ');
-%             thrsh_type = input('Enter the thresholding type (s(ingle) or h(ysteresis)): ');
-%             saliency_thresh = input('Enter the region threshold: ');
-%             
-%         else
-%             preproc_types = [0 0];
-%             saliency_types = [1 1 0 0];
-             SE_size_factor = 0.02;
-%             SE_size_factor_preproc = 0.002;
-             Area_factor_very_large = 0.01;
-             Area_factor_large = 0.001;
-             lambda_factor = 3;
-             num_levels = 255;
-%             %steps = [2 5 10 15 20 25 30 40 45 50];
-%             steps = [1];
-%             thresh_type = 's';
-%             %saliency_thresh = [0.05 0.15 0.25 0.5 0.75];
-%             saliency_thresh = 0.6;
-             pref_offset = 80;
-              conn = 8;
-              weight_all = 0.33;
-              weight_large = 0.33;
-              weight_very_large = 0.33;                
-                
-%         end
+        if interactive
+           %             SE_size_factor = input('Enter the Structuring Element size factor: ');
+            %             Area_factor = input('Enter the Connected Component size factor (processing): ');
+            %             num_levels = input('Enter the number of gray-levels: ');
+        else
+            
+            SE_size_factor = 0.02;
+            Area_factor_very_large = 0.01;
+            Area_factor_large = 0.001;
+            lambda_factor = 3;
+            num_levels = 255;
+            pref_offset = 80;
+            conn = 8;
+            weight_all = 0.33;
+            weight_large = 0.33;
+            weight_very_large = 0.33;
+            verbose = 0;
+            visualize = 0;
+            
+        end
         
-        load('MyColormaps','mycmap'); 
     
         tic;
         disp('Test case: ');disp(test_image);
         disp('DMSR');
-        [nrows,ncols] =  size(image_data);
-        Area = nrows*ncols;
-        Area_size_large = Area * Area_factor_large;
-        Area_size_very_large = Area * Area_factor_very_large;
-        lambda = lambda_factor* fix(SE_size_factor*sqrt(Area/pi));      
-        binary_masks = zeros(nrows,ncols, num_levels);
-        num_cc = zeros(1,num_levels);
-        num_large_cc = zeros(1,num_levels);
-        num_very_large_cc = zeros(1,num_levels);
-        num_combined_cc = zeros(1,num_levels);
         
-        % otsu thresholding
-        otsu = fix(num_levels*graythresh(image_data));
-        offset = min(otsu, pref_offset);
-        binary_otsu = image_data >= otsu;
+        morphology_parameters = [SE_size_factor Area_factor_very_large ...
+            Area_factor_large lambda_factor conn];
+        weights = [weight_all weight_large weight_very_large];
+        execution_flags = [verbose visualize];
         
-        
-        for level = otsu - (offset+1): otsu + offset 
-           binary = image_data >= level;
-           binary_filt = bwareaopen(binary, lambda, conn);
-           binary_filt2 = 1- bwareaopen(1- binary_filt, lambda, conn);
-           binary_masks(:,:,level) = binary_filt2;
-          % binary_masks(:,:,level) = image_data >= level;
+        [binary_image, otsu, num_cc, thresh] = max_conncomp_thresholding(image_data, ...
+                               num_levels, pref_offset, ...
+                               morphology_parameters, weights, ... 
+                               execution_flags);
+                           
+        if vis_flag
+            figure('Position',get(0,'ScreenSize'));
+            
+            subplot(221); imshow(image_data_or); title('Original image'); axis on, grid on;
+            subplot(222);imshow(image_data); title('Gray-scale image'); axis on, grid on;
+            
+            subplot(223); plot(1:num_levels, num_cc, 'b');
+            title('Normalized number of Connected Components');
+            hold on; line('XData',[thresh thresh], ...
+                'YData', [0 1.2], 'Color', 'r');
+            hold on; line('XData',[otsu otsu], ...
+                'YData', [0 1.2], 'Color', 'b');
+            
+            hold off;axis on; grid on;
+            
+            subplot(224); imshow(binary_image); axis on;grid on;
+            title(['Binarized image at level ' num2str(thresh)]);
         end
-        
-        for l = otsu - (offset+1): otsu + offset
-              CC = bwconncomp(binary_masks(:,:,l),conn);
-              RP = regionprops(CC, 'Area');
-              num = CC.NumObjects;
-              num_cc(l) = num;
-              ln = 0; vln = 0;
-              for r = 1:  num
-                  regionArea =  RP(r).Area;
-                  if regionArea >= Area_size_very_large
-                      ln = ln+1;
-                      vln = vln + 1;
-                  else
-                      if regionArea >= Area_size_large
-                          ln = ln + 1;
-                      end
-                  end
-              end
-              num_large_cc(l) = ln;
-              num_very_large_cc(l) = vln;
-        end
-             
-         [max_num, thresh_all] = max(num_cc(:));
-         [max_large_num, thresh_large] = max(num_large_cc(:));
-         [max_very_large_num, thresh_very_large] = max(num_very_large_cc(:));
-         
-         % normalize 
-         norm_num_cc = num_cc/max_num;
-         norm_large_num_cc = num_large_cc/max_large_num;
-         norm_very_large_num_cc = num_very_large_cc/max_very_large_num;
-         num_combined_cc = (weight_all*norm_num_cc + ...
-             weight_large* norm_large_num_cc+ ...
-             weight_very_large*norm_very_large_num_cc);
-
-         [max_combined, thresh] = max(num_combined_cc);
-          
-%         [counts, centers]= hist(double(image_data(:)), num_levels); 
-%         
-         figure('Position',get(0,'ScreenSize'));
-%         subplot(221); plot(centers, counts,'k'); title('Gray-level histogram with Otsu threshold');
-%                 hold on; line('XData',[otsu otsu], ...
-%                     'YData', [0 max(counts)], 'Color', 'r'); hold off;axis on;grid on;
-%                 legend;
-%         subplot(222);imshow(binary_otsu); axis on;grid on;
-%         title(['Image thresholded at Otsu s level ' num2str(otsu)]);
-        
-%         subplot(223); plot(1:num_levels, norm_num_cc, 'k',...
-%             1:num_levels, norm_large_num_cc,'b',...
-%             1:num_levels, norm_very_large_num_cc,'m',...
-%             1:num_levels, num_combined_cc, 'r'); 
-%         legend('all','large', 'very large', 'combined');
-          
-        subplot(221); imshow(image_data_or); title('Original image'); axis on, grid on;
-        subplot(222);imshow(image_data); title('Gray-scale image'); axis on, grid on;
-        
-        subplot(223); plot(1:num_levels, num_combined_cc, 'b');      
-        title('Normalized number of Connected Components');                
-         hold on; line('XData',[thresh thresh], ...
-                    'YData', [0 1.2], 'Color', 'r');  
-         hold on; line('XData',[otsu otsu], ...
-                    'YData', [0 1.2], 'Color', 'b'); 
-                
-        hold off;axis on; grid on;
-                                                
-        subplot(224); imshow(binary_masks(:,:,thresh)); axis on;grid on;
-        title(['Binarized image at level ' num2str(thresh)]);
-    
-        
+                           
 %         execution_params = [verbose visualize_major visualize_minor];
 %         region_params = [SE_size_factor Area_factor];
 %         if find(preproc_types)
@@ -252,7 +174,7 @@ for test_image = test_images
 %                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
 %                 line_width, col_label, original);
 %         end
-        clear image_data_or image_data binary binary_filt binary_filt2 binary_otsu binary_masks CC RP image_data
     end
+    close all
 end
 disp('--------------- The End ---------------------------------');
