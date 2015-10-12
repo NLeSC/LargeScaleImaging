@@ -13,7 +13,8 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
+batch_structural = false;
+batch_textural = true;
 
 save_flag = 1;
 vis_flag = 1;
@@ -38,6 +39,11 @@ else
         test_images = {'boat', 'bikes', 'graffiti', 'leuven'};
     else
         test_images = {'graffiti'};
+    end
+    if batch_textural
+        test_images = {'bark', 'trees', 'ubc', 'wall'};
+    else
+        test_images = {'wall'};
     end
     mask_filename =[];
     
