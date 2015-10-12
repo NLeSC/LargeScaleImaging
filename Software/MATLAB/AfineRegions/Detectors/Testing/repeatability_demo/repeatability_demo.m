@@ -1,6 +1,6 @@
 function repeatability_demo
 
-det_suffix={'mser';'mssr';'smssr'};
+det_suffix={'mser';'mssr'; 'smssr';'dmsr'};
 
 lisa = false;
 %% image filename
@@ -23,12 +23,12 @@ f1 = figure; f2 =  figure;
 figure(f1);clf;
 grid on;
 ylabel('repeatebility %')
-xlabel('viewpoint angle');
+xlabel('transformation strength');
 hold on;
 figure(f2);clf;
 grid on;
 ylabel('nb of correspondences')
-xlabel('viewpoint angle');
+xlabel('transformation strength');
 hold on;
 
 mark=['-gs';'-bv';'-rp'];
