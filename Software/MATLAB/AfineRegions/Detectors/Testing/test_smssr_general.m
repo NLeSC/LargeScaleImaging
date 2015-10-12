@@ -54,8 +54,8 @@ for test_image = test_images
     len = length(image_filenames);
     
     %% loop over all test images
-    %for i = 1:len
-        for i = 1
+    for i = 1:len
+    %    for i = 1
         %% load the image & convertto gray-scale if  color
         image_data = imread(char(image_filenames{i}));
         if ndims(image_data) > 2
@@ -123,7 +123,8 @@ for test_image = test_images
         toc
         % save the features
         disp('Saving ...');
-        smssr_save(char(features_filenames{i}), char(regions_filenames{i}), num_smartregions, features, saliency_masks);
+        save_regions('SMSSR',char(features_filenames{i}), ...
+            char(regions_filenames{i}), num_smartregions, features, saliency_masks);
         
         
         %% visualize
@@ -145,7 +146,8 @@ for test_image = test_images
             
             original = 0; % no original region's outline
             
-            display_smart_regions(char(image_filenames{i}), char(features_filenames{i}), mask_filename, ...
+            display_smart_regions(char(image_filenames{i}), 'SMSSR',...
+                char(features_filenames{i}), mask_filename, ...
                 char(regions_filenames{i}), type, ...
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);

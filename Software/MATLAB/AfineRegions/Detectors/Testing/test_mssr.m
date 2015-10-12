@@ -4,6 +4,8 @@
 % date created: 15-05-2015
 % last modification date: 1-06-2015
 % modification details: added saving of the features and displaying them as ellipses
+% last modification date: 12-10-2015
+% modification details: using the generic open and save regions function
 %**********************************************************
 %% paramaters
 interactive = false;
@@ -53,8 +55,8 @@ for test_image = test_images
     len = length(image_filenames);
 
     %% loop over all test images
-    %for i = 1:len
-     for i =1   
+    for i = 1:len
+     %for i =1   
         %% load the image & convertto gray-scale if  color
         image_data = imread(char(image_filenames{i}));
         if ndims(image_data) > 2
@@ -112,7 +114,8 @@ for test_image = test_images
         %% save the features
         disp('Saving ...');
 
-        mssr_save(char(features_filenames{i}), char(regions_filenames{i}), num_regions, features, saliency_masks);
+        save_regions('MSSR',char(features_filenames{i}), ...
+            char(regions_filenames{i}), num_regions, features, saliency_masks);
 
         %% visualize
         if vis_flag
@@ -134,7 +137,8 @@ for test_image = test_images
 
           original = 0; % no original region's outline
 
-          display_features(char(image_filenames{i}), char(features_filenames{i}), mask_filename, ...
+          display_features(char(image_filenames{i}), 'MSSR',...
+                char(features_filenames{i}), mask_filename, ...
                 char(regions_filenames{i}),...  
                 type, list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);

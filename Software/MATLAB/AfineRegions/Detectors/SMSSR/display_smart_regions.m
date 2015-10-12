@@ -1,6 +1,6 @@
 % display_smart_regions.m- displays salient regions overlaid on the image
 %**************************************************************************
-% display_smart_regions(image_fname, features_fname, ROI_mask_fname, ...
+% display_smart_regions(image_fname, detector, features_fname, ROI_mask_fname, ...
 %                  regions_fname, type, ...
 %                  list_regions, step_list_regions, scaling, labels, col_ellipse, ...
 %                  line_width, col_label, original)
@@ -13,9 +13,12 @@
 %                        show features only within (potential) ROI
 %                        added posibility to show the regions too
 %                       added figure handles
+% last modification date: 12 October 2015
+% modification details:  added detector parameter for the open_regions
 %**************************************************************************
 % INPUTS:
 % image_fname- the original image filename 
+% detector - string indicating the salient regions detector (S/D/MSSR)
 % feature_fname - the file with features 
 % [ROI_mask_fname]- the ROI binary mask (*.mat) [optional]
 % [regions_fname]- the original saliency binary masks (*.mat) [optional]
@@ -47,7 +50,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function display_smart_regions(image_fname, features_fname, ROI_mask_fname, ...
+function display_smart_regions(image_fname, detector, features_fname, ROI_mask_fname, ...
                   regions_fname, type, ...
                   list_regions, step_list_regions, ...
                   scaling, labels, col_ellipse, line_width, col_label,...
@@ -56,40 +59,40 @@ function display_smart_regions(image_fname, features_fname, ROI_mask_fname, ...
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
-if (nargin<13) || isempty(original)
+if (nargin<14) || isempty(original)
     original = 0;
 end
-if (nargin < 12) || isempty(col_label)
+if (nargin < 13) || isempty(col_label)
     col_label = 'm'; % magenta
 end
 if (nargin < 12 ) || isempty(line_width)
     line_width = 1;
 end
-if (nargin < 10) || isempty(col_ellipse)
+if (nargin < 11) || isempty(col_ellipse)
     col_ellipse =  [1 0 1]; % magenta
 end
-if (nargin < 9) || isempty(labels)
+if (nargin < 10) || isempty(labels)
     labels = 0;
 end
-if (nargin < 8) || isempty(scaling)
+if (nargin < 9) || isempty(scaling)
     scaling = 1;
 end
-if (nargin < 7) 
+if (nargin < 8) 
     list_regions = [];
 end
-if (nargin < 6) || isempty(step_list_regions)
+if (nargin < 7) || isempty(step_list_regions)
     step_list_regions = 1;
 end
-if (nargin < 5) || isempty(type)
+if (nargin < 6) || isempty(type)
     type = 0;
 end
-if nargin < 4
+if nargin < 5
 	regions_fname = [];  
 end
-if nargin < 3
+if nargin < 4
     ROI_mask_fname = [];  
 end
-if nargin < 2
+if nargin < 3
     error('display_smart_regions.m requires at least 2 input arguments!');
 end
 
@@ -106,7 +109,7 @@ end
 %--------------------------------------------------------------------------
 % features 
 [num_regions, features, saliency_masks] =...
-    smssr_open(features_fname, regions_fname, type); 
+    open_regions(detector, features_fname, regions_fname, type); 
 sprintf('There are %d number of regions detected.', num_regions)
 
 % image

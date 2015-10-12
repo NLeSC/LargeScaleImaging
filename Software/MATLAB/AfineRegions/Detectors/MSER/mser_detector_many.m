@@ -84,7 +84,8 @@ for i = indicies
    
 
     disp([' Processing image index # ' num2str(i) ' out of total ' num2str(length(indicies)) ' images...']);
-
+    disp([' Processing image: ' image_fname ]);
+    
     % Saliency detector
     mser(image_fname, features_fname);
 

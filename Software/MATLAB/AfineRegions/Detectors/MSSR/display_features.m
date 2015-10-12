@@ -1,6 +1,6 @@
 % display_features.m- displays salient regions overlaid on the image
 %**************************************************************************
-% display_features(image_fname, features_fname, ROI_mask_fname, ...
+% display_features(image_fname, detector, features_fname, ROI_mask_fname, ...
 %                  regions_fname,...
 %                  list_regions, scaling, labels, col_ellipse, ...
 %                  line_width, col_label, original)
@@ -12,10 +12,12 @@
 %                        added example of usage on the TNO laptop
 %                        show features only within (potential) ROI
 %                        added posibility to show the regions too
-%                       added figure handles
+% last modification date: 12 October 2015
+% modification details:  added detector parameter for the open_regions
 %**************************************************************************
 % INPUTS:
 % image_fname- the original image filename 
+% detector - string indicating the salient regions detector (S/D/MSSR)
 % feature_fname - the file with features 
 % [ROI_mask_fname]- the ROI binary mask (*.mat) [optional]
 % [regions_fname]- the original saliency binary masks (*.mat) [optional]
@@ -40,56 +42,10 @@
 % http://www.robots.ox.ac.uk/~vgg/research/affine/
 %**************************************************************************
 % EXAMPLES USAGE: see mssr_visualise_one!!
-%
-% display_features(image_fname, features_fname);
-%.........................................................................
-% (my laptop)
-%.........................................................................
-% image_fname = 'C:\ely\ceteceans\test_data\tails\na0016sn00069.jpg';
-% features_fname ='C:\ely\TNO\saliency\mssr-demo\test_results\tails\MSSR\na0016_1.mmsr';
-% display_features(image_fname, features_fname, [], [],0,[], 3, 1, [],2);
-%
-% shows original image (whole) overlaped with the ellipses and their labels
-% with thick (width 2) line in magenta colour (saliency type flag is 0)
-%.........................................................................
-% image_fname = 'C:\ely\ceteceans\test_data\tails\na0016sn00069.jpg';
-% features_fname = 'C:\ely\TNO\saliency\mssr-demo\test_results\tails\na0016_1';
-% ROI_mask_fname = 'C:\ely\TNO\saliency\mssr-demo\test_images\tails\na0016_1_tail';
-% display_features(image_fname, features_fname, ROI_mask_fname, [],1,[], 3, 1, [],2);
-%
-% shows original image (whole) overlaped with the ellipses and their labels
-% with thick (width 2) line in magenta colour (saliency type flag is 0)
-%.........................................................................
-% (TNO laptop)
-%.........................................................................
-% image_fname = '..\mssr_demo\test_images\tails\na0016_1_tail_image.jpg';
-% features_fname ='..\mssr_demo\test_results\tails\na0016_1.mssr';
-% regions_fname = '..\mssr_demo\test_results\tails\na0016_1_mssr.mat';
-% display_features(image_fname, features_fname, [], regions_fname,...
-%                                              0,[], 2, 0, [],1,1,1);
-% shows original image (whole) overlaped with the original regions and also
-% the ellipses (scale 3) and their labels with thick (width 2) line 
-% in magenta colour 
-%.........................................................................
-% image_fname = '..\mssr_demo\test_images\tails\na0016_1_tail_image.jpg';
-% features_fname ='..\mssr_demo\test_results\tails\MSSR\na0016_1.mssr';
-% display_features(image_fname, features_fname, [], [], 0,[], 3, 1, [],2);
-%
-% shows original image (whole) overlaped with the ellipses (scale 3) and
-% their labels with thick (width 2) line in magenta colour 
-% (saliency type flag is 0)
-%.........................................................................
-% image_fname = '..\mssr_demo\test_images\tails\na0016_1_tail_image.jpg';
-% features_fname ='..\mssr_demo\test_results\tails\na0016_1_type.mssr';
-% display_features(image_fname, features_fname, [],[], 1,[], 2, 0, [],1,1);
-%
-% shows original image (whole) overlaped with the ellipses (scale 2) 
-% with (width 1) line in 4 colours (saliency type flag is 1); no labels
-% shows also the original regions overlaid in the image
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function display_features(image_fname, features_fname, ROI_mask_fname, ...
+function display_features(image_fname, detector, features_fname, ROI_mask_fname, ...
                   regions_fname,...  
                   type, list_regions, scaling, labels, col_ellipse, ...
                   line_width, col_label, original)
@@ -97,37 +53,37 @@ function display_features(image_fname, features_fname, ROI_mask_fname, ...
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
-if (nargin<12) || isempty(original)
+if (nargin<13) || isempty(original)
     original = 0;
 end
-if (nargin < 11) || isempty(col_label)
+if (nargin < 12) || isempty(col_label)
     col_label = 'm'; % magenta
 end
-if (nargin < 10 ) || isempty(line_width)
+if (nargin < 11 ) || isempty(line_width)
     line_width = 1;
 end
-if (nargin < 9) || isempty(col_ellipse)
+if (nargin < 10) || isempty(col_ellipse)
     col_ellipse =  [1 0 1]; % magenta
 end
-if (nargin < 8) || isempty(labels)
+if (nargin < 9) || isempty(labels)
     labels = 0;
 end
-if (nargin < 7) || isempty(scaling)
+if (nargin < 8) || isempty(scaling)
     scaling = 1;
 end
-if (nargin < 6) 
+if (nargin < 7) 
     list_regions = [];
 end
-if (nargin < 5) || isempty(type)
+if (nargin < 6) || isempty(type)
     type = 0;
 end
-if nargin < 4
+if nargin < 5
 	regions_fname = [];  
 end
-if nargin < 3
+if nargin < 4
     ROI_mask_fname = [];  
 end
-if nargin < 2
+if nargin < 3
     error('display_features.m requires at least 2 input arguments!');
     return
 end
@@ -145,7 +101,7 @@ end
 %--------------------------------------------------------------------------
 % features 
 [num_regions, features, saliency_masks] =...
-    mssr_open(features_fname, regions_fname, type); 
+    open_regions(detector,features_fname, regions_fname, type); 
 sprintf('There are %d number of regions detected.', num_regions)
 % image
 I_or = imread(image_fname);

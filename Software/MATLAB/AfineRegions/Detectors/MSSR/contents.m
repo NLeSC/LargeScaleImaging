@@ -16,8 +16,6 @@
 %                           imag (version 2008)
 % mssr_binary.m- binary MSSR
 % mssr_binary_2008.m- binary MSSR (version of 2008)
-% mssr_save- function to save the results from the MSSR detector
-% mssr_open- function to open the saved results from the MSSR detector
 %
 % visualise.m- function for displaying the extracted salient regions on 1
 %              image

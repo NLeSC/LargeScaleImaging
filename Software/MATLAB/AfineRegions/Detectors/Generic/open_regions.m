@@ -1,15 +1,18 @@
-% mssr_open- function to open the saved results from the MSSR detector
+% open_regions- open the saved results from the saliency detectors
 %**************************************************************************
-% [num_regions, features, saliency_masks] = mssr_open(features_fname,...
-%                                                     regions_fname, type)
+% [num_regions, features, saliency_masks] = dmsr_open(detector, ...
+%                                                     features_fname,...
+%                                                     regions_fname, ...
+%                                                     type)
 %
-% author: Elena Ranguelova, TNO
-% date created: 26 Feb 2008
-% last modification date: 28 Feb 2008
-% modification details: made regions_fname optional
+% author: Elena Ranguelova, NLeSc
+% date created: 12 October 2015
+% last modification date: 
+% modification details: 
 %**************************************************************************
 % INPUTS:
-% features_fname- the filename for the ellipse features (.mssr)
+% detector - string indicating the salient regions detector (S/D/MSSR)
+% features_fname- the filename for the ellipse features (.d/s/mssr)
 % [regions_fname]- the file for the saliency masks of the regions 
 %                   (binary .mat) [optional]
 % [type] - flag- to read the features including the saliency type or not
@@ -20,25 +23,25 @@
 % saliency_masks- the binary saliency masks
 % features- the array with ellipse features
 %**************************************************************************
-% NOTES: the opposite of mssr_save
+% NOTES: the opposite of save_regions; replaces the s/d/mssr_open.m
 %**************************************************************************
-% EXAMPLES USAGE: see for example display_features.m
+% EXAMPLES USAGE: see for example test_dmsr_general.m
 %**************************************************************************
-% REFERENCES:
+% REFERENCES: 
 %**************************************************************************
 function  [num_regions, features, saliency_masks] =...
-    mssr_open(features_fname, regions_fname, type) %#ok<STOUT>
+    open_regions(detector, features_fname, regions_fname, type) 
 
 
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
-if nargin < 3
+if nargin < 4
     type = 0;
-elseif nargin < 2
+elseif nargin < 3
     regions_fname = [];
-elseif nargin < 1
-    error('mssr_open.m requires at least 1 input argument!');
+elseif nargin <2
+    error('open_regions.m requires at least 2 input arguments!');
 end
 %**************************************************************************
 % constants/hard-set parameters
@@ -50,13 +53,20 @@ FEAT_DIM_TYPE = 6;
 % input parameters -> variables
 %--------------------------------------------------------------------------
 % in case we want to read the features incl. the saliency type
+switch lower(detector)
+    case {'mssr', 'smssr', 'dmsr'}
+        ext = lower(detector);
+    otherwise
+        error('open_regions.m: unknown detector!');
+end
+
 if type
     i = find(features_fname =='.');
     j = i(end);
     if isempty(j)
-        features_type_fname = [features_fname '_type.mssr'];
+        features_type_fname = [features_fname '_type.' ext];
     else
-        features_type_fname = [features_fname(1:j-1) '_type.mssr'];
+        features_type_fname = [features_fname(1:j-1) '_type.' ext];
     end
 end
 %**************************************************************************
@@ -74,7 +84,7 @@ end
 %**************************************************************************
 % variables -> output parameters
 %--------------------------------------------------------------------------
-% load the binary masks (should contain saliency_masks as saved by mssr_save)
+% load the binary masks (should contain saliency_masks as saved by dmsr_save)
 if isempty(regions_fname)
     saliency_masks = [];
 else

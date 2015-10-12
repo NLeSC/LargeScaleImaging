@@ -10,14 +10,12 @@
 %--------------------------------------------------------------------------
 % main
 %--------------------------------------------------------------------------
-
+% dmsr- main function of the DMSR (Data-driven Morphology Salient Regions) detector
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------
 % difference_masks- obtain the bidirectioal difference between binary masks
 % integral_masks- obtain the sum along the level dim.from 3D binary masks
-% dmsr_save- function to save the results from the DMSR detector
-% dmsr_open- function to open the saved results from the DMSR detector
 %**************************************************************************
 % scripts
 %**************************************************************************
