@@ -31,7 +31,7 @@ ylabel('nb of correspondences')
 xlabel('transformation strength');
 hold on;
 
-mark=['-gs';'-bv';'-rp';'m.'];
+mark=['-gs';'-bv';'-rp';'-mh'];
 for d=1:4
     seqrepeat=[];
     seqcorresp=[];
