@@ -40,7 +40,7 @@ regions_filenames = cell(6,1);
 for i = 1:6
     name = strcat(test_case, num2str(i), '.png' );
     image_filenames{i} = fullfile(data_path,test_case,name);
-    name = strcat(test_case, num2str(i), '.', detector );
+    name = strcat(test_case, num2str(i), '.', lower(detector) );
     features_filenames{i} = fullfile(results_path,test_case,name);
     switch lower(detector)
         case 'mssr'
