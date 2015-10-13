@@ -35,7 +35,7 @@ function [erro,repeat,corresp, match_score,matches, twi]=repeatability(file1,fil
 %d1 d2 d3 ... - descriptor invariants
 %if descriptor_size<=1 the descriptor is ignored
 
-
+fprintf(1,'--------------------------------------------\n');
 fprintf(1,'Reading and sorting the regions...\n');
 
 [f1 s1 dimdesc1]=loadFeatures(file1);
@@ -49,7 +49,7 @@ fprintf(1,'nb of regions in file2 %d - descriptor dimension %d.\n',s2,dimdesc2);
 
 
 if size(f1,1)==5 & size(f1,1)==size(f2,1) 
-fprintf(1,'%s looks like file with affine regions...\n',file1);
+fprintf(1,'%s looks like file with affine regions...\n',file2);
   if  size(f1,1)~= 5 | size(f1,1) ~= 5
     error('Wrong ascii format of %s or %s files.',file1,file2);
   end
@@ -149,7 +149,7 @@ fprintf(1,'\nrepeatability: ');
 fprintf(1,'%.1f ',repeat);
 fprintf(1,'\nnb of correspondences: ');
 fprintf(1,'%.0f ',corresp);
-fprintf(1,'\n');
+%fprintf(1,'\n');
 
 match_overlap=40;
 if common_part==0
@@ -166,7 +166,7 @@ dx=(dout<10000).*(twi);
 matches=sum(sum(dx));
 match_score=100*matches/sf;
 
-fprintf(1,'\nMatching score  %0.1f, nb of correct matches %.1f.\n',match_score,matches);
+fprintf(1,'Matching score  %0.1f, nb of correct matches %.1f.\n',match_score,matches);
 
 
 
