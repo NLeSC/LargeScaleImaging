@@ -16,7 +16,7 @@ lisa = false;
 batch_structural = true;
 batch_textural = false;
 
-detector = 'DMSR';
+detector = 'DMSRA';
 
 save_flag = 1;
 vis_flag = 1;
@@ -107,7 +107,7 @@ for test_image = test_images
                 verbose = 0;
                 visualize_major = 0;
                 visualize_minor = 0;
-                saliency_type = [1 1 0 0];
+                saliency_type = [1 1 1 1];
             end
             
             

@@ -57,9 +57,9 @@ for test_case_cell = test_cases
         figure(f2);  plot([20 30 40 50 60],seqcorresp,mark(d,:));
     end
     
-    figure(f1);legend(det_suffix{1},det_suffix{2},det_suffix{3});
+    figure(f1);legend(det_suffix{1},det_suffix{2},det_suffix{3}, det_suffix{4}, det_suffix{5});
     axis([10 70 0 100]);
-    figure(f2);legend(det_suffix{1},det_suffix{2},det_suffix{3});
+    figure(f2);legend(det_suffix{1},det_suffix{2},det_suffix{3}, det_suffix{4}, det_suffix{5});
     pause(1);
 
     disp('--------------------------------');
