@@ -178,7 +178,6 @@ if (indentations_flag || protrusions_flag)
 
     % compute the areas of all regions (to find the most significant ones?)
     for i=1:numh
-        statsh(i).Area
         if statsh(i).Area/ROI_Area >= area_factor;
             num_CCLH = num_CCLH + 1;
             region = (bwh==i);

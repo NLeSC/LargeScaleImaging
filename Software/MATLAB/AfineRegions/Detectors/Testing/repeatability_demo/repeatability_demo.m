@@ -1,6 +1,6 @@
 function repeatability_demo
 
-det_suffix={'mser';'mssr'; 'dmsr'};
+det_suffix={'mser';'mssr'; 'mssra';'dmsr'; 'dmsra'};
 batch_structural = true;
 lisa = false;
 %% image filename
@@ -39,8 +39,8 @@ for test_case_cell = test_cases
     title(test_case);
     hold on;
     
-    mark=['-gs';'-bv';'-rp'];
-    for d=1:3
+    mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
+    for d=1:5
         seqrepeat=[];
         seqcorresp=[];
         for i=2:6

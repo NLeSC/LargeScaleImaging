@@ -13,11 +13,14 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = false;
-batch_textural = true;
+batch_structural = true;
+batch_textural = false;
+
+detector = 'DMSR';
 
 save_flag = 1;
 vis_flag = 1;
+vis_only = false;
 
 %% image filename
 if ispc
@@ -37,13 +40,11 @@ if interactive
 else
     if batch_structural
         test_images = {'boat', 'bikes', 'graffiti', 'leuven'};
-    else
-        test_images = {'graffiti'};
-    end
-    if batch_textural
-        test_images = {'bark', 'trees', 'ubc', 'wall'};
-    else
-        test_images = {'wall'};
+    else if batch_textural
+            test_images = {'bark', 'trees', 'ubc', 'wall'};
+        else
+            test_images = {'boat'};
+        end
     end
     mask_filename =[];
     
@@ -52,7 +53,7 @@ end
 %% run for all test cases
 for test_image = test_images
     [image_filenames, features_filenames, regions_filenames] = ...
-        get_test_filenames(test_image, 'dmsr', data_path, results_path);
+        get_test_filenames(test_image, detector, data_path, results_path);
     
     disp('**************************** Testing DMSR detector *****************');
     %% find out the number of test files
@@ -60,7 +61,7 @@ for test_image = test_images
     
     %% loop over all test images
     for i = 1:len
-       % for i = 1
+       % for i = 2
         %% load the image & convert to gray-scale if  color
         image_data_or = imread(char(image_filenames{i}));
         if ndims(image_data_or) > 2
@@ -86,49 +87,49 @@ for test_image = test_images
         end
         
         %% run the DMSR detector
-        
-        if interactive
-           %             SE_size_factor = input('Enter the Structuring Element size factor: ');
-            %             Area_factor = input('Enter the Connected Component size factor (processing): ');
-            %             num_levels = input('Enter the number of gray-levels: ');
-        else
+        if not(vis_only)
+            if interactive
+                %             SE_size_factor = input('Enter the Structuring Element size factor: ');
+                %             Area_factor = input('Enter the Connected Component size factor (processing): ');
+                %             num_levels = input('Enter the number of gray-levels: ');
+            else
+                
+                SE_size_factor = 0.02;
+                Area_factor_very_large = 0.01;
+                Area_factor_large = 0.001;
+                lambda_factor = 3;
+                num_levels = 255;
+                offset = 80;
+                conn = 8;
+                weight_all = 0.33;
+                weight_large = 0.33;
+                weight_very_large = 0.33;
+                verbose = 0;
+                visualize_major = 0;
+                visualize_minor = 0;
+                saliency_type = [1 1 0 0];
+            end
             
-            SE_size_factor = 0.02;
-            Area_factor_very_large = 0.01;
-            Area_factor_large = 0.001;
-            lambda_factor = 3;
-            num_levels = 255;
-            offset = 80;
-            conn = 8;
-            weight_all = 0.33;
-            weight_large = 0.33;
-            weight_very_large = 0.33;
-            verbose = 0;
-            visualize_major = 0;
-            visualize_minor = 0;
-            saliency_type = [1 1 0 0];
+            
+            tic;
+            disp('Test case: ');disp(test_image);
+            disp(detector);
+            
+            morphology_parameters = [SE_size_factor Area_factor_very_large ...
+                Area_factor_large lambda_factor conn];
+            weights = [weight_all weight_large weight_very_large];
+            execution_flags = [verbose visualize_major visualize_minor];
+            
+            [num_regions, features, saliency_masks] = dmsr(image_data,ROI,...
+                num_levels, offset,...
+                saliency_type, ...
+                morphology_parameters, weights, ...
+                execution_flags);
+            toc
+            % save the features
+            disp('Saving ...');
+            save_regions(detector, char(features_filenames{i}), char(regions_filenames{i}), num_regions, features, saliency_masks);
         end
-        
-    
-        tic;
-        disp('Test case: ');disp(test_image);
-        disp('DMSR');
-        
-        morphology_parameters = [SE_size_factor Area_factor_very_large ...
-            Area_factor_large lambda_factor conn];
-        weights = [weight_all weight_large weight_very_large];
-        execution_flags = [verbose visualize_major visualize_minor];
-        
-        [num_regions, features, saliency_masks] = dmsr(image_data,ROI,...
-            num_levels, offset,...
-            saliency_type, ...
-            morphology_parameters, weights, ...
-            execution_flags);
-        toc
-        % save the features
-        disp('Saving ...');
-        save_regions('DMSR', char(features_filenames{i}), char(regions_filenames{i}), num_regions, features, saliency_masks);
-        
         
         %% visualize
         
@@ -149,13 +150,13 @@ for test_image = test_images
             
             original = 0; % no original region's outline
             
-            display_smart_regions(char(image_filenames{i}), 'DMSR', ...
+            display_smart_regions(char(image_filenames{i}), detector, ...
                 char(features_filenames{i}), mask_filename, ...
                 char(regions_filenames{i}), type, ...
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);
         end
-        end
+    end
         close all
 end
 disp('--------------- The End ---------------------------------');

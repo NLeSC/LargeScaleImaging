@@ -44,11 +44,15 @@ for i = 1:6
     features_filenames{i} = fullfile(results_path,test_case,name);
     switch lower(detector)
         case 'mssr'
-            name = strcat(test_case, num2str(i), '_regions.mat' );     
+            name = strcat(test_case, num2str(i), '_regions.mat' );    
+        case 'mssra'
+            name = strcat(test_case, num2str(i), '_allregions.mat' );    
         case 'smssr'
             name = strcat(test_case, num2str(i), '_smartregions.mat' ); 
         case 'dmsr'
             name = strcat(test_case, num2str(i), '_dmsrregions.mat' );
+        case 'dmsra'
+            name = strcat(test_case, num2str(i), '_dmsrallregions.mat' );  
         otherwise
             error('Unknown detector!');
     end
