@@ -7,8 +7,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 12 October 2015
-% last modification date: 
-% modification details: 
+% last modification date: 13 October 2015 
+% modification details:added MSSRA and DMSRA for all regions 
 %**************************************************************************
 % INPUTS:
 % detector - string indicating the salient regions detector (S/D/MSSR)
@@ -54,7 +54,7 @@ FEAT_DIM_TYPE = 6;
 %--------------------------------------------------------------------------
 % in case we want to read the features incl. the saliency type
 switch lower(detector)
-    case {'mssr', 'smssr', 'dmsr'}
+    case {'mssr', 'smssr', 'dmsr', 'mssra', 'dmsra'}
         ext = lower(detector);
     otherwise
         error('open_regions.m: unknown detector!');
