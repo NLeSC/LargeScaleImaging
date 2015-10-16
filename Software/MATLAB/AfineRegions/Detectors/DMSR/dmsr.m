@@ -2,14 +2,14 @@
 %**************************************************************************
 % [num_regions, features, saliency_masks] = dmsr(image_data,ROI_mask,...
 %                                           num_levels, offset,...
-%                                           saliency_type, ...    
+%                                           otsu_only, saliency_type, ...    
 %                                           morphology_parameters, weights, ...
 %                                           execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 12 Oct 2015
-% last modification date: 
-% modification details: 
+% last modification date: 6 Oct 2015
+% modification details: added flag for Otsu only
 %**************************************************************************
 % INPUTS:
 % image_data        the input gray-level image data
@@ -20,6 +20,7 @@
 %                   default 255, i.e. all, step 1
 % [offset]          the offset (number of levels) from Otsu to be processed
 %                   default value- 80
+% [otsu_only]       flag to perform only Otsu thresholding
 % [saliency_type]   array with 4 flags for the 4 saliency types 
 %                   (Holes, Islands, Indentations, Protrusions)
 %                   [optional], if left out- default is [1 1 1 1]
@@ -64,7 +65,7 @@
 %**************************************************************************
 function [num_regions, features, saliency_masks] = dmsr(image_data,ROI_mask,...
                                            num_levels, offset,...
-                                           saliency_type, ...   
+                                           otsu_only,saliency_type, ...   
                                            morphology_parameters, weights, ...
                                            execution_flags)
 
@@ -73,14 +74,17 @@ function [num_regions, features, saliency_masks] = dmsr(image_data,ROI_mask,...
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 8 || length(execution_flags) <3
+if nargin < 9 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 7 || isempty(weights) || length(weights) < 3
+if nargin < 8 || isempty(weights) || length(weights) < 3
     weights = [0.33 0.33 0.33];
 end
-if nargin < 6 || length(morphology_parameters) < 5
+if nargin < 7 || length(morphology_parameters) < 5
     morphology_parameters = [0.02 0.1 0.001 3 8]; 
+end
+if nargin < 6 || isempty(otsu_only)
+    otsu_only =  false;
 end
 if nargin < 5 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
@@ -163,7 +167,7 @@ end
 
 % saliency masks
 num_saliency_types = length(find(saliency_type));
-saliency_masks = zeros(nrows,ncols,num_saliency_types);
+saliency_masks = zeros(nrows,ncols,num_saliency_types,'uint8');
 
 %**************************************************************************
 % computations
@@ -199,7 +203,7 @@ if verbose
 end
 
 [binary_image, otsu, num_cc, thresh] = max_conncomp_thresholding(ROI_only, ...
-    num_levels, offset, ...
+    num_levels, offset, otsu_only, ...
     morphology_parameters, weights, [verbose visualise_minor]);
 
 if visualise_major

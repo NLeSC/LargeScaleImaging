@@ -82,7 +82,7 @@ lambdahi = fix(SE_size/2);
 
 % saleincy masks
 num_saliency_types = length(find(saliency_type));
-saliency_masks = zeros(nrows, ncols, num_saliency_types);
+saliency_masks = zeros(nrows, ncols, num_saliency_types,'uint8');
 
 % by type
 if holes_flag

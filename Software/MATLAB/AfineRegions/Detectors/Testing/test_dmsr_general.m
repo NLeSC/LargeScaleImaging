@@ -13,10 +13,10 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
+batch_structural = false;
 batch_textural = false;
 
-detector = 'DMSRA';
+detector = 'DMSR';
 
 save_flag = 1;
 vis_flag = 1;
@@ -60,8 +60,8 @@ for test_image = test_images
     len = length(image_filenames);
     
     %% loop over all test images
-    for i = 1:len
-       % for i = 2
+    %for i = 1:len
+        for i = 2
         %% load the image & convert to gray-scale if  color
         image_data_or = imread(char(image_filenames{i}));
         if ndims(image_data_or) > 2
@@ -100,6 +100,7 @@ for test_image = test_images
                 lambda_factor = 3;
                 num_levels = 255;
                 offset = 80;
+                otsu_only = false;
                 conn = 8;
                 weight_all = 0.33;
                 weight_large = 0.33;
@@ -107,7 +108,7 @@ for test_image = test_images
                 verbose = 0;
                 visualize_major = 0;
                 visualize_minor = 0;
-                saliency_type = [1 1 1 1];
+                saliency_type = [1 1 0 0];
             end
             
             
@@ -122,7 +123,7 @@ for test_image = test_images
             
             [num_regions, features, saliency_masks] = dmsr(image_data,ROI,...
                 num_levels, offset,...
-                saliency_type, ...
+                otsu_only, saliency_type, ...
                 morphology_parameters, weights, ...
                 execution_flags);
             toc
@@ -157,6 +158,6 @@ for test_image = test_images
                 line_width, col_label, original);
         end
     end
-        close all
+       % close all
 end
 disp('--------------- The End ---------------------------------');
