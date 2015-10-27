@@ -1,36 +1,97 @@
 % compute_region_props.m- computing region properties from salient binary masks
 %**************************************************************************
-% [saliency_masks] = binary_detector(ROI, SE_size_factor, area_factor, ...
-%                                saliency_type, visualise)
+% [regions_properties] = compute_region_props(saliency_masks, list_properties)
 %
 % author: Elena Ranguelova, NLeSc
-% date created: 28 Sept 2015
+% date created: 27 Oct 2015
 % last modification date: 
 % modification details: 
 %**************************************************************************
 % INPUTS:
-% ROI- binary mask of the Region Of Interest
-% SE_size_factor- structuring element (SE) size factor
-% area_factor - area factor for the significant connected components (CCs)
-% [saliency_type]- array with 4 flags for the 4 saliency types 
-%                (Holes, Islands, Indentations, Protrusions)
-%                [optional], if left out- default is [1 1 1 1]   
-% [visualise] - visualisation flag
-%               [optional], if left out- default is 0, if set to 1, 
-%               intermendiate steps of the detection are shown 
+% saliency_masks-  the binary masks of the extracted salient regions
+% list_properties- the list of desired region properties (see help
+%                  regionprops for all values)
 %**************************************************************************
 % OUTPUTS:
-% saliency_masks - 3-D array of the binary saliency masks of the regions
-%                  saliency_masks(:,:,i) contains the salient regions per 
-%                  type: i=1- "holes", i=2- "islands", i=3 - "indentaitons"
-%                  and i =4-"protrusions"  if saliency_types is [1 1 1 1]
+% region_properties- structure with all region properties. The fileds of 
+%                   the structure are as required in list_properties
 %**************************************************************************
 % EXAMPLES USAGE:
-% [saliency_masks] = binary_detector(ROI, se_size_factor, area_factor, ...
-%                                saliency_type, visualise);
-%                    as called from a gray level detector
+% a = imread('circlesBrightDark.png');
+% bw = a < 100;
+% imshow(bw); title('Image with Circles')
+% list = {'Centroid', 'MajorAxisLength','MinorAxisLength'};
+% [regions_properties] = compute_region_props(bw, list)
 %**************************************************************************
-% REFERENCES: Ranguelova, E., Pauwels, E. J. ``Morphology-based Stable
-% Salient Regions Detector'', International conference on Image and Vision 
-% Computing New Zealand (IVCNZ'06), Great Barrier Island, New Zealand,
-% November 2006, pp.97-102
+% REFERENCES: 
+%**************************************************************************
+function [regions_properties] = compute_region_props(saliency_masks, ...
+                                                     list_properties)
+
+%**************************************************************************
+% input control    
+%--------------------------------------------------------------------------
+if nargin < 2
+    list_properties = {'Area', 'Centroid','ConvexArea', ...
+                'Eccentricity', 'EquivDiameter', 'MinorAxisLength',...
+                'MajorAxisLength', 'Orientation'};
+elseif nargin < 1
+    error('compute_region_props.m requires at least 1 input argument!');
+    region_properties = [];
+    return
+end
+
+%**************************************************************************
+% input parameters -> variables
+%--------------------------------------------------------------------------
+% how many types of regions?
+sal_types = size(saliency_masks,3);
+
+%**************************************************************************
+% initialisations
+%--------------------------------------------------------------------------
+regions_properties=  struct([]);
+
+%**************************************************************************
+% computations
+%--------------------------------------------------------------------------
+j = 0;
+if sal_types > 0
+    j = j+ 1;
+    CC = bwconncomp(saliency_masks(:,:,j));
+    regions_properties = regionprops(CC, list_properties);
+end
+if sal_types > 1
+    j = j+ 1;
+    CC = bwconncomp(saliency_masks(:,:,j));
+    new_properties = regionprops(CC, list_properties);
+    regions_properties = append_props(regions_properties, new_properties,...
+        list_propertiess);
+end
+if sal_types > 2
+    j = j+ 1;
+    CC = bwconncomp(saliency_masks(:,:,j));
+    new_properties = regionprops(CC, list_properties);
+    regions_properties = append_props(regions_properties, new_properties,...
+        list_propertiess);
+end
+if sal_types > 3
+    j = j+ 1;
+    BW = saliency_masks(:,:,j);
+    new_properties = regionprops(BW, list_properties);
+    regions_properties = append_props(regions_properties, new_properties,...
+        list_propertiess);
+end
+%**************************************************************************
+% nested functions
+%--------------------------------------------------------------------------
+function appended_props = append_props(old_props, new_props, list_props)
+    for l = 1: length(list_props)
+        appended_props = old_props;
+        new_props_per_type = new_props.list_props{l};
+        appended_props.list_props{l} = [appended_props.list_props{l} ...
+            new_props_per_type];
+    end    
+end
+
+end
