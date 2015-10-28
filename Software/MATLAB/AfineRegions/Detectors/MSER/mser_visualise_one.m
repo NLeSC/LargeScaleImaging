@@ -90,6 +90,7 @@ end
     [num_regions, features] = mser_open(features_fname);
     
     % enter the visualisation parameters
+    step_list_regions = 1;
     all = input('Display all regions? [y/n]: ','s');
     if lower(all)=='y'
         list_regions = [];
@@ -139,7 +140,7 @@ end
    
     %addpath('..\MSSR');
     display_features_mser(image_fname, features_fname, [],[],0, ...
-        list_regions, scaling, labels, col_ellipse, line_width, col_label, 0);
+        list_regions, step_list_regions, scaling, labels, col_ellipse, line_width, col_label, 0);
 
     title('MSER');
     disp('--------------- The End ---------------------------------');

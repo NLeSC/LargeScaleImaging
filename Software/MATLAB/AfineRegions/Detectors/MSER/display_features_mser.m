@@ -67,7 +67,7 @@ if (nargin < 11 ) || isempty(line_width)
     line_width = 1;
 end
 if (nargin < 10) || isempty(col_ellipse)
-    col_ellipse =  [1 0 1]; % magenta
+    col_ellipse =  [1 1 0]; % yellow
 end
 if (nargin < 9) || isempty(labels)
     labels = 0;
@@ -284,6 +284,7 @@ function drawellipse(x,y,a,b,c,scaling,col,lw)
     % first plot blac ellipse and then narrower on top with the desired colour
     plot(pt(2,:)+x,pt(1,:)+y,'k-','LineWidth',1.5*lw);
     plot(pt(2,:)+x,pt(1,:)+y,'w-','LineWidth',lw);
+    
     set(findobj(gca,'Type','line','Color',[1 1 1]),...
         'Color',col);
     hold off;
