@@ -1,7 +1,7 @@
 function imgstruct = loadImages(folder)
 
 if ~exist('folder','var') || isempty(folder)
-    folder = '/misc/lmbraid12/fischer/data/dosofis/source_files/';
+    folder = '/home/elena/eStep/LargeScaleImaging/Data/Freiburg/01_graffiti/';
 end
 
 folderinfo = dir(fullfile(folder, '*.jpg'));
