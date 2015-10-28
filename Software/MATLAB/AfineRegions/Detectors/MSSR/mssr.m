@@ -198,16 +198,16 @@ end
 % initialisations
 %--------------------------------------------------------------------------
 % saliency masks per gray level
-holes_level = zeros(nrows,ncols);
-islands_level = zeros(nrows,ncols);
-indentations_level = zeros(nrows,ncols);
-protrusions_level = zeros(nrows,ncols);
+holes_level = zeros(nrows,ncols, 'uint8');
+islands_level = zeros(nrows,ncols, 'uint8');
+indentations_level = zeros(nrows,ncols, 'uint8');
+protrusions_level = zeros(nrows,ncols, 'uint8');
 
 % accumulative saliency masks
-holes_acc = zeros(nrows,ncols);
-islands_acc = zeros(nrows,ncols);
-indentations_acc = zeros(nrows,ncols);
-protrusions_acc = zeros(nrows,ncols);
+holes_acc = zeros(nrows,ncols, 'uint8');
+islands_acc = zeros(nrows,ncols, 'uint8');
+indentations_acc = zeros(nrows,ncols, 'uint8');
+protrusions_acc = zeros(nrows,ncols, 'uint8');
 
 % thresholded saliency masks
 holes_thresh = zeros(nrows,ncols);
@@ -307,6 +307,7 @@ for it = 1:num_levels
     % cumulative saliency masks
     if holes_flag
         holes_level = saliency_masks_level(:,:,1);
+        %imshow(holes_level);title('.');
         holes_acc = holes_acc + holes_level;
     end
     if islands_flag
@@ -394,18 +395,18 @@ end
 tic;
 % the holes and islands
 if find(holes_acc)
-    holes_thresh = thresh_cumsum(holes_acc, thresh, verbose);
+    holes_thresh = thresh_cumsum(double(holes_acc), thresh, verbose);
 end
 if find(islands_acc)
-    islands_thresh = thresh_cumsum(islands_acc, thresh, verbose);
+    islands_thresh = thresh_cumsum(double(islands_acc), thresh, verbose);
 end
 
 % the indentations and protrusions
 if find(indentations_acc)
-    indentations_thresh = thresh_cumsum(indentations_acc, thresh, verbose);
+    indentations_thresh = thresh_cumsum(double(indentations_acc), thresh, verbose);
 end
 if find(protrusions_acc)
-    protrusions_thresh = thresh_cumsum(protrusions_acc, thresh, verbose);
+    protrusions_thresh = thresh_cumsum(double(protrusions_acc), thresh, verbose);
 end
   
 %visualisation
