@@ -4,8 +4,8 @@
 %
 % author: Elena Ranguelova, TNO
 % date created: 6 Mar 2008
-% last modification date: 
-% modification details: 
+% last modification date: 28 Oct 2015
+% modification details: checkfor operationsystem
 %**************************************************************************
 % INPUTS:
 % image_fname- the input image filename 
@@ -78,9 +78,15 @@ end
 %..........................................................................
 t0 = clock;
 
-% invoke the Windows executable
-command = ['mser -t ' num2str(output_file_type) ' -es  '...
-            num2str(ellipse_scale) ' -i ' image_fname ' -o ' features_fname];
+if ispc
+    % invoke the Windows executable
+    command = ['mser -t ' num2str(output_file_type) ' -es  '...
+        num2str(ellipse_scale) ' -i ' image_fname ' -o ' features_fname];
+elseif isunix
+    % invoke the Unix link
+    command = ['./mser.ln -t ' num2str(output_file_type) ' -es  '...
+        num2str(ellipse_scale) ' -i ' image_fname ' -o ' features_fname];
+end
 system(command);
 %**************************************************************************
 % variables -> output parameters
