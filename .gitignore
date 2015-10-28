@@ -1,6 +1,4 @@
-/Data/Test
-/Data/Scientific
-/Results/Scientific
+/Data
 /Software/MATLAB/AfineRegions/ImageThresholdingFuzzyEntropy/
 /Results/
 *.aux
