@@ -14,8 +14,32 @@ visualize_minor = false;
 lisa = false;
 
 batch_structural = true;
+if interactive
+    %             SE_size_factor = input('Enter the Structuring Element size factor: ');
+    %             Area_factor = input('Enter the Connected Component size factor (processing): ');
+    %             num_levels = input('Enter the number of gray-levels: ');
+else
+    %% parameters
+    SE_size_factor = 0.02;
+    Area_factor_very_large = 0.01;
+    Area_factor_large = 0.001;
+    lambda_factor = 3;
+    num_levels = 255;
+    offset = 80;
+    otsu_only = false;
+    conn = 8;
+    weight_all = 0.33;
+    weight_large = 0.33;
+    weight_very_large = 0.33;
+    saliency_type = [1 1 0 0];
+end
 
-detector = 'DMSR';
+if length(find(saliency_type)) > 2
+    detector = 'DMSRA';
+else
+    detector = 'DMSR';
+end
+
 save_flag = 1;
 vis_flag = 0;
 vis_only = false;
@@ -41,10 +65,10 @@ if interactive
 else
     
     if batch_structural
-        test_images = {'01_graffiti',...
-            '03_freiburg_center',...
-            '04_freiburg_from_munster_crop',...
-            '05_freiburg_innenstadt',...
+        test_images = {%'01_graffiti',...
+            %'03_freiburg_center',...
+            %'04_freiburg_from_munster_crop',...
+            %'05_freiburg_innenstadt',...
             '09_cool_car',...
             '17_freiburg_munster',...
             '18_graffiti',...
@@ -56,8 +80,8 @@ else
     end
 end
 mask_filename =[];
-    disp('**************************** Testing DMSR detector *****************');
-
+disp('**************************** Testing detector *****************');
+disp(detector);
 %% run for all test cases
 for test_image = test_images
     data_path_full = fullfile(data_path, char(test_image),'PNG');
@@ -98,25 +122,7 @@ for test_image = test_images
         
         %% run the DMSR detector
         if not(vis_only)
-            if interactive
-                %             SE_size_factor = input('Enter the Structuring Element size factor: ');
-                %             Area_factor = input('Enter the Connected Component size factor (processing): ');
-                %             num_levels = input('Enter the number of gray-levels: ');
-            else
-              %% parameters  
-                SE_size_factor = 0.02;
-                Area_factor_very_large = 0.01;
-                Area_factor_large = 0.001;
-                lambda_factor = 3;
-                num_levels = 255;
-                offset = 80;
-                otsu_only = false;
-                conn = 8;
-                weight_all = 0.33;
-                weight_large = 0.33;
-                weight_very_large = 0.33;
-                saliency_type = [1 1 0 0];
-            end
+            
             
             %% run
             tic;
