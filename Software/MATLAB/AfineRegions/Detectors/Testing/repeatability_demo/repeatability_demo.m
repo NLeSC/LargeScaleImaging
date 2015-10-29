@@ -29,13 +29,13 @@ for test_case_cell = test_cases
     figure(f1);clf;
     grid on;
     ylabel('repeatability %')
-    xlabel('transformation strength');
+    xlabel('transformation magnitude');
     title(test_case);
     hold on;
     figure(f2);clf;
     grid on;
     ylabel('nb of correspondences')
-    xlabel('transformation strength');
+    xlabel('transformation magnitude');
     title(test_case);
     hold on;
     
