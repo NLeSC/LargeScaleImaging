@@ -160,6 +160,7 @@ for test_image = test_images
                 line_width, col_label, original);
             title(detector);
         end
+        close all
     end
     close all
 end

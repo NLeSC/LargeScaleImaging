@@ -13,7 +13,7 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = false;
+batch_structural = true;
 
 detector = 'DMSR';
 save_flag = 1;
@@ -52,7 +52,7 @@ else
             '22_small_palace'};
         
     else
-        test_images = {'01_graffiti'};
+        test_images = {'03_freiburg_center'};
     end
 end
 mask_filename =[];
@@ -69,7 +69,7 @@ for test_image = test_images
     
     %% loop over all test images
     for i = 1:len
-       % for i = 2
+        %for i = 1
         %% load the image & convert to gray-scale if  color
         image_data_or = imread(char(image_filenames{i}));
         if ndims(image_data_or) > 2
@@ -101,7 +101,7 @@ for test_image = test_images
                 %             Area_factor = input('Enter the Connected Component size factor (processing): ');
                 %             num_levels = input('Enter the number of gray-levels: ');
             else
-                
+              %% parameters  
                 SE_size_factor = 0.02;
                 Area_factor_very_large = 0.01;
                 Area_factor_large = 0.001;
@@ -113,13 +113,13 @@ for test_image = test_images
                 weight_all = 0.33;
                 weight_large = 0.33;
                 weight_very_large = 0.33;
-                verbose = 0;
-                visualize_major = 0;
-                visualize_minor = 0;
+                %verbose = 1;
+                %visualize_major = 1;
+                %visualize_minor = 1;
                 saliency_type = [1 1 0 0];
             end
             
-            
+            %% run
             tic;
             disp('Test case: ');disp(test_image);
             disp(detector);
@@ -165,7 +165,12 @@ for test_image = test_images
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);
         end
+%         if batch_structural
+%             close all
+%         end
     end
-       close all
+    if batch_structural
+        close all
+    end
 end
 disp('--------------- The End ---------------------------------');
