@@ -82,7 +82,8 @@ lambdahi = fix(SE_size/2);
 
 % saleincy masks
 num_saliency_types = length(find(saliency_type));
-saliency_masks = zeros(nrows, ncols, num_saliency_types,'uint8');
+%saliency_masks = zeros(nrows, ncols, num_saliency_types,'uint8');
+saliency_masks = zeros(nrows, ncols, num_saliency_types);
 
 % by type
 if holes_flag
@@ -121,8 +122,8 @@ filled_ROI_inv = imfill(imcomplement(ROI),'holes');
 % visualisation
 if visualise
     figure(f);subplot(221);imshow(ROI); title('ROI'); grid on;
-    subplot(223);imshow(filled_ROI);title('filled ROI'); grid on;
-    subplot(224);imshow(filled_ROI_inv);title('filled ROI (inverted)'); grid on;
+    subplot(223);imshow(double(filled_ROI));title('filled ROI'); grid on;
+    subplot(224);imshow(double(filled_ROI_inv));title('filled ROI (inverted)'); grid on;
 end
 
 
@@ -157,10 +158,10 @@ end
 if visualise
     f2 = figure;
     if holes_flag
-        subplot(221);imshow(holes);title('holes'); grid on;
+        subplot(221);imshow(double(holes));title('holes'); grid on;
     end
     if islands_flag
-        subplot(222);imshow(islands);title('islands'); grid on;
+        subplot(222);imshow(double(islands));title('islands'); grid on;
     end
 end
 

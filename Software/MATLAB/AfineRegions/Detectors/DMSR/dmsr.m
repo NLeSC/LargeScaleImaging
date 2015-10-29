@@ -167,7 +167,8 @@ end
 
 % saliency masks
 num_saliency_types = length(find(saliency_type));
-saliency_masks = zeros(nrows,ncols,num_saliency_types,'uint8');
+%saliency_masks = zeros(nrows,ncols,num_saliency_types,'uint8');
+saliency_masks = zeros(nrows,ncols,num_saliency_types);
 
 %**************************************************************************
 % computations
@@ -221,7 +222,7 @@ if visualise_major
     
     hold off;axis on; grid on;
     
-    subplot(224); imshow(binary_image); axis on;grid on;
+    subplot(224); imshow(double(binary_image)); axis on;grid on;
     title(['Binarized image at level ' num2str(thresh)]);
 end
         

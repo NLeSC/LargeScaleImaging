@@ -39,7 +39,7 @@
 %**************************************************************************
 % OUTPUTS:
 % binary_image      the binarized gray level image
-% otsu              the Otsuthreshold (gray level)
+% otsu              the Otsu threshold (gray level)
 % num_combined_cc            combined number of connected components
 % thresh            the threshold used for binarization- the max of
 %                   the weighted combination among the 3 number of CCs
@@ -116,7 +116,8 @@ if not(otsu_only)
     %**************************************************************************
     % initialisations
     %--------------------------------------------------------------------------
-    binary_masks = zeros(nrows,ncols, max_level,'uint8');
+   % binary_masks = zeros(nrows,ncols, max_level,'uint8');
+    binary_masks = zeros(nrows,ncols, max_level);
     num_cc = zeros(1,max_level);
     num_large_cc = zeros(1,max_level);
     num_very_large_cc = zeros(1,max_level);
@@ -149,6 +150,7 @@ if not (otsu_only)
         clear binary
         binary_filt2 = 1- bwareaopen(1- binary_filt, lambda, connectivity);
         binary_masks(:,:,fix(level)) = binary_filt2;
+         
         clear binary_filt binary_filt2
     end
     
@@ -158,6 +160,7 @@ if not (otsu_only)
     end
     for level = otsu - off: step: otsu + off
         l = fix(level);
+       % imshow(double(binary_masks(:,:,l))); title(num2str(l));         
         CC = bwconncomp(binary_masks(:,:,l),connectivity);
         RP = regionprops(CC, 'Area');
         num = CC.NumObjects;
@@ -174,6 +177,10 @@ if not (otsu_only)
                 end
             end
         end
+%         num
+%         ln
+%         vln
+%         pause;
         num_large_cc(l) = ln;
         num_very_large_cc(l) = vln;
     end
@@ -211,7 +218,7 @@ if not (otsu_only)
         disp('Combined maximum number of CCs:'); disp(max_combined);
     end
     
-    binary_image = binary_masks(:,:,thresh);
+    binary_image = binary_masks(:,:,thresh); %gray_image >= thresh; 
     clear binary_masks
     
     if verbose
@@ -253,7 +260,7 @@ if not (otsu_only)
             'YData', [0 1.2], 'Color', 'm');
         hold off;axis on; grid on;
         legend('all','large', 'very large', 'combined');
-        subplot(224); imshow(binary_image); axis on;grid on;
+        subplot(224); imshow(double(binary_image)); axis on;grid on;
         title(['Binarized image at level ' num2str(thresh)]);
         
         
