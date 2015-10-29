@@ -77,7 +77,7 @@ end
 % initialisations
 %--------------------------------------------------------------------------
 num_saliency_types = length(find(saliency_type));
-saliency_masks = zeros(nrows,ncols,num_saliency_types,'uint8');
+saliency_masks = zeros(nrows,ncols,num_saliency_types);
 
 if visualise
     f = figure;

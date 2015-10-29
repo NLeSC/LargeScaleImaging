@@ -198,16 +198,16 @@ end
 % initialisations
 %--------------------------------------------------------------------------
 % saliency masks per gray level
-holes_level = zeros(nrows,ncols, 'uint8');
-islands_level = zeros(nrows,ncols, 'uint8');
-indentations_level = zeros(nrows,ncols, 'uint8');
-protrusions_level = zeros(nrows,ncols, 'uint8');
+holes_level = zeros(nrows,ncols);
+islands_level = zeros(nrows,ncols);
+indentations_level = zeros(nrows,ncols);
+protrusions_level = zeros(nrows,ncols);
 
 % accumulative saliency masks
-holes_acc = zeros(nrows,ncols, 'uint8');
-islands_acc = zeros(nrows,ncols, 'uint8');
-indentations_acc = zeros(nrows,ncols, 'uint8');
-protrusions_acc = zeros(nrows,ncols, 'uint8');
+holes_acc = zeros(nrows,ncols);
+islands_acc = zeros(nrows,ncols);
+indentations_acc = zeros(nrows,ncols);
+protrusions_acc = zeros(nrows,ncols);
 
 % thresholded saliency masks
 holes_thresh = zeros(nrows,ncols);
