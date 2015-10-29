@@ -2,8 +2,8 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 28-10-2015
-% last modification date: 
-% modification details: 
+% last modification date:
+% modification details:
 %**********************************************************
 %% paramaters
 interactive = false;
@@ -15,17 +15,39 @@ lisa = false;
 
 batch_structural = true;
 %batch_textural = false;
- 
-detector = 'MSSR';
+
+if interactive
+                saliency_types(1) = input('Detect "holes"? [0/1]: ');
+                saliency_types(2) = input('Detect "islands"? [0/1]: ');
+                saliency_types(3) = input('Detect "indentations"? [0/1]: ');
+                saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
+                SE_size_factor = input('Enter the Structuring Element size factor: ');
+                Area_factor = input('Enter the Connected Component size factor: ');
+                num_levels = input('Enter the number of gray-levels: ');
+                thresh = input('Enter the region threshold: ');
+            else
+                saliency_types = [1 1 0 0];
+                SE_size_factor = 0.02;
+                Area_factor = 0.03;
+                num_levels = 20;
+                thresh = 0.6;
+                thresh_type = 's';
+            end
+            
+if length(find(saliency_types)) > 2
+    detector = 'MSSRA';
+else
+    detector = 'MSSR';
+end
 save_flag = 1;
-vis_flag = 1;
+vis_flag = 0;
 vis_only = false;
 
 %% image filename
-if ispc 
+if ispc
     starting_path = fullfile('C:','Projects');
 elseif lisa
-     starting_path = fullfile(filesep, 'home','elenar');
+    starting_path = fullfile(filesep, 'home','elenar');
 else
     starting_path = fullfile(filesep,'home','elena');
 end
@@ -34,6 +56,7 @@ data_path = fullfile(project_path, 'Data', 'Freiburg');
 results_path = fullfile(project_path, 'Results', 'Freiburg');
 
 if interactive
+    
     test_images = input('Enter test case: [01_graffiti|03_freiburg_center|',...
         '\n 04_freiburg_from_munster_crop|05_freiburg_innerstadt|',...
         '\n 09_cool_car|17_freiburg_munster|18_graffiti|',...
@@ -45,7 +68,7 @@ else
         test_images = {'01_graffiti',...
             '03_freiburg_center',...
             '04_freiburg_from_munster_crop',...
-            '05_freiburg_innerstadt',...
+            '05_freiburg_innenstadt',...
             '09_cool_car',...
             '17_freiburg_munster',...
             '18_graffiti',...
@@ -57,24 +80,27 @@ else
     end
 end
 mask_filename =[];
-
+disp('**************************** Testing detector *****************');
+disp(detector);
 %% run for all test cases
 for test_image = test_images
     data_path_full = fullfile(data_path, char(test_image),'PNG');
     results_path_full = fullfile(results_path, char(test_image));
     [image_filenames, features_filenames, regions_filenames] = ...
         get_filenames_path(detector, data_path_full, results_path_full);
-
-    disp('**************************** Testing MSSR detector *****************');
+    
+    disp('Test case: ');disp(test_image);
+    
     %% find out the number of test files
     len = length(image_filenames);
     
     %% loop over all test images
-   for i = 1:len
-    % for i =2
-        %% load the image & convertto gray-scale if  color
+    for i = 1:len
+        disp('Test image #: ');disp(i);
+        % for i =2
+        %% load the image & convert to gray-scale if  color
         image_data = imread(char(image_filenames{i}));
-       
+        
         if ndims(image_data) > 2
             image_data = rgb2gray(image_data);
         end
@@ -99,28 +125,8 @@ for test_image = test_images
         
         tic;
         if not(vis_only)
-            if interactive
-                saliency_types(1) = input('Detect "holes"? [0/1]: ');
-                saliency_types(2) = input('Detect "islands"? [0/1]: ');
-                saliency_types(3) = input('Detect "indentations"? [0/1]: ');
-                saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
-                SE_size_factor = input('Enter the Structuring Element size factor: ');
-                Area_factor = input('Enter the Connected Component size factor: ');
-                num_levels = input('Enter the number of gray-levels: ');
-                thresh = input('Enter the region threshold: ');
-            else
-                saliency_types = [1 1 0 0];
-                SE_size_factor = 0.02;
-                Area_factor = 0.03;
-                num_levels = 20;
-                thresh = 0.6;
-                thresh_type = 's';
-            end
             
-            
-            disp('Test case: ');disp(test_image);
-            
-            disp(detector);
+                       
             region_params = [SE_size_factor Area_factor thresh];
             execution_params = [verbose visualize_major visualize_minor];
             [num_regions, features, saliency_masks] = mssr(image_data, ROI, ...
@@ -160,9 +166,12 @@ for test_image = test_images
                 line_width, col_label, original);
             title(detector);
         end
+        %close all
+    end
+    disp('****************************************************************');
+    if batch_structural
         close all
     end
-    close all
 end
- disp('--------------- The End ---------------------------------');
+disp('--------------- The End ---------------------------------');
 

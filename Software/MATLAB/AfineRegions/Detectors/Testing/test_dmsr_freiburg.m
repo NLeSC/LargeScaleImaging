@@ -8,7 +8,7 @@
 %% paramaters
 interactive = false;
 verbose = false;
-visualize = true;
+visualize = false;
 visualize_major = false;
 visualize_minor = false;
 lisa = false;
@@ -17,7 +17,7 @@ batch_structural = true;
 
 detector = 'DMSR';
 save_flag = 1;
-vis_flag = 1;
+vis_flag = 0;
 vis_only = false;
 
 %% image filename
@@ -44,7 +44,7 @@ else
         test_images = {'01_graffiti',...
             '03_freiburg_center',...
             '04_freiburg_from_munster_crop',...
-            '05_freiburg_innerstadt',...
+            '05_freiburg_innenstadt',...
             '09_cool_car',...
             '17_freiburg_munster',...
             '18_graffiti',...
@@ -56,19 +56,21 @@ else
     end
 end
 mask_filename =[];
+    disp('**************************** Testing DMSR detector *****************');
+
 %% run for all test cases
 for test_image = test_images
     data_path_full = fullfile(data_path, char(test_image),'PNG');
     results_path_full = fullfile(results_path, char(test_image));
     [image_filenames, features_filenames, regions_filenames] = ...
         get_filenames_path(detector, data_path_full, results_path_full);
-    
-    disp('**************************** Testing DMSR detector *****************');
+     disp('Test case: ');disp(test_image);
     %% find out the number of test files
     len = length(image_filenames);
     
     %% loop over all test images
     for i = 1:len
+         disp('Test image #: ');disp(i);
         %for i = 1
         %% load the image & convert to gray-scale if  color
         image_data_or = imread(char(image_filenames{i}));
@@ -113,16 +115,11 @@ for test_image = test_images
                 weight_all = 0.33;
                 weight_large = 0.33;
                 weight_very_large = 0.33;
-                %verbose = 1;
-                %visualize_major = 1;
-                %visualize_minor = 1;
                 saliency_type = [1 1 0 0];
             end
             
             %% run
             tic;
-            disp('Test case: ');disp(test_image);
-            disp(detector);
             
             morphology_parameters = [SE_size_factor Area_factor_very_large ...
                 Area_factor_large lambda_factor conn];
@@ -169,6 +166,7 @@ for test_image = test_images
 %             close all
 %         end
     end
+        disp('****************************************************************');
     if batch_structural
         close all
     end
