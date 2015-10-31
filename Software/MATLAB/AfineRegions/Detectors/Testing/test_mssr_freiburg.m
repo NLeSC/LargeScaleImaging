@@ -14,34 +14,34 @@ visualize_minor = false;
 lisa = false;
 
 batch_structural = true;
-%batch_textural = false;
+batch = 2;
 
 if interactive
-                saliency_types(1) = input('Detect "holes"? [0/1]: ');
-                saliency_types(2) = input('Detect "islands"? [0/1]: ');
-                saliency_types(3) = input('Detect "indentations"? [0/1]: ');
-                saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
-                SE_size_factor = input('Enter the Structuring Element size factor: ');
-                Area_factor = input('Enter the Connected Component size factor: ');
-                num_levels = input('Enter the number of gray-levels: ');
-                thresh = input('Enter the region threshold: ');
-            else
-                saliency_types = [1 1 0 0];
-                SE_size_factor = 0.02;
-                Area_factor = 0.03;
-                num_levels = 20;
-                thresh = 0.6;
-                thresh_type = 's';
-            end
+    saliency_types(1) = input('Detect "holes"? [0/1]: ');
+    saliency_types(2) = input('Detect "islands"? [0/1]: ');
+    saliency_types(3) = input('Detect "indentations"? [0/1]: ');
+    saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
+    SE_size_factor = input('Enter the Structuring Element size factor: ');
+    Area_factor = input('Enter the Connected Component size factor: ');
+    num_levels = input('Enter the number of gray-levels: ');
+    thresh = input('Enter the region threshold: ');
+else
+    saliency_types = [1 1 1 1];
+    SE_size_factor = 0.02;
+    Area_factor = 0.03;
+    num_levels = 20;
+    thresh = 0.6;
+    thresh_type = 's';
+end
             
 if length(find(saliency_types)) > 2
     detector = 'MSSRA';
 else
     detector = 'MSSR';
 end
-save_flag = 1;
-vis_flag = 0;
-vis_only = false;
+save_flag = 0;
+vis_flag = 1;
+vis_only = true;
 
 %% image filename
 if ispc
@@ -65,18 +65,23 @@ if interactive
 else
     
     if batch_structural
-        test_images = {'01_graffiti',...
-            '03_freiburg_center',...
-            '04_freiburg_from_munster_crop',...
-            '05_freiburg_innenstadt',...
-            '09_cool_car',...
-            '17_freiburg_munster',...
-            '18_graffiti',...
-            '20_hall2',...
-            '22_small_palace'};
-        
+        switch batch
+            case 1
+                test_images = {'01_graffiti',...
+                    '03_freiburg_center',...
+                    '04_freiburg_from_munster_crop'};
+            case 2
+                test_images = {'05_freiburg_innenstadt',...
+                    '09_cool_car',...
+                    '17_freiburg_munster'};
+            case 3
+                test_images = {'18_graffiti',...
+                    '20_hall2',...
+                    '22_small_palace'};
+                
+        end
     else
-        test_images = {'01_graffiti'};
+        test_images = {'05_freiburg_innenstadt'};
     end
 end
 mask_filename =[];
@@ -166,11 +171,11 @@ for test_image = test_images
                 line_width, col_label, original);
             title(detector);
         end
-        %close all
     end
     disp('****************************************************************');
     if batch_structural
         close all
+        pause(2);
     end
 end
 disp('--------------- The End ---------------------------------');

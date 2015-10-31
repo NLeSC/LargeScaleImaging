@@ -14,6 +14,8 @@ visualize_minor = false;
 lisa = false;
 
 batch_structural = true;
+batch = 1;
+
 if interactive
     %             SE_size_factor = input('Enter the Structuring Element size factor: ');
     %             Area_factor = input('Enter the Connected Component size factor (processing): ');
@@ -31,7 +33,7 @@ else
     weight_all = 0.33;
     weight_large = 0.33;
     weight_very_large = 0.33;
-    saliency_type = [1 1 0 0];
+    saliency_type = [1 1 1 1];
 end
 
 if length(find(saliency_type)) > 2
@@ -65,18 +67,23 @@ if interactive
 else
     
     if batch_structural
-        test_images = {%'01_graffiti',...
-            %'03_freiburg_center',...
-            %'04_freiburg_from_munster_crop',...
-            %'05_freiburg_innenstadt',...
-            '09_cool_car',...
-            '17_freiburg_munster',...
-            '18_graffiti',...
-            '20_hall2',...
-            '22_small_palace'};
-        
+        switch batch
+            case 1
+                test_images = {'01_graffiti',...
+                    '03_freiburg_center',...
+                    '04_freiburg_from_munster_crop'};
+            case 2
+                test_images = {'05_freiburg_innenstadt',...
+                    '09_cool_car',...
+                    '17_freiburg_munster'};
+            case 3
+                test_images = {'18_graffiti',...
+                    '20_hall2',...
+                    '22_small_palace'};
+                
+        end
     else
-        test_images = {'03_freiburg_center'};
+        test_images = {'05_freiburg_innenstadt'};
     end
 end
 mask_filename =[];
@@ -168,9 +175,10 @@ for test_image = test_images
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);
         end
-%         if batch_structural
-%             close all
-%         end
+        if batch_structural
+            pause(10);
+            close
+        end
     end
         disp('****************************************************************');
     if batch_structural
