@@ -14,7 +14,7 @@ visualize_minor = false;
 lisa = false;
 
 batch_structural = true;
-batch = 1;
+batch = 2;
 
 if interactive
     %             SE_size_factor = input('Enter the Structuring Element size factor: ');
@@ -42,9 +42,9 @@ else
     detector = 'DMSR';
 end
 
-save_flag = 1;
-vis_flag = 0;
-vis_only = false;
+save_flag = 0;
+vis_flag = 1;
+vis_only = true;
 
 %% image filename
 if ispc 
@@ -175,10 +175,10 @@ for test_image = test_images
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
                 line_width, col_label, original);
         end
-        if batch_structural
-            pause(10);
-            close
-        end
+       % if batch_structural
+            %pause(10);
+            %close
+       % end
     end
         disp('****************************************************************');
     if batch_structural

@@ -13,8 +13,8 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
-batch = 2;
+batch_structural = false;
+batch = 3;
 
 if interactive
     saliency_types(1) = input('Detect "holes"? [0/1]: ');
@@ -39,9 +39,9 @@ if length(find(saliency_types)) > 2
 else
     detector = 'MSSR';
 end
-save_flag = 0;
+save_flag = 1;
 vis_flag = 1;
-vis_only = true;
+vis_only = false;
 
 %% image filename
 if ispc
