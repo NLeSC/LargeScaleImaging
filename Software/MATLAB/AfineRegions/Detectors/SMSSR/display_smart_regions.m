@@ -3,7 +3,7 @@
 % display_smart_regions(image_fname, detector, features_fname, ROI_mask_fname, ...
 %                  regions_fname, type, ...
 %                  list_regions, step_list_regions, scaling, labels, col_ellipse, ...
-%                  line_width, col_label, original)
+%                  line_width, col_label, original, fig)
 %
 % author: Elena Ranguelova, NleSc
 % date created: 26 Feb 2008
@@ -15,6 +15,8 @@
 %                       added figure handles
 % last modification date: 12 October 2015
 % modification details:  added detector parameter for the open_regions
+% last modification date: 3 October 2015
+% modification details:  added figure or subplot handle as a parameter
 %**************************************************************************
 % INPUTS:
 % image_fname- the original image filename 
@@ -38,6 +40,7 @@
 %               [optional] if left out default is magenta
 % [original]- show also the original regions overlaid on the image
 %              [optional], if left out 0
+% [fig]- figure or subplot handle for display
 %**************************************************************************
 % OUTPUTS:
 %**************************************************************************
@@ -54,11 +57,14 @@ function display_smart_regions(image_fname, detector, features_fname, ROI_mask_f
                   regions_fname, type, ...
                   list_regions, step_list_regions, ...
                   scaling, labels, col_ellipse, line_width, col_label,...
-                  original)
+                  original, fig)
 
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
+if (nargin<15) || isempty(fig)
+    fig = figure;
+end
 if (nargin<14) || isempty(original)
     original = 0;
 end
@@ -194,7 +200,7 @@ end
 
 % display the (relevant part of the) image
 I = uint8(I);
-f = figure; imshow(I);axis on;
+figure(fig); imshow(I);axis on;
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
@@ -270,7 +276,7 @@ end
 %--------------------------------------------------------------------------
 function drawellipse(x,y,a,b,c,scaling,col,lw)
     % draws the ellipse corresponding the each feature 
-    figure(f);hold on;
+    figure(fig);hold on;
     [v e]=eig([a b;b c]);
 
     l1=1/sqrt(e(1));
