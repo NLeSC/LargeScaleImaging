@@ -14,3 +14,5 @@
 % test_mser_LMwood- testing build-in MSER detector on LMwood data
 % test_dmsr_LMwood- testing DMSR detector on LMwood data
 % test_regionprops_LMwood- testing the DMSR regionproperties on LMwood data
+% hist_regionprops_LMwood- histograms of the DMSR region properties on LMwood data
+
