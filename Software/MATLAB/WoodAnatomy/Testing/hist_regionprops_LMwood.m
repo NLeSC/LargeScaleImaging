@@ -12,12 +12,12 @@ disp('Histograms of the DMSR region properties of LMwood data');
 %% parameters
 verbose = 1;
 visualize = 1;
-sav_flag = 0;
+sav_flag = 1;
 batch =  true;
-visualize_only = true;
+visualize_only = false;
 nbins = 50;
 
-types_props = {'Area', 'Centroid','ConvexArea', ...
+types_props = {'Area', 'ConvexArea', ... % 'Centroid'
     'Eccentricity', 'EquivDiameter', 'MinorAxisLength',...
     'MajorAxisLength', 'Orientation'};
 %% paths and filenames
@@ -66,7 +66,7 @@ for test_case = test_cases
                 type_prop = char(type_props);
                 
                 property = cat(1, regions_properties.(type_prop));
-                histograms.(type_prop) =  hist(property, nbins);
+                histograms.(type_prop) =  histnorm(property, nbins);
                 
             end
             
@@ -115,7 +115,7 @@ for test_case = test_cases
             if visualize_only
                 load(regions_props_filename);
             end
-            sbp = 1;
+            sbp = 2;
             for type_props = types_props
                 type_prop = char(type_props);
                 sbp = sbp + 1;
