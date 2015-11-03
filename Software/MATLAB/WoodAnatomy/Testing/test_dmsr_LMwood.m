@@ -13,6 +13,7 @@ disp('Testing DMSR detector on LMwood data');
 save_flag = 1;
 vis_flag = 1;
 vis_only = false;
+batch =  true;
 
 SE_size_factor = 0.005;
 Area_factor_very_large = 0.005;
@@ -41,8 +42,14 @@ data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM 
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
 detector  = 'DMSR';
 
-for test_case = {'Argania','Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
-        'Desmo', 'Gluema', 'Rhaptop', 'Stem'}
+if batch
+    test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
+        'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
+else
+    test_cases = {'Stem'};
+end
+
+for test_case = test_cases
     disp(['Processing species: ' test_case]); 
     
     %% get the filenames
