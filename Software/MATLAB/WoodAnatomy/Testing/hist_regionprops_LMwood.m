@@ -3,23 +3,26 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 3 November 2015
-% last modification date: 
-% modification details: 
+% last modification date:
+% modification details:
 
 %% header message
 disp('Histograms of the DMSR region properties of LMwood data');
 
-%% parameters
+%% execution parameters
 verbose = 1;
 visualize = 1;
 sav_flag = 1;
-batch =  true;
+batch =  false;
 visualize_only = false;
 nbins = 50;
 
-types_props = {'Area', 'ConvexArea', ... % 'Centroid'
-    'Eccentricity', 'EquivDiameter', 'MinorAxisLength',...
-    'MajorAxisLength', 'Orientation'};
+%% region properties and statistics
+% subset of the properties of interest
+%types_props = {'Area',  'Eccentricity','MinorAxisLength', 'MajorAxisLength', 'Orientation'};
+% derived statistics ou of the properties
+types_stats = {'RelativeArea', 'Eccentricity', 'Orientation', 'RatioAxesLengths'};
+
 %% paths and filenames
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
@@ -35,6 +38,14 @@ end
 for test_case = test_cases
     disp(['Processing species: ' test_case]);
     
+    %% specify microscopy resolution (can be 200 or 500 micrometers)
+    % for now hard-coded...
+    switch char(test_case) % read it by hand from the image
+        case {'Argania','Chrys', 'Gluema'}
+            micro_res = 200;
+        case {'Brazzeia_c', 'Brazzeia_s', 'Rhaptop','Stem' }
+            micro_res = 500;
+    end
     %% get the filenames
     [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
@@ -42,49 +53,107 @@ for test_case = test_cases
     
     num_images = length(image_filenames);
     
-    for i = 1:num_images
-    %for i = 1
+    %for i = 1:num_images
+    for i = 1
+        
+        %% specify microscopy resolution (can be 200 or 500 micrometers)
+        % for now hard-coded...
+        switch char(test_case) % read it by hand from the image
+            case {'Citronella', 'Desmo'}
+                switch i
+                    case 1
+                        micro_res = 500;
+                    case 2
+                        micro_res = 200;
+                end
+        end
+        
+        %% load data
         image_filename = char(image_filenames{i});
         features_filename = char(features_filenames{i});
         regions_filename = char(regions_filenames{i});
         regions_props_filename = char(regions_props_filenames{i});
         
-        if verbose
-            disp(regions_props_filename);
-        end
+        image_data = imread(image_filename);
+        [width, length, ~] = size(image_data);
+        image_area = width * length;
         
-        %% load the DMSR regions properties
+%         if verbose
+%             disp(regions_props_filename);
+%         end
+        
         load(regions_props_filename);
-        num_regions = length(regions_properties);
+        clear histograms
+        num_regions = size(regions_properties);
         
+        
+        %% prepare derived statistics
+        if verbose
+            disp('Compute statistics...');
+        end
+        for ts = types_stats
+            type_stat = char(ts);
+            switch type_stat
+                case {'RelativeArea'}
+                    if verbose
+                        disp('Compute relative area...');
+                    end
+                    areas = cat(1, regions_properties.Area);
+                    statistics.(type_stat) = areas./image_area * (100/micro_res);
+                case {'Orientation', 'Eccentricity'}
+                    if verbose
+                        disp('Assign already computed property to statistic...');
+                    end
+                    property = cat(1, regions_properties.(type_stat));
+                    statistics.(type_stat) = property;
+                case {'RatioAxesLengths'}
+                    if verbose
+                        disp('Compute ratio of axes lengths...');
+                    end
+                    minor_axis_length = cat(1, regions_properties.MinorAxisLength);
+                    major_axis_length = cat(1, regions_properties.MajorAxisLength);
+                    statistics.(type_stat) = minor_axis_length./major_axis_length;
+            end
+        end
+        if sav_flag
+            if verbose
+                disp('Saving computed statistics...');
+            end
+            save(regions_props_filename, 'statistics', '-append');
+        end
         %% compute the histograms of regions properties
         if not(visualize_only)
             if verbose
-                disp('Compute regions properties histograms');
+                disp('Compute statistics histograms...');
             end
-            for type_props = types_props
-                type_prop = char(type_props);
+            for ts = types_stats
                 
-                property = cat(1, regions_properties.(type_prop));
-                histograms.(type_prop) =  histnorm(property, nbins);
+                type_stat = char(ts);                
+                statistic = cat(1, statistics.(type_stat));
+                histograms.(type_stat) =  histogram(statistic, nbins, 'Normalization','probability');
                 
             end
             
             if sav_flag
                 if verbose
-                    disp('Saving computed histograms');
+                    disp('Saving computed histograms...');
                 end
-                save(regions_props_filename, 'histograms', '-append');
+                save(regions_props_filename, 'histograms',  '-append');
             end
         end
         %% visualize
         if visualize
             %% setup
             f =  figure('units','normalized','outerposition',[0 0 1 1]);
-            s(1) = subplot(331);s(2) = subplot(332);s(3) = subplot(333);
-            s(4) = subplot(334);s(5) = subplot(335);s(6) = subplot(336);
-            s(7) = subplot(337);s(8) = subplot(338);s(9) = subplot(339);
+            s(1) = subplot(321);s(2) = subplot(322);s(3) = subplot(323);
+            s(4) = subplot(324);s(5) = subplot(325);s(6) = subplot(326);
+            % s(7) = subplot(337);s(8) = subplot(338);s(9) = subplot(339);
             
+            %% show the image
+            figure(f); subplot(s(1));
+            imshow(image_data);
+            [pathstr,name,ext] = fileparts(image_filename);
+            title([num2str(name)]);
             %% visualize the image and the detected regions
             type = 1; % distinguish region's types
             
@@ -104,9 +173,9 @@ for test_case = test_cases
                 features_filename, [], ...
                 regions_filename, type, ...
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
-                line_width, col_label, original, f, s(1));
-            [pathstr,name,ext] = fileparts(image_filename);
-            title(['DMSR elliptical regions for ' num2str(name)]);
+                line_width, col_label, original, f, s(2));
+            
+            title('DMSR elliptical regions');
             xlabel(['Number of regions detected: ', num2str(num_regions)]);
             ylabel(['Displayed every ',num2str(step_list_regions) , 'st/nd/rd/th']);
             axis on; grid on;
@@ -116,14 +185,20 @@ for test_case = test_cases
                 load(regions_props_filename);
             end
             sbp = 2;
-            for type_props = types_props
-                type_prop = char(type_props);
+            for ts = types_stats
+                type_stat = char(ts);
                 sbp = sbp + 1;
-                subplot(s(sbp)); bar(histograms.(type_prop));
-                title(type_prop); axis on; grid on;
+                subplot(s(sbp));
+                h = histograms.(type_stat);
+                nbins = h.NumBins;
+                counts = h.values;
+                bar(counts, nbins);
+                %bar(histograms.(type_prop));
+                
+                title(type_stat); axis on; grid on;
             end
         end
-        clear regions_properties histograms
+        clear regions_properties statistics histograms
     end
     
 end
