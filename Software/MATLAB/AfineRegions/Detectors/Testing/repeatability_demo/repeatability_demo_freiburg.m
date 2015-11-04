@@ -4,15 +4,14 @@ base_name = '_original';
 detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
 num_detectors = length(detectors);
 
-batch_structural = true;
-batch = 3;
+batch_structural = false;
+batch = 1;
 lisa = false;
 transformations = {'blur','lighting','rotation','zoom'};
 transformations_axis = {[2 5 10 20], [0.9 0.8 0.7 0.6],...
     [5 15 45],[1.2 1.4 1.7 2.1 2.6 3]};
-all_trans = true;
+all_trans = false;
 num_transformations = {4, 4, 3, 6};
-total_transformations =length(num_transformations);
 
 %% paths
 if ispc
@@ -44,12 +43,22 @@ if batch_structural
             
     end
 else
-    test_cases = {'05_freiburg_innenstadt'};
+    test_cases = {'01_graffiti'};
 end
 
 if not(all_trans)
-    % transformations = {'lighting'};
-    trans_index = 2;
+%      transformations = {'zoom'};   
+%      num_transformations = {6};
+%      transformations_axis = {[1.2 1.4 1.7 2.1 2.6 3]};
+%      transformations = {'rotation'};   
+%      num_transformations = {3};
+%      transformations_axis = {[5 15 45]};
+%      transformations = {'lighting'};   
+%      num_transformations = {4};
+%      transformations_axis = {[0.9 0.8 0.7 0.6]};
+     transformations = {'blur'};   
+     num_transformations = {4};
+     transformations_axis = {[2 5 10 20]};
 end
 
 %% for test case
@@ -64,7 +73,7 @@ for test_case_cell = test_cases
     
     
     %% for all transformations
-    for trans_index = 1: total_transformations
+    for trans_index = 1: length(transformations)
         trans = transformations{trans_index};
         
         %% repeatability figures
@@ -98,9 +107,9 @@ for test_case_cell = test_cases
                 Hom = fullfile(transformations_path,strcat('H',trans, num2str(i), '.mat'));
                 imf2 = fullfile(data_path_full,  strcat(trans, num2str(i), '.ppm'));
                 file2= fullfile(results_path_full, strcat(trans, num2str(i), '.', lower(detector)));
-                [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, 1);
-                seqrepeat=[seqrepeat repeat(6)]; %4
-                seqcorresp=[seqcorresp corresp(6)]; %4
+                [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, 0);
+                seqrepeat=[seqrepeat repeat(4)]; %4
+                seqcorresp=[seqcorresp corresp(4)]; %4
             end
             figure(f1);  plot(Xaxis,seqrepeat,mark(d,:));
             figure(f2);  plot(Xaxis,seqcorresp,mark(d,:));
