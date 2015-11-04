@@ -1,12 +1,16 @@
-function repeatability_demo
+function repeatability_demo_freiburg
 
 base_name = '_original';
 detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
-batch_structural = false;
-batch = 1;
+num_detectors = length(detectors);
+
+batch_structural = true;
+batch = 3;
 lisa = false;
 transformations = {'blur','lighting','rotation','zoom'};
-all_trans = false;
+transformations_axis = {[2 5 10 20], [0.9 0.8 0.7 0.6],...
+    [5 15 45],[1.2 1.4 1.7 2.1 2.6 3]};
+all_trans = true;
 num_transformations = {4, 4, 3, 6};
 total_transformations =length(num_transformations);
 
@@ -44,61 +48,71 @@ else
 end
 
 if not(all_trans)
-    trans = {'lighting'};
+    % transformations = {'lighting'};
+    trans_index = 2;
 end
 
+%% for test case
 for test_case_cell = test_cases
     test_case = char(test_case_cell);
     disp('Test case: ');disp(test_case);
-    data_path_full = fullfile(data_path, test_case,'PNG');
+    data_path_full = fullfile(data_path, test_case);
     results_path_full = fullfile(results_path, test_case);
-    for detector_cell = detectors
-        detector = char(detector_cell)
-        [~, features_filenames, ~] = ...
-            get_filenames_path(detector, data_path_full, results_path_full)
+    
+    % reference image filename
+    imf1 = fullfile(data_path_full, strcat(base_name, '.ppm'));
+    
+    
+    %% for all transformations
+    for trans_index = 1: total_transformations
+        trans = transformations{trans_index};
+        
+        %% repeatability figures
+        f1 = figure; f2 =  figure;
+        figure(f1);clf;
+        grid on;
+        ylabel('repeatability %')
+        xlabel('transformation magnitude');
+        title(strcat(test_case, ': ', trans),'Interpreter','none');
+        hold on;
+        figure(f2);clf;
+        grid on;
+        ylabel('nb of correspondences')
+        xlabel('transformation magnitude');
+        title(strcat(test_case, ': ', trans),'Interpreter','none');
+        hold on;
+        
+        mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
+        Xaxis = transformations_axis{trans_index};
         
         
-        for tran = trans
-            disp(tran)
-            
-            
-            %         %% repeatability figures
-            %         f1 = figure; f2 =  figure;
-            %         figure(f1);clf;
-            %         grid on;
-            %         ylabel('repeatability %')
-            %         xlabel('transformation magnitude');
-            %         title(test_case);
-            %         hold on;
-            %         figure(f2);clf;
-            %         grid on;
-            %         ylabel('nb of correspondences')
-            %         xlabel('transformation magnitude');
-            %         title(test_case);
-            %         hold on;
-            %
-            %         mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
-            %         for d=1:num_transfromations + 1
-            %             seqrepeat=[];
-            %             seqcorresp=[];
-            %             for i=2:num_transformations
-            %                 file1=sprintf('%s1.%s',feature_filename,det_suffix{d});
-            %                 file2=sprintf( '%s%d.%s',feature_filename, i,det_suffix{d});
-            %                 Hom=fullfile(data_path, test_case, sprintf('H1to%dp',i));
-            %                 imf1=[image_filename '1.ppm'];
-            %                 imf2=sprintf('%s%d.ppm',image_filename,i);
-            %                 [erro,repeat,corresp, match_score,matches, twi]=repeatability(file1,file2,Hom,imf1,imf2, 1);
-            %                 seqrepeat=[seqrepeat repeat(4)];
-            %                 seqcorresp=[seqcorresp corresp(4)];
-            %             end
-            %             figure(f1);  plot([20 30 40 50 60],seqrepeat,mark(d,:));
-            %             figure(f2);  plot([20 30 40 50 60],seqcorresp,mark(d,:));
-            %         end
+        %% for all detectors
+        for d=1:num_detectors
+            seqrepeat=[];
+            seqcorresp=[];
+            detector = char(detectors(d));
+            % reference feature filename
+            file1 = fullfile(results_path_full, strcat(base_name, '.', lower(detector)));
+            %% for all levels of the transformation
+            for i = 1: num_transformations{trans_index}
+                Hom = fullfile(transformations_path,strcat('H',trans, num2str(i), '.mat'));
+                imf2 = fullfile(data_path_full,  strcat(trans, num2str(i), '.ppm'));
+                file2= fullfile(results_path_full, strcat(trans, num2str(i), '.', lower(detector)));
+                [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, 1);
+                seqrepeat=[seqrepeat repeat(6)]; %4
+                seqcorresp=[seqcorresp corresp(6)]; %4
+            end
+            figure(f1);  plot(Xaxis,seqrepeat,mark(d,:));
+            figure(f2);  plot(Xaxis,seqcorresp,mark(d,:));
         end
-        %     figure(f1);legend(det_suffix{1},det_suffix{2},det_suffix{3}, det_suffix{4}, det_suffix{5});
-        %     axis([10 70 0 100]);
-        %     figure(f2);legend(det_suffix{1},det_suffix{2},det_suffix{3}, det_suffix{4}, det_suffix{5});
-        %     pause(1);
+        figure(f1);legend(detectors);
+        figure(f2);legend(detectors);
+        pause(1);
     end
-    disp('--------------------------------');
 end
+
+if batch_structural
+    close all
+end
+disp('--------------------------------');
+
