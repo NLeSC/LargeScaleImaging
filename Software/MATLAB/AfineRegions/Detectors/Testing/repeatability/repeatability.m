@@ -41,8 +41,13 @@ fprintf(1,'Reading and sorting the regions...\n');
 [f1 s1 dimdesc1]=loadFeatures(file1);
 [f2 s2 dimdesc2]=loadFeatures(file2);
 
-H=load(Hom);
-
+%H=load(Hom)
+load(Hom);
+if ~exist('H','var')
+    H = load(Hom);
+else
+    H = H';    
+end
 
 fprintf(1,'nb of regions in file1 %d - descriptor dimension %d.\n',s1,dimdesc1);
 fprintf(1,'nb of regions in file2 %d - descriptor dimension %d.\n',s2,dimdesc2);
