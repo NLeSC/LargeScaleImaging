@@ -1,7 +1,9 @@
 function repeatability_demo
 
-det_suffix={'mser';'mssr'; 'mssra';'dmsr'; 'dmsra'};
-batch_structural = true;
+%det_suffix={'mser','mssr', 'mssra','dmsr', 'dmsra'};
+det_suffix={'mser', 'mssr', 'dmsr'};
+num_detectors = length(det_suffix);
+batch_structural = false;
 lisa = false;
 %% image filename
 if ispc
@@ -17,6 +19,8 @@ results_path = fullfile(project_path, 'Results', 'AffineRegions');
 %test_case = input('Enter the test case : [bark|bikes|boat|graffiti|leuven|trees|ubc|wall]: ','s');
 if batch_structural
     test_cases = {'boat', 'bikes', 'graffiti', 'leuven'};
+else
+    test_cases = {'leuven'};
 end
 
 for test_case_cell = test_cases
@@ -39,15 +43,19 @@ for test_case_cell = test_cases
     title(test_case);
     hold on;
     
-    mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
-    for d=1:5
+    %mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
+    mark=['-ks';'-bv'; '-rp'];
+    % reference image filename
+    imf1=[image_filename '1.ppm'];
+    
+    for d=1:num_detectors
         seqrepeat=[];
         seqcorresp=[];
-        for i=2:6
-            file1=sprintf('%s1.%s',feature_filename,det_suffix{d});
+        % reference feature filename
+        file1=sprintf('%s1.%s',feature_filename,det_suffix{d});
+        for i=2:6           
             file2=sprintf( '%s%d.%s',feature_filename, i,det_suffix{d});
-            Hom=fullfile(data_path, test_case, sprintf('H1to%dp',i));
-            imf1=[image_filename '1.ppm'];
+            Hom=fullfile(data_path, test_case, sprintf('H1to%dp',i));            
             imf2=sprintf('%s%d.ppm',image_filename,i);
             [erro,repeat,corresp, match_score,matches, twi]=repeatability(file1,file2,Hom,imf1,imf2, 1);
             seqrepeat=[seqrepeat repeat(4)];
@@ -57,9 +65,9 @@ for test_case_cell = test_cases
         figure(f2);  plot([20 30 40 50 60],seqcorresp,mark(d,:));
     end
     
-    figure(f1);legend(det_suffix{1},det_suffix{2},det_suffix{3}, det_suffix{4}, det_suffix{5});
+    figure(f1);legend(det_suffix);
     axis([10 70 0 100]);
-    figure(f2);legend(det_suffix{1},det_suffix{2},det_suffix{3}, det_suffix{4}, det_suffix{5});
+    figure(f2);legend(det_suffix);
     pause(1);
 
     disp('--------------------------------');
