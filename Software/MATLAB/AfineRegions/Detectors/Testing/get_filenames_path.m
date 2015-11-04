@@ -58,6 +58,8 @@ for i = 1:num_images
             rname = strcat(name, '_dmsrregions.mat' );
         case 'dmsra'
             rname = strcat(name, '_dmsrallregions.mat' );  
+        case 'mser'
+            rname = []; % no regions outputed
         otherwise
             error('Unknown detector!');
     end

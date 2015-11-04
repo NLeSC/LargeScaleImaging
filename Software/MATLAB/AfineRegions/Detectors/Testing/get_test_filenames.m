@@ -53,6 +53,8 @@ for i = 1:6
             name = strcat(test_case, num2str(i), '_dmsrregions.mat' );
         case 'dmsra'
             name = strcat(test_case, num2str(i), '_dmsrallregions.mat' );  
+        case 'mser'
+            name = []; % no regions outputted
         otherwise
             error('Unknown detector!');
     end
