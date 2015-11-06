@@ -26,7 +26,7 @@ if interactive
     num_levels = input('Enter the number of gray-levels: ');
     thresh = input('Enter the region threshold: ');
 else
-    saliency_types = [1 1 1 1];
+    saliency_types = [1 1 0 0];
     SE_size_factor = 0.02;
     Area_factor = 0.03;
     num_levels = 20;
@@ -52,8 +52,8 @@ else
     starting_path = fullfile(filesep,'home','elena');
 end
 project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path = fullfile(project_path, 'Data', 'Freiburg');
-results_path = fullfile(project_path, 'Results', 'Freiburg');
+data_path = fullfile(project_path, 'Data', 'FreiburgRegenerated');
+results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
 
 if interactive
     
@@ -81,7 +81,7 @@ else
                 
         end
     else
-        test_images = {'05_freiburg_innenstadt'};
+        test_images = {'01_graffiti'};
     end
 end
 mask_filename =[];
