@@ -13,8 +13,8 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = false;
-batch = 3;
+batch_structural = true;
+batch = 2;
 
 if interactive
     saliency_types(1) = input('Detect "holes"? [0/1]: ');
@@ -58,7 +58,7 @@ results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
 if interactive
     
     test_images = input('Enter test case: [01_graffiti|03_freiburg_center|',...
-        '\n 04_freiburg_from_munster_crop|05_freiburg_innerstadt|',...
+        '\n 04_freiburg_from_munster_crop|05_freiburg_innenstadt|',...
         '\n 09_cool_car|17_freiburg_munster|18_graffiti|',...
         '\n 20_hall2|22_small_palace]: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');

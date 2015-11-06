@@ -5,13 +5,17 @@ detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
 num_detectors = length(detectors);
 
 batch_structural = false;
-batch = 1;
+batch = 3;
 lisa = false;
 transformations = {'blur','lighting','rotation','zoom'};
-transformations_axis = {[2 5 10 20], [0.9 0.8 0.7 0.6],...
-    [5 15 45],[1.2 1.4 1.7 2.1 2.6 3]};
+transfromations_fig= {'translation + blur','translation + lighting','rotation','zoom'};
+transformations_axis = {[2 5 10 15 20], [0.9 0.8 0.7 0.6 0.5],...
+    [5 10 15 30 45],[1.2 1.4 1.7 2.1 2.6]};
 all_trans = false;
-num_transformations = {4, 4, 3, 6};
+num_transformations = {5, 5, 5, 5};
+
+common_part = 1;
+oe =4; % overlap error x 10[%]
 
 %% paths
 if ispc
@@ -22,8 +26,8 @@ else
     starting_path = fullfile(filesep,'home','elena');
 end
 project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path = fullfile(project_path, 'Data', 'Freiburg');
-results_path = fullfile(project_path, 'Results', 'Freiburg');
+data_path = fullfile(project_path, 'Data', 'FreiburgRegenerated');
+results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
 transformations_path = fullfile(data_path, 'transformations');
 
 if batch_structural
@@ -47,18 +51,18 @@ else
 end
 
 if not(all_trans)
-%      transformations = {'zoom'};   
-%      num_transformations = {6};
-%      transformations_axis = {[1.2 1.4 1.7 2.1 2.6 3]};
+     transformations = {'zoom'};   
+     num_transformations = {5};
+     transformations_axis = {[1.2 1.4 1.7 2.1 2.6]};
 %      transformations = {'rotation'};   
-%      num_transformations = {3};
-%      transformations_axis = {[5 15 45]};
+%      num_transformations = {5};
+%      transformations_axis = {[5 10 15 30 45]};
 %      transformations = {'lighting'};   
-%      num_transformations = {4};
-%      transformations_axis = {[0.9 0.8 0.7 0.6]};
-     transformations = {'blur'};   
-     num_transformations = {4};
-     transformations_axis = {[2 5 10 20]};
+%      num_transformations = {5};
+%      transformations_axis = {[0.9 0.8 0.7 0.6 0.5]};
+%      transformations = {'blur'};   
+%      num_transformations = {5};
+%      transformations_axis = {[2 5 10 15 20]};
 end
 
 %% for test case
@@ -75,6 +79,7 @@ for test_case_cell = test_cases
     %% for all transformations
     for trans_index = 1: length(transformations)
         trans = transformations{trans_index};
+        trans_fig = transformations_fig{trans_index};
         
         %% repeatability figures
         f1 = figure; f2 =  figure;
@@ -82,13 +87,13 @@ for test_case_cell = test_cases
         grid on;
         ylabel('repeatability %')
         xlabel('transformation magnitude');
-        title(strcat(test_case, ': ', trans),'Interpreter','none');
+        title(strcat(test_case, ': ', trans_fig),'Interpreter','none');
         hold on;
         figure(f2);clf;
         grid on;
-        ylabel('nb of correspondences')
+        ylabel('nb of correspondencies')
         xlabel('transformation magnitude');
-        title(strcat(test_case, ': ', trans),'Interpreter','none');
+        title(strcat(test_case, ': ', trans_ig),'Interpreter','none');
         hold on;
         
         mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
@@ -104,12 +109,12 @@ for test_case_cell = test_cases
             file1 = fullfile(results_path_full, strcat(base_name, '.', lower(detector)));
             %% for all levels of the transformation
             for i = 1: num_transformations{trans_index}
-                Hom = fullfile(transformations_path,strcat('H',trans, num2str(i), '.mat'));
+                Hom = fullfile(transformations_path,strcat(trans, num2str(i), 'M.mat'));
                 imf2 = fullfile(data_path_full,  strcat(trans, num2str(i), '.ppm'));
                 file2= fullfile(results_path_full, strcat(trans, num2str(i), '.', lower(detector)));
-                [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, 0);
-                seqrepeat=[seqrepeat repeat(4)]; %4
-                seqcorresp=[seqcorresp corresp(4)]; %4
+                [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, common_part);
+                seqrepeat=[seqrepeat repeat(oe)]; %4
+                seqcorresp=[seqcorresp corresp(oe)]; %4
             end
             figure(f1);  plot(Xaxis,seqrepeat,mark(d,:));
             figure(f2);  plot(Xaxis,seqcorresp,mark(d,:));

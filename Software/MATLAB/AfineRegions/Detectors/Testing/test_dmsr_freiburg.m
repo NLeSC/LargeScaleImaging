@@ -13,7 +13,7 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
+batch_structural = false;
 batch = 2;
 
 if interactive
@@ -42,9 +42,9 @@ else
     detector = 'DMSR';
 end
 
-save_flag = 0;
+save_flag = 1;
 vis_flag = 1;
-vis_only = true;
+vis_only = false;
 
 %% image filename
 if ispc 
@@ -55,12 +55,12 @@ else
     starting_path = fullfile(filesep,'home','elena');
 end
 project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path = fullfile(project_path, 'Data', 'Freiburg');
-results_path = fullfile(project_path, 'Results', 'Freiburg');
+data_path = fullfile(project_path, 'Data', 'FreiburgRegenerated');
+results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
 
 if interactive
     test_images = input('Enter test case: [01_graffiti|03_freiburg_center|',...
-        '\n 04_freiburg_from_munster_crop|05_freiburg_innerstadt|',...
+        '\n 04_freiburg_from_munster_crop|05_freiburg_innenstadt|',...
         '\n 09_cool_car|17_freiburg_munster|18_graffiti|',...
         '\n 20_hall2|22_small_palace]: ','s');
     mask_filename = input('Enter the mask filename (.mat): ', 's');
@@ -83,7 +83,7 @@ else
                 
         end
     else
-        test_images = {'05_freiburg_innenstadt'};
+        test_images = {'01_graffiti'};
     end
 end
 mask_filename =[];

@@ -45,9 +45,10 @@ fprintf(1,'Reading and sorting the regions...\n');
 load(Hom);
 if ~exist('H','var')
     H = load(Hom);
-else
-    H = H';    
-end
+end;
+% else
+%     H = H';    
+% end
 
 fprintf(1,'nb of regions in file1 %d - descriptor dimension %d.\n',s1,dimdesc1);
 fprintf(1,'nb of regions in file2 %d - descriptor dimension %d.\n',s2,dimdesc2);
@@ -117,9 +118,11 @@ scales2=scales2(ind);
 
 fprintf(1,'nb of regions in common part in image1 %d.\n',size(feat1,1));
 fprintf(1,'nb of regions in common part in image2 %d.\n',size(feat2t,1));
+
 end 
 
 sf=min([size(feat1,1) size(feat2t,1)]);
+fprintf(1,'min nb of regions %d. \n', sf);
 
 feat1=feat1';
 feat1t=feat1t';
@@ -142,7 +145,9 @@ corresp=zeros(1,6);
 %compute the number of correspondences
 for i=1:6,
 wi=(wout<erro(i));
+%wi = wout;
 corresp(i)=sum(sum(wi));
+%corresp(i) = sf;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 repeat=100*corresp/sf;
