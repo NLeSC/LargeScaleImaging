@@ -2,12 +2,23 @@ function produceDataset(imgstruct, datasetPath)
 %produceDataset Takes imgstruct, applies std transforms and stores result
 
 stdTransforms = { ...
-   {'perspective', {'persp:0.2','persp:0.5','persp:0.8','persp:1','persp:2.5|zoomrot:0.8,0|translate:0,-0.06'}}, ...
-   {'zoom', {'zoomrot:1.2,0','zoomrot:1.4,0','zoomrot:1.7,0','zoomrot:2.1,0','zoomrot:2.6,0','zoomrot:3,0'}}, ...
-   {'rotation', {'zoomrot:1,5','zoomrot:1,15','zoomrot:1,45'}}, ...
-   {'blur', {'translate:0.01,-0.02|blur:2','translate:0.015,-0.001|blur:5','translate:-0.002,0.01|blur:10','translate:0.011,-0.011|blur:20'}}, ...
-   {'lighting', {'translate:0.01,-0.02|lighting:0,0.9','translate:0.015,-0.001|lighting:0,0.8','translate:-0.002,0.01|lighting:0,0.7','translate:0.011,-0.011|lighting:0,0.6'}}, ...
-   {'nonlinear', {'wobble:0.002,0.002','wobble:0.004,0.004','wobble:0.006,0.006'}}, ...
+  % {'perspective', {'persp:0.2','persp:0.5','persp:0.8','persp:1','persp:2.5|zoomrot:0.8,0|translate:0,-0.06'}}, ...
+  % {'zoom', {'zoomrot:1.2,0','zoomrot:1.4,0','zoomrot:1.7,0','zoomrot:2.1,0','zoomrot:2.6,0','zoomrot:3,0'}}, ...
+  % {'rotation', {'zoomrot:1,5','zoomrot:1,15','zoomrot:1,45'}}, ...
+  % {'blur', {'translate:0.01,-0.02|blur:2','translate:0.015,-0.001|blur:5','translate:-0.002,0.01|blur:10','translate:0.011,-0.011|blur:20'}}, ...
+  % {'lighting', {'translate:0.01,-0.02|lighting:0,0.9','translate:0.015,-0.001|lighting:0,0.8','translate:-0.002,0.01|lighting:0,0.7','translate:0.011,-0.011|lighting:0,0.6'}}, ...
+  % {'nonlinear', {'wobble:0.002,0.002','wobble:0.004,0.004','wobble:0.006,0.006'}}, ...
+    };
+
+stdTransforms = { ...
+   {'zoom', {'zoomrot:1.2,0','zoomrot:1.4,0','zoomrot:1.7,0','zoomrot:2.1,0','zoomrot:2.6,0'}}, ...
+   {'rotation', {'zoomrot:1,5','zoomrot:1,10','zoomrot:1,15','zoomrot:1,30','zoomrot:1,45'}}, ...
+   {'blur', {'translate:0.01,-0.02|blur:2','translate:0.015,-0.001|blur:5',...
+             'translate:-0.002,0.01|blur:10','translate:0.02,-0.01|blur:15',...
+             'translate:0.011,-0.011|blur:20'}}, ...
+   {'lighting', {'translate:0.01,-0.02|lighting:0,0.9','translate:0.015,-0.001|lighting:0,0.8',...
+   'translate:-0.002,0.01|lighting:0,0.7','translate:0.011,-0.011|lighting:0,0.6', ...
+   'translate:0.02,-0.01|lighting:0,0.5'}}
     };
 
 reducedMaxSideLength = 1000;
@@ -26,8 +37,8 @@ for trans = 1:length(stdTransforms)
         tmpstruct = addTransformations(imgstruct, transname, transcellarray);
         
         transid = [transname, num2str(sub)];
-       % writeOutTransformedImages(tmpstruct, transid, datasetPath, reducedMaxSideLength);
-        writeOutTransformations(tmpstruct, transid, datasetPath);
+        writeOutTransformedImages(tmpstruct, transid, datasetPath, reducedMaxSideLength);
+        %writeOutTransformations(tmpstruct, transid, datasetPath);
     end
 end
     
@@ -42,7 +53,7 @@ function writeOutTransformations(imgstruct, transid, datasetPath)
     ensureDir(folderToMake);
         
     resultFilePath = fullfile(datasetPath, foldername, [transid, '.mat']);
-    %resultFilePathMatr = fullfile(datasetPath, foldername, [transid, 'M.mat']);
+    resultFilePathMatr = fullfile(datasetPath, foldername, [transid, 'M.mat']);
 
     transName = curStruct.transName; %#ok<NASGU>
     transStructs = curStruct.transStructs; %#ok<NASGU>
@@ -51,11 +62,12 @@ function writeOutTransformations(imgstruct, transid, datasetPath)
     transNongeo = curStruct.transNongeo; %#ok<NASGU>
     
     save(resultFilePath, 'transName', 'transStructs', 'transTForm', 'transNongeo');
-    % save only the transformation matrix
-%     if isfield(transTForm,'transTForm.tdata(end).tdata.T')
-%         T = transTForm.tdata(end).tdata.T;
-%         save(resultFilePathMatr, 'T');
-%     end
+    % save only the transformation matrix (homography)
+    if isfield(transTForm,'tdata')
+        %disp('inside');
+        H = transTForm.tdata.T;
+        save(resultFilePathMatr, 'H');
+    end
 end
 
 function writeOutTransformedImages(imgstruct, transid, datasetPath, reducedMaxSideLength)
@@ -69,12 +81,14 @@ function writeOutTransformedImages(imgstruct, transid, datasetPath, reducedMaxSi
         
         origFilePath = fullfile(datasetPath, fname, '_original.jpg');
         if ~exist(origFilePath, 'file')
-            writeoutImage(curStruct.origImage, origFilePath, reducedMaxSideLength);
+           % writeoutImage(curStruct.origImage, origFilePath, reducedMaxSideLength);
+           imwrite(curStruct.transImage, resultFilePath, 'Quality', 98);
         end
         
         resultFilePath = fullfile(datasetPath, fname, [transid, '.jpg']);
         
-        writeoutImage(curStruct.transImage, resultFilePath, reducedMaxSideLength);
+        %writeoutImage(curStruct.transImage, resultFilePath, reducedMaxSideLength);
+        imwrite(curStruct.transImage, resultFilePath, 'Quality', 98);
     end
 end
 

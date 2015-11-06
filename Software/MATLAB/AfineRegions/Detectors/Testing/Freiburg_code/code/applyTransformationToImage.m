@@ -23,6 +23,7 @@ function newim = applyTransformationToImage(tform, nongeotform, image)
                     'VData', [1-inpH2, inpH2], ...
                     'XData', [1-inpW2, inpW2], ...
                     'YData', [1-inpH2, inpH2] );
+         
     else
         newim = image;
     end
