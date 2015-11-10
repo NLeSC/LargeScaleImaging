@@ -13,7 +13,7 @@ disp('Histograms of the DMSR region properties of LMwood data');
 verbose = 1;
 visualize = 1;
 sav_flag = 1;
-batch =  false;
+batch =  true;
 visualize_only = false;
 nbins = 50;
 
@@ -51,10 +51,10 @@ for test_case = test_cases
         get_wood_test_filenames(test_case, detector, data_path, results_path);
     
     
-    num_images = length(image_filenames);
+    num_images = max(size(image_filenames));
     
-    %for i = 1:num_images
-    for i = 1
+    for i = 1:num_images
+    %for i = 1
         
         %% specify microscopy resolution (can be 200 or 500 micrometers)
         % for now hard-coded...
@@ -83,54 +83,54 @@ for test_case = test_cases
 %         end
         
         load(regions_props_filename);
-        clear histograms
+        %clear histograms
         num_regions = size(regions_properties);
         
-        
-        %% prepare derived statistics
-        if verbose
-            disp('Compute statistics...');
-        end
-        for ts = types_stats
-            type_stat = char(ts);
-            switch type_stat
-                case {'RelativeArea'}
-                    if verbose
-                        disp('Compute relative area...');
-                    end
-                    areas = cat(1, regions_properties.Area);
-                    statistics.(type_stat) = areas./image_area * (100/micro_res);
-                case {'Orientation', 'Eccentricity'}
-                    if verbose
-                        disp('Assign already computed property to statistic...');
-                    end
-                    property = cat(1, regions_properties.(type_stat));
-                    statistics.(type_stat) = property;
-                case {'RatioAxesLengths'}
-                    if verbose
-                        disp('Compute ratio of axes lengths...');
-                    end
-                    minor_axis_length = cat(1, regions_properties.MinorAxisLength);
-                    major_axis_length = cat(1, regions_properties.MajorAxisLength);
-                    statistics.(type_stat) = minor_axis_length./major_axis_length;
-            end
-        end
-        if sav_flag
-            if verbose
-                disp('Saving computed statistics...');
-            end
-            save(regions_props_filename, 'statistics', '-append');
-        end
-        %% compute the histograms of regions properties
         if not(visualize_only)
+            %% prepare derived statistics
+            if verbose
+                disp('Compute statistics...');
+            end
+            for ts = types_stats
+                type_stat = char(ts);
+                switch type_stat
+                    case {'RelativeArea'}
+                        if verbose
+                            disp('Compute relative area...');
+                        end
+                        areas = cat(1, regions_properties.Area);
+                        statistics.(type_stat) = areas./image_area * (100/micro_res);
+                    case {'Orientation', 'Eccentricity'}
+                        if verbose
+                            disp('Assign already computed property to statistic...');
+                        end
+                        property = cat(1, regions_properties.(type_stat));
+                        statistics.(type_stat) = property;
+                    case {'RatioAxesLengths'}
+                        if verbose
+                            disp('Compute ratio of axes lengths...');
+                        end
+                        minor_axis_length = cat(1, regions_properties.MinorAxisLength);
+                        major_axis_length = cat(1, regions_properties.MajorAxisLength);
+                        statistics.(type_stat) = minor_axis_length./major_axis_length;
+                end
+            end
+            if sav_flag
+                if verbose
+                    disp('Saving computed statistics...');
+                end
+                save(regions_props_filename, 'statistics', '-append');
+            end
+            %% compute the histograms of regions properties
+            
             if verbose
                 disp('Compute statistics histograms...');
             end
             for ts = types_stats
                 
-                type_stat = char(ts);                
+                type_stat = char(ts);
                 statistic = cat(1, statistics.(type_stat));
-                histograms.(type_stat) =  histogram(statistic, nbins, 'Normalization','probability');
+                histograms.(type_stat) =  histcounts(statistic, nbins, 'Normalization','probability');
                 
             end
             
@@ -189,10 +189,8 @@ for test_case = test_cases
                 type_stat = char(ts);
                 sbp = sbp + 1;
                 subplot(s(sbp));
-                h = histograms.(type_stat);
-                nbins = h.NumBins;
-                counts = h.values;
-                bar(counts, nbins);
+                h = histograms.(type_stat);                
+                bar(h);
                 %bar(histograms.(type_prop));
                 
                 title(type_stat); axis on; grid on;
