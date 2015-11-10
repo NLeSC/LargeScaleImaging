@@ -51,7 +51,7 @@ for test_case = test_cases
         get_wood_test_filenames(test_case, detector, data_path, results_path);
     
     
-    num_images = max(size(image_filenames));
+    num_images = numel(image_filenames));
     
     for i = 1:num_images
     %for i = 1
