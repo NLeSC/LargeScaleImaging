@@ -15,4 +15,6 @@
 % test_dmsr_LMwood- testing DMSR detector on LMwood data
 % test_regionprops_LMwood- testing the DMSR regionproperties on LMwood data
 % hist_regionprops_LMwood- histograms of the DMSR region properties on LMwood data
+% hist_distance_LMwood- distances betweem histograms of the DMSR statistics on LMwood data
+
 
