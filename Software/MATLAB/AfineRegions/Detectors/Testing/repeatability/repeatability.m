@@ -45,10 +45,11 @@ fprintf(1,'Reading and sorting the regions...\n');
 load(Hom);
 if ~exist('H','var')
     H = load(Hom);
-end;
+    disp('H does not exist');
 % else
+%     disp('Transposing H');
 %     H = H';    
-% end
+end
 
 fprintf(1,'nb of regions in file1 %d - descriptor dimension %d.\n',s1,dimdesc1);
 fprintf(1,'nb of regions in file2 %d - descriptor dimension %d.\n',s2,dimdesc2);
