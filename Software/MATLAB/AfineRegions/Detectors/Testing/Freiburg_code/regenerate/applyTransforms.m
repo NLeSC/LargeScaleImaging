@@ -1,7 +1,7 @@
 %applyTransforms- apply series of transformations to an image
 
-batch = false;
-transforms = {'zoom', 'rotation', 'blur', 'lighting'};
+batch = true;
+transforms = {'rotation'}; %, 'zoom', 'blur', 'lighting'};
 lighting_params = [0.9 0.8 0.7 0.6 0.5];
 blur_params = [2 5 10 15 20];
 num_transforms = 5;
@@ -47,7 +47,8 @@ for tc = test_cases
                     trans_image = applyAffineTransform(reference_image, H, 1);
                     trans_image = transNongeoLighting(trans_image, 0, lighting_params(i));
                 case 'rotation'
-                    trans_image = applyAffineTransform(reference_image, H, 0);
+                    %trans_image = applyAffineTransform(reference_image, H, 0);
+                    trans_image = applyAffineTransform(reference_image, H, 1);
                 otherwise
                     trans_image = applyAffineTransform(reference_image, H, 1);
             end
