@@ -46,9 +46,9 @@ load(Hom);
 if ~exist('H','var')
     H = load(Hom);
     disp('H does not exist');
-% else
-%     disp('Transposing H');
-%     H = H';    
+else
+    disp('Transposing H');
+    H = H';    
 end
 
 fprintf(1,'nb of regions in file1 %d - descriptor dimension %d.\n',s1,dimdesc1);
