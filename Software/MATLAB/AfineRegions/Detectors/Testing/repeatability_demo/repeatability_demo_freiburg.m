@@ -4,14 +4,15 @@ base_name = '_original';
 detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
 num_detectors = length(detectors);
 
-batch_structural = false;
-batch = 3;
+batch_structural = true;
+batch = 1;
 lisa = false;
 transformations = {'blur','lighting','rotation','zoom'};
-transfromations_fig= {'translation + blur','translation + lighting','rotation','zoom'};
+transformations_fig= {'translation + blur','translation + lighting',...
+    'rotation + occlusion','zoom'};
 transformations_axis = {[2 5 10 15 20], [0.9 0.8 0.7 0.6 0.5],...
     [5 10 15 30 45],[1.2 1.4 1.7 2.1 2.6]};
-all_trans = false;
+all_trans = true;
 num_transformations = {5, 5, 5, 5};
 
 common_part = 1;
@@ -51,15 +52,15 @@ else
 end
 
 if not(all_trans)
-     transformations = {'zoom'};   
-     num_transformations = {5};
-     transformations_axis = {[1.2 1.4 1.7 2.1 2.6]};
+%      transformations = {'zoom'}   
+%      num_transformations = {5};
+%      transformations_axis = {[1.2 1.4 1.7 2.1 2.6]};
 %      transformations = {'rotation'};   
 %      num_transformations = {5};
 %      transformations_axis = {[5 10 15 30 45]};
-%      transformations = {'lighting'};   
-%      num_transformations = {5};
-%      transformations_axis = {[0.9 0.8 0.7 0.6 0.5]};
+     transformations = {'lighting'};   
+     num_transformations = {5};
+     transformations_axis = {[0.9 0.8 0.7 0.6 0.5]};
 %      transformations = {'blur'};   
 %      num_transformations = {5};
 %      transformations_axis = {[2 5 10 15 20]};
@@ -93,7 +94,7 @@ for test_case_cell = test_cases
         grid on;
         ylabel('nb of correspondencies')
         xlabel('transformation magnitude');
-        title(strcat(test_case, ': ', trans_ig),'Interpreter','none');
+        title(strcat(test_case, ': ', trans_fig),'Interpreter','none');
         hold on;
         
         mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
