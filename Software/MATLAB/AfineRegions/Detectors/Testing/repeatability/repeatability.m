@@ -60,7 +60,7 @@ fprintf(1,'%s looks like file with affine regions...\n',file2);
   if  size(f1,1)~= 5 | size(f1,1) ~= 5
     error('Wrong ascii format of %s or %s files.',file1,file2);
   end
-elseif dimdesc1>1 & dimdesc1==dimdesc2 
+elseif dimdesc1>=1 & dimdesc1==dimdesc2 
   fprintf(1,'%s, %s look like files with descriptors...\n',file1,file2);
 else
     error('Different descriptor dimension in %s or %s files.',file1,file2);
@@ -151,7 +151,11 @@ corresp(i)=sum(sum(wi));
 %corresp(i) = sf;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-repeat=100*corresp/sf;
+if sf > 0
+    repeat=100*corresp/sf;
+else
+    repeat = 100*corresp;
+end
 
 
 fprintf(1,'\noverlap error: ');
@@ -221,6 +225,9 @@ l1_2=l1_2/l1_2(3);
 featp(c1,1)=l1_2(1);
 featp(c1,2)=l1_2(2);
 BMB=inv(Aff*inv(Mi1)*Aff');
+if isnan(BMB(1,1) )
+    BMB = [0 0; 0 0];
+end
 [v1 e1]=eig(BMB);
 featp(c1,6)=(1/sqrt(e1(1)));
 featp(c1,7)=(1/sqrt(e1(4))); 

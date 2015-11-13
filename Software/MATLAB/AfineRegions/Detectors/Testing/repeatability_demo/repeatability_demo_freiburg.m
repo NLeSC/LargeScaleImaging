@@ -5,21 +5,28 @@ detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
 num_detectors = length(detectors);
 
 batch_structural = true;
-batch = 1;
+batch = 3;
 lisa = false;
 transformations = {'blur','lighting','rotation','zoom'};
 transformations_fig= {'translation + blur','translation + lighting',...
     'rotation + occlusion','zoom'};
-transformations_axis = {[2 5 10 15 20], [0.9 0.8 0.7 0.6 0.5],...
+transformations_axis = {[2 5 10 15 20], 1-[0.9 0.8 0.7 0.6 0.5],...
     [5 10 15 30 45],[1.2 1.4 1.7 2.1 2.6]};
 all_trans = true;
 num_transformations = {5, 5, 5, 5};
+
+% figure parameters
+small_dim_r = 4;
+small_dim_c = 6;
+off = 0.1; off_s = 0.05;
+w = 0.4; h = 0.6;
+
 
 common_part = 1;
 oe =4; % overlap error x 10[%]
 
 %% paths
-if ispc
+if ispc    
     starting_path = fullfile('C:','Projects');
 elseif lisa
     starting_path = fullfile(filesep, 'home','elenar');
@@ -48,7 +55,7 @@ if batch_structural
             
     end
 else
-    test_cases = {'01_graffiti'};
+    test_cases = {'17_freiburg_munster'};
 end
 
 if not(all_trans)
@@ -58,12 +65,12 @@ if not(all_trans)
 %      transformations = {'rotation'};   
 %      num_transformations = {5};
 %      transformations_axis = {[5 10 15 30 45]};
-     transformations = {'lighting'};   
-     num_transformations = {5};
-     transformations_axis = {[0.9 0.8 0.7 0.6 0.5]};
-%      transformations = {'blur'};   
+%      transformations = {'lighting'};   
 %      num_transformations = {5};
-%      transformations_axis = {[2 5 10 15 20]};
+%      transformations_axis = {[0.9 0.8 0.7 0.6 0.5]};
+     transformations = {'blur'};   
+     num_transformations = {5};
+     transformations_axis = {[2 5 10 15 20]};
 end
 
 %% for test case
@@ -75,26 +82,37 @@ for test_case_cell = test_cases
     
     % reference image filename
     imf1 = fullfile(data_path_full, strcat(base_name, '.ppm'));
-    
+    im1 = imread(imf1);
     
     %% for all transformations
     for trans_index = 1: length(transformations)
         trans = transformations{trans_index};
         trans_fig = transformations_fig{trans_index};
         
-        %% repeatability figures
-        f1 = figure; f2 =  figure;
-        figure(f1);clf;
+        %% repeatability figure
+        f = figure; 
+        figure(f);clf;
+        set(gcf, 'Position', get(0,'Screensize'));
+        subplot(small_dim_r, small_dim_c, 1);
+        image(im1); title(test_case,'Interpreter','none');
+        xlabel('Reference image');
+        ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
+        hold on;
+        
+        s1 = subplot('Position',[off off w h]);
         grid on;
+        title('Performance');
         ylabel('repeatability %')
         xlabel('transformation magnitude');
-        title(strcat(test_case, ': ', trans_fig),'Interpreter','none');
+        
         hold on;
-        figure(f2);clf;
+      
+        s2 = subplot('Position',[off+off_s+w off w h]);
         grid on;
+        title('Regions count');
         ylabel('nb of correspondencies')
         xlabel('transformation magnitude');
-        title(strcat(test_case, ': ', trans_fig),'Interpreter','none');
+        
         hold on;
         
         mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
@@ -112,17 +130,25 @@ for test_case_cell = test_cases
             for i = 1: num_transformations{trans_index}
                 Hom = fullfile(transformations_path,strcat(trans, num2str(i), 'M.mat'));
                 imf2 = fullfile(data_path_full,  strcat(trans, num2str(i), '.ppm'));
+                im2 = imread(imf2);
+                subplot(small_dim_r, small_dim_c, i+1);
+                image(im2); 
+                if i==1
+                    title(trans_fig ,'Interpreter','none');
+                end
+                xlabel(['transf. magnitude: ' num2str(Xaxis(i))]);
+                ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
                 file2= fullfile(results_path_full, strcat(trans, num2str(i), '.', lower(detector)));
                 [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, common_part);
                 seqrepeat=[seqrepeat repeat(oe)]; %4
                 seqcorresp=[seqcorresp corresp(oe)]; %4
             end
-            figure(f1);  plot(Xaxis,seqrepeat,mark(d,:));
-            figure(f2);  plot(Xaxis,seqcorresp,mark(d,:));
+            subplot(s1); ax = gca; plot(Xaxis,seqrepeat,mark(d,:)); set(ax, 'XTick', Xaxis);
+            subplot(s2); ax = gca; plot(Xaxis,seqcorresp,mark(d,:)); set(ax, 'XTick', Xaxis);
         end
-        figure(f1);legend(detectors);
-        figure(f2);legend(detectors);
-        pause(1);
+        subplot(s1);legend(detectors, 'Best'); 
+        subplot(s2);legend(detectors, 'Best');
+        pause(2);
     end
 end
 
