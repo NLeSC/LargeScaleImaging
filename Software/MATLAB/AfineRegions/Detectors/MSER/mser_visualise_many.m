@@ -25,7 +25,7 @@ disp('                                                                  ');
 
 % fixed choice for visualization parameters (see mser_visualizatio_one for interactive version)
 list_regions =[];
-step_list_regions = 5;
+step_list_regions = 1;
 scaling = 1;
 line_width = 1;
 labels = 0;
@@ -33,7 +33,9 @@ col_ellipse = 'y';
 col_label = 'g';
 
 % input image directory
-input_dir = input('Enter the full path to the input image directory: ','s');
+%input_dir = input('Enter the full path to the input image directory: ','s');
+input_dir = '/home/elena/eStep/LargeScaleImaging/Data/CombinedGenerated/04_freiburg_innenstadt/PNG/'
+features_dir = '/home/elena/eStep/LargeScaleImaging/Results/CombinedGenerated/04_freiburg_innenstadt/';
 
 fnames_struct = dir([input_dir '*.png']);
 
@@ -55,7 +57,8 @@ for i = 1:num_images
 end
 
 % all images?
-all = input(['Show all ' num2str(num_images) ' images [y/n]? '],'s');
+%all = input(['Show all ' num2str(num_images) ' images [y/n]? '],'s');
+all = 'y';
 if strcmpi(all,'n')
     ind = input('Specify part (P) of images with beginning and end indicies or list (L) [P/L]?: ','s');
     if strcmpi(ind,'p')
@@ -70,7 +73,7 @@ else
 end
 
 % output (feature) directory
-features_dir = input('Enter the full path to the features (ellipse representation) directory: ','s');
+%features_dir = input('Enter the full path to the features (ellipse representation) directory: ','s');
 
 % visualise the selected images
 for i = indicies

@@ -191,7 +191,7 @@ end
 
 % display the (relevant part of the) image
 I = uint8(I);
-f = figure; imshow(I);axis on; title(['MSER for ' image_fname]);
+f = figure; imshow(I);axis on; title(['MSER for ' image_fname], 'Interpreter','none');
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------

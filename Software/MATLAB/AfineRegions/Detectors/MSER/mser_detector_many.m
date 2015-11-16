@@ -87,8 +87,9 @@ for i = indicies
    % disp([' Processing image: ' image_fname ]);
     
     % Saliency detector
+    tic
     mser(image_fname, features_fname);
-
+    toc
     disp('------------------------------------------------------------------');
     
 end
