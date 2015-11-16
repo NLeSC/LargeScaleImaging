@@ -208,7 +208,7 @@ figure(fig);
 if ~isempty(sbplt)
         subplot(sbplt);
 end
-imshow(I);axis on;
+imshow(I);axis on; hold on;
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
@@ -267,7 +267,6 @@ for n=list_regions
     
      % the labels
     if labels
-        hold on;
         plot(x,y,[col_label, '+']);
         text(x + offset, y + offset, num2str(n+2),...
             'Color',col_label,'FontSize',8,'FontWeight','normal');

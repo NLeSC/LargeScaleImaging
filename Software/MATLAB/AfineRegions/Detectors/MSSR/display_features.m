@@ -185,7 +185,7 @@ end
 
 % display the (relevant part of the) image
 I = uint8(I);
-f = figure; imshow(I);axis on;
+f = figure; imshow(I);axis on; hold on;
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
