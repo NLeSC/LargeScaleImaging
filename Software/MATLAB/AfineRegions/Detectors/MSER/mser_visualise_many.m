@@ -34,8 +34,8 @@ col_label = 'g';
 
 % input image directory
 %input_dir = input('Enter the full path to the input image directory: ','s');
-input_dir = '/home/elena/eStep/LargeScaleImaging/Data/CombinedGenerated/04_freiburg_innenstadt/PNG/'
-features_dir = '/home/elena/eStep/LargeScaleImaging/Results/CombinedGenerated/04_freiburg_innenstadt/';
+input_dir = '/home/elena/eStep/LargeScaleImaging/Data/CombinedGenerated/09_small_palace/PNG/'
+features_dir = '/home/elena/eStep/LargeScaleImaging/Results/CombinedGenerated/09_small_palace/';
 
 fnames_struct = dir([input_dir '*.png']);
 
