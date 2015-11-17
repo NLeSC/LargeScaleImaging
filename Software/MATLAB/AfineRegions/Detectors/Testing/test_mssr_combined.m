@@ -52,8 +52,8 @@ else
     starting_path = fullfile(filesep,'home','elena');
 end
 project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path = fullfile(project_path, 'Data', 'FreiburgRegenerated');
-results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
+data_path = fullfile(project_path, 'Data', 'CombinedGenerated');
+results_path = fullfile(project_path, 'Results', 'CombinedGenerated');
 
 if interactive
      test_images = input('Enter test case: [01_graffiti|02_freiburg_center|',...
