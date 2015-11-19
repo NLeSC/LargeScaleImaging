@@ -42,9 +42,9 @@ fprintf(1,'Reading and sorting the regions...\n');
 [f2 s2 dimdesc2]=loadFeatures(file2);
 
 %H=load(Hom)
-load(Hom);
+load(Hom, '-ascii');
 if ~exist('H','var')
-    H = load(Hom);
+    H = load(Hom, '-ascii');
     disp('H does not exist');
 else
     disp('Transposing H');
