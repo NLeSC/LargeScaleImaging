@@ -11,9 +11,13 @@ small_dim_c = 6;
 off = 0.1; off_s = 0.05;
 w = 0.4; h = 0.6;
 
-transformations_axis = [20 30 40 50 60];
-transformations_fig= {'scale: rotation + zoom','blur',...
-    'viewpoint','lighting'};
+% transformations_axis = [20 30 40 50 60];
+% transformations_fig= {'scale: rotation + zoom','blur',...
+%     'viewpoint','lighting'};
+
+transformations_fig= {'viewpoint' , 'scale: rotation + zoom', 'blur', 'ligthing'};
+transformations_axis = {[20 30 40 50 60], [1.1 1.3 1.9 2.3 2.8],...
+    [2 3 4 5 6], [2 3 4 5 6]};
 
 common_part = 1;
 oe =4; % overlap error x 10[%]
@@ -30,9 +34,9 @@ data_path = fullfile(project_path, 'Data', 'AffineRegions');
 results_path = fullfile(project_path, 'Results', 'AffineRegions');
 %test_case = input('Enter the test case : [bark|bikes|boat|graffiti|leuven|trees|ubc|wall]: ','s');
 if batch_structural
-    test_cases = {'boat', 'bikes', 'graffiti', 'leuven'};
+    test_cases = {'graffiti','boat', 'bikes', 'leuven'};
 else
-    test_cases = {'leuven'};
+    test_cases = {'graffiti'};
 end
 
 j = 0;
@@ -77,7 +81,7 @@ for test_case_cell = test_cases
     hold on;
     
     mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
-    Xaxis = transformations_axis;
+    Xaxis = transformations_axis{j};
     
     %% for all detectors
     for d=1:num_detectors
