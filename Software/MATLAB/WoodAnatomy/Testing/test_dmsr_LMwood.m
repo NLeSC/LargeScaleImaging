@@ -111,7 +111,7 @@ for test_case = test_cases
                 line_width, col_label, original);
         end
         
-        [pathstr,name,ext] = fileparts(data_filename);
+        [~,name,~] = fileparts(data_filename);
         title(['DMSR elliptical regions for ' num2str(name)]);
        
         

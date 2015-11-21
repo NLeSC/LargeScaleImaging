@@ -191,7 +191,10 @@ end
 
 % display the (relevant part of the) image
 I = uint8(I);
-f = figure; imshow(I);axis on; title(['MSER for ' image_fname], 'Interpreter','none');
+f = figure; imshow(I);axis on; 
+[~,name,~] = fileparts(image_fname);
+title(['MSER elliptical regions for ' num2str(name)], 'Interpreter','none');
+%title(['MSER for ' image_fname], 'Interpreter','none');
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------

@@ -25,7 +25,7 @@ disp('                                                                  ');
 
 % fixed choice for visualization parameters (see mser_visualizatio_one for interactive version)
 list_regions =[];
-step_list_regions = 1;
+step_list_regions = 3;
 scaling = 1;
 line_width = 1;
 labels = 0;
@@ -34,8 +34,10 @@ col_label = 'g';
 
 % input image directory
 %input_dir = input('Enter the full path to the input image directory: ','s');
-input_dir = '/home/elena/eStep/LargeScaleImaging/Data/CombinedGenerated/09_small_palace/PNG/'
-features_dir = '/home/elena/eStep/LargeScaleImaging/Results/CombinedGenerated/09_small_palace/';
+% input_dir = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/AnimalBiometrics/humpback_whales/';
+% features_dir = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/AnimalBiometrics/humpback_whales/';
+input_dir = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG/';
+features_dir = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/MSER/';
 
 fnames_struct = dir([input_dir '*.png']);
 
@@ -76,7 +78,8 @@ end
 %features_dir = input('Enter the full path to the features (ellipse representation) directory: ','s');
 
 % visualise the selected images
-for i = indicies
+%for i = indicies
+for i = 14:19    
     base_fname = fnames{i};
         image_fname = [input_dir base_fname];
         k = find(base_fname =='.');
@@ -94,7 +97,7 @@ for i = indicies
     display_features_mser(image_fname, features_fname, [],[],0, ...
         list_regions, step_list_regions, scaling, labels, ...
         col_ellipse, line_width, col_label, 0);
-
+    pause(2);
     disp('------------------------------------------------------------------');
     
 end

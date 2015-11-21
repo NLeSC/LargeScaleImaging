@@ -64,10 +64,10 @@ function display_smart_regions(image_fname, detector, features_fname, ROI_mask_f
 % input control    
 %--------------------------------------------------------------------------
 if (nargin<16) 
-    sbplt = subplot(221);
+    sbplt = subplot(1,1,1);
 end
 if (nargin<15) || isempty(fig)
-    fig = figure;
+    fig = 1;
 end
 if (nargin<14) || isempty(original)
     original = 0;
