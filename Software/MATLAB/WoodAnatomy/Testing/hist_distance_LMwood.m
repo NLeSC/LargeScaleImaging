@@ -44,8 +44,8 @@ end
 
 
 %% loop over distances
-%for m = 1:numel(distance_metrics)
-for m =1
+for m = 1:numel(distance_metrics)
+%for m =1
     figure('units','normalized','outerposition',[0 0 1 1]);
     dm = func2str(distance_metrics{m});
     if verbose
