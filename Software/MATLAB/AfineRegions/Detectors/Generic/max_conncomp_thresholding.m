@@ -7,6 +7,11 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 07.10.2015
+% last modification date: 5 Jan 2016
+% modification details: binary_masks is decalred 'uint8' for memory saving!
+%                       also the binary_image is calculated explicitely
+%                       using the determined threshold (to be double,
+%                       otherwise types don't match well!)
 % last modification date: 16 Oct 2015
 % modification details: added flag for Otsu only
 %**************************************************************************
@@ -116,8 +121,7 @@ if not(otsu_only)
     %**************************************************************************
     % initialisations
     %--------------------------------------------------------------------------
-   % binary_masks = zeros(nrows,ncols, max_level,'uint8');
-    binary_masks = zeros(nrows,ncols, max_level);
+    binary_masks = zeros(nrows,ncols, max_level,'uint8');
     num_cc = zeros(1,max_level);
     num_large_cc = zeros(1,max_level);
     num_very_large_cc = zeros(1,max_level);
@@ -218,7 +222,7 @@ if not (otsu_only)
         disp('Combined maximum number of CCs:'); disp(max_combined);
     end
     
-    binary_image = binary_masks(:,:,thresh); %gray_image >= thresh; 
+    binary_image = gray_image >= thresh; %binary_masks(:,:,thresh);  
     clear binary_masks
     
     if verbose
