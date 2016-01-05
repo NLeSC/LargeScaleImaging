@@ -2,7 +2,7 @@
 %
 % topic: Salient regions detection testing
 % author: Elena Ranguelova, NLeSc
-% date: April/May 2015
+% date: 2015-2016
 %
 %**************************************************************************
 % Functions
@@ -29,4 +29,5 @@
 % test_dmsr_freiburg.m- testing the DMSR detector on Freiburg dataset
 % test_dmsr_combined.m- testing the DMSR detector on Combined dataset
 % test_dmsr_scientific.m- testing the DMSR detector on Scientific datasets
+% test_dmsr_tnt.m- testing the DMSR detector on TNT dataset
 
