@@ -13,7 +13,7 @@ off = 0.1; off_s = 0.05;
 w = 0.4; h = 0.6;
 
 transformations_fig= {'viewpoint + illumination' , ...
-    'viewpoint + zoom', 'viewpoint', ...
+    'viewpoint', 'viewpoint', ...
     'viewpoint + zoom','viewpoint + zoom'};
 resolutions = {'1536x1024' ,'2048x1365','3072x2048','3456x2304'};
 transformations_axis = [20 30 40 50 60];
@@ -33,14 +33,20 @@ results_path = fullfile(project_path, 'Results', 'TNT');
 if batch_structural
     test_cases = {'colors','grace','posters', 'there','underground'};
 else
-    test_cases = {'colors'};
+    test_cases = {'underground'};
 end
 
 %% for the test case
-case_index = 0;
+if batch_structural
+    case_index = 0;
+else
+    case_index = 5; % the index of the test_case
+end
 for test_case_cell = test_cases
     
-    case_index = case_index + 1;
+    if batch_structural
+        case_index = case_index + 1;
+    end
     test_case = char(test_case_cell);
     disp('Test case: ');disp(test_case);
     
