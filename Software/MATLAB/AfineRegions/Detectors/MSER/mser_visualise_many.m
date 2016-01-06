@@ -36,8 +36,14 @@ col_label = 'g';
 %input_dir = input('Enter the full path to the input image directory: ','s');
 % input_dir = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/AnimalBiometrics/humpback_whales/';
 % features_dir = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/AnimalBiometrics/humpback_whales/';
-input_dir = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG/';
-features_dir = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/MSER/';
+% input_dir = '/home/elena/eStep/LargeScaleImaging/Data/TNT/underground/underground_1536x1024/PNG/';
+% features_dir = '/home/elena/eStep/LargeScaleImaging/Results/TNT/underground/underground_1536x1024/';
+% input_dir = '/home/elena/eStep/LargeScaleImaging/Data/TNT/underground/underground_2048x1365/PNG/';
+% features_dir = '/home/elena/eStep/LargeScaleImaging/Results/TNT/underground/underground_2048x1365/';
+% input_dir = '/home/elena/eStep/LargeScaleImaging/Data/TNT/underground/underground_3072x2048/PNG/';
+% features_dir = '/home/elena/eStep/LargeScaleImaging/Results/TNT/underground/underground_3072x2048/';
+input_dir = '/home/elena/eStep/LargeScaleImaging/Data/TNT/underground/underground_3456x2304/PNG/';
+features_dir = '/home/elena/eStep/LargeScaleImaging/Results/TNT/underground/underground_3456x2304/';
 
 fnames_struct = dir([input_dir '*.png']);
 
@@ -78,8 +84,7 @@ end
 %features_dir = input('Enter the full path to the features (ellipse representation) directory: ','s');
 
 % visualise the selected images
-%for i = indicies
-for i = 14:19    
+for i = indicies
     base_fname = fnames{i};
         image_fname = [input_dir base_fname];
         k = find(base_fname =='.');
