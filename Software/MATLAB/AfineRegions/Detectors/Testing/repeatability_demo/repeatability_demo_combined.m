@@ -1,5 +1,6 @@
 function repeatability_demo_combined
 
+%% parameters
 base_name = '_original';
 detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
 num_detectors = length(detectors);
@@ -148,6 +149,7 @@ for test_case_cell = test_cases
     end
 end
 
+%% closing up
 if batch_structural
     close all
 end
