@@ -71,9 +71,6 @@ for nd = 1:num_data
                 C = color_black;
                 marker = 's';
             case 2
-                C = color_blue;
-                marker = 'v';
-            case 3
                 C = color_red;
                 marker = 'p';
         end
