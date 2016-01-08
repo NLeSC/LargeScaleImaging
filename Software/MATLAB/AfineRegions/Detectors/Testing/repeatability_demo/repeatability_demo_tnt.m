@@ -19,6 +19,7 @@ resolutions = {'1536x1024' ,'2048x1365','3072x2048','3456x2304'};
 transformations_axis = [20 30 40 50 60];
 
 common_part = 1;
+verbose = false;
 oe =4; % overlap error x 10[%]
 %% paths and filenames
 if ispc
@@ -121,7 +122,7 @@ for test_case_cell = test_cases
                 file2= fullfile(results_path_full, ...
                     strcat(base_name, num2str(i), '.', lower(detector)));
                 [~,repeat,corresp, ~,~, ~] =  ...
-                    repeatability(file1,file2,Hom,imf1,imf2, common_part);
+                    repeatability(file1,file2,Hom,imf1,imf2, common_part, verbose);
                 seqrepeat=[seqrepeat repeat(oe)];
                 seqcorresp=[seqcorresp corresp(oe)];
             end

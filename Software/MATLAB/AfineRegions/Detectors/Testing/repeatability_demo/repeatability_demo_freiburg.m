@@ -23,6 +23,7 @@ w = 0.4; h = 0.6;
 
 
 common_part = 1;
+verbose = false;
 oe =4; % overlap error x 10[%]
 
 %% paths
@@ -139,7 +140,8 @@ for test_case_cell = test_cases
                 xlabel(['transf. magnitude: ' num2str(Xaxis(i))]);
                 ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
                 file2= fullfile(results_path_full, strcat(trans, num2str(i), '.', lower(detector)));
-                [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, common_part);
+                [~,repeat,corresp, ~,~, ~]=...
+                    repeatability(file1,file2,Hom,imf1,imf2, common_part, verbose);
                 seqrepeat=[seqrepeat repeat(oe)]; %4
                 seqcorresp=[seqcorresp corresp(oe)]; %4
             end

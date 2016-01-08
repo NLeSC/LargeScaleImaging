@@ -20,6 +20,7 @@ transformations_axis = {[20 30 40 50 60], [1.1 1.3 1.9 2.3 2.8],...
     [2 3 4 5 6], [2 3 4 5 6]};
 
 common_part = 1;
+verbose = false;
 oe =4; % overlap error x 10[%]
 %% image filename
 if ispc
@@ -103,7 +104,8 @@ for test_case_cell = test_cases
             end
             xlabel(['transf. magnitude: ' num2str(Xaxis(i-1))]);
             ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
-            [erro,repeat,corresp, match_score,matches, twi]=repeatability(file1,file2,Hom,imf1,imf2, 1);
+            [~,repeat,corresp, ~,~, ~]= ...
+                repeatability(file1,file2,Hom,imf1,imf2, common_part, verbose);
             seqrepeat=[seqrepeat repeat(4)];
             seqcorresp=[seqcorresp corresp(4)];
         end
