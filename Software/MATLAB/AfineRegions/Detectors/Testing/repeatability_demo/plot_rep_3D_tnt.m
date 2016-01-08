@@ -79,7 +79,7 @@ for nd = 1:num_data
         title(data);zlabel('Repeatability, [%]');
         xlabel(['transf. magnitude ']);
         ax = gca; set(ax,'XTick', [1:num_trans_deg], 'XTickLabel', Xaxis);
-        %ylabel(['data sequence ']);
+        ylabel(['resolution ']);
         ax = gca; set(ax,'YTick', [1:num_res], 'YTickLabel', char(resolutions));
         
         nc = squeeze(ncorr(ndt,nd,:,:));
@@ -89,7 +89,7 @@ for nd = 1:num_data
         title(data);
         xlabel(['transf. magnitude ']);
         ax = gca; set(ax,'XTick', [1:num_trans_deg], 'XTickLabel', Xaxis);
-       % ylabel(['data sequence ']);
+        ylabel(['resolution ']);
         ax = gca; set(ax,'YTick', [1:num_res], 'YTickLabel', char(resolutions));
         zlabel('Number correspondencies');
         
