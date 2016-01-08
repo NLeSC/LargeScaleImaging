@@ -25,10 +25,11 @@ w = 0.4; h = 0.6;
 
 common_part = 1;
 verbose = false;
+figs = false;
 oe =4; % overlap error x 10[%]
 
 %% paths
-if ispc    
+if ispc
     starting_path = fullfile('C:','Projects');
 elseif lisa
     starting_path = fullfile(filesep, 'home','elenar');
@@ -54,7 +55,7 @@ if batch_structural
             test_cases = {'07_graffiti',...
                 '08_hall',...
                 '09_small_palace'};
-        otherwise            
+        otherwise
             test_cases = {'01_graffiti',...
                 '02_freiburg_center',...
                 '03_freiburg_from_munster_crop',...
@@ -73,10 +74,10 @@ end
 if not(all_trans)
     transformations = {'viewpoint'};
     num_transformations = {5};
-%          transformations = {'scale'}
-%          num_transformations = {5};
-%          transformations = {'blur'};
-%          num_transformations = {5};
+    %          transformations = {'scale'}
+    %          num_transformations = {5};
+    %          transformations = {'blur'};
+    %          num_transformations = {5};
     %      transformations = {'lighting'};
     %      num_transformations = {5};
     
@@ -102,36 +103,38 @@ for test_case_cell = test_cases
         disp('Transformation: ');disp(trans);
         trans_fig = transformations_fig{trans_index};
         
+        
         %% repeatability figure
-        f = figure; 
-        figure(f);clf;
-        set(gcf, 'Position', get(0,'Screensize'));
-        subplot(small_dim_r, small_dim_c, 1);
-        image(im1); title(test_case,'Interpreter','none');
-        xlabel('Reference image');
-        ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
-        hold on;
-        
-        s1 = subplot('Position',[off off w h]);
-        grid on;
-        title('Performance');
-        ylabel('repeatability %')
-        xlabel('transformation magnitude');
-        
-        hold on;
-      
-        s2 = subplot('Position',[off+off_s+w off w h]);
-        grid on;
-        title('Regions count');
-        ylabel('nb of correspondencies')
-        xlabel('transformation magnitude');
-        
-        hold on;
-        
-        %mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
-        mark=['-ks';'-bv';'-rp'];
-       Xaxis = transformations_axis{trans_index};
-        
+        if figs
+            f = figure;
+            figure(f);clf;
+            set(gcf, 'Position', get(0,'Screensize'));
+            subplot(small_dim_r, small_dim_c, 1);
+            image(im1); title(test_case,'Interpreter','none');
+            xlabel('Reference image');
+            ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
+            hold on;
+            
+            s1 = subplot('Position',[off off w h]);
+            grid on;
+            title('Performance');
+            ylabel('repeatability %')
+            xlabel('transformation magnitude');
+            
+            hold on;
+            
+            s2 = subplot('Position',[off+off_s+w off w h]);
+            grid on;
+            title('Regions count');
+            ylabel('nb of correspondencies')
+            xlabel('transformation magnitude');
+            
+            hold on;
+            
+            %mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
+            mark=['-ks';'-bv';'-rp'];
+            Xaxis = transformations_axis{trans_index};
+        end
         
         %% for all detectors
         for d=1:num_detectors
@@ -145,19 +148,21 @@ for test_case_cell = test_cases
             for i = 1: num_transformations{trans_index}
                 Hom = fullfile(transformations_path,strcat(trans, num2str(i), '.mat'));
                 imf2 = fullfile(data_path_full,  strcat(trans, num2str(i), '.ppm'));
-                im2 = imread(imf2);
-                subplot(small_dim_r, small_dim_c, i+1);
-                image(im2); 
-                if i==1
-                    title(trans_fig ,'Interpreter','none');
+                if figs
+                    im2 = imread(imf2);
+                    subplot(small_dim_r, small_dim_c, i+1);
+                    image(im2);
+                    if i==1
+                        title(trans_fig ,'Interpreter','none');
+                    end
+                    xlabel(['transf. magnitude: ' num2str(Xaxis(i))]);
+                    ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
                 end
-                xlabel(['transf. magnitude: ' num2str(Xaxis(i))]);
-                ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
                 file2= fullfile(results_path_full, ...
                     strcat(trans, num2str(i), '.', lower(detector)));
                 [~,repeat,corresp, ~,~, ~] = repeatability(file1,file2,...
                     Hom,imf1,imf2, common_part, verbose);
-                seqrepeat=[seqrepeat repeat(oe)]; %4                
+                seqrepeat=[seqrepeat repeat(oe)]; %4
                 seqcorresp=[seqcorresp corresp(oe)]; %4
                 
             end
@@ -173,20 +178,24 @@ for test_case_cell = test_cases
                 disp('Std number of corrsp.: ');disp(std(seqcorresp(:)));
             end
             %results(case_index, trans_index,d).detector = detector;
-            results(case_index, trans_index,d).repeatability =seqrepeat;
-            results(case_index, trans_index,d).numcorr =seqcorresp;
+            results(d, case_index, trans_index).repeatability =seqrepeat;
+            results(d, case_index, trans_index).numcorr =seqcorresp;
             
-            subplot(s1); ax = gca; plot(Xaxis,seqrepeat,mark(d,:)); set(ax, 'XTick', Xaxis);
-            subplot(s2); ax = gca; plot(Xaxis,seqcorresp,mark(d,:)); set(ax, 'XTick', Xaxis);
+            if figs
+                subplot(s1); ax = gca; plot(Xaxis,seqrepeat,mark(d,:)); set(ax, 'XTick', Xaxis);
+                subplot(s2); ax = gca; plot(Xaxis,seqcorresp,mark(d,:)); set(ax, 'XTick', Xaxis);
+            end
         end
-        subplot(s1);legend(detectors, 'Best'); 
-        subplot(s2);legend(detectors, 'Best');
-        pause(2);
+        if figs
+            subplot(s1);legend(detectors, 'Best');
+            subplot(s2);legend(detectors, 'Best');
+            pause(2);
+        end
     end
 end
 
 %% closing up
-if batch_structural
+if batch_structural~=0 & figs
     close all
 end
 disp('--------------------------------');
