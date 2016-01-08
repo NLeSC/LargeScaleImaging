@@ -1,4 +1,4 @@
-function repeatability_demo_tnt
+function results = repeatability_demo_tnt()
 
 %% parameters
 detectors={'mser','dmsr'};
@@ -20,6 +20,7 @@ transformations_axis = [20 30 40 50 60];
 
 common_part = 1;
 verbose = false;
+figs = false;
 oe =4; % overlap error x 10[%]
 %% paths and filenames
 if ispc
@@ -53,8 +54,10 @@ for test_case_cell = test_cases
     
 
     % for the resolution
+    res_index = 0;
     for res_cell = resolutions
         res  = char(res_cell);
+        res_index = res_index + 1;
         disp('Resolution: ');disp(res);          
         
         data_path_full = fullfile(data_path, test_case, ...
@@ -68,37 +71,38 @@ for test_case_cell = test_cases
         im1 = imread(imf1);
         %% repeatabiliy figure
         
-        f = figure;
-        figure(f);clf;
-        set(gcf, 'Position', get(0,'Screensize'));
-        subplot(small_dim_r, small_dim_c, 1);
-        title_string = strcat(test_case, ': ', res);        
-        image(im1); title(title_string, 'Interpreter','none');
-        xlabel('Reference image');
-        ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
-        hold on;
-        
-        s1 = subplot('Position',[off off w h]);
-        grid on;
-        title('Performance');
-        ylabel('repeatability %')
-        xlabel('viewpoint angle');
-        
-        hold on;
-        
-        s2 = subplot('Position',[off+off_s+w off w h]);
-        grid on;
-        title('Regions count');
-        ylabel('nb of correspondencies')
-        xlabel('viewpoint angle');
-        
-        hold on;
-        
-        mark=['-ks';'-rp'];
-        Xaxis = transformations_axis;
-        
-        trans_fig = char(transformations_fig{case_index});
-        
+        if figs
+            f = figure;
+            figure(f);clf;
+            set(gcf, 'Position', get(0,'Screensize'));
+            subplot(small_dim_r, small_dim_c, 1);
+            title_string = strcat(test_case, ': ', res);
+            image(im1); title(title_string, 'Interpreter','none');
+            xlabel('Reference image');
+            ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
+            hold on;
+            
+            s1 = subplot('Position',[off off w h]);
+            grid on;
+            title('Performance');
+            ylabel('repeatability %')
+            xlabel('viewpoint angle');
+            
+            hold on;
+            
+            s2 = subplot('Position',[off+off_s+w off w h]);
+            grid on;
+            title('Regions count');
+            ylabel('nb of correspondencies')
+            xlabel('viewpoint angle');
+            
+            hold on;
+            
+            mark=['-ks';'-rp'];
+            Xaxis = transformations_axis;
+            
+            trans_fig = char(transformations_fig{case_index});
+        end
         %% for all detectors
         for d=1:num_detectors
             seqrepeat=[];
@@ -112,13 +116,15 @@ for test_case_cell = test_cases
                 imf2 = fullfile(data_path_full,  ...
                     strcat(base_name, num2str(i), '.ppm'));
                 im2 = imread(imf2);
-                subplot(small_dim_r, small_dim_c, i);
-                image(im2);
-                if i==2
-                    title(trans_fig ,'Interpreter','none');
+                if figs
+                    subplot(small_dim_r, small_dim_c, i);
+                    image(im2);
+                    if i==2
+                        title(trans_fig ,'Interpreter','none');
+                    end
+                    xlabel(['transf. magnitude: ' num2str(Xaxis(i-1))]);
+                    ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
                 end
-                xlabel(['transf. magnitude: ' num2str(Xaxis(i-1))]);
-                ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
                 file2= fullfile(results_path_full, ...
                     strcat(base_name, num2str(i), '.', lower(detector)));
                 [~,repeat,corresp, ~,~, ~] =  ...
@@ -126,22 +132,29 @@ for test_case_cell = test_cases
                 seqrepeat=[seqrepeat repeat(oe)];
                 seqcorresp=[seqcorresp corresp(oe)];
             end
-            subplot(s1); ax = gca; plot(Xaxis,seqrepeat,mark(d,:)); 
-            set(ax, 'XTick', Xaxis);
-            subplot(s2); ax = gca; plot(Xaxis,seqcorresp,mark(d,:));
-            set(ax, 'XTick', Xaxis);
+            results(d, case_index, res_index).repeatability =seqrepeat;
+            results(d, case_index, res_index).numcorr =seqcorresp;
+            
+            if figs
+                subplot(s1); ax = gca; plot(Xaxis,seqrepeat,mark(d,:));
+                set(ax, 'XTick', Xaxis);
+                subplot(s2); ax = gca; plot(Xaxis,seqcorresp,mark(d,:));
+                set(ax, 'XTick', Xaxis);
+            end
             
         end
-        subplot(s1);legend(detectors, 'Best');
-        subplot(s2);legend(detectors, 'Best');
-        pause(2);
+        if figs
+            subplot(s1);legend(detectors, 'Best');
+            subplot(s2);legend(detectors, 'Best');
+            pause(2);
+        end
     end
 end
 
 %% closing up
-if batch_structural
+if batch_structural~=0 & figs
     close all
 end
 
 disp('--------------------------------');
-
+save('results_3det_tnt_dataset.mat','results');
