@@ -1,12 +1,13 @@
-function repeatability_demo_combined
+function results = repeatability_demo_combined()
 
 %% parameters
 base_name = '_original';
-detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
+%detectors={'mser','mssr', 'mssra','dmsr', 'dmsra'};
+detectors={'mser','mssr', 'dmsr'}
 num_detectors = length(detectors);
 
 batch_structural = true;
-batch = 3;
+batch = -1;
 lisa = false;
 transformations = {'viewpoint' , 'scale', 'blur', 'ligthing'};
 transformations_fig= {'viewpoint' , 'scale: rotation + zoom', 'blur', 'ligthing'};
@@ -23,6 +24,7 @@ w = 0.4; h = 0.6;
 
 
 common_part = 1;
+verbose = false;
 oe =4; % overlap error x 10[%]
 
 %% paths
@@ -52,26 +54,39 @@ if batch_structural
             test_cases = {'07_graffiti',...
                 '08_hall',...
                 '09_small_palace'};
-            
+        otherwise            
+            test_cases = {'01_graffiti',...
+                '02_freiburg_center',...
+                '03_freiburg_from_munster_crop',...
+                '04_freiburg_innenstadt',...
+                '05_cool_car',...
+                '06_freiburg_munster',...
+                '07_graffiti',...
+                '08_hall',...
+                '09_small_palace'};
     end
 else
     test_cases = {'01_graffiti'};
+    case_index = 1;
 end
 
 if not(all_trans)
-%      transformations = {'zoom'}   
-%      num_transformations = {5};
-%      transformations = {'rotation'};   
-%      num_transformations = {5};
-%      transformations = {'lighting'};   
-%      num_transformations = {5};
-     transformations = {'blur'};   
-     num_transformations = {5};     
+    transformations = {'viewpoint'};
+    num_transformations = {5};
+%          transformations = {'scale'}
+%          num_transformations = {5};
+%          transformations = {'blur'};
+%          num_transformations = {5};
+    %      transformations = {'lighting'};
+    %      num_transformations = {5};
+    
 end
 
 %% for test case
+case_index = 0;
 for test_case_cell = test_cases
     test_case = char(test_case_cell);
+    case_index = case_index + 1;
     disp('Test case: ');disp(test_case);
     data_path_full = fullfile(data_path, test_case);
     results_path_full = fullfile(results_path, test_case);
@@ -84,6 +99,7 @@ for test_case_cell = test_cases
     %% for all transformations
     for trans_index = 1: length(transformations)
         trans = transformations{trans_index};
+        disp('Transformation: ');disp(trans);
         trans_fig = transformations_fig{trans_index};
         
         %% repeatability figure
@@ -112,7 +128,8 @@ for test_case_cell = test_cases
         
         hold on;
         
-        mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
+        %mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
+        mark=['-ks';'-bv';'-rp'];
        Xaxis = transformations_axis{trans_index};
         
         
@@ -120,7 +137,8 @@ for test_case_cell = test_cases
         for d=1:num_detectors
             seqrepeat=[];
             seqcorresp=[];
-            detector = char(detectors(d));
+            disp('*****************************************************');
+            detector = char(detectors(d))
             % reference feature filename
             file1 = fullfile(results_path_full, strcat(base_name, '.', lower(detector)));
             %% for all levels of the transformation
@@ -135,11 +153,29 @@ for test_case_cell = test_cases
                 end
                 xlabel(['transf. magnitude: ' num2str(Xaxis(i))]);
                 ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
-                file2= fullfile(results_path_full, strcat(trans, num2str(i), '.', lower(detector)));
-                [~,repeat,corresp, ~,~, ~]=repeatability(file1,file2,Hom,imf1,imf2, common_part);
-                seqrepeat=[seqrepeat repeat(oe)]; %4
+                file2= fullfile(results_path_full, ...
+                    strcat(trans, num2str(i), '.', lower(detector)));
+                [~,repeat,corresp, ~,~, ~] = repeatability(file1,file2,...
+                    Hom,imf1,imf2, common_part, verbose);
+                seqrepeat=[seqrepeat repeat(oe)]; %4                
                 seqcorresp=[seqcorresp corresp(oe)]; %4
+                
             end
+            if verbose
+                disp('---------------------------------------------');
+                disp('Max repeatability: ');disp(max(seqrepeat(:)));
+                disp('Min repeatability: ');disp(min(seqrepeat(:)));
+                disp('Std repeatability: ');disp(std(seqrepeat(:)));
+                
+                disp('---------------------------------------------');
+                disp('Max number of corrsp.: ');disp(max(seqcorresp(:)));
+                disp('Min number of corrsp.: ');disp(min(seqcorresp(:)));
+                disp('Std number of corrsp.: ');disp(std(seqcorresp(:)));
+            end
+            %results(case_index, trans_index,d).detector = detector;
+            results(case_index, trans_index,d).repeatability =seqrepeat;
+            results(case_index, trans_index,d).numcorr =seqcorresp;
+            
             subplot(s1); ax = gca; plot(Xaxis,seqrepeat,mark(d,:)); set(ax, 'XTick', Xaxis);
             subplot(s2); ax = gca; plot(Xaxis,seqcorresp,mark(d,:)); set(ax, 'XTick', Xaxis);
         end
@@ -155,3 +191,4 @@ if batch_structural
 end
 disp('--------------------------------');
 
+save('results_3det_combined_dataset.mat','results');
