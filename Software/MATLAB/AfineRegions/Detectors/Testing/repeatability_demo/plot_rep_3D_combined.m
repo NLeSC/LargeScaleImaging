@@ -1,4 +1,4 @@
-% plot the results of the repeatability experiments as 3D surface plots
+% plot the results of the combined repeatability experiments as 3D surface plots
 
 %% parameters
 results_matfile = 'results_3det_combined_dataset.mat';
