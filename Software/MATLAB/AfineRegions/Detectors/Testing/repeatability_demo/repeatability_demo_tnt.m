@@ -4,7 +4,7 @@ function results = repeatability_demo_tnt()
 detectors={'mser','dmsr'};
 base_name = 'img';
 num_detectors = length(detectors);
-batch_structural = false;
+batch_structural = true;
 
 % figure parameters
 small_dim_r = 4;
@@ -157,4 +157,4 @@ if batch_structural~=0 & figs
 end
 
 disp('--------------------------------');
-save('results_3det_tnt_dataset.mat','results');
+save('results_2det_tnt_dataset.mat','results');

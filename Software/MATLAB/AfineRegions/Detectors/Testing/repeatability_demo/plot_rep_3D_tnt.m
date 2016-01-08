@@ -9,7 +9,7 @@ num_trans_deg = 5;
 detectors={'mser', 'dmsr'};
 %transformation = {'viewpoint'};
 resolutions = {'1.5M' ,'3M','6M','8M'};
-res_index = 1:4;
+res_ind = 1:4;
 % test_cases = {'colors',...
 %               'grace',...
 %               'posters',...
@@ -53,13 +53,14 @@ end
 clear results
 
 %% make the plots per detector and per transformation 
+Xaxis = transformations_axis;
 
 xd=linspace(1,num_trans_deg,num_trans_deg);
 yd=linspace(1, num_res,num_res);
 [x,y]=meshgrid(xd,yd);
 for nd = 1:num_data
     data = char(test_cases(nd));
-    Xaxis = transformations_axis{nd};
+
     f1=figure; set(gcf, 'Position', get(0,'Screensize'));
     f2 = figure; set(gcf, 'Position', get(0,'Screensize'));
     for ndt = 1:num_det
