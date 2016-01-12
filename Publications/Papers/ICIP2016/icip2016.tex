@@ -1,0 +1,106 @@
+% The ICIP2016 paper according to the given template
+%          spconf.sty  - ICASSP/ICIP LaTeX style file, and
+%          IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+\documentclass{article}
+\usepackage{spconf,amsmath,graphicx}
+
+% Example definitions.
+% --------------------
+\def\x{{\mathbf x}}
+\def\L{{\cal L}}
+
+% Title.
+% ------
+\title{Data-driven Region Detector for Structured Image Scenes}
+%
+% Single address.
+% ---------------
+\name{Elena Ranguelova\thanks{}}
+\address{Netherlands eScience Center\\ Amsterdam, The Netherlands}
+%
+% For example:
+% ------------
+%\address{School\\
+%	Department\\
+%	Address}
+
+%
+\begin{document}
+%\ninept
+%
+\maketitle
+%
+\begin{abstract}
+A Data-driven Morphology Salient Regions (DMRS) detector, related to our MSSR detector is proposed.
+It demonstrates comparable repeatability to the best-known MSER detector on standard structured scenes and better resolution invariance on a high-resolution benchmark. This is achieved via significantly smaller number of detected regions- a much desired property in the big data era. A data-driven banarization algorithm for a compact binary representation of the image is developed.  Also, new combined dataset for more reliable data and transformation-independent feature detection evaluation is introduced.
+While MSER is an excellent detector for generic applications, the DMSR is geared towards the analysis of scientific imagery for detecting precisely semantically meaningful regions. This is a key property in emerging domains such as animal and plant biometrics, with computer vision becoming the vital technology, aiding the wild-life preservation efforts. In this paper, DMSR is demonstrated to better detects the structures in wood microscopy images.
+
+\end{abstract}
+%
+\begin{keywords}
+region detection, data-driven, morhology, structured scences
+\end{keywords}
+%
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{Related work}
+\label{ssec:relwork}
+In \cite{DonoserB06}, an extension of MSER to 3D MSVs is proposed.
+\subsection{Contributions}
+\label{ssec:contr}
+
+
+\section{Binary Salient Regions Detection}
+\label{sec:binary}
+
+
+\subsection{Binarization algorithm}
+\label{ssec:binarize}
+
+
+\section{Data-driven Morphology Salient Regions}
+\label{sec:DMSR}
+
+
+\section{Performance  Evaluation}
+\label{sec:perf}
+
+\subsection{Standart datasets}
+\label{ssec:standart}
+
+\subsubsection{Oxford dataset}
+\label{sssec:oxford}
+\subsubsection{Freiburg dataset}
+\label{sssec:freiburg}
+\subsubsection{Combined dataset}
+\label{sssec:combined}
+\subsubsection{TNT hi-res benchmark}
+\label{sssec:tnt}
+
+\section{CONCLUSIONS}
+\label{sec:concl}
+
+
+
+
+% To start a new column (but not a new page) and help balance the last-page
+% column length use \vfill\pagebreak.
+% -------------------------------------------------------------------------
+%\vfill
+%\pagebreak
+
+
+\section{REFERENCES}
+\label{sec:ref}
+
+
+% References should be produced using the bibtex program from suitable
+% BiBTeX files (here: strings, refs, manuals). The IEEEbib.bst bibliography
+% style file from IEEE produces unsorted bibliography list.
+% -------------------------------------------------------------------------
+\bibliographystyle{IEEEbib}
+\bibliography{icip2016}
+
+\end{document}
