@@ -1,8 +1,78 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
+
+\bibitem{Kuehl2013}
+H.~Kuehl and T.~Burghardt,
+\newblock ``{Animal Biometrics: quantifying and detecting phenotypic
+  appearance},''
+\newblock {\em Trends in Ecology \& Evolution}, vol. 28, pp. 432--441, 2013.
+
+\bibitem{leafsnap_eccv2012}
+N.~Kumar, P.~Belhumeur, A.~Biswas, D.~Jacobs, W.~Kress, I.~Lopez, and
+  J.~Soares,
+\newblock ``{Leafsnap: A Computer Vision System for Automatic Plant Species
+  Identification},''
+\newblock in {\em The 12th European Conference on Computer Vision (ECCV)},
+  October 2012, pp. 502--516.
+
+\bibitem{Mikolajczyk:2005}
+K.~Mikolajczyk, T.~Tuytelaars, C.~Schmid, A.~Zisserman, J.~Matas,
+  F.~Schaffalitzky, T.~Kadir, and L.~Van Gool,
+\newblock ``A comparison of affine region detectors,''
+\newblock {\em International Journal of Computer Vision}, vol. 65, no. 1-2, pp.
+  43--72, November 2005.
+
+\bibitem{FischerDB14}
+P.~Fischer, A.~Dosovitskiy, and T.~Brox,
+\newblock ``{Descriptor Matching with Convolutional Neural Networks: a
+  Comparison to {SIFT}},''
+\newblock {\em CoRR}, vol. abs/1405.5769, 2014.
+
+\bibitem{CorRos2013}
+K.~Cordes, B.~Rosenhahn, and J.~Ostermann,
+\newblock ``{High-Resolution Feature Evaluation Benchmark},''
+\newblock in {\em The 15th International Conference on Computer Analysis of
+  Images and Patterns (CAIP)}, 2013, pp. 327--334.
+
+\bibitem{Matas2002BMVC}
+J.~Matas, O.~Chum, M.~Urban, and T.~Pajdla,
+\newblock ``{Robust Wide Baseline Stereo from Maximally Stable Extremal
+  Regions},''
+\newblock in {\em Proceedings BMVC}, 2002, pp. 36.1--36.10.
+
+\bibitem{Kimmel11}
+R.~Kimmel, C.~Zhang, A.~Bronstein, and M.~Bronstein,
+\newblock ``{Are MSER Features Really Interesting?},''
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  vol. 33, no. 11, pp. 2316--2320, 2011.
+
+\bibitem{Forssen07}
+Per-Erik Forss\'{e}n,
+\newblock ``{Maximally Stable Colour Regions for Recognition and Matching},''
+\newblock in {\em CVPR}, 2007, pp. 1--8.
+
+\bibitem{Wang14}
+Sh. Wang, W.~Wang, D.~Liu, F.~Gu, and B.~Dickson,
+\newblock ``{Enhanced Maximally Stable Extremal Regions with Canny Detector and
+  Applicationin Image Classification},''
+\newblock {\em Journal of Computational Information Systems}, vol. 10, no. 14,
+  pp. 6093--6100, 2014.
 
 \bibitem{DonoserB06}
 M.~Donoser and H.~Bischof,
-\newblock ``3d segmentation by maximally stable volumes (msvs).,''
+\newblock ``{3D Segmentation by Maximally Stable Volumes (MSVs)}.,''
 \newblock in {\em ICPR (1)}, 2006, pp. 63--66.
+
+\bibitem{RangMSSR06}
+E.~B. Ranguelova and E.~J. Pauwels,
+\newblock ``{Morphology-Based Stable Salient Regions Detector},''
+\newblock in {\em Proceedings of International Conference on Image and Vision
+  Computing New Zealand}, 2006, pp. 97 -- 102.
+
+\bibitem{RangHumpb06}
+E.~B. Ranguelova and E.~J. Pauwels,
+\newblock ``{Saliency Detection and Matching for Photo-Identification of
+  Humpback Whales},''
+\newblock {\em International Journal on Graphics, Vision and Image Processing},
+  2006.
 
 \end{thebibliography}
