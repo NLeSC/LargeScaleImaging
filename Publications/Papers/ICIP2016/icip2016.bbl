@@ -21,23 +21,17 @@ K.~Mikolajczyk, T.~Tuytelaars, C.~Schmid, A.~Zisserman, J.~Matas,
 \newblock {\em International Journal of Computer Vision}, vol. 65, no. 1-2, pp.
   43--72, November 2005.
 
-\bibitem{FischerDB14}
-P.~Fischer, A.~Dosovitskiy, and T.~Brox,
-\newblock ``{Descriptor Matching with Convolutional Neural Networks: a
-  Comparison to {SIFT}},''
-\newblock {\em CoRR}, vol. abs/1405.5769, 2014.
+\bibitem{Matas2002BMVC}
+J.~Matas, O.~Chum, M.~Urban, and T.~Pajdla,
+\newblock ``{Robust Wide Baseline Stereo from Maximally Stable Extremal
+  Regions},''
+\newblock in {\em Proceedings BMVC}, 2002, pp. 36.1--36.10.
 
 \bibitem{CorRos2013}
 K.~Cordes, B.~Rosenhahn, and J.~Ostermann,
 \newblock ``{High-Resolution Feature Evaluation Benchmark},''
 \newblock in {\em The 15th International Conference on Computer Analysis of
   Images and Patterns (CAIP)}, 2013, pp. 327--334.
-
-\bibitem{Matas2002BMVC}
-J.~Matas, O.~Chum, M.~Urban, and T.~Pajdla,
-\newblock ``{Robust Wide Baseline Stereo from Maximally Stable Extremal
-  Regions},''
-\newblock in {\em Proceedings BMVC}, 2002, pp. 36.1--36.10.
 
 \bibitem{Kimmel11}
 R.~Kimmel, C.~Zhang, A.~Bronstein, and M.~Bronstein,
@@ -74,5 +68,11 @@ E.~B. Ranguelova and E.~J. Pauwels,
   Humpback Whales},''
 \newblock {\em International Journal on Graphics, Vision and Image Processing},
   2006.
+
+\bibitem{FischerDB14}
+P.~Fischer, A.~Dosovitskiy, and T.~Brox,
+\newblock ``{Descriptor Matching with Convolutional Neural Networks: a
+  Comparison to {SIFT}},''
+\newblock {\em CoRR}, vol. abs/1405.5769, 2014.
 
 \end{thebibliography}
