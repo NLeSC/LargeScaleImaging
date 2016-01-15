@@ -12,14 +12,18 @@
 \def\B{{\mathbf B}}
 \def\M{{\mathbf M}}
 \def\I{{\mathbf I}}
+\def\mcT{{\mathcal{T}}}
 \def\mcD{{\mathcal{D}}}
+\def\mcA{{\mathcal{A}}}
+\def\mcL{{\mathcal{L}}}
+\def\mcV{{\mathcal{V}}}
 \def\p{{\mathbf p}}
 \def\q{{\mathbf q}}
 \def\r{{\mathbf r}}
 \def\s{{\mathbf s}}
 \def\S{{\mathbf S}}
 \def\mcN{{\mathcal{N}}}
-
+\DeclareMathOperator*{\argmax}{arg\,max} 
 % Title.
 % ------
 \title{Data-driven Region Detector for Structured Image Scenes}
@@ -103,7 +107,7 @@ The MSER has been also extended to {\em Maximally Stable Volumes} and used to su
 \end{minipage}
  \vspace{-0.2cm}
 \caption{Region detectors on two images of the tail of the same humpback whale. 
-Top row: MSER, bottom row: DMSRA.}
+First row: MSER, second row: DMSRA.}
 \label{fig:tails}
 %
 \end{figure}
@@ -157,7 +161,6 @@ Evaluation benchmarks are crucial for the development of region detectors. The s
 
 In this paper a robust to lighting and blur binarization algorithm is proposed. It is the basis for the proposed salient regions detector, the DMSR. The detector is faster than MSSR, while the regions are also perceptually salient. DMRS produces much smaller and more stable number of regions with comparable or higher (lighting, blur and increased resolution) repeatability to MSER. Its potential for enhancing scientific imagery analytics is illustrated. DMSR is available as open source software. Also, a new 'OxFrei' dataset combining features of the Oxford and Freiburg datasets is introduced. %{\it Finally, a more informative way of performance evaluation reporting in 3D is demonstrated (???)}.
 
-
 \begin{figure}[htb]
 
 \begin{minipage}[b]{.48\linewidth}
@@ -173,58 +176,139 @@ In this paper a robust to lighting and blur binarization algorithm is proposed. 
 %  \vspace{1.5cm}
 %  \centerline{(b) Result 2}\medskip
 \end{minipage}
-\vspace{-0.5cm}
+\vspace{-0.6cm}
 \caption{Binary salient regions detection.
 Color coding: holes-blue, islands- yellow,
 indentations - green, protrusions- red. }
 \label{fig:binary_sal}
 %
 \end{figure}
-
-\section{Data-driven Morphology Salient Regions}
-\label{sec:DMSR}
-The DMRS detector offers simpler approach in comparison to MSSR and MSER. While MSER and MSSR process each gray-level image level set in search for stable salient regions, DMRS transforms the gray-scale (or color) image saliency directly into binary salient region detection problem.
-
-\subsection{Binary Salient Regions Detection}
-\label{ssec:binary}
-We have explained the morphology-based binary saliency detection in previous publications, the reader is refered to them for more details, \cite{RangMSSR06, RangHumpb06}. Here, a summary of the main notions and ideas is presented.
-
-The claim is that the perceptual saliency in a binary image of a structured scene 
- $\B: \mcD \subset \mathcal{Z}^2 \rightarrow \{0,1\}$ (1-white, 0-black)
-is only due to the spatial layout of the regions within the image. 
-There are  $4$ possible types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are called {\em holes} - set of connected black pixels entirely surrounded by white pixels and the dual {\em islands}- set of connected white pixels surrounded by black. A significant connected component (CC) ${\cal B}^1$ is defined as a CC with area proportional to the area
-of the image by a factor of $\Lambda$. Other parameters are $r$ -the radius of the morphological structuring element and $\lambda$- the area opening parameter for filtering too insignificant regions. The $2$ {\em boundary salient structures (BSS)} are the {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, its boundary will increase with no more than $2\pi r$ and the dually defined {\em indentations}. 
-
-The same notions are used for the MSSR detector and the regions are obtained using the morphology operations {\em hole filling} and {\em white/black top hat}. The ISS are similar to definition of the MSER+ and MSER- regions, \cite{Matas2002BMVC}. In this paper, detectors using only ISS (e.g. directly comparable to MSER) are denoted by DMSR/MSSR, while DMSRA/MSSRA denote detectors using all region types. These definitions are presented formally in Table \ref{table:binary_sal} and the detection illustrated on a synthetic $100 \times 100$ binary image with parameters $\Lambda=100$, $r=5$, $\lambda = 10$ on Fig.\ref{fig:binary_sal}.
-
 %----------------------------------------------------------------------
-\begin{table*}[hbt]
-\begin{minipage}[b]{0.48\linewidth}\begin{tabular}{|l l|}
+\vspace*{-0.25cm}
+\begin{table}[hbt]
+\begin{minipage}[b]{0.98\linewidth}\begin{tabular}{|l l|}
 \hline
+
 {\bf ISS} & A CC $S^i_{fb} = \{\p \in \mcD, \forall \p=f,$\\&$\forall \q \in \partial S^i_{fb}, \q=b, \q \notin \partial \B $ \},\\
-$2$ types of ISS & $S^i_{10}$, $f=1, b=0$ ({\em islands})\\
-& $S^i_{01}$, $f=0, b=1$  ({\em holes})\\
-all ISS &$\S^i = S_{01}^i \cup S_{10}^i$\\
+$2$ types & $S^i_{10}$ (islands), $S^i_{01}$  (holes); $\S^i = S_{01}^i \cup S_{10}^i$\\
 {\bf BSS} &  $S_{fb}^b: \{\p \in S_{fb}^b \subset{\cal B}^f, \forall \p = f,$\\&$ \q \in \partial S_{fb}^b \subset {\partial \cal B}^f,\forall \q = b \}$, \\
-& $card(\partial {\cal B}^f) - card(\partial ({\cal B}^f \backslash S_{fb}^b)) < 2 \pi r$\\
-$2$ types of BSS & $S^b_{10}$, $f=1, b=0$ ({\em protrusion})\\
-& $S^b_{01}$, $f=0, b=1$ ({\em indentation})\\
-all BSS& $\S^b = S_{01}^b \cup S_{10}^b$\\
-{\bf Salient regions} &  $\S = \S^i$ (DMSR), $\S = \S^i \cup \S^b$ (DMSRA)  \\
+& $|\partial {\cal B}^f| - |\partial ({\cal B}^f \backslash S_{fb}^b)| < 2 \pi r$\\
+$2$ types & $S^b_{10}$ (protr.), $S^b_{01}$ (indent.); $\S^b = S_{01}^b \cup S_{10}^b$\\
+{\bf Regions} &  $\S = \S^i$ (DMSR), $\S = \S^i \cup \S^b$ (DMSRA)  \\
+
 \hline
 \end{tabular}
 \caption{Binary saliency definitions used in Section \ref{ssec:binary}.}\label{table:binary_sal}
 \end{minipage}
-%\vspace*{-0.8cm}
-\end{table*}
+\vspace*{-1cm}
+\end{table}
+
+\section{Data-driven Morphology Salient Regions}
+\label{sec:DMSR}
+While MSER and MSSR process each gray-level of the image searching for stable salient regions, DMRS transforms the gray-scale saliency into binary saliency problem.
+\subsection{Binary Salient Regions Detection}
+\label{ssec:binary}
+The claim is that the perceptual saliency in a binary image of a structured scene 
+ $\B: \mcD \subset \mathcal{Z}^2 \rightarrow \{0,1\}$ (1-white, 0-black)
+is only due to the spatial layout of the image regions. 
+There are  $4$ possible types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are called {\em holes} - set of connected black pixels entirely surrounded by white pixels and the dual {\em islands}- set of connected white pixels surrounded by black ones. A significant connected component (CC) ${\cal B}^1$ is defined as a CC with area proportional to the area
+of the image by  $\Lambda$. The radius of the morphological structuring element is $r$ and  the area opening parameter for filtering of noise-like regions is $\lambda$. The $2$ {\em boundary salient structures (BSS)} are the {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, its boundary will increase with no more than $2\pi r$ and the dually defined {\em indentations}. 
+
+The definitions are valid also for the MSSR detector. The regions are obtained from $\B$ by morphology operations: hole filling, top hat and area opening, for more details see \cite{RangMSSR06, RangHumpb06}. The ISS are similar to definition of the MSER+ and MSER- regions, \cite{Matas2002BMVC}. In this paper, detectors using only ISS (e.g. directly comparable to MSER) are denoted by DMSR/MSSR, while DMSRA/MSSRA are detectors using all region types. These definitions are summarized in Table \ref{table:binary_sal} and the detection illustrated on a synthetic $100 \times 100$ binary image with parameters $\Lambda=100$, $r=5$ and $\lambda = 10$ on Fig.\ref{fig:binary_sal}.
+
+
 %------------------------------------------------------------------------
+\begin{figure}[htb]
 
+\begin{minipage}[b]{.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/hist_otsu_leuven_1_4}}
+ % \vspace{0.2cm}
+  \centerline{(a) Otsu}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/hist_numcc_leuven_1_4}}
+ % \vspace{0.2cm}
+  \centerline{(b) Max number of CC}\medskip
+\end{minipage}
+\vspace{-0.25cm}
+\caption{Finding the optimal threshold for $2$ images from the Leuven sequence 
+(Oxford dataset, lighting): 
+the base image - solid black line, the 4th image - dotted blue line.}
+\label{fig:binary_hist}
+%
+\end{figure}
 
-
-\subsection{Binarization algorithm}
+\subsection{Data-driven binarization}
 \label{ssec:binarize}
+The MSER and MSSR detectors decompose a gray-scale image into binary cross-sections and evaluate the stability (small area change) of the resulting CCs (regions) or accumulate evidence into saliency masks, respectively. In contrast, the proposed DMSR starts with a data-driven binarization producing single binary image which can also be used for image compression. 
 
+Any gray-scale image  $\I: \mcD \subset \mathcal{Z}^2 \rightarrow \mcT $ ($\mcT = \{0,1, ..., t_{max}\}, t_{max} = 2^n-1$ is the maximum
+gray value encoded by $n$ bits; usually $n=8$, $t_{max} = 256$) can be decomposed into cross-sections at
+every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$, 
+($CS_0(\I) = \I$). Obtaining a cross-section at level $t$ is equivalent to thresholding the image and setting all pixels with values below the
+threshold $t$ to $0$ and the ones above- to $1$, hence $CS_t(\I)$ is a binary image. 
+To relate the threshold to the salient regions, $3$ groups of CC are defined: $\mcA_t$- {\em all} CC in $CS_t(\I)$, $\mcL_t$- the {\em large} CC in $CS_t(\I)$ and 
+$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image size. Lets denote the normalized number of elements in a set by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$
+Finding the optimal threshold $t_{opt}$ is then defined as
+%\begin{equation*}
+$t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mcL_t \Vert + w^{\mcV} \Vert \mcV_t \Vert )$
+%\end{equation*}
+where $w^{\cdot}$ are the weights per set.  
 
+The classical gray-level histogram and Otsu threshold does not provide criterion for selecting a single $CS$ with stable salient regions, while choosing the threshold where number of CC is maximized ensures stable number of detected regions across image transformations. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} illustrate the invariance of the binarization to lighting.
+ 
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.3\linewidth}
+  \centering
+  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven1}}
+%  \vspace{1.5cm}
+%   \centerline{(a)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.3\linewidth}
+  \centering
+  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven1_otsu}}
+%  \vspace{1.5cm}
+  % \centerline{(b)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.3\linewidth}
+  \centering
+  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven1_numcc}}
+%  \vspace{1.5cm}
+  % \centerline{(c)}\medskip
+\end{minipage}
+
+\begin{minipage}[b]{.3\linewidth}
+  \centering
+  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven4}}
+%  \vspace{1.5cm}
+   \centerline{(a)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.3\linewidth}
+  \centering
+  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven4_otsu}}
+%  \vspace{1.5cm}
+   \centerline{(b)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.3\linewidth}
+  \centering
+  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven4_numcc}}
+%  \vspace{1.5cm}
+   \centerline{(c)}\medskip
+\end{minipage}
+
+ \vspace{-0.2cm}
+\caption{Binarization of $2$ images of the Leuven sequence (lighting). First row- base image, second row- $4$th image; (a) gray scale; (b) Otsu binarization, (c) proposed binarization.}
+\label{fig:leuven_bin}
+%
+\end{figure}
 
 \section{Performance  Evaluation}
 \label{sec:perf}
