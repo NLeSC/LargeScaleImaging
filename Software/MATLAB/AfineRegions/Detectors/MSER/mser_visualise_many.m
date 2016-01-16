@@ -25,7 +25,7 @@ disp('                                                                  ');
 
 % fixed choice for visualization parameters (see mser_visualizatio_one for interactive version)
 list_regions =[];
-step_list_regions = 1;
+step_list_regions = 2;
 scaling = 1;
 line_width = 2;
 labels = 0;
@@ -44,8 +44,10 @@ col_label = 'g';
 % features_dir = '/home/elena/eStep/LargeScaleImaging/Results/TNT/underground/underground_3072x2048/';
 %input_dir = '/home/elena/eStep/LargeScaleImaging/Data/TNT/underground/underground_3456x2304/PNG/';
  %features_dir = '/home/elena/eStep/LargeScaleImaging/Results/TNT/underground/underground_3456x2304/';
- input_dir = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/AnimalBiometrics/leatherbacks/';
- features_dir = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/AnimalBiometrics/leatherbacks/';
+ input_dir = '//home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG/figs/';
+ features_dir = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/MSER/';
+%  input_dir = '/home/elena/eStep/LargeScaleImaging/Data/AffineRegions/graffiti/PNG/';
+%  features_dir = '/home/elena/eStep/LargeScaleImaging/Results/AffineRegions/graffiti/';
 
 fnames_struct = dir([input_dir '*.png']);
 

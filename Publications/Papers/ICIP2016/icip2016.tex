@@ -240,26 +240,7 @@ the base image - solid black line, the 4th image - dotted blue line.}
 \label{fig:binary_hist}
 %
 \end{figure}
-
-\subsection{Data-driven binarization}
-\label{ssec:binarize}
-The MSER and MSSR detectors decompose a gray-scale image into binary cross-sections and evaluate the stability (small area change) of the resulting CCs (regions) or accumulate evidence into saliency masks, respectively. In contrast, the proposed DMSR starts with a data-driven binarization producing single binary image which can also be used for image compression. 
-
-Any gray-scale image  $\I: \mcD \subset \mathcal{Z}^2 \rightarrow \mcT $ ($\mcT = \{0,1, ..., t_{max}\}, t_{max} = 2^n-1$ is the maximum
-gray value encoded by $n$ bits; usually $n=8$, $t_{max} = 256$) can be decomposed into cross-sections at
-every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$, 
-($CS_0(\I) = \I$). Obtaining a cross-section at level $t$ is equivalent to thresholding the image and setting all pixels with values below the
-threshold $t$ to $0$ and the ones above- to $1$, hence $CS_t(\I)$ is a binary image. 
-To relate the threshold to the salient regions, $3$ groups of CC are defined: $\mcA_t$- {\em all} CC in $CS_t(\I)$, $\mcL_t$- the {\em large} CC in $CS_t(\I)$ and 
-$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image size. Lets denote the normalized number of elements in a set by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$
-Finding the optimal threshold $t_{opt}$ is then defined as
-%\begin{equation*}
-$t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mcL_t \Vert + w^{\mcV} \Vert \mcV_t \Vert )$
-%\end{equation*}
-where $w^{\cdot}$ are the weights per set.  
-
-The classical gray-level histogram and Otsu threshold does not provide criterion for selecting a single $CS$ with stable salient regions, while choosing the threshold where number of CC is maximized ensures stable number of detected regions across image transformations. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} illustrate the invariance of the binarization to lighting.
- 
+%------------------------------------------------------------------------
 \begin{figure}[htb]
 
 \begin{minipage}[b]{.3\linewidth}
@@ -304,26 +285,92 @@ The classical gray-level histogram and Otsu threshold does not provide criterion
    \centerline{(c)}\medskip
 \end{minipage}
 
- \vspace{-0.2cm}
+ \vspace{-0.5cm}
 \caption{Binarization of $2$ images of the Leuven sequence (lighting). First row- base image, second row- $4$th image; (a) gray scale; (b) Otsu binarization, (c) proposed binarization.}
 \label{fig:leuven_bin}
 %
 \end{figure}
+%------------------------------------------------------------------------
+
+\subsection{Data-driven binarization}
+\label{ssec:binarize}
+The MSER and MSSR detectors decompose a gray-scale image into binary cross-sections and evaluate the stability of the resulting CCs or accumulate evidence into saliency masks, respectively. In contrast, the proposed DMSR starts with a data-driven binarization producing single binary image which can also be used for image compression. 
+
+Any gray-scale image  $\I: \mcD \subset \mathcal{Z}^2 \rightarrow \mcT $ ($\mcT = \{0,1, ..., t_{max}\}, t_{max} = 2^n-1$ is the maximum
+gray value encoded by $n$ bits; usually $n=8$, $t_{max} = 256$) can be decomposed into cross-sections at
+every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$, 
+($CS_0(\I) = \I$). Obtaining a cross-section at level $t$ is equivalent to thresholding the image at threshold $t$ (setting all pixels with values below $t$ to $0$ and the ones above- to $1$), $CS_t(\I)$ is a binary image. 
+Three groups of CC are defined: $\mcA_t$- {\em all} CC in $CS_t(\I)$, $\mcL_t$- the {\em large} CC in $CS_t(\I)$ and 
+$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image size. Lets denote the normalized number of elements in a set by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$
+Finding the optimal threshold $t_{opt}$ is then defined as
+%\begin{equation*}
+$t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mcL_t \Vert + w^{\mcV} \Vert \mcV_t \Vert )$,
+%\end{equation*}
+where $w^{\cdot}$ are the weights per set.  
+
+The standart gray-level histogram and Otsu threshold does not provide criterion for selecting a single $CS$ with stable salient regions, while choosing the threshold $t_{opt}$ as proposed  ensures stable number of regions across image transformations. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} illustrate the invariance to lighting.
+ 
+%------------------------------------------------------------------------
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/mserGraffiti1}}
+ % \vspace{0.2cm}
+ % \centerline{(a) MSER}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/dmsrGraffiti1}}
+ % \vspace{0.2cm}
+ % \centerline{(b) DMSR}\medskip
+\end{minipage}
+\vspace{-0.25cm}
+\caption{Salient region detectors on the base image of Graffiti sequence, Oxford dataset. Left: MSER, right: DMSR}
+\label{fig:det_graffiti}
+%
+\end{figure}
+%------------------------------------------------------------------------
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/mserWood}}
+ % \vspace{0.2cm}
+ % \centerline{(a) MSER}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/dmsrWood}}
+ % \vspace{0.2cm}
+ % \centerline{(b) DMSR}\medskip
+\end{minipage}
+\vspace{-0.25cm}
+\caption{Salient region detectors on microscopy wood images. Left: MSER (every second region is shown), right: DMSR}
+\label{fig:wood}
+%
+\end{figure}
+%------------------------------------------------------------------------
+After the data-driven binarization, the DMSR detector finds the set of affine-covariant salient regions $\S$ from the single binary image $CS_{t_{opt}}$ as described in section \ref{ssec:binary} and \cite{RangMSSR06, RangHumpb06}. DMSR is hence simpler and faster than MSSR providing smaller number of non-overlapping and perceptually salinet regions compared to MSER, see figures \ref{fig:det_graffiti} and \ref{fig:wood}.
+
 
 \section{Performance  Evaluation}
 \label{sec:perf}
 
-\subsection{Standard datasets}
-\label{ssec:standart}
+\subsection{Oxford dataset}
+\label{ssec:oxford}
 
-\subsubsection{Oxford dataset}
-\label{sssec:oxford}
-\subsubsection{Freiburg dataset}
-\label{sssec:freiburg}
-\subsubsection{Combined dataset}
-\label{sssec:combined}
-\subsubsection{TNT hi-res benchmark}
-\label{sssec:tnt}
+\subsection{Freiburg dataset}
+\label{ssec:freiburg}
+\subsection{OxFri dataset}
+\label{ssec:combined}
+\subsection{TNT hi-res benchmark}
+\label{ssec:tnt}
+\subsection{Animal and plant biometrics}
+\label{ssec:bio}
+The DMSR deteor has been designed to address the prolems of the scientists in the animal and plant biometrcs \cite{Kuehl2013}. The detctor has been compared to MSER on several small animal individul photo-ID datasets for humback whales, leatherback turtles, newts and ona wood species identification dataset. In all cases DMSR produces less and more acurate perceptually salient regions, figures \ref{fig:tails}, \ref{fig:turtle} and \ref{fig:wood}. For the wood microscopy images, it is important to measure the geometric properties of the cells, whcih is achivable with the DMSR regions, unlike the very large number of not-precise and overlapping MSER regions.
 
 \section{CONCLUSIONS}
 \label{sec:concl}
