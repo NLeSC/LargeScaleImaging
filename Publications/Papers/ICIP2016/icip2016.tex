@@ -301,7 +301,7 @@ gray value encoded by $n$ bits; usually $n=8$, $t_{max} = 256$) can be decompose
 every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$, 
 ($CS_0(\I) = \I$). Obtaining a cross-section at level $t$ is equivalent to thresholding the image at threshold $t$ (setting all pixels with values below $t$ to $0$ and the ones above- to $1$), $CS_t(\I)$ is a binary image. 
 Three groups of CC are defined: $\mcA_t$- {\em all} CC in $CS_t(\I)$, $\mcL_t$- the {\em large} CC in $CS_t(\I)$ and 
-$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image size. Lets denote the normalized number of elements in a set by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$
+$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Lets denote the normalized number of elements in a set by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$
 Finding the optimal threshold $t_{opt}$ is then defined as
 %\begin{equation*}
 $t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mcL_t \Vert + w^{\mcV} \Vert \mcV_t \Vert )$,
@@ -358,7 +358,7 @@ After the data-driven binarization, the DMSR detector finds the set of affine-co
 
 \section{Performance  Evaluation}
 \label{sec:perf}
-
+The performance of the detector has been evaluated according to the protocol established in \cite{Mikolajczyk:2005}. The main measures are the {\em repeatability} and the {\em number of correspendencies}. The maximum overlap error between corresponding regions is $40\%$. The repeatability score between a pair of images is the ratio between the number of corresponding regions (in the common image part) and the smaller number of regions in the pair. The MSSR/DMSR parameters used are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=$ ,$\Lambda_{\mcL}=$ and $\Lambda_{\mcV}=$...... and the MSER is used with the default settings.
 \subsection{Oxford dataset}
 \label{ssec:oxford}
 
