@@ -234,7 +234,7 @@ The definitions are valid also for the MSSR detector. The regions are obtained f
   \centerline{(b) Max number of CC}\medskip
 \end{minipage}
 \vspace{-0.25cm}
-\caption{Finding the optimal threshold for $2$ images from the Leuven sequence 
+\caption{Finding the optimal threshold for $2$ images from the 'Leuven' sequence 
 (Oxford dataset, lighting): 
 the base image - solid black line, the 4th image - dotted blue line.}
 \label{fig:binary_hist}
@@ -286,7 +286,7 @@ the base image - solid black line, the 4th image - dotted blue line.}
 \end{minipage}
 
  \vspace{-0.5cm}
-\caption{Binarization of $2$ images of the Leuven sequence (lighting). First row- base image, second row- $4$th image; (a) gray scale; (b) Otsu binarization, (c) proposed binarization.}
+\caption{Binarization of $2$ images of the 'Leuven' sequence (lighting). First row- base image, second row- $4$th image; (a) gray scale; (b) Otsu binarization, (c) proposed binarization.}
 \label{fig:leuven_bin}
 %
 \end{figure}
@@ -327,7 +327,7 @@ The standart gray-level histogram and Otsu threshold does not provide criterion 
  % \centerline{(b) DMSR}\medskip
 \end{minipage}
 \vspace{-0.25cm}
-\caption{Salient region detectors on the base image of Graffiti sequence, Oxford dataset. Left: MSER, right: DMSR}
+\caption{Salient region detectors on the base image of 'Graffiti' sequence, Oxford dataset. Left: MSER, right: DMSR}
 \label{fig:det_graffiti}
 %
 \end{figure}
@@ -358,10 +358,10 @@ After the data-driven binarization, the DMSR detector finds the set of affine-co
 
 \section{Performance  Evaluation}
 \label{sec:perf}
-The performance of the detector has been evaluated according to the protocol established in \cite{Mikolajczyk:2005}. The main measures are the {\em repeatability} and the {\em number of correspendencies}. The maximum overlap error between corresponding regions is $40\%$. The repeatability score between a pair of images is the ratio between the number of corresponding regions (in the common image part) and the smaller number of regions in the pair. The MSSR/DMSR parameters used are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=$ ,$\Lambda_{\mcL}=$ and $\Lambda_{\mcV}=$...... and the MSER is used with the default settings.
+The main performance measures are the {\em repeatability} ($R$) and the {\em number of correspendencies} ($N_C$), \cite{Mikolajczyk:2005}. The maximum overlap error between regions to count as matching is $40\%$. The repeatability score between a pair of images $<base, transfromed>$ ($<\I_B,\I_T>$) is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. Only the structured scenes from each dataset are considered and $5$ detectors are evaluated: MSER, MSSR(A) and DMSR(A). The MSSR(A)/DMSR(A) parameters used are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$ ,$\Lambda_{\mcL}=0.01$, $\Lambda_{\mcV}=0.1$ and  $w^{\cdot}=0.33$. The original MSER software is used with default settings. 
 \subsection{Oxford dataset}
 \label{ssec:oxford}
-
+Each image sequence of the Oxford dataset consists of a base image and $5$ images with increasing level of distortion, \cite{Mikolajczyk:2005}. The photos are obtained independantly of each other and the homographies between each pair $<\I_B,\I_T>$ are the provided  ground truth. Each sequence can be used to test only $1$ image transformation. The following sequences have been used: 'Boat'-scale (rotation and zoom), 'Bikes'- blur, 'Graffiti'-viewpoint (Fig. \ref{fig:det_graffiti}), 'Leuven'- ligthing (Fig. \ref{fig:leuven_bin}).
 \subsection{Freiburg dataset}
 \label{ssec:freiburg}
 \subsection{OxFri dataset}
