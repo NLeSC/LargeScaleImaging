@@ -6,7 +6,7 @@ results_matfile = 'results_3det_combined_dataset.mat';
 num_det = 3;
 num_trans_deg = 5;
 
-detectors={'mser','mssr', 'dmsr'};
+detectors=upper({'mser','mssr', 'dmsr'});
 %transformations = {'viewpoint' , 'scale: rotation + zoom', 'blur', 'ligthing'};
 %transf_ind = 1:5;
 transformations = {'viewpoint' , 'blur', 'ligthing'};

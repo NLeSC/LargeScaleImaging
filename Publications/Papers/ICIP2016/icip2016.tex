@@ -214,7 +214,7 @@ is only due to the spatial layout of the image regions.
 There are  $4$ possible types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are called {\em holes} - set of connected black pixels entirely surrounded by white pixels and the dual {\em islands}- set of connected white pixels surrounded by black ones. A significant connected component (CC) ${\cal B}^1$ is defined as a CC with area proportional to the area
 of the image by  $\Lambda$. The radius of the morphological structuring element is $r$ and  the area opening parameter for filtering of noise-like regions is $\lambda$. The $2$ {\em boundary salient structures (BSS)} are the {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, its boundary will increase with no more than $2\pi r$ and the dually defined {\em indentations}. 
 
-The definitions are valid also for the MSSR detector. The regions are obtained from $\B$ by morphology operations: hole filling, top hat and area opening, for more details see \cite{RangMSSR06, RangHumpb06}. The ISS are similar to definition of the MSER+ and MSER- regions, \cite{Matas2002BMVC}. In this paper, detectors using only ISS (e.g. directly comparable to MSER) are denoted by DMSR/MSSR, while DMSRA/MSSRA are detectors using all region types. These definitions are summarized in Table \ref{table:binary_sal} and the detection illustrated on a synthetic $100 \times 100$ binary image with parameters $\Lambda=100$, $r=5$ and $\lambda = 10$ on Fig.\ref{fig:binary_sal}.
+The definitions are valid also for the MSSR detector. The regions are obtained from $\B$ by morphology operations: hole filling, top hat and area opening, for more details see \cite{RangMSSR06, RangHumpb06}. The ISS are similar to definition of the MSER+ and MSER- regions, \cite{Matas2002BMVC}. In this paper, detectors using only ISS (e.g. directly comparable to MSER) are denoted by DMSR/MSSR, while DMSRA/MSSRA are detectors using all region types. These definitions are summarized in Table \ref{table:binary_sal} and the exact shape regions are illustrated on a synthetic $100 \times 100$ binary image with parameters $\Lambda=100$, $r=5$ and $\lambda = 10$ on Fig.\ref{fig:binary_sal}.
 
 
 %------------------------------------------------------------------------
@@ -308,7 +308,7 @@ $t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \m
 %\end{equation*}
 where $w^{\cdot}$ are the weights per set.  
 
-The standart gray-level histogram and Otsu threshold does not provide criterion for selecting a single $CS$ with stable salient regions, while choosing the threshold $t_{opt}$ as proposed  ensures stable number of regions across image transformations. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} illustrate the invariance to lighting.
+The standard gray-level histogram and Otsu threshold does not provide criterion for selecting a single $CS$ with stable salient regions, while choosing the threshold $t_{opt}$ ensures stable number of regions across image transformations. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} illustrate the invariance to lighting.
  
 %------------------------------------------------------------------------
 \begin{figure}[htb]
@@ -352,25 +352,130 @@ The standart gray-level histogram and Otsu threshold does not provide criterion 
 \label{fig:wood}
 %
 \end{figure}
+\vspace{-0.5cm}
 %------------------------------------------------------------------------
-After the data-driven binarization, the DMSR detector finds the set of affine-covariant salient regions $\S$ from the single binary image $CS_{t_{opt}}$ as described in section \ref{ssec:binary} and \cite{RangMSSR06, RangHumpb06}. DMSR is hence simpler and faster than MSSR providing smaller number of non-overlapping and perceptually salinet regions compared to MSER, see figures \ref{fig:det_graffiti} and \ref{fig:wood}.
+After the data-driven binarization, the DMSR detector finds the set of affine-covariant regions $\S$ from the single binary image $CS_{t_{opt}}$ as described in section \ref{ssec:binary} and \cite{RangMSSR06, RangHumpb06}. DMSR produces smaller number of non-overlapping and perceptually salient regions (visualized by their equivalent ellipses, not exact shapes) compared to MSER, Figs. \ref{fig:det_graffiti} and \ref{fig:wood}.
 
 
 \section{Performance  Evaluation}
 \label{sec:perf}
-The main performance measures are the {\em repeatability} ($R$) and the {\em number of correspendencies} ($N_C$), \cite{Mikolajczyk:2005}. The maximum overlap error between regions to count as matching is $40\%$. The repeatability score between a pair of images $<base, transfromed>$ ($<\I_B,\I_T>$) is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. Only the structured scenes from each dataset are considered and $5$ detectors are evaluated: MSER, MSSR(A) and DMSR(A). The MSSR(A)/DMSR(A) parameters used are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$ ,$\Lambda_{\mcL}=0.01$, $\Lambda_{\mcV}=0.1$ and  $w^{\cdot}=0.33$. The original MSER software is used with default settings. 
+The {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) are the main performance evaluaiton measures, \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is $40\%$. The $R$ score between a pair of images $<base, transformed>$ ($<\I_B,\I_T>$) is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. Only the structured scenes from each dataset are considered and $5$ detectors are evaluated: MSER, MSSR(A) and DMSR(A). The MSSR(A)/DMSR(A) parameters used are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$ ,$\Lambda_{\mcL}=0.01$, $\Lambda_{\mcV}=0.1$ and  $w^{\cdot}=0.33$. The original MSER software is used with default settings. 
 \subsection{Oxford dataset}
 \label{ssec:oxford}
-Each image sequence of the Oxford dataset consists of a base image and $5$ images with increasing level of distortion, \cite{Mikolajczyk:2005}. The photos are obtained independantly of each other and the homographies between each pair $<\I_B,\I_T>$ are the provided  ground truth. Each sequence can be used to test only $1$ image transformation. The following sequences have been used: 'Boat'-scale (rotation and zoom), 'Bikes'- blur, 'Graffiti'-viewpoint (Fig. \ref{fig:det_graffiti}), 'Leuven'- ligthing (Fig. \ref{fig:leuven_bin}).
+Each image sequence of the Oxford dataset consists of a $1$ base and $5$ increasingly distorted images, \cite{Mikolajczyk:2005}. They are obtained independently of each other and the homographies between each pair $<\I_B,\I_T>$ are the provided  ground truth. Each sequence can be used to test only $1$ image transformation. The following sequences have been used: 'Boat'-scale (rotation and zoom), 'Bikes'- blur (Fig. \ref{fig:det_bikes}), 'Graffiti'-viewpoint (Fig. \ref{fig:det_graffiti}), 'Leuven'- lighting (Fig. \ref{fig:leuven_bin}).
+
+%------------------------------------------------------------------------
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.9\linewidth}
+  \centering
+  \centerline{\includegraphics[width=8.5cm]{./Figs/repeatability_all_affine_bikes_blur}}
+ % \vspace{0.2cm}
+ % \centerline{(a) MSER}\medskip
+\end{minipage}
+\hfill
+\vspace{-0.25cm}
+\caption{Region detectors on 'Bikes', Oxford dataset.}
+\label{fig:det_bikes}
+%
+\end{figure}
+%------------------------------------------------------------------------
+\vspace{-0.25cm}
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.9\linewidth}
+  \centering
+  \centerline{\includegraphics[width=8.5cm]{./Figs/repeatability_all_combined_01_graffiti_ligthing_good}}
+ % \vspace{0.2cm}
+ % \centerline{(a) MSER}\medskip
+\end{minipage}
+\hfill
+\vspace{-0.25cm}
+\caption{Region detectors on '01\_graffiti', OxFrei dataset.}
+\label{fig:det_frei}
+%
+\end{figure}
+
 \subsection{Freiburg dataset}
 \label{ssec:freiburg}
+The creators of the Freiburg dataset addressed the issue of separating transformation from image content, \cite{}. 
 \subsection{OxFri dataset}
 \label{ssec:combined}
+
+%------------------------------------------------------------------------
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/lighting_some_combined}}
+ % \vspace{0.2cm}
+ % \centerline{(a) MSER}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/lighting_some_combined_numreg}}
+ % \vspace{0.2cm}
+ % \centerline{(b) DMSR}\medskip
+\end{minipage}
+\vspace{-0.25cm}
+\caption{Robustness of region detectors to lighting.}
+\label{fig:ligthing}
+%
+\end{figure}
+\vspace{-0.5cm}
+%------------------------------------------------------------------------
+
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/blur_some_combined}}
+ % \vspace{0.2cm}
+ % \centerline{(a) MSER}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/blur_some_combined_numreg}}
+ % \vspace{0.2cm}
+ % \centerline{(b) DMSR}\medskip
+\end{minipage}
+\vspace{-0.25cm}
+\caption{Robustness of region detectors to blur.}
+\label{fig:blur}
+%
+\end{figure}
+%------------------------------------------------------------------------
+
 \subsection{TNT hi-res benchmark}
 \label{ssec:tnt}
+
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/posters_rep}}
+ % \vspace{0.2cm}
+ % \centerline{(a) MSER}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4.0cm]{./Figs/posters_numreg}}
+ % \vspace{0.2cm}
+ % \centerline{(b) DMSR}\medskip
+\end{minipage}
+\vspace{-0.25cm}
+\caption{Robustness of region detectors to image resolution and viewpoint.}
+\label{fig:tnt}
+%
+\end{figure}
+%------------------------------------------------------------------------
+
 \subsection{Animal and plant biometrics}
 \label{ssec:bio}
-The DMSR deteor has been designed to address the prolems of the scientists in the animal and plant biometrcs \cite{Kuehl2013}. The detctor has been compared to MSER on several small animal individul photo-ID datasets for humback whales, leatherback turtles, newts and ona wood species identification dataset. In all cases DMSR produces less and more acurate perceptually salient regions, figures \ref{fig:tails}, \ref{fig:turtle} and \ref{fig:wood}. For the wood microscopy images, it is important to measure the geometric properties of the cells, whcih is achivable with the DMSR regions, unlike the very large number of not-precise and overlapping MSER regions.
+The DMSR deteor has been designed to address the problems of the scientists in the animal and plant biometrics \cite{Kuehl2013}. The detector has been compared to MSER on several small animal individual photo-ID datasets for humpback whales, leatherback turtles, newts and ona wood species identification dataset. In all cases DMSR produces less and more accurate perceptually salient regions, figures \ref{fig:tails}, \ref{fig:turtle} and \ref{fig:wood}. For the wood microscopy images, it is important to measure the geometric properties of the cells, which is achievable with the DMSR regions, unlike the very large number of not-precise and overlapping MSER regions.
 
 \section{CONCLUSIONS}
 \label{sec:concl}
