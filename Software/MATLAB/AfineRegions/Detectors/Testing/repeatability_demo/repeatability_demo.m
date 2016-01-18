@@ -1,6 +1,6 @@
 function repeatability_demo
 
-det_suffix={'mser','mssr', 'mssra','dmsr', 'dmsra'};
+det_suffix=upper({'mser','mssr', 'mssra','dmsr', 'dmsra'});
 num_detectors = length(det_suffix);
 batch_structural = true;
 lisa = false;
