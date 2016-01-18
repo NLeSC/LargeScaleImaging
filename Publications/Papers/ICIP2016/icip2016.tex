@@ -159,7 +159,7 @@ Evaluation benchmarks are crucial for the development of region detectors. The s
 \subsection{Contributions}
 \label{ssec:contr}
 
-In this paper a robust to lighting and blur binarization algorithm is proposed. It is the basis for the proposed salient regions detector, the DMSR. The detector is faster than MSSR, while the regions are also perceptually salient. DMRS produces much smaller and more stable number of regions with comparable or higher (lighting, blur and increased resolution) repeatability to MSER. Its potential for enhancing scientific imagery analytics is illustrated. DMSR is available as open source software. Also, a new 'OxFrei' dataset combining features of the Oxford and Freiburg datasets is introduced. %{\it Finally, a more informative way of performance evaluation reporting in 3D is demonstrated (???)}.
+In this paper a robust to lighting and blur binarization algorithm is proposed. It is the basis for the proposed salient regions detector, the DMSR. The detector is faster than MSSR, while the regions are also perceptually salient. DMRS produces much smaller and more stable number of regions with comparable or higher (lighting, blur and increased resolution) repeatability to MSER. Its potential for enhancing scientific imagery analytics is illustrated. DMSR is available as open source software, \cite{git_repo}. Also, a new 'OxFrei' dataset combining features of the Oxford and Freiburg datasets is introduced. %{\it Finally, a more informative way of performance evaluation reporting in 3D is demonstrated (???)}.
 
 \begin{figure}[htb]
 
@@ -220,20 +220,20 @@ The definitions are valid also for the MSSR detector. The regions are obtained f
 %------------------------------------------------------------------------
 \begin{figure}[htb]
 
-\begin{minipage}[b]{.49\linewidth}
+\begin{minipage}[b]{.495\linewidth}
   \centering
-  \centerline{\includegraphics[width=4.2cm]{./Figs/hist_otsu_leuven_1_4}}
+  \centerline{\includegraphics[width=4.4cm]{./Figs/hist_otsu_leuven_1_4}}
  % \vspace{0.2cm}
   \centerline{(a) Otsu}\medskip
 \end{minipage}
 \hfill
-\begin{minipage}[b]{0.49\linewidth}
+\begin{minipage}[b]{0.495\linewidth}
   \centering
-  \centerline{\includegraphics[width=4.2cm]{./Figs/hist_numcc_leuven_1_4}}
+  \centerline{\includegraphics[width=4.4cm]{./Figs/hist_numcc_leuven_1_4}}
  % \vspace{0.2cm}
   \centerline{(b) Max number of CC}\medskip
 \end{minipage}
-\vspace{-0.25cm}
+\vspace{-0.5cm}
 \caption{Finding the optimal threshold for $2$ images from the 'Leuven' sequence 
 (Oxford dataset, lighting): 
 the base image - solid black line, the 4th image - dotted blue line.}
@@ -252,35 +252,35 @@ the base image - solid black line, the 4th image - dotted blue line.}
 \hfill
 \begin{minipage}[b]{0.3\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven1_otsu}}
+  \centerline{\includegraphics[width=2.7cm]{./Figs/leuven1_otsu}}
 %  \vspace{1.5cm}
   % \centerline{(b)}\medskip
 \end{minipage}
 \hfill
 \begin{minipage}[b]{0.3\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven1_numcc}}
+  \centerline{\includegraphics[width=2.7cm]{./Figs/leuven1_numcc}}
 %  \vspace{1.5cm}
   % \centerline{(c)}\medskip
 \end{minipage}
 
 \begin{minipage}[b]{.3\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven4}}
+  \centerline{\includegraphics[width=2.7cm]{./Figs/leuven4}}
 %  \vspace{1.5cm}
    \centerline{(a)}\medskip
 \end{minipage}
 \hfill
 \begin{minipage}[b]{0.3\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven4_otsu}}
+  \centerline{\includegraphics[width=2.7cm]{./Figs/leuven4_otsu}}
 %  \vspace{1.5cm}
    \centerline{(b)}\medskip
 \end{minipage}
 \hfill
 \begin{minipage}[b]{0.3\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.8cm]{./Figs/leuven4_numcc}}
+  \centerline{\includegraphics[width=2.7cm]{./Figs/leuven4_numcc}}
 %  \vspace{1.5cm}
    \centerline{(c)}\medskip
 \end{minipage}
@@ -359,17 +359,17 @@ After the data-driven binarization, the DMSR detector finds the set of affine-co
 
 \section{Performance  Evaluation}
 \label{sec:perf}
-The {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) are the main performance evaluaiton measures, \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is $40\%$. The $R$ score between a pair of images $<base, transformed>$ ($<\I_B,\I_T>$) is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. Only the structured scenes from each dataset are considered and $5$ detectors are evaluated: MSER, MSSR(A) and DMSR(A). The MSSR(A)/DMSR(A) parameters used are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$ ,$\Lambda_{\mcL}=0.01$, $\Lambda_{\mcV}=0.1$ and  $w^{\cdot}=0.33$. The original MSER software is used with default settings. 
+The {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) are the main performance evaluation measures, \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is $40\%$. The $R$ score between a pair of images $<base, transformed>$ ($<\I_B,\I_T>$) is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. Only the structured scenes from each dataset are considered and $5$ detectors are evaluated: MSER, MSSR(A) and DMSR(A). The MSSR(A)/DMSR(A) parameters used are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$ ,$\Lambda_{\mcL}=0.01$, $\Lambda_{\mcV}=0.1$ and  $w^{\cdot}=0.33$. The original MSER software is used with default settings. 
 \subsection{Oxford dataset}
 \label{ssec:oxford}
 Each image sequence of the Oxford dataset consists of a $1$ base and $5$ increasingly distorted images, \cite{Mikolajczyk:2005}. They are obtained independently of each other and the homographies between each pair $<\I_B,\I_T>$ are the provided  ground truth. Each sequence can be used to test only $1$ image transformation. The following sequences have been used: 'Boat'-scale (rotation and zoom), 'Bikes'- blur (Fig. \ref{fig:det_bikes}), 'Graffiti'-viewpoint (Fig. \ref{fig:det_graffiti}), 'Leuven'- lighting (Fig. \ref{fig:leuven_bin}).
 
 %------------------------------------------------------------------------
 \begin{figure}[htb]
-
-\begin{minipage}[b]{.9\linewidth}
+\centering
+\begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=8.5cm]{./Figs/repeatability_all_affine_bikes_blur}}
+  \centerline{\includegraphics[width=8.4cm]{./Figs/repeatability_all_affine_bikes_blur}}
  % \vspace{0.2cm}
  % \centerline{(a) MSER}\medskip
 \end{minipage}
@@ -382,10 +382,10 @@ Each image sequence of the Oxford dataset consists of a $1$ base and $5$ increas
 %------------------------------------------------------------------------
 \vspace{-0.25cm}
 \begin{figure}[htb]
-
-\begin{minipage}[b]{.9\linewidth}
+\centering
+\begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=8.5cm]{./Figs/repeatability_all_combined_01_graffiti_ligthing_good}}
+ \centerline{\includegraphics[width=8.4cm]{./Figs/repeatability_all_combined_01_graffiti_ligthing_good}}
  % \vspace{0.2cm}
  % \centerline{(a) MSER}\medskip
 \end{minipage}
@@ -396,12 +396,10 @@ Each image sequence of the Oxford dataset consists of a $1$ base and $5$ increas
 %
 \end{figure}
 
-\subsection{Freiburg dataset}
-\label{ssec:freiburg}
-The creators of the Freiburg dataset addressed the issue of separating transformation from image content, \cite{}. 
-\subsection{OxFri dataset}
+ 
+\subsection{OxFrei dataset}
 \label{ssec:combined}
-
+The creators of the Freiburg dataset addressed the issue of separating transformation from image content by applying all possible image test transformation to different base images, \cite{FischerDB14}. Evaluating detectors on the Freiburg dataset proved difficult due to the lack of full transformation parameters documentation. To address the lack of easy to use public dataset, a new set, 'OxFrei', combining the strong features of the Oxford and Freiburg dataset, is released, \cite{git_repo}. The Freiburg base images have been transformed with all the naturally obtained homographies of the Oxford dataset. In this way, $9$ structured scenes have been created, each subject to $4$ transformations (blur,lighting,scaling, viewpoint), in total $26$ sequences.
 %------------------------------------------------------------------------
 \begin{figure}[htb]
 
@@ -475,9 +473,10 @@ The creators of the Freiburg dataset addressed the issue of separating transform
 
 \subsection{Animal and plant biometrics}
 \label{ssec:bio}
-The DMSR deteor has been designed to address the problems of the scientists in the animal and plant biometrics \cite{Kuehl2013}. The detector has been compared to MSER on several small animal individual photo-ID datasets for humpback whales, leatherback turtles, newts and ona wood species identification dataset. In all cases DMSR produces less and more accurate perceptually salient regions, figures \ref{fig:tails}, \ref{fig:turtle} and \ref{fig:wood}. For the wood microscopy images, it is important to measure the geometric properties of the cells, which is achievable with the DMSR regions, unlike the very large number of not-precise and overlapping MSER regions.
+The DMSR detector has been designed to address the problems of the scientists in the animal and plant biometrics \cite{Kuehl2013}. The detector has been compared to MSER on several small animal individual photo-ID datasets (humpback whales, leatherback turtles, newts) and on a wood species identification dataset. In all cases DMSR produces less and perceptually moreacurate salient regions, figures \ref{fig:tails}, \ref{fig:turtle} and \ref{fig:wood}. For the wood microscopy images, it is important to measure the geometric properties of the cells, which is achievable with the DMSR regions, unlike the very large number of non-precise and overlapping MSER regions.
 
 \section{CONCLUSIONS}
+Using data-driven binarization threshold and simple binary morphological operations leads to salient region detector, DMSR, with comparable to superior performance to MSER. It produces much smaller number of regions, a very desired property in the big data era. DMSR is better in dealing with blur, lighting and increased resolution.  For large-scale detector bench-marking, high-resolution and transformation independent datasets should become the standard. DMSR gives perceptually salient regions, which makes it a good choice for scientific imagery analytic tasks.  
 \label{sec:concl}
 
 
