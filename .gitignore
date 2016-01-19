@@ -1,4 +1,10 @@
-/Data
+/Data/CombinedGenerated/
+Data/Freiburg/
+Data/FreiburgRegenerated/
+Data/TNT/
+Data/Scientific/
+Data/Test/
+Data/AffineRegions/
 /Software/MATLAB/AfineRegions/ImageThresholdingFuzzyEntropy/
 /Results/
 *.aux
