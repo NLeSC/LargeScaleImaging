@@ -39,7 +39,7 @@
 
 \begin{abstract}
 Finding correspondences between two images of the same scene, taken from different viewpoints, with semantic features is a challenging problem.
-This paper proposes a Data-driven Morphology Salient Regions (DMRS) approach for detecting interest regions repeatedly. 
+This paper proposes a Data-driven Morphology Salient Regions (DMSR) approach for detecting interest regions repeatedly. 
 A binarization algorithm creates compact image representation that is then analyzed for saliency using morphology.
 DMSR has comparable performance to the renown MSER detector on structured scenes and better invariance on a high-resolution benchmark. 
 This is achieved via significantly fewer detected regions- a much desired property in the big data era. 
@@ -118,7 +118,7 @@ Top row: MSER, bottom row: DMSR(All).}
 \end{figure}
 
 A decade ago, a performance evaluation paper by the Visual Geometry Group in Oxford compared existing region detectors \cite{Mikolajczyk:2005}. 
-A clear conclusion of the comparison was that {\em  Maximally Stable Extremal Regions (MSER)} is the best performing detector for {\em structured} scenes \cite{Matas2002BMVC}. MSER has become the de-facto standard in the field, e.g., is a MATLAB Computer Vision Systems Toolbox command. Despite its success, the detector has several drawbacks: sensitivity to blur, producing nested and redundant regions and degrading performance with increase of image resolution \cite{CorRos2013}. Analysis in geometric scale-space showed that the formulation of the stability criterion makes MSER to prefer regular shapes \cite{Kimmel11}.
+A clear conclusion of the comparison was that {\em  Maximally Stable Extremal Regions (MSER)} is the best performing detector for {\em structured} scenes \cite{Matas2002BMVC}. MSER has become the de-facto standard in the field, e.g., is in the MATLAB CVS Toolbox and OpenCV. Despite its success, the detector has several drawbacks: sensitivity to blur, producing nested and redundant regions and degrading performance with increase of image resolution \cite{CorRos2013}. Analysis in geometric scale-space showed that the formulation of the stability criterion makes MSER to prefer regular shapes \cite{Kimmel11}.
 
 Many researchers have proposed improvements to MSER without a drastic increase of performance. An MSER color extension, {\em Maximally Stable Color Region}, outperforms both an MSER-per-color-channel combination and a color blob detector \cite{Forssen07}. Improving the MSER region distinctiveness by morphological dilation on the detected Canny edges is proposed in \cite{Wang14}. The improved detector shows better performance for bag of words classification, but the evaluation of repeatability is not reported. MSER has been extended to {\em Maximally Stable Volumes} for successful segmentation of 3D medical images and paper fiber networks \cite{DonoserB06}.
 
@@ -148,7 +148,7 @@ Although crucial for the development of detectors, there is a shortage of evalua
 The {\em TNT dataset} contains versions of the same viewpoint sequences with increasing resolution from $1.5$ to $8$~MPixel per image. Highly accurate image pair homographies are given. It is suitable for evaluating robustness to resolution rather than to transformations \cite{CorRos2013}. 
 
 This paper contributes to solving the identified problems. A new regions detector, {\em Data-driven Morphology Salient Regions (DMRS)} is proposed and made available as open source \cite{Rang:software}. It is related to the {\em Morphology-based Stable Salient Regions (MSSR)} detector that we developed in the context of humpback whale identification \cite{RangMSSR06, RangHumpb06}. DMRS includes a binarization, %robust-to-lighting-and-blur
-that yields a much smaller and more stable across transformations number of regions. It has similar or higher (lighting, blur and increased resolution) repeatability compared to MSER, while detecting non-redundant perceptually salient regions (Fig.~\ref{fig:tails}). Figure~\ref{fig:turtle} illustrates that DMSR finds repeatedly salient regions on the leatherback turtle images, unlike MSER. A new dataset, OxFrei, combining the natural homographies of the Oxford and the higher resolution images of the Freiburg datasets, is also introduced \cite{Rang:dataset}.
+that yields a much smaller and more stable across transformations number of regions. It has similar or higher (lighting, blur and increased resolution) repeatability compared to MSER, while detecting non-redundant perceptually salient regions (Fig.~\ref{fig:tails}). Figure~\ref{fig:turtle} illustrates that DMSR finds repeatedly salient regions on the leatherback turtle images, unlike MSER. A new dataset, OxFrei, combining the natural homographies of the Oxford and the higher resolution images of the Freiburg datasets, is made openly available \cite{Rang:dataset}.
 
 \section{Data-driven Morphology Salient Regions Detection}
 \label{sec:DMSR}
@@ -177,9 +177,9 @@ $2$ types & $S^b_{10}$ (protr.), $S^b_{01}$ (indent.); $\S^b = S_{01}^b \cup S_{
 
 \subsection{Binary Salient Regions Detection}
 \label{ssec:binary}
-The claim is that the perceptual saliency in a binary image of a structured scene 
+We claim is that the perceptual saliency in a binary image of a structured scene 
  $\B: \mcD \subset \mathcal{Z}^2 \rightarrow \{0,1\}$ (1-white, 0-black)
-is only due to the spatial layout of the image regions. 
+is only due to the spatial layout of the image regions \cite{RangHumpb06}. 
 There are  $4$ types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are (1) {\em holes} -- set of connected black pixels entirely surrounded by white pixels, and (2) inverted {\em islands} -- set of connected white pixels surrounded by black ones. A significant connected component (CC) ${\cal B}^1$ is defined as a CC with area proportional to the image area by $\Lambda$. The radius of the morphological structuring element is $r$ and  the area opening parameter for  noise filtering is $\lambda$. The $2$ {\em boundary salient structures (BSS)} are (3) {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, will increase its boundary with no more than $2\pi r$, and (4) the inverted {\em indentations}. 
 
 
@@ -187,7 +187,7 @@ The types are also valid for the MSSR detector. The regions are obtained from $\
 
 \subsection{Data-driven binarization}
 \label{ssec:binarize}
-Any gray-scale image  $\I: \mcD \subset \mathcal{Z}^2 \rightarrow \mcT $ ($\mcT = \{0,1, ..., t_{max}\}$, $t_{max} = 2^n-1$ is the max gray value encoded by $n$ bits; $n=8$, $t_{max}=256$) can be decomposed into cross-sections at
+Any gray-scale image  $\I: \mcD \subset \mathcal{Z}^2 \rightarrow \mcT $ ($\mcT = \{0,1, ..., t_{max}\}$, $t_{max} = 2^n-1$ is the max gray value encoded by $n$ bits; $n=8$, $t_{max}=255$) can be decomposed into cross-sections at
 every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$, 
 ($CS_0(\I) = \I$). Obtaining a section at level $t$ is equivalent to thresholding the image at threshold $t$ (setting all pixels with values below $t$ to $0$ and the ones above -- to $1$), $CS_t(\I)$ is a binary image. 
 Three groups of CC are defined: $\mcA_t$- {\em all} CC in $CS_t(\I)$, $\mcL_t$- the {\em large} CC in $CS_t(\I)$ and 
@@ -378,13 +378,13 @@ All regions and performance plots on all data and detectors are available online
 \subsection{Oxford dataset}
 \label{ssec:oxford}
 Each image sequence of the Oxford dataset consists of a $1$ base and $5$ increasingly distorted images \cite{Mikolajczyk:2005}. They are obtained independently of each other and the homographies between each pair $(\I_B,\I_T)$ are the provided  ground truth. Each sequence can be used to test only $1$ transformation $T$.
-For the viewpoint ('Graffiti'), best $R$ is achieved by DMSR with up to $72\%$, which is $10\%$ more than the second performing MSER for $40^{\circ}$ change. DMSR is performing worse on the scale sequence ('Boat'), but as good or better than MSER on the blur ('Bikes', Fig.~\ref{fig:det_bikes}) and ligthing data ('Leuven').
+For the viewpoint ('Graffiti'), best $R$ is achieved by DMSR with up to $72\%$, which is $10\%$ more than the second performing MSER for $40^{\circ}$ change. DMSR is performing worse on the scale sequence ('Boat'), but as good or better than MSER on the blur ('Bikes', Fig.~\ref{fig:det_bikes}) and lighting data ('Leuven').
 
 \subsection{OxFrei dataset}
 \label{ssec:combined}
 The creators of the Freiburg dataset separated $T$ from the image content by applying few transformations (alas not fully documented) to different base images \cite{FischerDB14}. To address the shortage of evaluation datasets, OxFrei, combining the strong features of the Oxford and Freiburg datasets, is released \cite{Rang:dataset}. The Freiburg base images are transformed with all homographies of the Oxford dataset. In this way, $36$ images in $9$ structured scenes are created each under realistic blur, lighting, scaling and viewpoint transfromations.
 
-The dataset allows transformation independent robustness study by comparing performance on all data subject to the same realistic $T$. Figures~\ref{fig:det_frei} and \ref{fig:blur} show $R$ for lighting for one and blur for few sequences. The standart plots (like on Fig.~\ref{fig:det_frei}) are cross-sections along the data dimension of the 3D plots (like on Fig.~\ref{fig:blur}) for $1$ sequence. The conclusions from the OxFrei experiments are: MSER is better for zoom and viewpoint (the latter contradicting with the limited Oxford result), while DMSR is robust to ligthing and blur (Figure \ref{fig:blur}).
+The dataset allows transformation independent robustness study by comparing performance on all data subject to the same realistic $T$. Figures~\ref{fig:det_frei} and \ref{fig:blur} show $R$ for lighting for one and blur for few sequences. The standart plots (like on Fig.~\ref{fig:det_frei}) are cross-sections along the data dimension of the 3D plots (like on Fig.~\ref{fig:blur}) for $1$ sequence. The conclusions from the OxFrei experiments are: MSER is better for zoom and viewpoint (the latter contradicting with the limited Oxford result), while DMSR is robust to lighting and blur (Figure \ref{fig:blur}).
 
 \subsection{TNT hi-res benchmark}
 \label{ssec:tnt}
