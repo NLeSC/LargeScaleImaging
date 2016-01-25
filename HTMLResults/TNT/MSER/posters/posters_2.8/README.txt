@@ -1,0 +1,1 @@
+Only every second region is displayed.

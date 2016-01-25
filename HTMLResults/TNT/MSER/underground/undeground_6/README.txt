@@ -1,0 +1,1 @@
+Only every third region is displayed.
