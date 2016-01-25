@@ -56,7 +56,7 @@ region detection, data-driven, structured scenes, morphology, scientific visual 
 \label{sec:intro}
 The first fundamental step in numerous computer vision applications (wide baseline stereo matching, image retrieval, model-based recognition, visual mining, object categorization, etc.\,) is to reliably and repeatedly find  the correspondence between a pair of different images of the same scene \cite{Matas2002BMVC, Rodriguez2013, EscaleraCVPR07}. An important class of methods find distinct (salient) regions, which correspond to the same image patches, detected independently for each viewpoint. The region detectors must be {\em covariant} (often called {\em invariant}) to, usually, {\em affine} transformations and various photometric distortions. 
 
-While most research has been focused on generic applications, the emerging fields of {\em animal and plant biometrics} are attracting more attention of the community \cite{Kuehl2013, leafsnap_eccv2012}. Computer vision is becoming the vital technology enabling the wild-life preservation efforts of ecologists in the big data era. Along with the photo-identification of individuals or species, the scientists wish to automatically obtain reliable measurements of meaningful structures from the image data. The generic region detectors often do not satisfy this need: Figures\,\ref{fig:tails} and \ref{fig:turtle} show the none, redundant or not semantic MSER structures.
+While most research has been focused on generic applications, the emerging fields of {\em animal and plant biometrics} are attracting more attention of the community \cite{Kuehl2013, leafsnap_eccv2012}. Computer vision is becoming the vital technology enabling the wild-life preservation efforts of ecologists in the big data era. Along with the photo-ID of individuals or species, the scientists wish toobtain reliable measurements of meaningful structures from the images. The generic region detectors often do not satisfy this need: Figs\,\ref{fig:tails} and \ref{fig:turtle} show the lack of oran over-abundance as well as MSER structures with no semantic significance.
 
 \begin{figure}[htb]
 
@@ -177,10 +177,10 @@ $2$ types & $S^b_{10}$ (protr.), $S^b_{01}$ (indent.); $\S^b = S_{01}^b \cup S_{
 
 \subsection{Binary Salient Regions Detection}
 \label{ssec:binary}
-We claim is that the perceptual saliency in a binary image of a structured scene 
+We claim that the perceptual saliency in a binary image of a structured scene 
  $\B: \mcD \subset \mathcal{Z}^2 \rightarrow \{0,1\}$ (1-white, 0-black)
 is only due to the spatial layout of the image regions \cite{RangHumpb06}. 
-There are  $4$ types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are (1) {\em holes} -- set of connected black pixels entirely surrounded by white pixels, and (2) inverted {\em islands} -- set of connected white pixels surrounded by black ones. A significant connected component (CC) ${\cal B}^1$ is defined as a CC with area proportional to the image area by $\Lambda$. The radius of the morphological structuring element is $r$ and  the area opening parameter for  noise filtering is $\lambda$. The $2$ {\em boundary salient structures (BSS)} are (3) {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, will increase its boundary with no more than $2\pi r$, and (4) the inverted {\em indentations}. 
+There are  $4$ types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are (1) {\em holes} -- set of connected black pixels entirely surrounded by white pixels, and (2) {\em islands} -- set of connected white pixels surrounded by black ones, i.e.~inverse of holes. A significant connected component (CC) ${\cal B}^1$ is defined as a CC with area proportional to the image area by $\Lambda$. The radius of the morphological structuring element is $r$ and  the area opening parameter for  noise filtering is $\lambda$. The $2$ {\em boundary salient structures (BSS)} are (3) {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, will increase its boundary with no more than $2\pi r$, and (4) the {\em indentations}- protrusions inverse. 
 
 
 The types are also valid for the MSSR detector. The regions are obtained from $\B$ by morphological operations: hole filling, top hat and area opening, for details see \cite{RangMSSR06, RangHumpb06}. The ISS are similar to the definition of the MSER+ and MSER- regions \cite{Matas2002BMVC}. In this paper, detectors using only ISS, i.e., directly comparable to MSER, are denoted by DMSR/MSSR, while DMSRA/MSSRA are detectors using all region types. These definitions are summarized in Table~\ref{table:binary_sal} and the exact shaped regions from a synthetic $100 \times 100$ binary image with parameters $\Lambda=100$, $r=5$ and $\lambda = 10$ are shown on Fig.~\ref{fig:binary_sal}.
@@ -188,14 +188,15 @@ The types are also valid for the MSSR detector. The regions are obtained from $\
 \subsection{Data-driven binarization}
 \label{ssec:binarize}
 Any gray-scale image  $\I: \mcD \subset \mathcal{Z}^2 \rightarrow \mcT $ ($\mcT = \{0,1, ..., t_{max}\}$, $t_{max} = 2^n-1$ is the max gray value encoded by $n$ bits; $n=8$, $t_{max}=255$) can be decomposed into cross-sections at
-every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$, 
-($CS_0(\I) = \I$). Obtaining a section at level $t$ is equivalent to thresholding the image at threshold $t$ (setting all pixels with values below $t$ to $0$ and the ones above -- to $1$), $CS_t(\I)$ is a binary image. 
+every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$. Obtaining a section at level $t$ is equivalent to thresholding the image at threshold $t$, $CS_t(\I)= 1.(\I>t) + 0.(\I<t)$ is a binary image. 
 Three groups of CC are defined: $\mcA_t$- {\em all} CC in $CS_t(\I)$, $\mcL_t$- the {\em large} CC in $CS_t(\I)$ and 
-$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Lets denote the normalized number of elements in a set by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$.
-Finding the optimal threshold $t_{opt}$ is then defined as maximizing a convex function:
-%\begin{equation*}
-$t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mcL_t \Vert + w^{\mcV} \Vert \mcV_t \Vert )$,
-%\end{equation*}
+$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Lets denote the normalized number of elements in a set ($|\cdot|$) by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$.
+Finding the optimal threshold $t_{opt}$ is then defined as:
+\begin{equation*}
+\vspace{-0.05cm}
+t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mcL_t \Vert + w^{\mcV} \Vert \mcV_t \Vert ),
+\vspace{-0.05cm}
+\end{equation*}
 where $w^{\cdot}$ are the weights per set of CCs.  
 
 The standard Otsu thresholding does not select a single stable $CS$, while choosing $t_{opt}$ ensures stable number of regions across transformations (see Figs.~\ref{fig:binary_hist} and \ref{fig:leuven_bin} for lighting).
@@ -414,7 +415,7 @@ The $R$ score of all detectors from the Oxford study drops down on hi-res images
  % \centerline{(b) DMSR}\medskip
 \end{minipage}
 %\vspace{-0.25cm}
-\caption{Number of regions with increase of image resolution under viewpoint transformation. 'Posters', TNT dataset.}
+\caption{Number of region correspondencies versus image resolution and viewpoint. 'Posters', TNT dataset.}
 \label{fig:tnt_numreg}
 %
 \end{figure}
