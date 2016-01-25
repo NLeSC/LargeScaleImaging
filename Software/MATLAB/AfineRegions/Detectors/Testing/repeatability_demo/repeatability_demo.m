@@ -2,7 +2,7 @@ function repeatability_demo
 
 det_suffix=upper({'mser','mssr', 'mssra','dmsr', 'dmsra'});
 num_detectors = length(det_suffix);
-batch_structural = true;
+batch_structural = false;
 lisa = false;
 
 % figure parameters
@@ -11,13 +11,12 @@ small_dim_c = 6;
 off = 0.1; off_s = 0.05;
 w = 0.4; h = 0.6;
 
-% transformations_axis = [20 30 40 50 60];
-% transformations_fig= {'scale: rotation + zoom','blur',...
-%     'viewpoint','lighting'};
+transformations_axis = [2 3 4 5 6];
+transformations_fig= {'blur'};
 
-transformations_fig= {'viewpoint' , 'scale: rotation + zoom', 'blur', 'ligthing'};
-transformations_axis = {[20 30 40 50 60], [1.1 1.3 1.9 2.3 2.8],...
-    [2 3 4 5 6], [2 3 4 5 6]};
+% transformations_fig= {'viewpoint' , 'scale: rotation + zoom', 'blur', 'ligthing'};
+% transformations_axis = {[20 30 40 50 60], [1.1 1.3 1.9 2.3 2.8],...
+%     [2 3 4 5 6], [2 3 4 5 6]};
 
 common_part = 1;
 verbose = false;
@@ -37,7 +36,7 @@ results_path = fullfile(project_path, 'Results', 'AffineRegions');
 if batch_structural
     test_cases = {'graffiti','boat', 'bikes', 'leuven'};
 else
-    test_cases = {'graffiti'};
+    test_cases = {'bikes'};
 end
 
 j = 0;
@@ -67,9 +66,9 @@ for test_case_cell = test_cases
     
     s1 = subplot('Position',[off off w h]);
     grid on;
-    title('Performance');
+   % title('Performance');
     ylabel('repeatability %')
-    xlabel('transformation magnitude');
+    xlabel('transformation magnitude (TM)');
     
     hold on;
     
@@ -77,12 +76,13 @@ for test_case_cell = test_cases
     grid on;
     title('Regions count');
     ylabel('nb of correspondencies')
-    xlabel('transformation magnitude');
+    xlabel('transformation magnitude (TM)');
     
     hold on;
     
     mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
-    Xaxis = transformations_axis{j};
+    %Xaxis = transformations_axis{j};
+    Xaxis = transformations_axis;
     
     %% for all detectors
     for d=1:num_detectors
@@ -102,7 +102,7 @@ for test_case_cell = test_cases
             if i==2
                 title(trans_fig ,'Interpreter','none');
             end
-            xlabel(['transf. magnitude: ' num2str(Xaxis(i-1))]);
+            xlabel(['TM: ' num2str(Xaxis(i-1))]);
             ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
             [~,repeat,corresp, ~,~, ~]= ...
                 repeatability(file1,file2,Hom,imf1,imf2, common_part, verbose);

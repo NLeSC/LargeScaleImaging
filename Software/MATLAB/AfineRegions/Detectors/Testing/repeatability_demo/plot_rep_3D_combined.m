@@ -9,7 +9,7 @@ num_trans_deg = 5;
 detectors=upper({'mser','mssr', 'dmsr'});
 %transformations = {'viewpoint' , 'scale: rotation + zoom', 'blur', 'ligthing'};
 %transf_ind = 1:5;
-transformations = {'viewpoint' , 'blur', 'ligthing'};
+transformations = {'blur'};
 % test_cases = {'01 graffiti',...
 %                 %'02 freiburg center',...
 %                 '03 freiburg from munster crop',...
@@ -20,7 +20,7 @@ transformations = {'viewpoint' , 'blur', 'ligthing'};
 %                 '08 hall',...
 %                 '09 small palace'};
 % test_cases_ind = 1:9;
-transf_ind = [1 3 4]; 
+transf_ind = [3]; 
 test_cases = {'01 graffiti',...
                 '03 freiburg from munster crop',...
                 '07 graffiti',...
@@ -31,8 +31,7 @@ test_cases_ind = [1 3 7 8 9];
             
 num_data = length(test_cases);
 num_trans = length(transformations);        
-transformations_axis = {[20 30 40 50 60], [1.1 1.3 1.9 2.3 2.8],...
-    [2 3 4 5 6], [2 3 4 5 6]};           
+transformations_axis = {[2 3 4 5 6]};           
 color_black = [0 0 0];
 color_blue = [0 0 1];
 color_red = [1 0 0];
@@ -88,8 +87,9 @@ for nt = 1:num_trans
         end
         figure(f1); mesh(x,y,rep, 'EdgeColor', C, 'Marker', marker);
         hold on;
-        title(trans);zlabel('Repeatability, [%]');
-        xlabel(['transf. magnitude ']);
+        %title(trans);
+        zlabel('R, [%]');
+        xlabel(strcat(trans,': transf. magnitude'));
         ax = gca; set(ax,'XTick', [1:num_trans_deg], 'XTickLabel', Xaxis);
         %ylabel(['data sequence ']);
         ax = gca; set(ax,'YTick', [1:num_data], 'YTickLabel', char(test_cases));

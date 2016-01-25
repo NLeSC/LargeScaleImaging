@@ -8,7 +8,7 @@ num_trans_deg = 5;
 
 detectors={'mser', 'dmsr'};
 %transformation = {'viewpoint'};
-resolutions = {'1.5M' ,'3M','6M','8M'};
+resolutions = {'1.5MPx' ,'3MPx','6MPx','8MPx'};
 res_ind = 1:4;
 % test_cases = {'colors',...
 %               'grace',...
@@ -17,9 +17,8 @@ res_ind = 1:4;
 %               'underground'};
 % test_cases_ind = 1:5;
 transf_ind = 1; 
-test_cases = {'posters',...
-              'underground'};
-test_cases_ind = [3 5];
+test_cases = {'posters'};
+test_cases_ind = [3];
             
 num_data = length(test_cases);
 num_res = length(resolutions);        
@@ -76,7 +75,8 @@ for nd = 1:num_data
         end
         figure(f1); mesh(x,y,rep, 'EdgeColor', C, 'Marker', marker);
         hold on;
-        title(data);zlabel('Repeatability, [%]');
+        %title(data);
+        zlabel('R, [%]');
         xlabel(['transf. magnitude ']);
         ax = gca; set(ax,'XTick', [1:num_trans_deg], 'XTickLabel', Xaxis);
         ylabel(['resolution ']);
@@ -86,12 +86,12 @@ for nd = 1:num_data
         figure(f2);
         mesh(x,y,nc, 'EdgeColor', C, 'Marker', marker);
         hold on;
-        title(data);
+        %title(data);
         xlabel(['transf. magnitude ']);
         ax = gca; set(ax,'XTick', [1:num_trans_deg], 'XTickLabel', Xaxis);
         ylabel(['resolution ']);
         ax = gca; set(ax,'YTick', [1:num_res], 'YTickLabel', char(resolutions));
-        zlabel('Number correspondencies');
+        zlabel('N_C');
         
     end
     
