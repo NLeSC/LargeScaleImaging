@@ -26,7 +26,7 @@
 \DeclareMathOperator*{\argmax}{arg\,max} 
 % Title.
 % ------
-\title{Data-driven Region Detector for Structured Image Scenes}
+\title{A Data-driven Region Detector for Structured Image Scenes}
 %
 % Single address.
 % ---------------
@@ -40,9 +40,9 @@
 \begin{abstract}
 Finding correspondences between two images of the same scene, taken from different viewpoints, with semantic features is a challenging problem.
 This paper proposes a Data-driven Morphology Salient Regions (DMSR) approach for detecting interest regions repeatedly. 
-A binarization algorithm creates compact image representation that is then analyzed for saliency using morphology.
-DMSR has comparable performance to the renown MSER detector on structured scenes and better invariance on a high-resolution benchmark. 
-This is achieved via significantly fewer detected regions- a much desired property in the big data era. 
+A binarization algorithm creates a compact image representation that is then analyzed for saliency using morphology.
+DMSR has comparable performance to the renowned MSER detector on structured scenes and better invariance to lighting, blur and on a high-resolution benchmark. 
+This is achieved via significantly fewer detected regions, leading to better scalability- a much desired property in the big data era. 
 DMSR is shown to be a better choice than MSER for analysis of scientific imagery, e.g.,
 it detects precisely meaningful regions in images used for wild-life biometrics.
 The paper also introduces OxFrei, a dataset for transformation-independent detection evaluation.
@@ -54,9 +54,9 @@ region detection, data-driven, structured scenes, morphology, scientific visual 
 
 \section{Introduction}
 \label{sec:intro}
-The first fundamental step in numerous computer vision applications (wide baseline stereo matching, image retrieval, model-based recognition, visual mining, object categorization, etc.\,) is to reliably and repeatedly find  the correspondence between a pair of different images of the same scene \cite{Matas2002BMVC, Rodriguez2013, EscaleraCVPR07}. An important class of methods find distinct (salient) regions, which correspond to the same image patches, detected independently for each viewpoint. The region detectors must be {\em covariant} (often called {\em invariant}) to, usually, {\em affine} transformations and various photometric distortions. 
+The first fundamental step in numerous computer vision applications (wide baseline stereo matching, image retrieval, visual mining, etc.\,) is to reliably and repeatedly find  the correspondence between a pair of different images of the same scene \cite{Matas2002BMVC, Rodriguez2013, EscaleraCVPR07}. Class of methods, {\em region detectors}, find distinct (salient) regions, which correspond to the same image patches, detected independently for each viewpoint. The detectors must be {\em covariant} (often called {\em invariant}) to, usually, {\em affine} transformations and various photometric distortions. 
 
-While most research has been focused on generic applications, the emerging fields of {\em animal and plant biometrics} are attracting more attention of the community \cite{Kuehl2013, leafsnap_eccv2012}. Computer vision is becoming the vital technology enabling the wild-life preservation efforts of ecologists in the big data era. Along with the individual or species photo-ID, the scientists wish to obtain reliable measurements of meaningful structures from the images. The generic region detectors often do not satisfy this need: Figs\,\ref{fig:tails} and \ref{fig:turtle} show the lack of or an over-abundance as well as MSER structures with no semantic significance.
+While most research has focused on generic applications, the emerging fields of {\em animal and plant biometrics} are attracting more attention of the community \cite{Kuehl2013, leafsnap_eccv2012}. Computer vision is becoming the vital technology enabling the wild-life preservation efforts of ecologists in the big data era. Along with the individual or species photo-ID, the scientists wish to obtain reliable measurements of meaningful structures. The generic region detectors often do not satisfy this need: Fig.\,\ref{fig:tails}, top row and Fig.\,\ref{fig:turtle}, (a) and (b) show the lack of or an over-abundance, as well as structures with no semantic significance.
 
 \begin{figure}[htb]
 
@@ -148,7 +148,8 @@ Although crucial for the development of detectors, there is a shortage of evalua
 The {\em TNT dataset} contains versions of the same viewpoint sequences with increasing resolution from $1.5$ to $8$~MPixel per image. Highly accurate image pair homographies are given. It is suitable for evaluating robustness to resolution rather than to transformations \cite{CorRos2013}. 
 
 This paper contributes to solving the identified problems. A new regions detector, {\em Data-driven Morphology Salient Regions (DMRS)} is proposed and made available as open source \cite{elena_ranguelova_2016_45156}. It is related to the {\em Morphology-based Stable Salient Regions (MSSR)} detector that we developed in the context of humpback whale identification \cite{RangMSSR06, RangHumpb06}. DMRS includes a binarization, %robust-to-lighting-and-blur
-that yields a much smaller and more stable across transformations number of regions. It has similar or higher (lighting, blur and increased resolution) repeatability compared to MSER, while detecting non-redundant perceptually salient regions (Fig.~\ref{fig:tails}). Figure~\ref{fig:turtle} illustrates that DMSR finds repeatedly salient regions on the leatherback turtle images, unlike MSER. A new dataset, OxFrei, combining the natural homographies of the Oxford and the higher resolution images of the Freiburg datasets, is made openly available \cite{elena_ranguelova_2016_45156}.
+that yields a much smaller number of regions and is more stable across transformations. It has similar or higher (lighting, blur and increased resolution) repeatability compared to MSER, while detecting % non-redundant 
+perceptually salient regions (Fig.~\ref{fig:tails}). Figure\,\ref{fig:turtle} (c), (d) illustrates that DMSR finds repeatedly salient regions on the leatherback turtle images, unlike MSER. Also, we made an openly available dataset, OxFrei, combining the natural homographies of the Oxford and the higher resolution images of the Freiburg datasets \cite{elena_ranguelova_2016_45156}.
 
 \section{Data-driven Morphology Salient Regions Detection}
 \label{sec:DMSR}
@@ -159,9 +160,9 @@ MSER and MSSR decompose a gray-scale image into binary cross-sections and evalua
 \begin{table}[hbt]
 \begin{minipage}[b]{0.99\linewidth}\begin{tabular}{|l l|}
 \hline
-{\bf ISS} & A CC $S^i_{fb} = \{\p \in \mcD, \forall \p=f,$\\&$\forall \q \in \partial S^i_{fb}, \q=b, \q \notin \partial \B $ \},\\
+{\bf ISS} & A CC $S^i_{fb} = \{\p \in \mcD, \forall \p=foreground,$\\&$\forall \q \in \partial S^i_{fb}, \q=background, \q \notin \partial \B $ \},\\
 $2$ types & $S^i_{10}$ (islands), $S^i_{01}$  (holes); $\S^i = S_{01}^i \cup S_{10}^i$\\
-{\bf BSS} &  $S_{fb}^b: \{\p \in S_{fb}^b \subset{\cal B}^f, \forall \p = f,$\\&$ \q \in \partial S_{fb}^b \subset {\partial \cal B}^f,\forall \q = b \}$, \\
+{\bf BSS} &  $S_{fb}^b: \{\p \in S_{fb}^b \subset{\cal B}^f, \forall \p = foreground,$\\&$ \q \in \partial S_{fb}^b \subset {\partial \cal B}^f,\forall \q = background \}$, \\
 & $|\partial {\cal B}^f| - |\partial ({\cal B}^f \backslash S_{fb}^b)| < 2 \pi r$\\
 $2$ types & $S^b_{10}$ (protr.), $S^b_{01}$ (indent.); $\S^b = S_{01}^b \cup S_{10}^b$\\
 {\bf Regions} &  $\S = \S^i$ (DMSR); $\S = \S^i \cup \S^b$ (DMSRA)  \\
@@ -188,9 +189,9 @@ The types are also valid for the MSSR detector. The regions are obtained from $\
 \subsection{Data-driven binarization}
 \label{ssec:binarize}
 Any gray-scale image  $\I: \mcD \subset \mathcal{Z}^2 \rightarrow \mcT $ ($\mcT = \{0,1, ..., t_{max}\}$, $t_{max} = 2^n-1$ is the max gray value encoded by $n$ bits; $n=8$, $t_{max}=255$) can be decomposed into cross-sections at
-every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$. Obtaining a section at level $t$ is equivalent to thresholding the image at threshold $t$, $CS_t(\I)= 1.(\I>t) + 0.(\I<t)$ is a binary image. 
+every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$. Obtaining a section at level $t$ is equivalent to thresholding the image at threshold $t$: $CS_t(\I)= 1.(\I>t) + 0.(\I<t)$ is a binary image. 
 Three groups of CC are defined: $\mcA_t$- {\em all} CC in $CS_t(\I)$, $\mcL_t$- the {\em large} CC in $CS_t(\I)$ and 
-$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Lets denote the normalized number of elements in a set ($|\cdot|$) by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$.
+$\mcV_t$- the {\em very large} CC in $CS_t(\I)$.  The size of each CC is categorized using $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Let us denote the normalized number of elements in a set ($|\cdot|$) by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$.
 Finding the optimal threshold $t_{opt}$ is then defined as:
 \begin{equation*}
 \vspace{-0.05cm}
@@ -281,7 +282,7 @@ After the data-driven binarization, the DMSR detector finds the set of affine-co
 
 \section{Performance  Evaluation}
 \label{sec:perf}
-The {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) are the main performance evaluation measures \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is $40\%$. The $R$ score between a pair of images (base, transf.) $(\I_B,\I_T)$ is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. The structured scenes from each dataset are considered and $5$ detectors are evaluated: MSER, MSSR(A) and DMSR(A). The MSER software is used with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$ ,$\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$ and  $w^{\cdot}=0.33$.  
+The {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) are the main performance evaluation measures \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is $40\%$. The $R$ score between a pair of images (base, transf.) $(\I_B,\I_T)$ is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. The structured scenes from each dataset are considered and $5$ detectors are evaluated: MSER, MSSR(A) and DMSR(A). The MSER software is used with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$, $\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$ and  $w^{\cdot}=0.33$.  
 All regions and performance plots on all data and detectors are available online \cite{elena_ranguelova_2016_45156}.
 
 %------------------------------------------------------------------------
@@ -383,9 +384,9 @@ For the viewpoint ('Graffiti'), best $R$ is achieved by DMSR with up to $72\%$, 
 
 \subsection{OxFrei dataset}
 \label{ssec:combined}
-The creators of the Freiburg dataset separated $T$ from the image content by applying few transformations (alas not fully documented) to different base images \cite{FischerDB14}. To address the shortage of evaluation datasets, OxFrei, combining the strong features of the Oxford and Freiburg datasets, is released \cite{elena_ranguelova_2016_45156}. The Freiburg base images are transformed with all homographies of the Oxford dataset. In this way, $54$ images in $9$ structured scenes are created each under realistic blur, lighting, scaling and viewpoint transfromations.
+The creators of the Freiburg dataset separated $T$ from the image content by applying few transformations (alas not fully documented) to different base images \cite{FischerDB14}. To address the shortage of evaluation datasets, we release OxFrei - a combination of the strong features of the Oxford and Freiburg datasets \cite{elena_ranguelova_2016_45156}. We transform the Freiburg base images with all homographies of the Oxford dataset. In this way, we create $54$ images in $9$ structured scenes each under realistic blur, lighting, scaling and viewpoint transformations.
 
-The dataset allows transformation independent robustness study by comparing performance on all data subject to the same realistic $T$. Figures~\ref{fig:det_frei} and \ref{fig:blur} show $R$ for lighting for one and blur for few sequences. The standart plots (like on Fig.~\ref{fig:det_frei}) are cross-sections along the data dimension of the 3D plots (like on Fig.~\ref{fig:blur}) for $1$ sequence. The conclusions from all OxFrei experiments are: MSER is better for zoom and viewpoint (the latter contradicting with the limited Oxford result), while DMSR is robust to lighting and blur (Fig. \ref{fig:blur}) \cite{elena_ranguelova_2016_45156}.
+The dataset allows transformation independent robustness study by comparing performance on all data subject to the same realistic $T$. Figures~\ref{fig:det_frei} and \ref{fig:blur} show $R$ for lighting for one and blur for few sequences. The standard plots (like on Fig.~\ref{fig:det_frei}) are cross-sections along the data dimension of the 3D plots (like on Fig.~\ref{fig:blur}) for $1$ sequence. The 2D plots for all Oxfrei experiments are available online \cite{elena_ranguelova_2016_45156}. We conclude that MSER is better for zoom and viewpoint (the latter contradicting with the result on the single Oxford 'Graffiti' sequence), while DMSR is robust to lighting and blur (Fig. \ref{fig:blur}).
 
 \subsection{TNT hi-res benchmark}
 \label{ssec:tnt}
