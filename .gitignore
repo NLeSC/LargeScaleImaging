@@ -7,10 +7,13 @@ Data/Test/
 Data/AffineRegions/
 Software/MATLAB/AfineRegions/ImageThresholdingFuzzyEntropy/
 Results/
-Publications/Papers/ICIP2016/icip2016.prv/
+Publications/Papers/ICIP2016/icip2016.prv
 Publications/Papers/ICIP2016/icip2016.dvi
+Publications/Papers/ICIP2016/icip2016.bbl
 Publications/Report/overview.pdf
 Publications/Papers/ICIP2016/Reviews/
+Publications/Papers/ICIP2016/ranguelova.*
+Data/AffineRegions/bikes/img6.ppm
 *.aux
 *.toc
 *.*~
