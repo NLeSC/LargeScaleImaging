@@ -11,7 +11,7 @@ disp('Histograms of the DMSR region properties of LMwood data');
 
 %% execution parameters
 verbose = 1;
-visualize = 1;
+visualize = 0;
 sav_flag = 1;
 batch =  true;
 visualize_only = false;
@@ -51,7 +51,7 @@ for test_case = test_cases
         get_wood_test_filenames(test_case, detector, data_path, results_path);
     
     
-    num_images = numel(image_filenames));
+    num_images = numel(image_filenames);
     
     for i = 1:num_images
     %for i = 1
