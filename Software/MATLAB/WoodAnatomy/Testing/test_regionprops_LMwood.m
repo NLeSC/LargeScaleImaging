@@ -6,12 +6,15 @@
 % last modification date: 27 October 2015
 % modification details: the region properties computation is now in a generic
 % function
+% last modification date: 3 Feb 2016
+% modification details: the connected components are also computed and saved
+
 
 %% header message
 disp('Testing DMSR region properties of LMwood data');
 
 %% parameters
-verbose = 0;
+verbose = 1;
 visualize = 1;
 
 %% paths and filenames
@@ -33,6 +36,7 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
     for i = 1:num_images
     %for i = 1
         regions_filename = char(regions_filenames{i});
+        [pathstr,base_name,ext] = fileparts(regions_filename);
         regions_props_filename = char(regions_props_filenames{i});
         
         if verbose
@@ -60,28 +64,36 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
                 j = j+ 1;
                 subplot(x,y,j);
                 L = bwlabel(saliency_masks(:,:,j));
-                imshow(label2rgb(L));title('Salient regions of same type labelled');
+                imshow(label2rgb(L));
+                title(base_name, 'Interpreter','none');
+                xlabel('Salient regions of same type labelled');
                 axis on, grid on 
             end
             if sal_types > 1
                 j = j+ 1;
                 L = bwlabel(saliency_masks(:,:,j));
                 subplot(x,y,j);
-                imshow(label2rgb(L));title('Salient regions  of same type labelled');
+                imshow(label2rgb(L));
+                title(base_name, 'Interpreter','none');
+                xlabel('Salient regions  of same type labelled');
                 axis on, grid on
             end
             if sal_types > 2
                 j = j+ 1;
                 L = bwlabel(saliency_masks(:,:,j));
                 subplot(x,y,j);
-                imshow(label2rgb(L));title('Salient regions of same type labelled');
+                imshow(label2rgb(L));
+                title(base_name, 'Interpreter','none');
+                xlabel('Salient regions of same type labelled');
                 axis on, grid on
             end
             if sal_types > 3
                 j = j+ 1;
                 L = bwlabel(saliency_masks(:,:,j));
                 subplot(x,y,j);
-                imshow(label2rgb(L)); title('Salient regions of same type labelled');
+                imshow(label2rgb(L)); 
+                title(base_name, 'Interpreter','none');
+                xlabel('Salient regions of same type labelled');
                 axis on, grid on
             end
         end
@@ -90,11 +102,11 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
         types_props = {'Area', 'Centroid','ConvexArea', ...
             'Eccentricity', 'EquivDiameter', 'MinorAxisLength',...
             'MajorAxisLength', 'Orientation'};
-        [regions_properties] = compute_region_props(saliency_masks, ...
+        [regions_properties, conn_comp] = compute_region_props(saliency_masks, ...
             types_props);
         %% save the calculated properties
-        save(regions_props_filename, 'regions_properties');
-        clear saliency_masks regions_properties
+        save(regions_props_filename, 'regions_properties', 'conn_comp');
+        clear saliency_masks regions_properties conn_comp
     end
     
 end

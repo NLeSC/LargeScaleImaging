@@ -4,8 +4,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 27 Oct 2015
-% last modification date: 
-% modification details: 
+% last modification date: 03 Feb 2016
+% modification details: connected components are also output
 %**************************************************************************
 % INPUTS:
 % saliency_masks-  the binary masks of the extracted salient regions
@@ -15,17 +15,18 @@
 % OUTPUTS:
 % region_properties- structure with all region properties. The fileds of 
 %                   the structure are as required in list_properties
+% conn_comp - the connected components derived from the saliency_masks
 %**************************************************************************
 % EXAMPLES USAGE:
 % a = imread('circlesBrightDark.png');
 % bw = a < 100;
 % imshow(bw); title('Image with Circles')
 % list = {'Centroid', 'MajorAxisLength','MinorAxisLength'};
-% [regions_properties] = compute_region_props(bw, list)
+% [regions_properties, conn_comp] = compute_region_props(bw, list)
 %**************************************************************************
 % REFERENCES: 
 %**************************************************************************
-function [regions_properties] = compute_region_props(saliency_masks, ...
+function [regions_properties, conn_comp] = compute_region_props(saliency_masks, ...
                                                      list_properties)
 
 %**************************************************************************
@@ -38,6 +39,7 @@ if nargin < 2
 elseif nargin < 1
     error('compute_region_props.m requires at least 1 input argument!');
     region_properties = [];
+    connn_comp = [];
     return
 end
 
@@ -51,6 +53,7 @@ sal_types = size(saliency_masks,3);
 % initialisations
 %--------------------------------------------------------------------------
 regions_properties=  struct([]);
+conn_comp = [];
 
 %**************************************************************************
 % computations
@@ -60,6 +63,7 @@ if sal_types > 0
     j = j+ 1;
     CC = bwconncomp(saliency_masks(:,:,j));
     regions_properties = regionprops(CC, list_properties);
+    conn_comp{j} = CC;
 end
 if sal_types > 1
     j = j+ 1;
@@ -67,6 +71,7 @@ if sal_types > 1
     new_properties = regionprops(CC, list_properties);
     regions_properties = append_props(regions_properties, new_properties,...
         list_propertiess);
+    conn_comp{j} = CC;
 end
 if sal_types > 2
     j = j+ 1;
@@ -74,13 +79,15 @@ if sal_types > 2
     new_properties = regionprops(CC, list_properties);
     regions_properties = append_props(regions_properties, new_properties,...
         list_propertiess);
+    conn_comp{j} = CC;
 end
 if sal_types > 3
     j = j+ 1;
-    BW = saliency_masks(:,:,j);
-    new_properties = regionprops(BW, list_properties);
+    CC = bwconncomp(saliency_masks(:,:,j));
+    new_properties = regionprops(CC, list_properties);
     regions_properties = append_props(regions_properties, new_properties,...
         list_propertiess);
+    conn_comp(j) = CC;
 end
 %**************************************************************************
 % nested functions
