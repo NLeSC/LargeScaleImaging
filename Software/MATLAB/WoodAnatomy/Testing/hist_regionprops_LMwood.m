@@ -10,8 +10,8 @@
 disp('Histograms of the DMSR region properties of LMwood data');
 
 %% execution parameters
-verbose = 1;
-visualize = 0;
+verbose = 0;
+visualize = 1;
 sav_flag = 1;
 batch =  true;
 visualize_only = false;
@@ -32,7 +32,7 @@ if batch
     test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s' , 'Chrys', 'Citronella',...
         'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
 else
-    test_cases = {'Stem'};
+    test_cases = {'Desmo'};
 end
 
 for test_case = test_cases
@@ -50,12 +50,11 @@ for test_case = test_cases
     [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
     
-    
+    cl
     num_images = numel(image_filenames);
     
     for i = 1:num_images
-    %for i = 1
-        
+    %for i = 1       
         %% specify microscopy resolution (can be 200 or 500 micrometers)
         % for now hard-coded...
         switch char(test_case) % read it by hand from the image
@@ -83,7 +82,7 @@ for test_case = test_cases
 %         end
         
         load(regions_props_filename);
-        %clear histograms
+        clear histograms
         num_regions = size(regions_properties);
         
         if not(visualize_only)
@@ -130,7 +129,9 @@ for test_case = test_cases
                 
                 type_stat = char(ts);
                 statistic = cat(1, statistics.(type_stat));
-                histograms.(type_stat) =  histcounts(statistic, nbins, 'Normalization','probability');
+                [N,edges] = histcounts(statistic, nbins);
+                histograms.(type_stat).edges = edges(2:end);
+                histograms.(type_stat).N = N;
                 
             end
             
@@ -189,14 +190,12 @@ for test_case = test_cases
                 type_stat = char(ts);
                 sbp = sbp + 1;
                 subplot(s(sbp));
-                h = histograms.(type_stat);                
-                bar(h);
-                %bar(histograms.(type_prop));
-                
+                h = histograms.(type_stat);
+                bar(h.edges, h.N);                
                 title(type_stat); axis on; grid on;
             end
         end
-        clear regions_properties statistics histograms
+        clear regions_properties statistics %histograms
     end
     
 end
