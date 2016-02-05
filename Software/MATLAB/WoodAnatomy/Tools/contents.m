@@ -9,6 +9,7 @@
 %**************************************************************************
 % bhattacharyya.m - compute Bhattacharyya distance between 2 histograms
 % histnorm.m- Histogram normalized
+% bwstatsfilt- filters binary regions on a pre-computed statistic (derived property)
 %**************************************************************************
 % Scripts
 %**************************************************************************
