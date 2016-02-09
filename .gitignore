@@ -5,6 +5,7 @@ Data/TNT/
 Data/Scientific/
 Data/Test/
 Data/AffineRegions/
+Data/Oxfrei/
 Software/MATLAB/AfineRegions/ImageThresholdingFuzzyEntropy/
 Results/
 Publications/Papers/ICIP2016/*.prv
