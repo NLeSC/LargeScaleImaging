@@ -12,7 +12,6 @@ disp('Distances between the histograms of the DMSR statistics of LMwood data');
 %% execution parameters
 verbose = 1;
 visualize = 1;
-sav_flag = 0;
 batch =  true;
 
 %% region properties and statistics
@@ -77,7 +76,6 @@ for m = 1:numel(distance_metrics)
             
             %%loop over images
             for i = 1:num_images
-                %    for i = 1
                 j = j+1;
                 
                 %% load data
@@ -97,11 +95,10 @@ for m = 1:numel(distance_metrics)
                 
                 %% compute the matrix of distances
                 
-                h(j,:) = histograms.(type_stat);
+                h(j,:) = histograms.(type_stat).N;
             end
         end
         clear regions_properties statistics histograms
-        
         
         D = pdist2(h,h,distance_metrics{m});
         k = k+1;
