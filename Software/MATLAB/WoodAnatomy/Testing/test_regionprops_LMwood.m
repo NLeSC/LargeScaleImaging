@@ -8,8 +8,8 @@
 % function
 % last modification date: 3 Feb 2016
 % modification details: the connected components are also computed and saved
-
-
+% last modification date: 12 Feb 2016
+% modification details: the connected components are computed with connectivity 4 (like DMSR)
 %% header message
 disp('Testing DMSR region properties of LMwood data');
 
@@ -17,6 +17,7 @@ disp('Testing DMSR region properties of LMwood data');
 verbose = 1;
 visualize = 1;
 
+conn = 4;
 %% paths and filenames
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
@@ -33,6 +34,7 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
     
     num_images = length(image_filenames);
     
+    %% process the images
     for i = 1:num_images
     %for i = 1
         regions_filename = char(regions_filenames{i});
@@ -63,7 +65,7 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
             if sal_types > 0
                 j = j+ 1;
                 subplot(x,y,j);
-                L = bwlabel(saliency_masks(:,:,j));
+                L = bwlabel(saliency_masks(:,:,j),conn);
                 imshow(label2rgb(L));
                 title(base_name, 'Interpreter','none');
                 xlabel('Salient regions of same type labelled');
@@ -71,7 +73,7 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
             end
             if sal_types > 1
                 j = j+ 1;
-                L = bwlabel(saliency_masks(:,:,j));
+                L = bwlabel(saliency_masks(:,:,j),conn);
                 subplot(x,y,j);
                 imshow(label2rgb(L));
                 title(base_name, 'Interpreter','none');
@@ -80,7 +82,7 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
             end
             if sal_types > 2
                 j = j+ 1;
-                L = bwlabel(saliency_masks(:,:,j));
+                L = bwlabel(saliency_masks(:,:,j),conn);
                 subplot(x,y,j);
                 imshow(label2rgb(L));
                 title(base_name, 'Interpreter','none');
@@ -89,7 +91,7 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
             end
             if sal_types > 3
                 j = j+ 1;
-                L = bwlabel(saliency_masks(:,:,j));
+                L = bwlabel(saliency_masks(:,:,j),conn);
                 subplot(x,y,j);
                 imshow(label2rgb(L)); 
                 title(base_name, 'Interpreter','none');
@@ -103,7 +105,7 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
             'Eccentricity', 'EquivDiameter', 'MinorAxisLength',...
             'MajorAxisLength', 'Orientation'};
         [regions_properties, conn_comp] = compute_region_props(saliency_masks, ...
-            types_props);
+            conn, types_props);
         %% save the calculated properties
         save(regions_props_filename, 'regions_properties', 'conn_comp');
         clear saliency_masks regions_properties conn_comp
