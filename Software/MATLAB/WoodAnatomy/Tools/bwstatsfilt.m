@@ -73,7 +73,7 @@ end
 if num_logic_ops ~= (num_conds - 1)
     error('The number of the logical operations should be with 1 less than the number of filterring conditions');
 end
-possible_stats_types = {'RelativeArea', 'Eccentricity', 'Orientation', 'RatioAxesLengths'};
+possible_stats_types = {'RelativeArea', 'Eccentricity', 'Orientation', 'RatioAxesLengths', 'Solidity'};
 for i = 1:num_conds
     if ~ismember(char(stats_types{i}), possible_stats_types)
         error('Parameter stats_types per element can be only one of: RelativeArea|Eccentricity|Orientation|RatioAxesLengths');

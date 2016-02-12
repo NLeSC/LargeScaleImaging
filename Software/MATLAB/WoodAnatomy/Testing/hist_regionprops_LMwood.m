@@ -18,10 +18,8 @@ visualize_only = false;
 nbins = 50;
 
 %% region properties and statistics
-% subset of the properties of interest
-%types_props = {'Area',  'Eccentricity','MinorAxisLength', 'MajorAxisLength', 'Orientation'};
-% derived statistics ou of the properties
-types_stats = {'RelativeArea', 'Eccentricity', 'Orientation', 'RatioAxesLengths'};
+% derived statistics of the properties
+types_stats = {'RelativeArea', 'Eccentricity', 'Orientation', 'RatioAxesLengths', 'Solidity'};
 
 %% paths and filenames
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
@@ -98,7 +96,7 @@ for test_case = test_cases
                         end
                         areas = cat(1, regions_properties.Area);
                         statistics.(type_stat) = areas./image_area * (100/micro_res);
-                    case {'Orientation', 'Eccentricity'}
+                    case {'Orientation', 'Eccentricity','Solidity'}
                         if verbose
                             disp('Assign already computed property to statistic...');
                         end
@@ -108,7 +106,7 @@ for test_case = test_cases
                         if verbose
                             disp('Compute ratio of axes lengths...');
                         end
-                        minor_axis_length = cat(1, regions_properties.MinorAxisLength);
+                        minor_axis_length = cat(1, regions_properties.MinorAxisLengtclh);
                         major_axis_length = cat(1, regions_properties.MajorAxisLength);
                         statistics.(type_stat) = minor_axis_length./major_axis_length;
                 end
@@ -150,10 +148,10 @@ for test_case = test_cases
             % s(7) = subplot(337);s(8) = subplot(338);s(9) = subplot(339);
             
             %% show the image
-            figure(f); subplot(s(1));
-            imshow(image_data);
+            figure(f); %subplot(s(1));
+            %imshow(image_data);
             [pathstr,name,ext] = fileparts(image_filename);
-            title([num2str(name)]);
+            %title([num2str(name)]);
             %% visualize the image and the detected regions
             type = 1; % distinguish region's types
             
@@ -173,9 +171,9 @@ for test_case = test_cases
                 features_filename, [], ...
                 regions_filename, type, ...
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
-                line_width, col_label, original, f, s(2));
+                line_width, col_label, original, f, s(1));
             
-            title('DMSR elliptical regions');
+            title(['DMSR elliptical regions for ' num2str(name)]);
             xlabel(['Number of regions detected: ', num2str(num_regions)]);
             ylabel(['Displayed every ',num2str(step_list_regions) , 'st/nd/rd/th']);
             axis on; grid on;
@@ -184,7 +182,7 @@ for test_case = test_cases
             if visualize_only
                 load(regions_props_filename);
             end
-            sbp = 2;
+            sbp = 1;
             for ts = types_stats
                 type_stat = char(ts);
                 sbp = sbp + 1;

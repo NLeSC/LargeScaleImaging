@@ -39,7 +39,7 @@ function [regions_properties, conn_comp] = compute_region_props(saliency_masks, 
 if nargin < 3
     list_properties = {'Area', 'Centroid','ConvexArea', ...
                 'Eccentricity', 'EquivDiameter', 'MinorAxisLength',...
-                'MajorAxisLength', 'Orientation'};
+                'MajorAxisLength', 'Orientation', 'Solidity'};
 elseif nargin < 2
     conn = 4;
 elseif nargin < 1

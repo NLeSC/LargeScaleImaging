@@ -23,9 +23,12 @@ data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM 
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
 detector  = 'DMSR';
 
+%% processing all test cases
 for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
         'Desmo', 'Gluema', 'Rhaptop', 'Stem'}
-    disp(['Processing species: ' test_case]);
+    if verbose
+        disp(['Processing species: ' test_case]);
+    end
     
     %% get the filenames
     [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
@@ -103,12 +106,16 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
         %% compute region properties of the salient regions
         types_props = {'Area', 'Centroid','ConvexArea', ...
             'Eccentricity', 'EquivDiameter', 'MinorAxisLength',...
-            'MajorAxisLength', 'Orientation'};
+            'MajorAxisLength', 'Orientation', 'Solidity'};
         [regions_properties, conn_comp] = compute_region_props(saliency_masks, ...
             conn, types_props);
         %% save the calculated properties
         save(regions_props_filename, 'regions_properties', 'conn_comp');
         clear saliency_masks regions_properties conn_comp
+                
+        if verbose
+            disp('------------------------------------------------------------');
+        end
     end
     
 end
