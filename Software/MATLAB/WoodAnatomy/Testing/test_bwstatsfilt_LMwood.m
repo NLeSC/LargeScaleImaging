@@ -1,10 +1,14 @@
-% test_regionprops_LMwood- testing the bw region filtering of LMwood data
+% test_bwstatsfilt_LMwood- testing the bw region filtering of LMwood data
 %**************************************************************************
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 12 Febr 2016
 % last modification date: 
 % modification details: 
+
+%% header message
+disp('Testing DMSR derived region properties (statistics) filtering of LMwood data');
+
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
