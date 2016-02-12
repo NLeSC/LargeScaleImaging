@@ -50,7 +50,6 @@ for test_case = test_cases
     [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
     
-    cl
     num_images = numel(image_filenames);
     
     for i = 1:num_images
