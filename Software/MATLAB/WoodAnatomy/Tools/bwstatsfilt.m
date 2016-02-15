@@ -128,9 +128,10 @@ pixels_idx = vertcat(pixels_idx{:});
 %% make the new binary image and return the non-zero region indicies and threshold
 bw_filt(pixels_idx) = true;
 
-num_regions = length(index);
-region_index = index(:)'.*(1:num_regions);
-regions_idx = nonzeros(region_index);
+%num_regions = length(index);
+%region_index = index(:)'.*(1:num_regions);
+%regions_idx = nonzeros(region_index);
+regions_idx = find(index);
 
 end
 

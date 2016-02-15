@@ -16,16 +16,21 @@ disp('Testing DMSR region properties of LMwood data');
 %% parameters
 verbose = 1;
 visualize = 1;
-
+batch = false;
 conn = 4;
 %% paths and filenames
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
 detector  = 'DMSR';
 
+if batch
+    test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
+        'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
+else
+    test_cases = {'Argania'};
+end
 %% processing all test cases
-for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
-        'Desmo', 'Gluema', 'Rhaptop', 'Stem'}
+for test_case = test_cases
     if verbose
         disp(['Processing species: ' test_case]);
     end
@@ -33,13 +38,12 @@ for test_case = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',..
     %% get the filenames
     [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
-    
-    
+        
     num_images = length(image_filenames);
     
     %% process the images
-    for i = 1:num_images
-    %for i = 1
+    %for i = 1:num_images
+    for i = 1
         regions_filename = char(regions_filenames{i});
         [pathstr,base_name,ext] = fileparts(regions_filename);
         regions_props_filename = char(regions_props_filenames{i});

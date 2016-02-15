@@ -264,12 +264,12 @@ for n=list_regions
            end                  
         end
     end
-    
+    hold on;
      % the labels
     if labels
         plot(x,y,[col_label, '+']);
         text(x + offset, y + offset, num2str(n+2),...
-            'Color',col_label,'FontSize',8,'FontWeight','normal');
+            'Color',col_label,'FontSize',8,'FontWeight','bold');
         hold off;
     end
 end
@@ -301,7 +301,7 @@ function drawellipse(x,y,a,b,c,scaling,col,lw)
     p=[xt;yt];
     R=[cos(alpha) sin(alpha);-sin(alpha) cos(alpha)];
     pt=R*p;
-    % first plot blac ellipse and then narrower on top with the desired colour
+    % first plot black ellipse and then narrower on top with the desired colour
     plot(pt(2,:)+x,pt(1,:)+y,'k-','LineWidth',1.5*lw);
     plot(pt(2,:)+x,pt(1,:)+y,'w-','LineWidth',lw);
     set(findobj(gca,'Type','line','Color',[1 1 1]),...

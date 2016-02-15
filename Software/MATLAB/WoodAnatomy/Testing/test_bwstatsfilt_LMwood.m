@@ -12,18 +12,26 @@ disp('Testing DMSR derived region properties (statistics) filtering of LMwood da
 %% parameters
 verbose = 1;
 visualize = 1;
+batch =false;
 
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
 detector  = 'DMSR';
-test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
+
+if batch
+    test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
         'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
+else
+    test_cases = {'Desmo'};
+end
     
     
 %% processing all test cases
 for test_case = test_cases
-    disp(['Processing species: ' test_case]);
+    if verbose
+        disp(['Processing species: ' test_case]);
+    end
     
     
     [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
@@ -31,10 +39,11 @@ for test_case = test_cases
     
     num_images = length(image_filenames);
     %% process the images
-    for i = 1 :num_images
+    for i = 1 %:num_images
         %% load the needed data- regions, saliency_masks etc.
         image_filename = char(image_filenames{i});
         regions_filename = char(regions_filenames{i});
+        features_filename = char(features_filenames{i});
         regions_props_filename = char(regions_props_filenames{i});
         load(regions_filename);
         load(regions_props_filename);
@@ -72,12 +81,47 @@ for test_case = test_cases
             f =  figure('units','normalized','outerposition',[0 0 1 1]);
             figure(f);
             subplot(221); imshow(image_data);title(base_name, 'Interpreter','none');
+            axis on, grid on
             subplot(222); imshow(bw); title('All DMSR regions: binary mask');
+            axis on, grid on
             subplot(223); imshow(bw_filt); title('Filtered DMSR regions: binary mask');
-            xlabel('Filter condition: ');
+            axis on, grid on
+            caption = []; num_conds = length(stats_types); 
+            for c = 1:num_conds
+                if c< num_conds
+                    caption =[caption char(stats_types{c}) ' in [' num2str(ranges{c}(1)) ' ' num2str(ranges{c}(2)) '] ' char(logic_ops{c}) ' '];
+                else
+                    caption =[caption char(stats_types{c}) ' in [' num2str(ranges{c}(1)) ' ' num2str(ranges{c}(2)) '].'];
+                end
+            end
+            
+            xlabel(['Filterring: ' caption]);
+            
+            % display filtered regions
+            sbp4 = subplot(224); 
+            list_smartregions = regions_idx';
+            step_list_regions  = 1;
+            type = 1; % distinguish region's types
+            scaling = 1;  % no scaling
+            line_width = 2; % thickness of the line
+            labels = 1; % no region's labels
+            
+            col_ellipse = [];
+            col_label = 'green';
+            
+            original = 0; % no original region's outline
+            
+            display_smart_regions(image_filename, detector, features_filename, [], ...
+                regions_filename,type, ...
+                list_smartregions,step_list_regions,scaling, labels, col_ellipse, ...
+                line_width, col_label, original, f, sbp4);
+            title('Filtered DMSR regions over image');
+            axis on, grid on
         end
+        clear caption
         if verbose
             disp('------------------------------------------------------------');
         end
+
     end
 end

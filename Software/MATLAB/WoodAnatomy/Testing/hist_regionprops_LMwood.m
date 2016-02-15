@@ -13,7 +13,7 @@ disp('Histograms of the DMSR region properties of LMwood data');
 verbose = 0;
 visualize = 1;
 sav_flag = 1;
-batch =  true;
+batch =  false;
 visualize_only = false;
 nbins = 50;
 
@@ -30,7 +30,7 @@ if batch
     test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s' , 'Chrys', 'Citronella',...
         'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
 else
-    test_cases = {'Desmo'};
+    test_cases = {'Argania'};
 end
 
 for test_case = test_cases
@@ -50,8 +50,8 @@ for test_case = test_cases
     
     num_images = numel(image_filenames);
     
-    for i = 1:num_images
-    %for i = 1       
+    %for i = 1:num_images
+    for i = 1       
         %% specify microscopy resolution (can be 200 or 500 micrometers)
         % for now hard-coded...
         switch char(test_case) % read it by hand from the image
@@ -106,7 +106,7 @@ for test_case = test_cases
                         if verbose
                             disp('Compute ratio of axes lengths...');
                         end
-                        minor_axis_length = cat(1, regions_properties.MinorAxisLengtclh);
+                        minor_axis_length = cat(1, regions_properties.MinorAxisLength);
                         major_axis_length = cat(1, regions_properties.MajorAxisLength);
                         statistics.(type_stat) = minor_axis_length./major_axis_length;
                 end
