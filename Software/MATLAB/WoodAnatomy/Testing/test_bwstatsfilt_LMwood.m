@@ -12,8 +12,7 @@ disp('Testing DMSR derived region properties (statistics) filtering of LMwood da
 %% parameters
 verbose = 1;
 visualize = 1;
-batch =false;
-
+batch = true;
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
@@ -33,13 +32,12 @@ for test_case = test_cases
         disp(['Processing species: ' test_case]);
     end
     
-    
     [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
     
     num_images = length(image_filenames);
     %% process the images
-    for i = 1 %:num_images
+    for i = 1 :num_images
         %% load the needed data- regions, saliency_masks etc.
         image_filename = char(image_filenames{i});
         regions_filename = char(regions_filenames{i});
@@ -60,13 +58,16 @@ for test_case = test_cases
         
         %% set_upfilterring conditions
         stats_types = {'RelativeArea', 'Solidity'};
-        range  = [0.2 1]; % cut off the bottom 20% ofthe Area
+        range_area  = [0.2 1]; % cut off the bottom 20% of the Area
+        %range_area  = [0 0.1];
+        range_sol = [0.85 1];
         stats_values = cat(1,statistics.(char(stats_types{1})));
         max_value  = max(stats_values(:));
-        lo_thr = range(1)*max_value;
-        hi_thr = range(2)*max_value;
+        lo_thr = range_area(1)*max_value;
+        hi_thr = range_area(2)*max_value;
         logic_ops = {'AND'};
-        ranges = {[lo_thr hi_thr], [0.85 1]}; 
+        ranges = {[lo_thr hi_thr], range_sol};
+        ranges_fig = {range_area, range_sol};
         
         % stats_types = {'Orientation','Orientation','Eccentricity'};
         % logic_ops = {'Or','AND'};
@@ -89,9 +90,9 @@ for test_case = test_cases
             caption = []; num_conds = length(stats_types); 
             for c = 1:num_conds
                 if c< num_conds
-                    caption =[caption char(stats_types{c}) ' in [' num2str(ranges{c}(1)) ' ' num2str(ranges{c}(2)) '] ' char(logic_ops{c}) ' '];
+                    caption =[caption char(stats_types{c}) ' in [' num2str(ranges_fig{c}(1)) ' ' num2str(ranges_fig{c}(2)) '] ' char(logic_ops{c}) ' '];
                 else
-                    caption =[caption char(stats_types{c}) ' in [' num2str(ranges{c}(1)) ' ' num2str(ranges{c}(2)) '].'];
+                    caption =[caption char(stats_types{c}) ' in [' num2str(ranges_fig{c}(1)) ' ' num2str(ranges_fig{c}(2)) '].'];
                 end
             end
             
@@ -100,11 +101,12 @@ for test_case = test_cases
             % display filtered regions
             sbp4 = subplot(224); 
             list_smartregions = regions_idx';
+            %list_smartregions = []; % plot all
             step_list_regions  = 1;
             type = 1; % distinguish region's types
             scaling = 1;  % no scaling
             line_width = 2; % thickness of the line
-            labels = 1; % no region's labels
+            labels = 0; % no region's labels
             
             col_ellipse = [];
             col_label = 'green';
@@ -115,7 +117,11 @@ for test_case = test_cases
                 regions_filename,type, ...
                 list_smartregions,step_list_regions,scaling, labels, col_ellipse, ...
                 line_width, col_label, original, f, sbp4);
-            title('Filtered DMSR regions over image');
+            if labels
+                title('Filtered DMSR regions with their indicies over image');
+            else
+                title('Filtered DMSR regions over image');
+            end
             axis on, grid on
         end
         clear caption

@@ -11,7 +11,7 @@ disp('Testing DMSR detector on LMwood data');
 
 %% parameters
 save_flag = 1;
-vis_flag = 1;
+vis_flag = 0;
 vis_only = false;
 batch =  false;
 
@@ -46,7 +46,8 @@ if batch
     test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
         'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
 else
-    test_cases = {'Argania'};
+   % test_cases = {'Argania'};
+   test_cases = {'Desmo'};
 end
 
 for test_case = test_cases
@@ -60,7 +61,7 @@ for test_case = test_cases
     num_images = length(image_filenames);
     
    %for i = 1:num_images 
-   for i =1 
+   for i = 2 
         data_filename = char(image_filenames{i});
         result_filename = char(regions_filenames{i});
         %% load                
