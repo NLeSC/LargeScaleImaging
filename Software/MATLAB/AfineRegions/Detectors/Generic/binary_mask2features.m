@@ -42,21 +42,20 @@ end
 %**************************************************************************
 % computations
 %--------------------------------------------------------------------------
-num_regions = 0;
+%num_regions = 0;
 
-
-[LE, num_reg] = bwlabel(binary_mask,conn);
+[LE, num_regions] = bwlabel(binary_mask,conn);
 stats = regionprops(LE, 'Centroid','MajorAxisLength',...
     'MinorAxisLength','Orientation');
 
-for j = 1:num_reg
+for j = 1:num_regions
 
     %ellipse parameters
     a = fix(getfield(stats,{j},'MajorAxisLength')/2);
     b = fix(getfield(stats,{j},'MinorAxisLength')/2);
 
     if ((a>0) && (b>0))
-        num_regions = num_regions+1;
+       % num_regions = num_regions+1;
         C = getfield(stats,{j},'Centroid');
         x0 = C(1); y0= C(2);
         phi_deg = getfield(stats,{j},'Orientation');
@@ -67,9 +66,13 @@ for j = 1:num_reg
 
         % compute the MSER features
         [A, B, C] = conversion_ellipse(a, b, -phi);
-        features(num_regions,:) = [x0; y0; A; B; C; saliency_type]'; %#ok<AGROW>
-
+        features(j,:) = [x0; y0; A; B; C; saliency_type]'; %#ok<AGROW>
+    else
+        %num_regions = num_regions + 1;
+        features(j,:) = [NaN; NaN; NaN; NaN; NaN; saliency_type]';%#ok<AGROW>
+        disp('binary_masks2features warning: A non-fitting ellipse found- recording NaN values!');
     end
+
 end % for j
 
 
