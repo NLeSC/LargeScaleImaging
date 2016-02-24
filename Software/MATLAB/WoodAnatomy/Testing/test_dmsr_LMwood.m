@@ -13,7 +13,7 @@ disp('Testing DMSR detector on LMwood data');
 save_flag = 1;
 vis_flag = 0;
 vis_only = false;
-batch =  false;
+batch =  true;
 
 SE_size_factor = 0.005;
 Area_factor_very_large = 0.005;
