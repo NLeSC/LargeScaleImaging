@@ -36,7 +36,8 @@ for test_case = test_cases
     end
     
     %% get the filenames
-    [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
+    [image_filenames, features_filenames, regions_filenames, ...
+        regions_props_filenames, ~] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
     
     

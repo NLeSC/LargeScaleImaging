@@ -1,10 +1,13 @@
 % get_wood_test_filenames- obtain test filenames from test_case and detector
 %**************************************************************************
-% [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
-%           get_wood_test_filenames(test_case, detector, data_path, results_path)
+% [image_filenames, features_filenames, regions_filenames, ...
+% regions_props_filenames, filtered_regions_filenames] = ...
+%     get_wood_test_filenames(test_case, detector, data_path, results_path)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 29 Sept 2015
+% last modification date: 26 Feb 2016
+% modification details: added filtered regions filename as output
 % last modification date: 27 Oct 2015
 % modification details: added region properties filename as output
 % last modification date: 15 Oct 2015
@@ -32,7 +35,7 @@
 % REFERENCES:
 %**************************************************************************
 function [image_filenames, features_filenames, regions_filenames,...
-           regions_props_filenames] = ...
+           regions_props_filenames, filtered_regions_filenames] = ...
            get_wood_test_filenames(test_case, detector, data_path, results_path)
        
 if nargin < 4
@@ -43,6 +46,7 @@ image_filenames = cell(1,1);
 features_filenames = cell(1,1);
 regions_filenames = cell(1,1);
 regions_props_filenames = cell(1,1);
+filtered_regions_filenames = cell(1,1);
 
 switch lower(char(test_case))
     case 'argania'
@@ -94,7 +98,7 @@ for i = 1:num_images
         otherwise
             error('Unknown detector');            
     end
-    regions_filenames{i} = fullfile(results_path,detector, name);
+    regions_filenames{i} = fullfile(results_path,detector, name);        
     switch lower(detector)
         case 'mser_matlab'
             name_props = strcat(base, '_props.mat' );
@@ -107,5 +111,20 @@ for i = 1:num_images
         otherwise
             error('Unknown detector');
     end
-    regions_props_filenames{i} = fullfile(results_path,detector, name_props);
+    regions_props_filenames{i} = fullfile(results_path,detector, name_props);    
+    switch lower(detector)
+        case 'mser_matlab'
+            continue;
+        case 'mser'
+            continue;
+        case 'smmsr'
+            continue;
+        case 'dmsr'
+            name_filtered = strcat(base, '_dmsrregions_filtered.mat' );
+            filtered_regions_filenames{i} = fullfile(results_path,detector,...
+                name_filtered);
+        otherwise
+            error('Unknown detector');
+    end
+    
 end

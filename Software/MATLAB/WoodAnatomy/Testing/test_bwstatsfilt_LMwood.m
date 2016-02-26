@@ -32,9 +32,10 @@ for test_case = test_cases
         disp(['Processing species: ' test_case]);
     end
     
-    [image_filenames, features_filenames, regions_filenames, regions_props_filenames] = ...
+    [image_filenames, features_filenames, regions_filenames,...
+        regions_props_filenames, filtered_regions_filenames] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
-    
+    pause;
     num_images = length(image_filenames);
     %% process the images
     for i = 1: num_images
@@ -110,7 +111,7 @@ for test_case = test_cases
          range_ori2 = [70 90];
          range_ori3 = [-20 0];
          range_ori4 = [0 20];
-         range_ecc= [0.86 1];
+         range_ecc= [0 0.85];
          range_area  = [0 0.199]; 
          range_sol = [0.85 1];
          stats_values = cat(1,statistics.(char(stats_types{end})));
