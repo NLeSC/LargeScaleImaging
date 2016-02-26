@@ -11,7 +11,8 @@ disp('Testing DMSR derived region properties (statistics) filtering of LMwood da
 
 %% parameters
 verbose = 1;
-visualize = 1;
+visualize = 0;
+saving = 1;
 batch = true;
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
@@ -35,7 +36,7 @@ for test_case = test_cases
     [image_filenames, features_filenames, regions_filenames,...
         regions_props_filenames, filtered_regions_filenames] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
-    pause;
+
     num_images = length(image_filenames);
     %% process the images
     for i = 1: num_images
@@ -44,6 +45,8 @@ for test_case = test_cases
         regions_filename = char(regions_filenames{i});
         features_filename = char(features_filenames{i});
         regions_props_filename = char(regions_props_filenames{i});
+        filtered_regions_filename = char(filtered_regions_filenames{i});
+        [filt_pathstr,filt_name,filt_ext] = fileparts(filtered_regions_filename);
         load(regions_filename);
         load(regions_props_filename);
         clear histograms regions_properties
@@ -59,8 +62,19 @@ for test_case = test_cases
         
         %% set_upfilterring conditions
 %         stats_types = {'RelativeArea', 'Solidity'};
-%         range1  = [0.2 1]; % cut off the bottom 20% of the Area
-%         range2 = [0.85 1];
+%         range_area  = [0.2 1]; % cut off the bottom 20% of the Area
+%         range_sol = [0.85 1];
+%         stats_values = cat(1,statistics.(char(stats_types{1})));
+%         max_value  = max(stats_values(:));
+%         lo_thr = range_area(1)*max_value;
+%         hi_thr = range_area(2)*max_value;
+%         logic_ops = {'AND'};
+%         ranges = {[lo_thr hi_thr], range_sol};
+%         ranges_fig = {range_area, range_sol};
+
+%         stats_types = {'RelativeArea', 'Solidity'};
+%         range_area  = [0 0.199]; 
+%         range_sol = [0.85 1];
 %         stats_values = cat(1,statistics.(char(stats_types{1})));
 %         max_value  = max(stats_values(:));
 %         lo_thr = range_area(1)*max_value;
@@ -80,17 +94,6 @@ for test_case = test_cases
 %         hi_thr = range_area(2)*max_value;
 %         ranges{end} = [lo_thr hi_thr];
         
-%         stats_types = {'RelativeArea', 'Solidity'};
-%         range_area  = [0 0.199]; 
-%         range_sol = [0.85 1];
-%         stats_values = cat(1,statistics.(char(stats_types{1})));
-%         max_value  = max(stats_values(:));
-%         lo_thr = range_area(1)*max_value;
-%         hi_thr = range_area(2)*max_value;
-%         logic_ops = {'AND'};
-%         ranges = {[lo_thr hi_thr], range_sol};
-%         ranges_fig = {range_area, range_sol};
-
 %          stats_types = {'Orientation','Orientation','Eccentricity', 'Solidity', 'RelativeArea'};
 %          range_ori1 = [-90 -55];
 %          range_ori2 = [55 90];
@@ -125,11 +128,45 @@ for test_case = test_cases
          ranges = {range_ecc, range_sol, [lo_thr hi_thr]};
          ranges_fig = {range_ecc, range_sol,range_area}; 
         %% run filtering function 
-        [bw_filt, regions_idx, threshs] = bwstatsfilt(bw, statistics, stats_types, ...
+        [bw_filt, filtered_regions_idx, threshs] = bwstatsfilt(bw, statistics, stats_types, ...
             logic_ops, conn_comp, ranges);
         clear conn_comp
+        
+        %% saving
+        if saving
+            if verbose
+                disp(['Saving filtered regions... ']);
+            end
+            filtering_conditions_string = []; filename_addition = []; num_conds = length(stats_types); 
+            for c = 1:num_conds
+                if c< num_conds
+                    if not(strcmp(char(stats_types{c}),'RelativeArea'))
+                        filename_addition =[filename_addition upper(char(stats_types{c}(1:3))) ' in_' num2str(ranges_fig{c}(1)) '_' num2str(ranges_fig{c}(2)) '_' char(logic_ops{c}) '_'];
+                    else
+                        filename_addition =[filename_addition 'AREA in_' num2str(ranges_fig{c}(1)) '_' num2str(ranges_fig{c}(2)) '_' char(logic_ops{c}) '_'];
+                    end
+                    filtering_conditions_string =[filtering_conditions_string char(stats_types{c}) ' in [' num2str(ranges_fig{c}(1)) ' ' num2str(ranges_fig{c}(2)) '] ' char(logic_ops{c}) ' '];
+                else
+                    if not(strcmp(char(stats_types{c}),'RelativeArea'))
+                        filename_addition =[filename_addition upper(char(stats_types{c}(1))) ' in_' num2str(ranges_fig{c}(1)) '_' num2str(ranges_fig{c}(2))];
+                    else
+                        filename_addition =[filename_addition 'AREA in_' num2str(ranges_fig{c}(1)) '_' num2str(ranges_fig{c}(2))];
+                    end
+                    filtering_conditions_string =[filtering_conditions_string char(stats_types{c}) ' in [' num2str(ranges_fig{c}(1)) ' ' num2str(ranges_fig{c}(2)) ']'];
+                end
+            end
+            filt_name = [filt_name '_' filename_addition filt_ext];
+            filtered_regions_filename = fullfile(filt_pathstr,filt_name);         
+            
+            % save filtered regions
+            save(filtered_regions_filename, 'bw_filt', 'filtering_conditions_string', 'filtered_regions_idx');
+        end
+        
         %% show
         if visualize
+            if verbose
+                disp(['Visualizing filtered regions... ']);
+            end
             f =  figure('units','normalized','outerposition',[0 0 1 1]);
             figure(f);
             subplot(221); imshow(image_data);title(base_name, 'Interpreter','none');
@@ -151,7 +188,7 @@ for test_case = test_cases
             
             % display filtered regions
             sbp4 = subplot(224); 
-            list_smartregions = regions_idx';
+            list_smartregions = filtered_regions_idx';
             %list_smartregions = []; % plot all
             step_list_regions  = 1;
             type = 1; % distinguish region's types

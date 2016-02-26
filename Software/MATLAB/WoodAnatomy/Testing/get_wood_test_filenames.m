@@ -122,7 +122,7 @@ for i = 1:num_images
         case 'dmsr'
             name_filtered = strcat(base, '_dmsrregions_filtered.mat' );
             filtered_regions_filenames{i} = fullfile(results_path,detector,...
-                name_filtered);
+                'filtered',name_filtered);
         otherwise
             error('Unknown detector');
     end
