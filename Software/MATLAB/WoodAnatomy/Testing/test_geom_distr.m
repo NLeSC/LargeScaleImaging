@@ -2,7 +2,7 @@
 % we consider only 4 images for the Chrys.(200microm) and Stem. species (500microm)
 % and only the large roundish regions filtered out
 
-%% setting up radius for the cirdular histograms
+%% setting up parameters
 nrows_c = 1392;ncols_c = 1040;
 res_C = 100/200;
 diag_C = sqrt(nrows_c^2 + ncols_c^2);
@@ -19,6 +19,7 @@ num_radiuses = length(fraction_factors);
 max_number_regions = 45;
 label_rot_angle  = 45;
 fnts = 8;
+nbins = 10;
 
 %% getting indexies of filtred regions
 load('/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/filtered/LargeRoundish/BigAreaAndBigSolidity/Chrys afrPL01_dmsrregions_filtered_AREA in_0.2_1_AND_S in_0.85_1.mat', 'filtered_regions_idx')
@@ -295,20 +296,49 @@ title('S3');
 %% visualize histograms
 f3 = figure('units','normalized','outerposition',[0 0 1 1]);
 s1 = subplot(221);
-%filt_reg = regions_idx_C1;
-%num_points = length(C1);
+
 for j = 1:num_radiuses
-    %[N,edges] = histcounts(counts_C1(:,j), 20);
-   % hist(counts_C1(:,j));
-    %histogram.edges = edges(2:end); histogram.N= N;
+    [N,edges] = histcounts(counts_C1(:,j), nbins);
     bar(edges(2:end), N, col{j}); hold on;
+    %pause;
 end
-%xlabel('Centroid (region) indicies'); ylabel('Number of centroids in the neighbourhood');
 axis on; grid  on;
-%ax = gca;
-%set(ax,'XTick',1:num_points,'XTickLabels',num2str(filt_reg), ...
-%    'XTickLabelRotation',label_rot_angle);
-%axis([0 num_points+1 0 max_number_regions]);
-%legend(num2str(radiuses_C'));
+
 title('C1');
+hold off;
+
+s2 = subplot(222);
+
+for j = 1:num_radiuses
+    [N,edges] = histcounts(counts_C2(:,j), nbins);
+    bar(edges(2:end), N, col{j}); hold on;
+    %pause;
+end
+axis on; grid  on;
+
+title('C2');
+hold off;
+
+s3 = subplot(223);
+
+for j = 1:num_radiuses
+    [N,edges] = histcounts(counts_S1(:,j), nbins);
+    bar(edges(2:end), N, col{j}); hold on;
+  %  pause;
+end
+axis on; grid  on;
+
+title('S1');
+hold off;
+
+s4 = subplot(224);
+
+for j = 1:num_radiuses
+    [N,edges] = histcounts(counts_S3(:,j), nbins);
+    bar(edges(2:end), N, col{j}); hold on;
+   % pause;
+end
+axis on; grid  on;
+
+title('S3');
 hold off;
