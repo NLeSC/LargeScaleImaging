@@ -7,6 +7,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 12 October 2015
+% last modification date: 11 March 2016 
+% modification details: added Binary detector type
 % last modification date: 13 October 2015 
 % modification details:added MSSRA and DMSRA for all regions 
 %**************************************************************************
@@ -54,7 +56,7 @@ FEAT_DIM_TYPE = 6;
 %--------------------------------------------------------------------------
 % in case we want to read the features incl. the saliency type
 switch lower(detector)
-    case {'mssr', 'smssr', 'dmsr', 'mssra', 'dmsra'}
+    case {'mssr', 'smssr', 'dmsr', 'mssra', 'dmsra','bin'}
         ext = lower(detector);
     otherwise
         error('open_regions.m: unknown detector!');

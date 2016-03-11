@@ -2,8 +2,8 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 28-04-2015
-% last modification date:
-% modification details: 
+% last modification date: 11-03-2016
+% modification details: Doesn't work currently! mssr_binary doesn't exist!
 %**************************************************************************
 %% paramaters
 interactive = false;

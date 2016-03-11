@@ -1,4 +1,4 @@
-% visualise.m- function for displaying the extracted salient regions on 1 image
+%visualise.m- function for displaying the extracted salient regions on 1 image
 %**************************************************************************
 % function visualise(image_fname, options)
 %
@@ -157,12 +157,12 @@ else
     ROI_mask_fname = [];
 end
 
-        or = input('Show original region outlines? [y/n]: ','s');
-        if lower(or)=='y'
-            original = 1;
-        else
-            original = 0;
-        end
+or = input('Show original region outlines? [y/n]: ','s');
+if lower(or)=='y'
+    original = 1;
+else
+    original = 0;
+end
 
 % read the saved features
     sav_fnames = input('Automatically generate the features filenames? [y/n]: ','s');

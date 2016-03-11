@@ -12,7 +12,7 @@
 %**************************************************************************
 % Scripts
 %**************************************************************************
-% test_mssr_binary.m- script to test binary MSSR detector
+% test_binary_detector.m- script to test the binary detector
 % test_mssr_gray_level.m- script to test a single gray-level MSSR detector
 % test_mssr.m- script to test the MSSR detector
 % test_mssr_freiburg.m- test an MSSR-like detector on the Freiburg dataset

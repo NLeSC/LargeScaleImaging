@@ -4,8 +4,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 9 October 2015
-% last modification date: 
-% modification details: 
+% last modification date: 11 March 2016 
+% modification details: fixed the region display
 %**************************************************************************
 % INPUTS:
 % image_data- gray-level input image
@@ -14,7 +14,7 @@
 %                  type: i=1- "holes", i=2- "islands", i=3 - "indentaitons"
 %                  and i =4-"protrusions"  if saliency_types is [1 1 1 1]
 % saliency_flags- flags indicating the types of saliency 
-% figs- vector of 2 figure handles
+% figs- vector of 3 figure handles
 %**************************************************************************
 % OUTPUTS:
 %**************************************************************************
@@ -34,14 +34,14 @@ elseif nargin < 2
     error('visualize_regions_overlay.m requires at least 2 input arguments!');
 end
 %**************************************************************************
-% constants/hard-set parameters
+%% constants/hard-set parameters
 %--------------------------------------------------------------------------
 BLUE = [0 0 255];
 YELLOW = [255 255 0];
 GREEN = [0 255 0];
 RED = [255 0 0];
 %**************************************************************************
-% input parameters -> variables
+%% input parameters -> variables
 %--------------------------------------------------------------------------
 % saliency types
 holes_flag = saliency_flags(1);
@@ -52,7 +52,7 @@ protrusions_flag = saliency_flags(4);
 % figure handles
 f1 = figs(1);
 f2 = figs(2);
-
+f3 = figs(3);
 % saliency masks
 i = 0;
 
@@ -75,14 +75,14 @@ end
 
 
 %**************************************************************************
-% visualization
+%% visualization
 %--------------------------------------------------------------------------
-
+all_rgb = image_data;
 % holes
 if holes_flag && ~isempty(find(holes, 1))
     
     rgb = imoverlay(image_data, holes, BLUE);
-    
+    all_rgb = imoverlay(all_rgb, holes, BLUE);
     figure(f1);
     subplot(221);imshow(holes);
     title('Holes');axis image;axis on;
@@ -93,7 +93,7 @@ end
 % islands
 if islands_flag && ~isempty(find(islands,1))
     rgb = imoverlay(image_data, islands, YELLOW);
-    
+    all_rgb = imoverlay(all_rgb, islands, YELLOW);
     figure(f1);
     subplot(222);imshow(islands);
     title('Islands');axis image;axis on;
@@ -101,26 +101,28 @@ if islands_flag && ~isempty(find(islands,1))
     figure(f2);
     subplot(222); imshow(rgb); axis on; title('Islands overlayed on image');
 end
-% islands
+% indentations
 if indentations_flag && ~isempty(find(indentations,1))
-    rgb = imoverlay(image_data, islands, YELLOW);
-    
+    rgb = imoverlay(image_data, indentations, GREEN);
+    all_rgb = imoverlay(all_rgb, indentations, GREEN);
     figure(f1);
-    subplot(223);imshow(islands);
-    title('Islands');axis image;axis on;
+    subplot(223);imshow(indentations);
+    title('Indentations');axis image;axis on;
     drawnow;
     figure(f2);
-    subplot(223); imshow(rgb); axis on; title('Islands overlayed on image');
+    subplot(223); imshow(rgb); axis on; title('Indentations overlayed on image');
 end
 % protrusions
 if protrusions_flag && ~isempty(find(protrusions,1))
-   rgb = imoverlay(image_data, islands, YELLOW);
-    
+    rgb = imoverlay(image_data, protrusions, RED);
+    all_rgb = imoverlay(all_rgb, protrusions, RED);
     figure(f1);
-    subplot(224);imshow(islands);
-    title('Islands');axis image;axis on;
+    subplot(224);imshow(protrusions);
+    title('Protrusions');axis image;axis on;
     drawnow;
     figure(f2);
-    subplot(224); imshow(rgb); axis on; title('ProtrusionsIslands overlayed on image'); 
+    subplot(224); imshow(rgb); axis on; title('Protrusions overlayed on image'); 
 end
 
+figure(f3);
+imshow(all_rgb); axis on; title('All detected regions and types overlayed on image');

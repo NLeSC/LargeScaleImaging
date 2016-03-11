@@ -180,12 +180,13 @@ if original
                  I_reg = uint8(I_reg);
             end
     
-    f0=figure; imshow(I_reg); axis on;
+    f0=figure('units','normalized','outerposition',[0 0 1 1]); imshow(I_reg); axis on;
 end
 
 % display the (relevant part of the) image
-I = uint8(I);
-f = figure; imshow(I);axis on; hold on;
+%I = uint8(I);
+I = logical(I);
+f = figure('units','normalized','outerposition',[0 0 1 1]); imshow(I);axis on; hold on;
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
 %--------------------------------------------------------------------------
@@ -197,6 +198,7 @@ for n=list_regions
     i = i+1;
     x = features(n,1); y = features(n,2);
     a = features(n,3); b = features(n,4); c = features(n,5);
+     if not(isnan(a) && isnan(b))
     if type
         % display the 4 saliency types in different colour-coding
         sal_type = features(n,6);
@@ -207,40 +209,41 @@ for n=list_regions
             % islands
             col_ellipse = [1 1 0]; % yellow;
         elseif sal_type == 3
-            %indentations            
+            %indentations
             col_ellipse = [0 1 0]; % green;
         else
             %protrusions
             col_ellipse = [1 0 0]; % red;
         end
-         % draw the ellipse if within the ROI
-         if ~isempty(ROI) 
-             if ROI(fix(y),fix(x))
-                 drawellipse(x,y,a,b,c, scaling, col_ellipse,line_width);
-             end
-         else
+        % draw the ellipse if within the ROI
+        if ~isempty(ROI)
+            if ROI(fix(y),fix(x))
+                drawellipse(x,y,a,b,c, scaling, col_ellipse,line_width);
+            end
+        else
             drawellipse(x,y,a,b,c, scaling, col_ellipse,line_width);
-         end
+        end
     else % no type is given
         % draw the ellipse
         if size(col_ellipse,1) > 1
-            if ~isempty(ROI) 
-             if ROI(fix(y),fix(y))
-              drawellipse(x,y,a,b,c, scaling, col_ellipse(i,:),line_width);
-             end
+            if ~isempty(ROI)
+                if ROI(fix(y),fix(y))
+                    drawellipse(x,y,a,b,c, scaling, col_ellipse(i,:),line_width);
+                end
             else
-              drawellipse(x,y,a,b,c, scaling, col_ellipse(i,:),line_width);
-            end             
+                drawellipse(x,y,a,b,c, scaling, col_ellipse(i,:),line_width);
+            end
         else
-           if ~isempty(ROI) 
-             if ROI(fix(y),fix(y)) 
-                  drawellipse(x,y,a,b,c, scaling, col_ellipse,line_width);
-             end
-           else
-               drawellipse(x,y,a,b,c, scaling, col_ellipse,line_width);
-           end                  
+            if ~isempty(ROI)
+                if ROI(fix(y),fix(y))
+                    drawellipse(x,y,a,b,c, scaling, col_ellipse,line_width);
+                end
+            else
+                drawellipse(x,y,a,b,c, scaling, col_ellipse,line_width);
+            end
         end
     end
+     end
     
      % the labels
     if labels
