@@ -4,6 +4,27 @@ import helpers
 import numpy as np
 
 def fill_image(img, lam=20, vizualize=True):
+    '''
+    Fills all holes in connected components in the image. Also return the
+    small elements.
+    
+    Parameters:
+    ------
+    img: 2-dimensional numpy array with values 0/255
+        image to fill
+    lam: float, optional
+        lambda, minimumm area of a salient region
+    vizualize: bool, optional
+        option for vizualizing the process
+    
+    Returns:
+    ------
+    filled:  2-dimensional numpy array with values 0/255
+        The filled image
+    filled_small: 2-dimensional numpy array with values 0/255
+        Image with all small elements as foreground.
+    '''
+    
     filled = img.copy()
     filled_small = np.zeros(img.shape, dtype='uint8')
     img2, contours, hierarchy = cv2.findContours(filled,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE)
@@ -14,7 +35,7 @@ def fill_image(img, lam=20, vizualize=True):
         if cv2.contourArea(cnt) < lam:
             cv2.drawContours(filled_small, [cnt], 0, 255, -1)
             
-    if(vizualize):
+    if vizualize:
         helpers.show_image(filled, 'filled image')
         helpers.show_image(filled_small, 'filled small elements')
     
@@ -22,11 +43,31 @@ def fill_image(img, lam=20, vizualize=True):
     
 
 def get_holes(img, lam=-1, vizualize=True):
+    '''
+    Find salient regions of type 'hole'
+    
+    Parameters:
+    ------
+    img: 2-dimensional numpy array with values 0/255
+        image to detect holes
+    lam: float, optional
+        lambda, minimumm area of a salient region
+    vizualize: bool, optional
+        option for vizualizing the process
+    
+    Returns:
+    ------
+    filled:  2-dimensional numpy array with values 0/255
+        The filled image
+    holes: 2-dimensional numpy array with values 0/255
+        Image with all holes as foreground.
+    '''
+    
     if(vizualize):
         helpers.show_image(img, 'original')
 
     #Determine lambda, if necessary
-    if(lam < 0) :
+    if lam < 0:
         SE, lam = helpers.get_SE(img)
     #retrieve the filled image and the filled small elements
     filled, filled_small = fill_image(img, lam, vizualize)
@@ -35,7 +76,7 @@ def get_holes(img, lam=-1, vizualize=True):
     #Substract the noise elements
     theholes = cv2.bitwise_and(all_the_holes, cv2.bitwise_not(filled_small))
 
-    if(vizualize):
+    if vizualize:
         helpers.show_image(all_the_holes, 'holes with noise')
         helpers.show_image(theholes, 'holes without noise')
     
@@ -43,6 +84,25 @@ def get_holes(img, lam=-1, vizualize=True):
     
     
 def get_islands(img, lam=20, vizualize=True):
+    '''
+    Find salient regions of type 'island'
+    
+    Parameters:
+    ------
+    img: 2-dimensional numpy array with values 0/255
+        image to detect islands
+    lam: float, optional
+        lambda, minimumm area of a salient region
+    vizualize: bool, optional
+        option for vizualizing the process
+    
+    Returns:
+    ------
+    invfilled:  2-dimensional numpy array with values 0/255
+        The filled inverse image
+    holes: 2-dimensional numpy array with values 0/255
+        Image with all islands as foreground.
+    '''
     invimg = cv2.bitwise_not(img)
     invfilled, islands = get_holes(invimg, lam, vizualize)
     return invfilled, islands
