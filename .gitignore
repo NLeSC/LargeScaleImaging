@@ -24,4 +24,5 @@ Software/Python/Notebooks/.ipynb_checkpoints/
 *.asv
 *.blg
 *.out
+*.pyc
 
