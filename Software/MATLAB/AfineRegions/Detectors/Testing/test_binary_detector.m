@@ -26,7 +26,7 @@ if interactive
     % image_base_filename = input('Enter the base image filename: ','s');
     test_image = input('Enter test case: [all|noise|holes|islands|indent_protr|nested]: ','s');
 else
-    test_image = 'holes'
+    test_image = 'islands'
 end
 switch lower(test_image)
     case 'all'
@@ -36,7 +36,7 @@ switch lower(test_image)
     case 'holes'
         image_base_filename = 'Binary_holes.png';
     case 'islands'
-        image_base_filename = 'Binary_isalnds.png';
+        image_base_filename = 'Binary_islands.png';
     case 'indent_protr'
         image_base_filename = 'Binary_indentations_protrusions.png';
     case 'nested'
@@ -69,7 +69,7 @@ else
         case {'all', 'noise', 'nested'}
             saliency_types = [1 1 1 1];
         case 'islands'
-            saliency_types = [0 1  0 0];
+            saliency_types = [0 1 0 0];
         case 'holes'
             saliency_types = [1 0 0 0];
         case 'indent_protr'
