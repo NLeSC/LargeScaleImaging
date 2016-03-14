@@ -86,10 +86,10 @@ num_saliency_types = length(find(saliency_type));
 saliency_masks = zeros(nrows, ncols, num_saliency_types);
 
 % by type
-if holes_flag
+if holes_flag || indentations_flag || protrusions_flag
     holes = zeros(nrows,ncols);
 end
-if islands_flag
+if islands_flag || indentations_flag || protrusions_flag
     islands = zeros(nrows,ncols);
 end
 if indentations_flag
@@ -134,7 +134,7 @@ end
 %--------------------------------------------------------------------------
 % Inner type Salient Structures (ISS)- holes & islands
 %..........................................................................
-if islands_flag  
+if islands_flag || indentations_flag || protrusions_flag
     islands = (filled_ROI_inv.*ROI);
     %imshow(islands);title('Before');pause;
     % remove small isolated bits
@@ -144,7 +144,7 @@ if islands_flag
     %imshow(islands);title('After2');
 end
 
-if holes_flag
+if holes_flag || indentations_flag || protrusions_flag
     holes = (filled_ROI.*imcomplement(ROI));
     %imshow(holes);title('Before');pause;
     % remove small isolated bits
