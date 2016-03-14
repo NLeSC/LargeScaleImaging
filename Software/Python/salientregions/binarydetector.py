@@ -21,3 +21,28 @@ def fill_image(img, lam=20, vizualize=True):
     return filled, filled_small
     
 
+def get_holes(img, lam=-1, vizualize=True):
+    if(vizualize):
+        helpers.show_image(img, 'original')
+
+    #Determine lambda, if necessary
+    if(lam < 0) :
+        SE, lam = helpers.get_SE(img)
+    #retrieve the filled image and the filled small elements
+    filled, filled_small = fill_image(img, lam, vizualize)
+    #get all the holes (including those that are noise)
+    all_the_holes = cv2.bitwise_and(filled, cv2.bitwise_not(img))
+    #Substract the noise elements
+    theholes = cv2.bitwise_and(all_the_holes, cv2.bitwise_not(filled_small))
+
+    if(vizualize):
+        helpers.show_image(all_the_holes, 'holes with noise')
+        helpers.show_image(theholes, 'holes without noise')
+    
+    return filled, theholes
+    
+    
+def get_islands(img, lam=20, vizualize=True):
+    invimg = cv2.bitwise_not(img)
+    invfilled, islands = get_holes(invimg, lam, vizualize)
+    return invfilled, islands

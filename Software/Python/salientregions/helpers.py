@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import cv2
 import numpy as np
+import scipy.io as sio
 
 def show_image(img, window_name='image'):
     '''
@@ -24,3 +25,43 @@ def binarize(img, threshold=127, vizualize=True):
     if(vizualize):
         show_image(binarized)
     return binarized
+    
+
+def read_matfile(filename, vizualize=True):
+    '''
+    Read a matfile with the binary masks for the salient regions.
+    Returns:
+        islands, holes, protrusions, indentations
+    These are masks with 0/255 values for the 4 salient types
+    '''
+    matfile = sio.loadmat(filename)
+    regions = matfile['saliency_masks']*255
+    islands = regions[:,:,0]
+    holes = regions[:,:,1]
+    protrusions = regions[:,:,2]
+    indentations = regions[:,:,3]
+    if(vizualize):
+        show_image(holes, 'holes')
+        show_image(islands, 'islands')
+        show_image(protrusions, 'protrusions')
+        show_image(indentations, 'indentations')
+    return holes, islands, protrusions, indentations
+    
+    
+def image_diff(img1, img2, vizualize=True):
+    '''
+    Compares two images and shows the difference.
+    Useful for testing purposes.
+    '''
+    if(vizualize):
+        show_image(cv2.bitwise_xor(img1, img2))
+    return np.all(img1 == img2)
+    
+    
+def get_SE(img, SE_size_factor=0.02):
+    nrows, ncols = img.shape[0], img.shape[1]
+    ROI_area = nrows*ncols
+    SE_size = SE_size_factor*np.sqrt(ROI_area/np.pi)
+    SE = np.ones((SE_size,SE_size))
+    lam = 5*SE_size
+    return SE, lam
