@@ -26,6 +26,7 @@
 % regions_filenames- cell array with the binary masks of detected regions
 %                   filenames
 % regions_props_filenames- cell array with the regions properties filenames
+% filtered_regions_filenames- cell array with the filtered regions filenames
 %**************************************************************************
 % NOTES: called from testing scripts
 %**************************************************************************
