@@ -106,3 +106,35 @@ def get_islands(img, lam=20, vizualize=True):
     invimg = cv2.bitwise_not(img)
     invfilled, islands = get_holes(invimg, lam, vizualize)
     return invfilled, islands
+    
+    
+    
+
+def remove_small_elements(elements, lam, connectivity=4, vizualize=True):
+    '''
+    Remove elements (Connected Components) that are smaller then a given threshold
+    
+    Parameters:
+    ------
+    img: 2-dimensional numpy array with values 0/255
+        binary image with elements
+    lam: float, optional
+        lambda, minimumm area of a salient region
+    connectivity: int
+        What connectivity to use to define CCs
+    vizualize: bool, optional
+        option for vizualizing the process
+    
+    Returns:
+    ------
+    
+    '''
+    result = elements.copy()
+    nr_elements, labels, stats, _ = cv2.connectedComponentsWithStats(elements, connectivity=connectivity)
+    for i in xrange(1, nr_elements) :
+        area =  stats[i, cv2.CC_STAT_AREA]
+        if area < lam:
+            result[[labels==i]] = 0
+    if vizualize:
+        helpers.show_image(result, 'small elements removed')
+    return result
