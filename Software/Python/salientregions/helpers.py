@@ -77,14 +77,14 @@ def read_matfile(filename, vizualize=True):
     regions = matfile['saliency_masks']*255
     holes = regions[:,:,0]
     islands = regions[:,:,1]
-    protrusions = regions[:,:,2]
-    indentations = regions[:,:,3]
+    indentations = regions[:,:,2]
+    protrusions = regions[:,:,3]
     if vizualize:
         show_image(holes, 'holes')
-        show_image(islands, 'islands')
+        show_image(islands, 'islands')     
         show_image(indentations, 'indentations')
-        show_image(protrusions, 'protrusions')
-    return holes, islands, protrusions, indentations
+        show_image(protrusions, 'protrusions')   
+    return holes, islands, indentations, protrusions
     
     
     
