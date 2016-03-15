@@ -40,7 +40,7 @@ function [image_filenames, features_filenames, regions_filenames,...
            get_wood_test_filenames(test_case, detector, data_path, results_path)
        
 if nargin < 4
-    error('get_test_filenames requires 4 input arguments!');
+    error('get_wood_test_filenames requires 4 input arguments!');
 end
 
 image_filenames = cell(1,1);
