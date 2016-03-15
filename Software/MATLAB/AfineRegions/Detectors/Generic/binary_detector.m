@@ -68,14 +68,14 @@ ROI_Area = nrows*ncols;
 
 % SE
 %SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)));
-SE_size = fix(SE_size_factor*sqrt(ROI_Area/pi));
-SEhi_size = fix(SE_size/2);
+SE_size = fix(SE_size_factor*sqrt(ROI_Area/pi))
+SEhi_size = fix(SE_size/2)
 SE = strel('disk',SE_size);
 SEhi = strel('disk',SEhi_size);
 
 % area opening parameter
-lambda = 5*SE_size;
-lambdahi = fix(SE_size/2);
+lambda = 5*SE_size
+lambdahi = fix(SE_size/2)
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------

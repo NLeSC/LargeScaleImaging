@@ -26,6 +26,7 @@
 % regions_filenames- cell array with the binary masks of detected regions
 %                   filenames
 % regions_props_filenames- cell array with the regions properties filenames
+% filtered_regions_filenames- cell array with the filtered regions filenames
 %**************************************************************************
 % NOTES: called from testing scripts
 %**************************************************************************
@@ -39,7 +40,7 @@ function [image_filenames, features_filenames, regions_filenames,...
            get_wood_test_filenames(test_case, detector, data_path, results_path)
        
 if nargin < 4
-    error('get_test_filenames requires 4 input arguments!');
+    error('get_wood_test_filenames requires 4 input arguments!');
 end
 
 image_filenames = cell(1,1);
