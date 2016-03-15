@@ -4,7 +4,6 @@ Created on Mon Mar 14 13:10:40 2016
 
 @author: dafne
 """
-import scipy
 from .context import salientregions as sr
 import unittest
 import cv2
@@ -18,7 +17,7 @@ class BinaryDetectorTester(unittest.TestCase):
     def setUp(self):
         testdata_path = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../TestData/Binary/'))
         self.image = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_all_types_noise.png')), vizualize=False)
-        self.holes_true, self.islands_true, self.indents_true, self.prots_true = \
+        self.holes_true, self.islands_true, self.prots_true, self.indents_true = \
             sr.read_matfile(os.path.join(testdata_path, 'Binary_all_types_noise_binregions.mat'), vizualize=False)
             
     def test_holes(self):

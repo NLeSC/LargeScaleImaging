@@ -68,23 +68,23 @@ def read_matfile(filename, vizualize=True):
         Binary image with holes as foreground
     islands:  2-dimensional numpy array with values 0/255
         Binary image with islands as foreground
-    indentations:  2-dimensional numpy array with values 0/255
-        Binary image with indentations as foreground
     protrusions:  2-dimensional numpy array with values 0/255
         Binary image with protrusions as foreground
+    indentations:  2-dimensional numpy array with values 0/255
+        Binary image with indentations as foreground
     '''
     matfile = sio.loadmat(filename)
     regions = matfile['saliency_masks']*255
-    islands = regions[:,:,0]
-    holes = regions[:,:,1]
-    indentations = regions[:,:,2]
-    protrusions = regions[:,:,3]
+    holes = regions[:,:,0]
+    islands = regions[:,:,1]
+    protrusions = regions[:,:,2]
+    indentations = regions[:,:,3]
     if vizualize:
         show_image(holes, 'holes')
         show_image(islands, 'islands')
         show_image(indentations, 'indentations')
         show_image(protrusions, 'protrusions')
-    return holes, islands, indentations, protrusions
+    return holes, islands, protrusions, indentations
     
     
     
@@ -108,7 +108,7 @@ def image_diff(img1, img2, vizualize=True):
         True if all pixels of the two images are equal
     '''
     if vizualize:
-        show_image(cv2.bitwise_xor(img1, img2))
+        show_image(cv2.bitwise_xor(img1, img2), 'difference')
     return np.all(img1 == img2)
     
     
@@ -130,9 +130,9 @@ def get_SE(img, SE_size_factor=0.15):
     lam: float
         lambda, minimumm area of a salient region
     '''
-    nrows, ncols = img.shape[0], img.shape[1]
+    nrows, ncols = img.shape
     ROI_area = nrows*ncols
-    SE_size = SE_size_factor*np.sqrt(ROI_area/np.pi)
-    SE = np.ones((SE_size,SE_size))
+    SE_size = int(SE_size_factor*np.sqrt(ROI_area/np.pi))
+    SE = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (SE_size, SE_size))
     lam = 5*SE_size
     return SE, lam
