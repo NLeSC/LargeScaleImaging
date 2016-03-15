@@ -68,23 +68,24 @@ def read_matfile(filename, vizualize=True):
         Binary image with holes as foreground
     islands:  2-dimensional numpy array with values 0/255
         Binary image with islands as foreground
-    protrusions:  2-dimensional numpy array with values 0/255
-        Binary image with protrusions as foreground
     indentations:  2-dimensional numpy array with values 0/255
         Binary image with indentations as foreground
+    protrusions:  2-dimensional numpy array with values 0/255
+        Binary image with protrusions as foreground
     '''
     matfile = sio.loadmat(filename)
     regions = matfile['saliency_masks']*255
     islands = regions[:,:,0]
     holes = regions[:,:,1]
-    protrusions = regions[:,:,2]
-    indentations = regions[:,:,3]
+    indentations = regions[:,:,2]
+    protrusions = regions[:,:,3]
     if vizualize:
         show_image(holes, 'holes')
         show_image(islands, 'islands')
-        show_image(protrusions, 'protrusions')
         show_image(indentations, 'indentations')
-    return holes, islands, protrusions, indentations
+        show_image(protrusions, 'protrusions')
+    return holes, islands, indentations, protrusions
+    
     
     
 def image_diff(img1, img2, vizualize=True):
@@ -111,7 +112,7 @@ def image_diff(img1, img2, vizualize=True):
     return np.all(img1 == img2)
     
     
-def get_SE(img, SE_size_factor=0.02):
+def get_SE(img, SE_size_factor=0.15):
     '''
     Get the structuring element en minimum salient region area for this image.
     

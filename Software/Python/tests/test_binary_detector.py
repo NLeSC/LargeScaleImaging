@@ -18,9 +18,9 @@ class BinaryDetectorTester(unittest.TestCase):
     def setUp(self):
         testdata_path = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../TestData/Binary/'))
         self.image = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_all_types_noise.png')), vizualize=False)
-        self.holes_true, self.islands_true, self.prots_true, self.indents_true = \
+        self.holes_true, self.islands_true, self.indents_true, self.prots_true = \
             sr.read_matfile(os.path.join(testdata_path, 'Binary_all_types_noise_binregions.mat'), vizualize=False)
             
     def test_holes(self):
-        _, holes_my = sr.get_holes(self.image, lam=50, vizualize=False)
+        _, holes_my = sr.get_holes(self.image, lam=108, vizualize=False)
         assert sr.image_diff(self.holes_true, holes_my, vizualize=False)
