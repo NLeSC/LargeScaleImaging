@@ -8,6 +8,7 @@
 % Functions
 %**************************************************************************
 % get_wood_test_filenames- obtain test filenames from test_case and detector
+% get_filtered_regions_centroids- gets the centroids of filtered regions
 %**************************************************************************
 % Scripts
 %**************************************************************************
