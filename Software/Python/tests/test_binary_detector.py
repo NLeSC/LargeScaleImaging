@@ -4,7 +4,6 @@ Created on Mon Mar 14 13:10:40 2016
 
 @author: dafne
 """
-import scipy
 from .context import salientregions as sr
 import unittest
 import cv2
@@ -22,5 +21,5 @@ class BinaryDetectorTester(unittest.TestCase):
             sr.read_matfile(os.path.join(testdata_path, 'Binary_all_types_noise_binregions.mat'), vizualize=False)
             
     def test_holes(self):
-        _, holes_my = sr.get_holes(self.image, lam=50, vizualize=False)
+        _, holes_my = sr.get_holes(self.image, lam=108, vizualize=False)
         assert sr.image_diff(self.holes_true, holes_my, vizualize=False)
