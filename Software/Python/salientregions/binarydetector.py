@@ -3,17 +3,14 @@ import cv2
 import helpers
 import numpy as np
 
-def fill_image(img, lam=20, vizualize=True):
+def fill_image(img, vizualize=True):
     '''
-    Fills all holes in connected components in the image. Also return the
-    small elements.
+    Fills all holes in connected components in the image. 
     
     Parameters:
     ------
     img: 2-dimensional numpy array with values 0/255
         image to fill
-    lam: float, optional
-        lambda, minimumm area of a salient region
     vizualize: bool, optional
         option for vizualizing the process
     
@@ -21,28 +18,21 @@ def fill_image(img, lam=20, vizualize=True):
     ------
     filled:  2-dimensional numpy array with values 0/255
         The filled image
-    filled_small: 2-dimensional numpy array with values 0/255
-        Image with all small elements as foreground.
     '''
     
     filled = img.copy()
-    filled_small = np.zeros(img.shape, dtype='uint8')
-    img2, contours, hierarchy = cv2.findContours(filled,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE)
+    _, contours, hierarchy = cv2.findContours(filled,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
         #Fill the original image for all the contours
         cv2.drawContours(filled, [cnt], 0, 255, -1)
-        #If it's a small contour, draw it to the noise-image
-        if cv2.contourArea(cnt) < lam:
-            cv2.drawContours(filled_small, [cnt], 0, 255, -1)
-            
+    
+    filled = cv2.add(filled, img)        
     if vizualize:
         helpers.show_image(filled, 'filled image')
-        helpers.show_image(filled_small, 'filled small elements')
     
-    return filled, filled_small
-    
+    return filled
 
-def get_holes(img, lam=-1, vizualize=True):
+def get_holes(img, lam=-1, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'hole'
     
@@ -52,6 +42,8 @@ def get_holes(img, lam=-1, vizualize=True):
         image to detect holes
     lam: float, optional
         lambda, minimumm area of a salient region
+    connectivity: int
+        What connectivity to use to define CCs
     vizualize: bool, optional
         option for vizualizing the process
     
@@ -63,18 +55,18 @@ def get_holes(img, lam=-1, vizualize=True):
         Image with all holes as foreground.
     '''
     
-    if(vizualize):
+    if vizualize:
         helpers.show_image(img, 'original')
 
     #Determine lambda, if necessary
     if lam < 0:
         SE, lam = helpers.get_SE(img)
-    #retrieve the filled image and the filled small elements
-    filled, filled_small = fill_image(img, lam, vizualize)
+    #retrieve the filled image
+    filled = fill_image(img, vizualize)
     #get all the holes (including those that are noise)
     all_the_holes = cv2.bitwise_and(filled, cv2.bitwise_not(img))
     #Substract the noise elements
-    theholes = cv2.bitwise_and(all_the_holes, cv2.bitwise_not(filled_small))
+    theholes = remove_small_elements(all_the_holes, lam, connectivity, vizualize)
 
     if vizualize:
         helpers.show_image(all_the_holes, 'holes with noise')
