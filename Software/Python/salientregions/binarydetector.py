@@ -78,7 +78,7 @@ def get_holes(img, filled=None, lam=-1, connectivity=4, vizualize=True):
     return filled, theholes
     
     
-def get_islands(img,  filled=None, lam=-1, connectivity=4, vizualize=True):
+def get_islands(img,  invfilled=None, lam=-1, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'island'
     
@@ -86,8 +86,8 @@ def get_islands(img,  filled=None, lam=-1, connectivity=4, vizualize=True):
     ------
     img: 2-dimensional numpy array with values 0/255
         image to detect islands
-    filled: 2-dimensional numpy array with values 0/255, optional
-        precomputed filled image
+    invfilled: 2-dimensional numpy array with values 0/255, optional
+        precomputed filled inverse image
     lam: float, optional
         lambda, minimumm area of a salient region
     connectivity: int
@@ -103,7 +103,9 @@ def get_islands(img,  filled=None, lam=-1, connectivity=4, vizualize=True):
         Image with all islands as foreground.
     '''
     invimg = cv2.bitwise_not(img)
-    invfilled, islands = get_holes(invimg, filled=filled, lam=lam, connectivity=connectivity, vizualize=vizualize)
+    if invfilled is None:
+        invfilled = fill_image(invimg, vizualize=vizualize)
+    invfilled, islands = get_holes(invimg, filled=invfilled, lam=lam, connectivity=connectivity, vizualize=vizualize)
     return invfilled, islands
     
     
@@ -163,6 +165,8 @@ def get_protrusions(img, filled=None, SE=None, lam=-1, area_factor=0.05, connect
     
     Returns:
     ------
+    filled:  2-dimensional numpy array with values 0/255
+        The filled image
     protrusions: 2-dimensional numpy array with values 0/255
         Image with all protrusions as foreground.
     '''
@@ -198,5 +202,39 @@ def get_protrusions(img, filled=None, SE=None, lam=-1, area_factor=0.05, connect
         helpers.show_image(prots, 'Elements with noise')
     
     prots_nonoise = remove_small_elements(prots, lam, connectivity=8, vizualize=vizualize)
-    return prots_nonoise
+    return filled, prots_nonoise
+    
+def get_indentations(img,  invfilled=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
+    '''
+    Find salient regions of type 'island'
+    
+    Parameters:
+    ------
+    img: 2-dimensional numpy array with values 0/255
+        image to detect islands
+    invfilled: 2-dimensional numpy array with values 0/255, optional
+        precomputed filled inverse image
+    SE: 2-dimensional numpy array of shape (k,k), optional
+        precomputed structuring element for the tophat operation
+    lam: float, optional
+        lambda, minimumm area of a salient region
+    area_factor: float, optional
+        factor that describes the minimum area of a significent CC
+    connectivity: int
+        What connectivity to use to define CCs
+    vizualize: bool, optional
+        option for vizualizing the process
+    
+    Returns:
+    ------
+    invfilled:  2-dimensional numpy array with values 0/255
+        The filled inverse image
+    indentations: 2-dimensional numpy array with values 0/255
+        Image with all indentations as foreground.
+    '''
+    invimg = cv2.bitwise_not(img)
+    if invfilled is None:
+        invfilled = fill_image(invimg, vizualize=vizualize)
+    invfilled, indentations = get_protrusions(invimg, filled=invfilled, SE=SE, lam=lam, area_factor=area_factor, connectivity=connectivity, vizualize=vizualize)
+    return invfilled, indentations
     
