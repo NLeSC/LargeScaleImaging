@@ -23,3 +23,7 @@ class BinaryDetectorTester(unittest.TestCase):
     def test_holes(self):
         _, holes_my = sr.get_holes(self.image, lam=108, vizualize=False)
         assert sr.image_diff(self.holes_true, holes_my, vizualize=False)
+        
+    def test_islands(self):
+        _, islands_my = sr.get_islands(self.image, lam=108, vizualize=False)
+        assert sr.image_diff(self.islands_true, islands_my, vizualize=False)

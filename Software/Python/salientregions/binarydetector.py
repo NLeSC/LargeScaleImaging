@@ -32,7 +32,7 @@ def fill_image(img, vizualize=True):
     
     return filled
 
-def get_holes(img, lam=-1, connectivity=4, vizualize=True):
+def get_holes(img, filled=None, lam=-1, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'hole'
     
@@ -40,6 +40,8 @@ def get_holes(img, lam=-1, connectivity=4, vizualize=True):
     ------
     img: 2-dimensional numpy array with values 0/255
         image to detect holes
+    filled: 2-dimensional numpy array with values 0/255, optional
+        precomputed filled image
     lam: float, optional
         lambda, minimumm area of a salient region
     connectivity: int
@@ -62,7 +64,8 @@ def get_holes(img, lam=-1, connectivity=4, vizualize=True):
     if lam < 0:
         SE, lam = helpers.get_SE(img)
     #retrieve the filled image
-    filled = fill_image(img, vizualize)
+    if filled is None:
+        filled = fill_image(img, vizualize)
     #get all the holes (including those that are noise)
     all_the_holes = cv2.bitwise_and(filled, cv2.bitwise_not(img))
     #Substract the noise elements
@@ -75,7 +78,7 @@ def get_holes(img, lam=-1, connectivity=4, vizualize=True):
     return filled, theholes
     
     
-def get_islands(img, lam=20, vizualize=True):
+def get_islands(img,  filled=None, lam=-1, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'island'
     
@@ -83,8 +86,12 @@ def get_islands(img, lam=20, vizualize=True):
     ------
     img: 2-dimensional numpy array with values 0/255
         image to detect islands
+    filled: 2-dimensional numpy array with values 0/255, optional
+        precomputed filled image
     lam: float, optional
         lambda, minimumm area of a salient region
+    connectivity: int
+        What connectivity to use to define CCs
     vizualize: bool, optional
         option for vizualizing the process
     
@@ -96,7 +103,7 @@ def get_islands(img, lam=20, vizualize=True):
         Image with all islands as foreground.
     '''
     invimg = cv2.bitwise_not(img)
-    invfilled, islands = get_holes(invimg, lam, vizualize)
+    invfilled, islands = get_holes(invimg, filled=filled, lam=lam, connectivity=connectivity, vizualize=vizualize)
     return invfilled, islands
     
     
@@ -119,7 +126,8 @@ def remove_small_elements(elements, lam, connectivity=4, vizualize=True):
     
     Returns:
     ------
-    
+    result: 2-dimensional numpy array with values 0/255
+        Image with all elements larger then lam
     '''
     result = elements.copy()
     nr_elements, labels, stats, _ = cv2.connectedComponentsWithStats(elements, connectivity=connectivity)
@@ -130,3 +138,65 @@ def remove_small_elements(elements, lam, connectivity=4, vizualize=True):
     if vizualize:
         helpers.show_image(result, 'small elements removed')
     return result
+    
+    
+def get_protrusions(img, filled=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
+    '''
+    Find salient regions of type 'protrusion'
+    
+    Parameters:
+    ------
+    img: 2-dimensional numpy array with values 0/255
+        image to detect holes
+    filled: 2-dimensional numpy array with values 0/255, optional
+        precomputed filled image
+    SE: 2-dimensional numpy array of shape (k,k), optional
+        precomputed structuring element for the tophat operation
+    lam: float, optional
+        lambda, minimumm area of a salient region
+    area_factor: float, optional
+        factor that describes the minimum area of a significent CC
+    connectivity: int
+        What connectivity to use to define CCs
+    vizualize: bool, optional
+        option for vizualizing the process
+    
+    Returns:
+    ------
+    protrusions: 2-dimensional numpy array with values 0/255
+        Image with all protrusions as foreground.
+    '''
+    
+    #fill the image, if not yet done
+    if filled is None:
+        filled = fill_image(img, vizualize)
+
+    #Calculate structuring element, if not yet done
+    if SE is None or lam==-1:
+        SE2, lam2 = helpers.get_SE(img)
+        SE = SE2 if SE is None else SE
+        lam = lam2 if lam==-1 else lam
+        
+    #Calculate minimum area for connected components
+    min_area = area_factor * img.size
+    
+    #initalize protrusion image
+    prots = np.zeros(img.shape, dtype='uint8')
+    
+    #Retrieve all connected components
+    nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(filled, connectivity=connectivity)
+    for i in xrange(1, nccs) :
+        area =  stats[i, cv2.CC_STAT_AREA]
+        #For the significant CCs, perform tophat
+        if area > min_area:            
+            ccimage = np.array(255*(labels==i), dtype='uint8')
+            wth = cv2.morphologyEx(ccimage, cv2.MORPH_TOPHAT, SE )
+            prots += wth
+            if vizualize:
+                helpers.show_image(wth, 'Top hat')
+    if vizualize:
+        helpers.show_image(prots, 'Elements with noise')
+    
+    prots_nonoise = remove_small_elements(prots, lam, connectivity=8, vizualize=vizualize)
+    return prots_nonoise
+    
