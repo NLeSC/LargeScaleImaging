@@ -12,20 +12,12 @@ disp('Testing DBSCAN clusterring algorithm on filtered DMSR regions of LMwood da
 verbose = 1;
 visualize = 1;
 saving = 0;
-batch = false;
-filtering_conditions_string = 'AREA in_0.2_1_AND_S in_0.85_1';
+batch = true;
+
 %% algorithm parameters
-nrows_c = 1392;ncols_c = 1040;
-res_C = 100/200;
-diag_C = sqrt(nrows_c^2 + ncols_c^2);
-
-res_S = 100/500;
-nrows_s = 1288;ncols_s = 966;
-diag_S = sqrt(nrows_s^2 + ncols_s^2);
-fraction_factor = 0.14;
-radius_C = diag_C * fraction_factor*res_C;
-radius_S = diag_S * fraction_factor*res_S;
-
+filtering_conditions_string = 'AREA in_0.2_1_AND_S in_0.85_1';
+fraction_factor = 0.2;
+MinPts = 2; % DBSCAN parameter
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
@@ -43,7 +35,12 @@ for test_case = test_cases
     if verbose
         disp(['Processing species: ' test_case]);
     end
-    
+    switch char(test_case) % read it by hand from the image
+        case {'Argania','Chrys', 'Gluema'}
+            micro_res = 200;
+        case {'Brazzeia_c', 'Brazzeia_s', 'Rhaptop','Stem' }
+            micro_res = 500;
+    end
     [image_filenames, ~, ~, ...
         regions_props_filenames, filtered_regions_filenames_base] = ...
         get_wood_test_filenames(test_case, detector, data_path, results_path);
@@ -59,57 +56,49 @@ for test_case = test_cases
         [filt_pathstr,filt_name,filt_ext] = fileparts(filtered_regions_filename_base);
         filt_name = [filt_name '_' filtering_conditions_string filt_ext];
         filtered_regions_filename = fullfile(filt_pathstr,filt_name); 
-        if verbose
-           % disp('image_filename: '); disp(image_filename);
-            disp('regions_props_filename: '); disp(regions_props_filename);
-            disp('filtered_regions_filename: '); disp(filtered_regions_filename);
-        end
+%         if verbose
+%             disp('image_filename: '); disp(image_filename);
+%             disp('regions_props_filename: '); disp(regions_props_filename);
+%             disp('filtered_regions_filename: '); disp(filtered_regions_filename);
+%         end
   
         % get the centroids
+        if verbose
+            disp('Get the centroids ...');
+        end
         centroids = get_filtered_regions_centroids(regions_props_filename, filtered_regions_filename);
         
         % get the image dimensions snd decide on DBSCAN parameters
-        image_data = load(image_filename);
-        [nrows, ncols] = size(image_data);
+        image_data = imread(image_filename);
+        [nrows, ncols,~] = size(image_data);
         clear image_data
         
-        % get the resoltuion depending on the test case (TO DO: Find script
-        % where this is already done!
+        % get the algorithm parameters depending on the image size and the microscopy resolution 
+        %% algorithm parameters
+        res = 100/micro_res;
+        diag = sqrt(nrows^2 + ncols^2);
+        epsilon = diag * fraction_factor*res;% DBSCAN parameter
+        
+        %% DBSCAN on the centroid points
+        if verbose
+            disp('BDSCAN clusterring of the centroids ...');
+        end
+        Idx=DBSCAN(centroids,epsilon,MinPts);
+        %% visualization
+        if visualize
+            figure('units','normalized','outerposition',[0 0 1 1]);
+            PlotClusterinResult(centroids, Idx);
+            axis ij; axis([1 ncols 1 nrows]); grid on;
+            title(filt_name, 'Interpreter', 'none');
+            
+            xlabel(['DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
+        end
+
+        if verbose
+            disp('----------------------------------------------------------');
+        end
     end
 end
-
-return;
-
-%% DBSCAN clusterring
-MinPts = 2;
-epsilon = radius_C;
-
-figure;
-Idx_C1=DBSCAN(C1,epsilon,MinPts);
-PlotClusterinResult(C1, Idx_C1);
-axis ij; axis([1 nrows_c 1 ncols_c])
-axis on; grid on;
-title(['C1: DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
-
-figure;
-Idx_C2=DBSCAN(C2,epsilon,MinPts);
-PlotClusterinResult(C2, Idx_C2);
-axis ij; axis([1 nrows_c 1 ncols_c])
-axis on; grid on;
-title(['C2: DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
-
-epsilon = radius_S;
-
-figure;
-Idx_S1=DBSCAN(S1,epsilon,MinPts);
-PlotClusterinResult(S1, Idx_S1);
-axis ij; axis([1 nrows_s 1 ncols_s])
-axis on; grid on;
-title(['S1: DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
-
-figure;
-Idx_S3=DBSCAN(S3,epsilon,MinPts);
-PlotClusterinResult(S3, Idx_S3);
-axis ij; axis([1 nrows_s 1 ncols_s])
-axis on; grid on;
-title(['S3: DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
+if verbose
+   disp('DONE.');
+end
