@@ -21,6 +21,48 @@ def show_image(img, window_name='image'):
     cv2.waitKey(10000)
     cv2.destroyAllWindows()
     
+def vizualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, vizualize=True):
+    '''
+    Display the image with the salient regions provided.
+    
+    Parameters:
+    
+    img: multidimensional numpy array
+        image
+    holes:  2-dimensional numpy array with values 0/255, optional
+        The holes, to display in blue
+    islands:  2-dimensional numpy array with values 0/255, optional
+        The islands, to display in yellow
+    indentations:  2-dimensional numpy array with values 0/255, optional
+        The indentations, to display in green
+    protrusions:  2-dimensional numpy array with values 0/255, optional
+        The protrusions, to display in red
+    
+    Returns:
+    ------
+    img_to_show: 3-dimensional numpy array
+        image with the colored regions
+    '''
+    #colormap bgr
+    colormap = {'holes': [255,0,0], #BLUE
+                'islands': [0,255,255], #YELLOW
+                'indentations': [0,255,0], #GREEN
+                'protrusions': [0,0,255] #RED
+               }
+    
+    img_to_show = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    if holes is not None:
+        img_to_show[[holes>0]] = colormap['holes']
+    if islands is not None:
+        img_to_show[[islands>0]] = colormap['islands']
+    if indentations is not None:
+        img_to_show[[indentations>0]] = colormap['indentations']
+    if protrusions is not None:
+        img_to_show[[protrusions>0]] = colormap['protrusions']
+    
+    if vizualize:
+        show_image(img_to_show)
+    return img_to_show
 
 def binarize(img, threshold=127, vizualize=True):
     '''

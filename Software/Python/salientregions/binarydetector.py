@@ -26,7 +26,7 @@ def fill_image(img, vizualize=True):
         #Fill the original image for all the contours
         cv2.drawContours(filled, [cnt], 0, 255, -1)
     
-    filled = cv2.add(filled, img)        
+    filled = cv2.bitwise_or(filled, img)        
     if vizualize:
         helpers.show_image(filled, 'filled image')
     
