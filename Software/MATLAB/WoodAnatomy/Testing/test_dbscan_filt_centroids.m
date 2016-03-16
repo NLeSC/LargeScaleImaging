@@ -1,8 +1,20 @@
 % test_dbscan_filt_centroids.m - testing DBSCAN algorithms on the filtered regions centroids
-% we consider only 4 images for the Chrys.(200microm) and Stem. species (500microm)
-% and only the large roundish regions filtered out
+%**************************************************************************
+%
+% author: Elena Ranguelova, NLeSc
+% date created: 16 Mar 2016
+% last modification date: 
+% modification details: 
+%% header message
+disp('Testing DBSCAN clusterring algorithm on filtered DMSR regions of LMwood data');
 
-%% setting up parameters
+%% execution parameters
+verbose = 1;
+visualize = 1;
+saving = 0;
+batch = false;
+filtering_conditions_string = 'AREA in_0.2_1_AND_S in_0.85_1';
+%% algorithm parameters
 nrows_c = 1392;ncols_c = 1040;
 res_C = 100/200;
 diag_C = sqrt(nrows_c^2 + ncols_c^2);
@@ -10,30 +22,63 @@ diag_C = sqrt(nrows_c^2 + ncols_c^2);
 res_S = 100/500;
 nrows_s = 1288;ncols_s = 966;
 diag_S = sqrt(nrows_s^2 + ncols_s^2);
-fraction_factor = [0.2];
+fraction_factor = 0.14;
 radius_C = diag_C * fraction_factor*res_C;
 radius_S = diag_S * fraction_factor*res_S;
 
-%% filenames 
-% filtred regions
-filt_reg_fname_C1 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/filtered/LargeRoundish/BigAreaAndBigSolidity/Chrys afrPL01_dmsrregions_filtered_AREA in_0.2_1_AND_S in_0.85_1.mat';
-filt_reg_fname_C2 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/filtered/LargeRoundish/BigAreaAndBigSolidity/Chrys afrPL02_dmsrregions_filtered_AREA in_0.2_1_AND_S in_0.85_1.mat';
+%% paths
+data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
+results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
+detector  = 'DMSR';
 
-filt_reg_fname_S1 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/filtered/LargeRoundish/BigAreaAndBigSolidity/Stemonurus celebicus 01_dmsrregions_filtered_AREA in_0.2_1_AND_S in_0.85_1.mat';
-filt_reg_fname_S3 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/filtered/LargeRoundish/BigAreaAndBigSolidity/Stemonurus celebicus 03_dmsrregions_filtered_AREA in_0.2_1_AND_S in_0.85_1.mat';
+if batch
+    test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
+        'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
+else
+    test_cases = {'Chrys'};
+end
 
-% all regions properties
-reg_props_fname_C1 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/Chrys afrPL01_dmsrregions_props.mat';
-reg_props_fname_C2 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/Chrys afrPL02_dmsrregions_props.mat';
+%% processing all test cases
+for test_case = test_cases
+    if verbose
+        disp(['Processing species: ' test_case]);
+    end
+    
+    [image_filenames, ~, ~, ...
+        regions_props_filenames, filtered_regions_filenames_base] = ...
+        get_wood_test_filenames(test_case, detector, data_path, results_path);
+    
+    num_images = length(image_filenames);
+    %% process the images
+    for i = 1: num_images
+        
+       % contruct the proper filenames storing old results
+        image_filename = char(image_filenames{i});
+        regions_props_filename = char(regions_props_filenames{i});        
+        filtered_regions_filename_base = char(filtered_regions_filenames_base{i});        
+        [filt_pathstr,filt_name,filt_ext] = fileparts(filtered_regions_filename_base);
+        filt_name = [filt_name '_' filtering_conditions_string filt_ext];
+        filtered_regions_filename = fullfile(filt_pathstr,filt_name); 
+        if verbose
+           % disp('image_filename: '); disp(image_filename);
+            disp('regions_props_filename: '); disp(regions_props_filename);
+            disp('filtered_regions_filename: '); disp(filtered_regions_filename);
+        end
+  
+        % get the centroids
+        centroids = get_filtered_regions_centroids(regions_props_filename, filtered_regions_filename);
+        
+        % get the image dimensions snd decide on DBSCAN parameters
+        image_data = load(image_filename);
+        [nrows, ncols] = size(image_data);
+        clear image_data
+        
+        % get the resoltuion depending on the test case (TO DO: Find script
+        % where this is already done!
+    end
+end
 
-reg_props_fname_S1 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/Stemonurus celebicus 01_dmsrregions_props.mat';
-reg_props_fname_S3 = '/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood/DMSR/Stemonurus celebicus 03_dmsrregions_props.mat';
-
-%% finding out only the filtered centroids
-C1 = get_filtered_regions_centroids(reg_props_fname_C1, filt_reg_fname_C1);
-C2 = get_filtered_regions_centroids(reg_props_fname_C2, filt_reg_fname_C2);
-S1 = get_filtered_regions_centroids(reg_props_fname_S1, filt_reg_fname_S1);
-S3 = get_filtered_regions_centroids(reg_props_fname_S3, filt_reg_fname_S3);
+return;
 
 %% DBSCAN clusterring
 MinPts = 2;
