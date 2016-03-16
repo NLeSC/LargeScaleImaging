@@ -2,7 +2,7 @@
 %
 % topic: Wood anatomy classification testing
 % author: Elena Ranguelova, NLeSc
-% date: October 2015
+% date: 2015/ 2016
 %
 %**************************************************************************
 % Functions
@@ -20,5 +20,7 @@
 % hist_distance_LMwood- distances betweem histograms of the DMSR statistics on LMwood data
 % hist_distance_LMwood- manual similarity between LMwood images
 % test_bwstatsfilt_LMwood- testing the bw region filtering of LMwood data
+% test_geom_distr- testing geometric distribution of centroids
+% test_dbscan_filt_centroids.m - testing DBSCAN algorithms on the filtered regions centroids
 
 

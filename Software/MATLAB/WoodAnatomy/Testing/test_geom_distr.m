@@ -1,4 +1,4 @@
-% testing geometric distribution of centroids
+% test_geom_distr- testing geometric distribution of centroids
 % we consider only 4 images for the Chrys.(200microm) and Stem. species (500microm)
 % and only the large roundish regions filtered out
 

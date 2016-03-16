@@ -21,20 +21,21 @@ function PlotClusterinResult(X, IDX)
     for i=0:k
         Xi=X(IDX==i,:);
         if i~=0
-            Style = 'x';
-            MarkerSize = 8;
+            Style = '*';
+            MarkerSize = 6;
             Color = Colors(i,:);
             Legends{end+1} = ['Cluster #' num2str(i)];
         else
             Style = 'o';
-            MarkerSize = 6;
+            MarkerSize = 4;
             Color = [0 0 0];
             if ~isempty(Xi)
                 Legends{end+1} = 'Noise';
             end
         end
         if ~isempty(Xi)
-            plot(Xi(:,1),Xi(:,2),Style,'MarkerSize',MarkerSize,'Color',Color);
+            plot(Xi(:,1),Xi(:,2),Style,'MarkerSize',MarkerSize,'Color',Color,...
+                'LineWidth',2);
         end
         hold on;
     end
