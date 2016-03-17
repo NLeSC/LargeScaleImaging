@@ -266,6 +266,11 @@ if (indentations_flag || protrusions_flag)
     end    
 end
 
+
+% clear the indentaitons and protrusions touching the image boundaries 
+protrusions = imclearborder(protrusions);
+indentations = imclearborder(indentations);
+
 if visualise
     figure(f2);
     if indentations_flag
