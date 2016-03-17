@@ -82,7 +82,6 @@ lambdahi = fix(SE_size/2)
 
 % saleincy masks
 num_saliency_types = length(find(saliency_type));
-%saliency_masks = zeros(nrows, ncols, num_saliency_types,'uint8');
 saliency_masks = zeros(nrows, ncols, num_saliency_types);
 
 % by type
@@ -136,22 +135,14 @@ end
 %..........................................................................
 if islands_flag || indentations_flag || protrusions_flag
     islands = (filled_ROI_inv.*ROI);
-    %imshow(islands);title('Before');pause;
     % remove small isolated bits
     islands = bwareaopen(islands,lambda,4);
-    %imshow(islands);title('After1');pause;
-    %islands = imclose(islands,strel('disk',1));
-    %imshow(islands);title('After2');
 end
 
 if holes_flag || indentations_flag || protrusions_flag
     holes = (filled_ROI.*imcomplement(ROI));
-    %imshow(holes);title('Before');pause;
     % remove small isolated bits
     holes = bwareaopen(holes,lambda,4);
-    %imshow(holes);title('After1');pause;
-    %holes = imclose(holes, strel('disk',1));
-    %imshow(holes);title('After2');
 end
 
 % visualisation
@@ -221,13 +212,17 @@ if (indentations_flag || protrusions_flag)
         % black top hat
          SCCH_bth = imbothat(SCCH,SEhi);
          SCCH_bth = bwareaopen(SCCH_bth,lambdahi,4);
-         indentations = indentations|SCCH_bth;
+         % the indentaitons in the largeholes are actually protrusions in respect to the whole image!
+         protrusions = protrusions|SCCH_bth; 
+        % indentations = indentations|SCCH_bth;
        end
        if protrusions_flag
         % white top hat       
          SCCH_wth = imtophat(SCCH,SEhi);
          SCCH_wth = bwareaopen(SCCH_wth,lambdahi,4);
-         protrusions = protrusions|SCCH_wth;
+        % the prorusions in the large holes are actually indentaitions in respect to the whole image!
+        % protrusions = protrusions|SCCH_wth;
+         indentations = indentations|SCCH_wth;
        end    
     end
     
