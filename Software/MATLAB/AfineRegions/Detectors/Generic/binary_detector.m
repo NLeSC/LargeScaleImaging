@@ -5,23 +5,24 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 28 Sept 2015
-% last modification date: 
-% modification details: 
+% last modification date: 17 March 2016
+% modification details: fixed indentations and protrusions in respect to
+% large holes; removing ind. and protr. touching the image boundary
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
 % SE_size_factor- structuring element (SE) size factor
 % area_factor - area factor for the significant connected components (CCs)
-% [saliency_type]- array with 4 flags for the 4 saliency types 
+% [saliency_type]- array with 4 flags for the 4 saliency types
 %                (Holes, Islands, Indentations, Protrusions)
-%                [optional], if left out- default is [1 1 1 1]   
+%                [optional], if left out- default is [1 1 1 1]
 % [visualise] - visualisation flag
-%               [optional], if left out- default is 0, if set to 1, 
-%               intermendiate steps of the detection are shown 
+%               [optional], if left out- default is 0, if set to 1,
+%               intermendiate steps of the detection are shown
 %**************************************************************************
 % OUTPUTS:
 % saliency_masks - 3-D array of the binary saliency masks of the regions
-%                  saliency_masks(:,:,i) contains the salient regions per 
+%                  saliency_masks(:,:,i) contains the salient regions per
 %                  type: i=1- "holes", i=2- "islands", i=3 - "indentaitons"
 %                  and i =4-"protrusions"  if saliency_types is [1 1 1 1]
 %**************************************************************************
@@ -31,15 +32,15 @@
 %                    as called from a gray level detector
 %**************************************************************************
 % REFERENCES: Ranguelova, E., Pauwels, E. J. ``Morphology-based Stable
-% Salient Regions Detector'', International conference on Image and Vision 
+% Salient Regions Detector'', International conference on Image and Vision
 % Computing New Zealand (IVCNZ'06), Great Barrier Island, New Zealand,
 % November 2006, pp.97-102
 %**************************************************************************
 function [saliency_masks] = binary_detector(ROI, SE_size_factor, area_factor,...
-                                        saliency_type, visualise)
+    saliency_type, visualise)
 
 %**************************************************************************
-% input control    
+% input control
 %--------------------------------------------------------------------------
 if nargin < 5
     visualise = 0;
@@ -167,7 +168,7 @@ if (indentations_flag || protrusions_flag)
     statsh = regionprops(bwh,'Area');
     [bwi,numi]=bwlabel(islands,4);
     statsi = regionprops(bwi,'Area');
-
+    
     % compute the areas of all regions (to find the most significant ones?)
     for i=1:numh
         if statsh(i).Area/ROI_Area >= area_factor;
@@ -193,7 +194,7 @@ if (indentations_flag || protrusions_flag)
         ff= figure;subplot(221);imshow(CCLH);title('Significant components (from holes) labelled'); grid on;
         subplot(222);imshow(CCLI);title('Significant components (from islands) labelled'); grid on;
     end
-
+    
     if not(already_detected)
         for i=1:num
             if stats(i).Area/ROI_Area >= area_factor;
@@ -203,73 +204,77 @@ if (indentations_flag || protrusions_flag)
             end
         end
     end
-
+    
     % find the indentations and protrusions
     % inside the significant CCs
     for j = 1:num_CCLH
-       SCCH = (CCLH==j);
-       if indentations_flag
-        % black top hat
-         SCCH_bth = imbothat(SCCH,SEhi);
-         SCCH_bth = bwareaopen(SCCH_bth,lambdahi,4);
-         % the indentaitons in the largeholes are actually protrusions in respect to the whole image!
-         protrusions = protrusions|SCCH_bth; 
-        % indentations = indentations|SCCH_bth;
-       end
-       if protrusions_flag
-        % white top hat       
-         SCCH_wth = imtophat(SCCH,SEhi);
-         SCCH_wth = bwareaopen(SCCH_wth,lambdahi,4);
-        % the prorusions in the large holes are actually indentaitions in respect to the whole image!
-        % protrusions = protrusions|SCCH_wth;
-         indentations = indentations|SCCH_wth;
-       end    
+        SCCH = (CCLH==j);
+        if indentations_flag
+            % black top hat
+            SCCH_bth = imbothat(SCCH,SEhi);
+            SCCH_bth = bwareaopen(SCCH_bth,lambdahi,4);
+            % the indentaitons in the largeholes are actually protrusions in respect to the whole image!
+            protrusions = protrusions|SCCH_bth;
+            % indentations = indentations|SCCH_bth;
+        end
+        if protrusions_flag
+            % white top hat
+            SCCH_wth = imtophat(SCCH,SEhi);
+            SCCH_wth = bwareaopen(SCCH_wth,lambdahi,4);
+            % the prorusions in the large holes are actually indentaitions in respect to the whole image!
+            % protrusions = protrusions|SCCH_wth;
+            indentations = indentations|SCCH_wth;
+        end
     end
     
     for j = 1:num_CCLI
         SCCI = (CCLI==j);
         if indentations_flag
-        % black top hat
-         SCCI_bth = imbothat(SCCI,SEhi);
-         SCCI_bth = bwareaopen(SCCI_bth,lambdahi,4);
-         indentations = indentations|SCCI_bth;
-       end
+            % black top hat
+            SCCI_bth = imbothat(SCCI,SEhi);
+            SCCI_bth = bwareaopen(SCCI_bth,lambdahi,4);
+            indentations = indentations|SCCI_bth;
+        end
         if protrusions_flag
-        % white top hat       
-         SCCI_wth = imtophat(SCCI,SEhi);
-         SCCI_wth = bwareaopen(SCCI_wth,lambdahi,4);
-         protrusions = protrusions|SCCI_wth;
-       end               
+            % white top hat
+            SCCI_wth = imtophat(SCCI,SEhi);
+            SCCI_wth = bwareaopen(SCCI_wth,lambdahi,4);
+            protrusions = protrusions|SCCI_wth;
+        end
     end
-  
+    
     if not(already_detected)
-      for j = 1:num_CCL
+        for j = 1:num_CCL
             SCCL = (CCL==j);
             if visualise
                 figure(ff); subplot(223);imshow(SCCL); title('Significant components large'); grid on;
             end
-
-           if indentations_flag
-            % black top hat
-             SCCA_bth = imbothat(SCCL,SE);
-             SCCA_bth = bwareaopen(SCCA_bth,lambda);
-             indentations = indentations|SCCA_bth;
-           end
-
-           if protrusions_flag
-            % white top hat       
-             SCCA_wth = imtophat(SCCL,SE);
-             SCCA_wth = bwareaopen(SCCA_wth,lambda);
-             protrusions = protrusions|SCCA_wth;
-           end               
-      end
-    end    
+            
+            if indentations_flag
+                % black top hat
+                SCCA_bth = imbothat(SCCL,SE);
+                SCCA_bth = bwareaopen(SCCA_bth,lambda);
+                indentations = indentations|SCCA_bth;
+            end
+            
+            if protrusions_flag
+                % white top hat
+                SCCA_wth = imtophat(SCCL,SE);
+                SCCA_wth = bwareaopen(SCCA_wth,lambda);
+                protrusions = protrusions|SCCA_wth;
+            end
+        end
+    end
 end
 
 
-% clear the indentaitons and protrusions touching the image boundaries 
-protrusions = imclearborder(protrusions);
-indentations = imclearborder(indentations);
+% clear the indentaitons and protrusions touching the image boundaries
+if protrusions_flag
+    protrusions = imclearborder(protrusions);
+end
+if indentations_flag
+    indentations = imclearborder(indentations);
+end
 
 if visualise
     figure(f2);
@@ -290,11 +295,11 @@ if holes_flag
     saliency_masks(:,:,i) = holes;
 end
 if islands_flag
-   i = i+1;
+    i = i+1;
     saliency_masks(:,:,i) = islands;
 end
 if indentations_flag
-    i = i+1;    
+    i = i+1;
     saliency_masks(:,:,i) = indentations;
 end
 if protrusions_flag
