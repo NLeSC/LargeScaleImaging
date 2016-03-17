@@ -26,7 +26,7 @@ if interactive
     % image_base_filename = input('Enter the base image filename: ','s');
     test_image = input('Enter test case: [all|noise|holes|islands|indent_protr|nested]: ','s');
 else
-    test_image = 'islands'
+    test_image = 'nested'
 end
 switch lower(test_image)
     case 'all'
@@ -77,8 +77,8 @@ else
         otherwise
             error('test_binary_detector: unknown test_image!');
     end
-    SE_size_factor = 0.15
-    Area_factor = 0.3
+    SE_size_factor = 0.075
+    Area_factor = 0.05
     conn = 4
 end
 
