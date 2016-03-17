@@ -49,6 +49,18 @@ for test_case = test_cases
     %% process the images
     for i = 1: num_images
         
+        %% specify microscopy resolution (can be 200 or 500 micrometers)
+        % for now hard-coded...
+        switch char(test_case) % read it by hand from the image
+            case {'Citronella', 'Desmo'}
+                switch i
+                    case 1
+                        micro_res = 500;
+                    case 2
+                        micro_res = 200;
+                end
+        end
+        
        % contruct the proper filenames storing old results
         image_filename = char(image_filenames{i});
         regions_props_filename = char(regions_props_filenames{i});        
