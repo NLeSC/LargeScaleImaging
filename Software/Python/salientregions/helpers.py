@@ -61,7 +61,7 @@ def vizualize_elements(img, holes=None, islands=None, indentations=None, protrus
         img_to_show[[protrusions>0]] = colormap['protrusions']
     
     if vizualize:
-        show_image(img_to_show, display_time=display_time)
+        show_image(img_to_show, window_name='salient regions', display_time=display_time)
     return img_to_show
 
 def binarize(img, threshold=-1, vizualize=True):
@@ -181,3 +181,22 @@ def get_SE(img, SE_size_factor=0.15):
     SE = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (SE_dim_size, SE_dim_size))
     lam = 5*SE_size
     return SE, lam
+
+def get_SEhi(SE, scale=2):
+    '''
+    Get the smaller structuring element from the large structuring element
+    
+    Parameters:
+    ------
+    SE: 2-dimensional numpy array of shape (k,k)
+        The large structuring element
+    scale: int
+        scale indicating how much smaller the smal SE should be
+    
+    Returns:
+    ------
+    SEhi: 2-dimensional numpy array of shape (k,k)
+        The smaller structuring element to use in processing the image
+    '''
+    SE_hi = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(SE.shape[0]/scale), int(SE.shape[1]/scale)))
+    return SE_hi
