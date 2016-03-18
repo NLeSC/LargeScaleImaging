@@ -16,7 +16,7 @@ batch = true;
 
 %% algorithm parameters
 filtering_conditions_string = 'AREA in_0.2_1_AND_S in_0.85_1';
-fraction_factor = 0.2;
+fraction_factors = [0.1 0.15 0.2 0.25];
 MinPts = 2; % DBSCAN parameter
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
@@ -89,25 +89,32 @@ for test_case = test_cases
         %% algorithm parameters
         res = 100/micro_res;
         diag = sqrt(nrows^2 + ncols^2);
-        epsilon = diag * fraction_factor*res;% DBSCAN parameter
         
-        %% DBSCAN on the centroid points
-        if verbose
-            disp('BDSCAN clusterring of the centroids ...');
-        end
-        Idx=DBSCAN(centroids,epsilon,MinPts);
-        %% visualization
-        if visualize
-            figure('units','normalized','outerposition',[0 0 1 1]);
-            PlotClusterinResult(centroids, Idx);
-            axis ij; axis([1 ncols 1 nrows]); grid on;
-            title(filt_name, 'Interpreter', 'none');
+        for i = 1: length(fraction_factors)
+            epsilon = diag * fraction_factors(i)*res;% DBSCAN parameter
             
-            xlabel(['DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
+            %% DBSCAN on the centroid points
+            if verbose
+                disp('BDSCAN clusterring of the centroids ...');
+            end
+            Idx=DBSCAN(centroids,epsilon,MinPts);
+            %% visualization
+            if visualize
+                figure('units','normalized','outerposition',[0 0 1 1]);
+                PlotClusterinResult(centroids, Idx);
+                axis ij; axis([1 ncols 1 nrows]); grid on;
+                title(filt_name, 'Interpreter', 'none');
+                
+                xlabel(['DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
+                ylabel(['Fraction factor (in respect to the image diagonal) = ' num2str(fraction_factors(i))]);
+            end
+            
+            if verbose
+                disp('----------------------------------------------------------');
+            end
         end
-
         if verbose
-            disp('----------------------------------------------------------');
+           disp('***************************************************************');
         end
     end
 end
