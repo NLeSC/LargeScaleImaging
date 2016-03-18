@@ -69,7 +69,7 @@ def get_holes(img, filled=None, lam=-1, connectivity=4, vizualize=True):
     #get all the holes (including those that are noise)
     all_the_holes = cv2.bitwise_and(filled, cv2.bitwise_not(img))
     #Substract the noise elements
-    theholes = remove_small_elements(all_the_holes, lam, connectivity, vizualize)
+    theholes = remove_small_elements(all_the_holes, lam=lam, remove_border_elements=True, connectivity=connectivity, vizualize=vizualize)
 
     if vizualize:
         helpers.show_image(all_the_holes, 'holes with noise')
@@ -111,7 +111,7 @@ def get_islands(img,  invfilled=None, lam=-1, connectivity=4, vizualize=True):
     
     
 
-def remove_small_elements(elements, lam, connectivity=4, vizualize=True):
+def remove_small_elements(elements, lam, remove_border_elements=True, connectivity=4, vizualize=True):
     '''
     Remove elements (Connected Components) that are smaller then a given threshold
     
@@ -121,6 +121,8 @@ def remove_small_elements(elements, lam, connectivity=4, vizualize=True):
         binary image with elements
     lam: float, optional
         lambda, minimumm area of a salient region
+    remove_border_elements: bool, optional
+        Also remove elements that are attached to the border
     connectivity: int
         What connectivity to use to define CCs
     vizualize: bool, optional
@@ -133,16 +135,32 @@ def remove_small_elements(elements, lam, connectivity=4, vizualize=True):
     '''
     result = elements.copy()
     nr_elements, labels, stats, _ = cv2.connectedComponentsWithStats(elements, connectivity=connectivity)
+    
+    leftborder = 0
+    rightborder = elements.shape[1]-1
+    upperborder = 0
+    lowerborder = elements.shape[0]-1
     for i in xrange(1, nr_elements) :
         area =  stats[i, cv2.CC_STAT_AREA]
         if area < lam:
             result[[labels==i]] = 0
+            
+        if remove_border_elements:
+            xmin = stats[i, cv2.CC_STAT_LEFT]
+            xmax = stats[i, cv2.CC_STAT_LEFT] + stats[i, cv2.CC_STAT_WIDTH]
+            ymin = stats[i, cv2.CC_STAT_TOP]
+            ymax = stats[i, cv2.CC_STAT_TOP] + stats[i, cv2.CC_STAT_HEIGHT]
+            if xmin <= leftborder \
+                or xmax >= rightborder \
+                or ymin <= upperborder \
+                or ymax >= lowerborder :
+                    result[[labels==i]] = 0
     if vizualize:
         helpers.show_image(result, 'small elements removed')
     return result
     
     
-def get_protrusions(img, filled=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
+def get_protrusions(img, filled=None, holes=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'protrusion'
     
@@ -170,7 +188,9 @@ def get_protrusions(img, filled=None, SE=None, lam=-1, area_factor=0.05, connect
     protrusions: 2-dimensional numpy array with values 0/255
         Image with all protrusions as foreground.
     '''
-    
+    if holes is None:
+        filled, holes = get_holes(img, filled=filled, lam=lam, connectivity=connectivity, vizualize=False)
+
     #fill the image, if not yet done
     if filled is None:
         filled = fill_image(img, vizualize)
@@ -200,11 +220,24 @@ def get_protrusions(img, filled=None, SE=None, lam=-1, area_factor=0.05, connect
                 helpers.show_image(wth, 'Top hat')
     if vizualize:
         helpers.show_image(prots, 'Elements with noise')
+        
+    #Now get indentations of significant holes
+    nccs2, labels2, stats2, centroids2 = cv2.connectedComponentsWithStats(holes, connectivity=connectivity)
+    for i in xrange(1, nccs2) :
+        area =  stats2[i, cv2.CC_STAT_AREA]
+        ccimage = np.array(255*(labels2==i), dtype='uint8')
+        ccimage_filled = fill_image(ccimage, vizualize=False)
+        #For the significant CCs, perform tophat
+        if area > min_area:            
+            bth = cv2.morphologyEx(ccimage_filled, cv2.MORPH_BLACKHAT, SE )
+            prots += bth
+            if vizualize:
+                helpers.show_image(bth, 'Black Top hat')
     
     prots_nonoise = remove_small_elements(prots, lam, connectivity=8, vizualize=vizualize)
     return filled, prots_nonoise
     
-def get_indentations(img,  invfilled=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
+def get_indentations(img,  invfilled=None, islands=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'island'
     
@@ -233,8 +266,12 @@ def get_indentations(img,  invfilled=None, SE=None, lam=-1, area_factor=0.05, co
         Image with all indentations as foreground.
     '''
     invimg = cv2.bitwise_not(img)
+    if islands is None:
+        invfilled, islands = get_islands(img, invfilled=invfilled, lam=lam, connectivity=connectivity, vizualize=False)
     if invfilled is None:
         invfilled = fill_image(invimg, vizualize=vizualize)
-    invfilled, indentations = get_protrusions(invimg, filled=invfilled, SE=SE, lam=lam, area_factor=area_factor, connectivity=connectivity, vizualize=vizualize)
+    invfilled, indentations = get_protrusions(invimg, filled=invfilled, holes=islands, 
+                                              SE=SE, lam=lam, area_factor=area_factor, 
+                                              connectivity=connectivity, vizualize=vizualize)
     return invfilled, indentations
     
