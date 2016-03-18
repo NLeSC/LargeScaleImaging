@@ -74,6 +74,8 @@ SEhi_size = fix(SE_size/2)
 SE = strel('disk',SE_size);
 SEhi = strel('disk',SEhi_size);
 
+% SE_n = getnhood(SE);
+% save('SE_neighb.mat', 'SE_n');
 % area opening parameter
 lambda = 5*SE_size
 lambdahi = fix(SE_size/2)
