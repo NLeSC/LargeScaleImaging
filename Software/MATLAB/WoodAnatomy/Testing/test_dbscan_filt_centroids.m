@@ -9,14 +9,17 @@
 disp('Testing DBSCAN clusterring algorithm on filtered DMSR regions of LMwood data');
 
 %% execution parameters
-verbose = 1;
-visualize = 1;
+verbose = 0;
+visualize_dbscan = 1;
+visualize_stats = 1;
 saving = 0;
 batch = true;
 
 %% algorithm parameters
 filtering_conditions_string = 'AREA in_0.2_1_AND_S in_0.85_1';
 fraction_factors = [0.1 0.15 0.2 0.25];
+%fraction_factors = [0.15];
+
 MinPts = 2; % DBSCAN parameter
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
@@ -47,8 +50,12 @@ for test_case = test_cases
     
     num_images = length(image_filenames);
     %% process the images
+    if visualize_stats
+        f = figure;
+    end
     for i = 1: num_images
-        
+   %for i = 1
+        stats = [];
         %% specify microscopy resolution (can be 200 or 500 micrometers)
         % for now hard-coded...
         switch char(test_case) % read it by hand from the image
@@ -98,8 +105,11 @@ for test_case = test_cases
                 disp('BDSCAN clusterring of the centroids ...');
             end
             Idx=DBSCAN(centroids,epsilon,MinPts);
+            %% compute DBSCAN statistics
+            stats = [stats dbscan_statistics(Idx)];
+            
             %% visualization
-            if visualize
+            if visualize_dbscan
                 figure('units','normalized','outerposition',[0 0 1 1]);
                 PlotClusterinResult(centroids, Idx);
                 axis ij; axis([1 ncols 1 nrows]); grid on;
@@ -113,7 +123,14 @@ for test_case = test_cases
                 disp('----------------------------------------------------------');
             end
         end
+        %% visualization
+        if visualize_stats
+            figure(f);
+            plot(stats); hold on; grid on;
+            title(test_case, 'Interpreter', 'none');
+        end
         if verbose
+            
            disp('***************************************************************');
         end
     end
