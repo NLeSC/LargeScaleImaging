@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import scipy.io as sio
 
-def show_image(img, window_name='image'):
+def show_image(img, window_name='image', display_time=10000):
     '''
     Display the image for 10 seconds.
     When a key is pressed, the window is closed
@@ -18,10 +18,10 @@ def show_image(img, window_name='image'):
     cv2.namedWindow(window_name)
     cv2.startWindowThread()
     cv2.imshow(window_name, img)
-    cv2.waitKey(10000)
+    cv2.waitKey(display_time)
     cv2.destroyAllWindows()
     
-def vizualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, vizualize=True):
+def vizualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, vizualize=True, display_time=100000):
     '''
     Display the image with the salient regions provided.
     
@@ -61,10 +61,10 @@ def vizualize_elements(img, holes=None, islands=None, indentations=None, protrus
         img_to_show[[protrusions>0]] = colormap['protrusions']
     
     if vizualize:
-        show_image(img_to_show)
+        show_image(img_to_show, display_time=display_time)
     return img_to_show
 
-def binarize(img, threshold=127, vizualize=True):
+def binarize(img, threshold=-1, vizualize=True):
     '''
     Binarize the image according to a given threshold.
     Returns a one-channel image with only values of 0 and 255.
@@ -83,6 +83,8 @@ def binarize(img, threshold=127, vizualize=True):
     binzarized:  2-dimensional numpy array with values 0/255
         The binarized image
     '''
+    if threshold == -1:
+        threshold = 128
     ret, binarized = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
     binarized = binarized[:,:,0]
     if vizualize:
