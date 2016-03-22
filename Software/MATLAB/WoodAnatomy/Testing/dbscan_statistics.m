@@ -12,12 +12,19 @@
 % dbscan_vector- output of DBSCAN.m (see REFERENCES for code pointer)
 %**************************************************************************
 % OUTPUTS:
-% list_centroids - the list of centroids ofthe filtered regions
+% stats - statistics derived from the dbscan_vector; stats has elements:
+% 1: total number of classes; 
+% 2: number of noise elements(class 0)
+% vector of number ofelements per any other class than noise is constructed
+% 3: max of the elements-per-class-vector (EPCV)
+% 4: min of EPCV
+% 5: mean of EPCV
+% 6: std ofEPCV
 %**************************************************************************
 % NOTES: called from test_dbscan_filt_centroids.m
 %**************************************************************************
 % EXAMPLES USAGE: 
-% see est_dbscan_filt_centroids.m
+% see test_dbscan_filt_centroids.m
 % also a simple test:
 % dbscan_vector = [0 0 1 1 0 3 2 1 2 3 0 2];
 % [stats] = dbscan_statistics(dbscan_vector)
