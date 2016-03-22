@@ -9,16 +9,16 @@
 disp('Testing DBSCAN clusterring algorithm on filtered DMSR regions of LMwood data');
 
 %% execution parameters
-verbose = 0;
+verbose = 1;
 visualize_dbscan = 1;
-visualize_stats = 1;
+visualize_stats = 0;
 saving = 0;
 batch = true;
 
 %% algorithm parameters
 filtering_conditions_string = 'AREA in_0.2_1_AND_S in_0.85_1';
-fraction_factors = [0.1 0.15 0.2 0.25];
-%fraction_factors = [0.15];
+fraction_factors = [0.15 0.2 0.25];
+num_fraction_factors = length(fraction_factors);
 
 MinPts = 2; % DBSCAN parameter
 %% paths
@@ -30,7 +30,7 @@ if batch
     test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
         'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
 else
-    test_cases = {'Chrys'};
+    test_cases = {'Stem'};
 end
 
 %% processing all test cases
@@ -97,8 +97,8 @@ for test_case = test_cases
         res = 100/micro_res;
         diag = sqrt(nrows^2 + ncols^2);
         
-        for i = 1: length(fraction_factors)
-            epsilon = diag * fraction_factors(i)*res;% DBSCAN parameter
+        for j = 1: length(fraction_factors)
+            epsilon = diag * fraction_factors(j)*res;% DBSCAN parameter
             
             %% DBSCAN on the centroid points
             if verbose
@@ -116,7 +116,7 @@ for test_case = test_cases
                 title(filt_name, 'Interpreter', 'none');
                 
                 xlabel(['DBSCAN Clustering (\epsilon = ' num2str(epsilon) ', MinPts = ' num2str(MinPts) ')']);
-                ylabel(['Fraction factor (in respect to the image diagonal) = ' num2str(fraction_factors(i))]);
+                ylabel(['Fraction factor (in respect to the image diagonal) = ' num2str(fraction_factors(j))]);
             end
             
             if verbose
@@ -124,9 +124,15 @@ for test_case = test_cases
             end
         end
         %% visualization
+        
         if visualize_stats
             figure(f);
-            plot(stats); hold on; grid on;
+            plot(stats, '--.', 'MarkerSize',floor(24/i),'LineWidth', 1);
+            ticks = 1:1:6*num_fraction_factors;
+            set(gca,'XTick',ticks);
+            set(gca,'XTickLabels',ticks);
+            hold on; grid on;
+            %pause;
             title(test_case, 'Interpreter', 'none');
         end
         if verbose
