@@ -1,12 +1,12 @@
-% dbscan_statisctics- computes statistics on the DBSCAN algorithm output
+% dbscan_statistics- computes statistics on the DBSCAN algorithm output
 %**************************************************************************
 % [stats] = dbscan_statistics(dbscan_vector)
 %                                               
 %
 % author: Elena Ranguelova, NLeSc
-% date created: 18 March 2015
-% last modification date: 
-% modification details: 
+% date created: 18 March 2016
+% last modification date: 22 March 2016
+% modification details: better code documentation
 %**************************************************************************
 % INPUTS:
 % dbscan_vector- output of DBSCAN.m (see REFERENCES for code pointer)
@@ -43,46 +43,48 @@ if nargin < 1
 end
 
 %% initializations
-stats = [];
+num_stats = 6; % 6 features are computed
+stats = zeros(1, num_stats);
 unique_elem = unique(dbscan_vector);
 nonz_unique_elem = nonzeros(unique_elem)';
 elem_per_class = zeros(1, length(nonz_unique_elem));
 
 %% find the number of classes
 num_classes = length(unique_elem);
-% append output
-stats = [stats num_classes];
+% add
+stats(1) = num_classes;
 
 %% find the elemtns which are considered noise
 num_noise_elem = length(find(dbscan_vector==0));
-% append output
-stats = [stats num_noise_elem];
+% add
+stats(2) = num_noise_elem;
 
 %% find the maximum index 
 max_ind = max(unique_elem);
 
-%% find the elements in each class
-
-for cl = 1: max_ind
-   [~,~,v] = find(dbscan_vector==cl);
-   n = length(v);
-   elem_per_class(cl) = n;
+if max_ind > 0
+    %% find the elements in each class
+    for cl = 1: max_ind
+        [~,~,v] = find(dbscan_vector==cl);
+        n = length(v);
+        elem_per_class(cl) = n;
+    end
+    
+    
+    %% statistics from the elements per class
+    max_el = max(elem_per_class);
+    % add
+    stats(3) = max_el;
+    
+    min_el = min(elem_per_class);
+    % append output
+    stats(4) = min_el;
+    
+    mean_el = mean(elem_per_class);
+    % append output
+    stats(5) = mean_el;
+    
+    std_el = std(elem_per_class);
+    % append output
+    stats(6) = std_el;
 end
-
-
-%% statistics from the elements per class
-max_el = max(elem_per_class);
-% append output
-stats = [stats max_el];
-
-min_el = min(elem_per_class);
-% append output
-stats = [stats min_el];
-
-mean_el = mean(elem_per_class);
-% append output
-stats = [stats mean_el];
-
-std_el = std(elem_per_class);
-% append output
-stats = [stats std_el];
