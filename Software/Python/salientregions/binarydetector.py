@@ -292,7 +292,7 @@ def get_salient_regions(img, find_holes=True, find_islands=True, find_indentatio
     Parameters:
     ------
     img: 2-dimensional numpy array with values 0/255
-        image to detect islands
+        image to detect regions
     find_holes: bool, optional
         Whether to detect regions of type hole
     find_islands: bool, optional
