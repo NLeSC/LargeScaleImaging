@@ -85,7 +85,7 @@ def binarize(img, threshold=-1, vizualize=True):
     img: 3-dimensional numpy array
         image to fill
     threshold: int, optional
-        threshold value
+        threshold value. If -1 (default), OTSU thresholding is used.
     vizualize: bool, optional
         option for vizualizing the process
     
@@ -95,8 +95,9 @@ def binarize(img, threshold=-1, vizualize=True):
         The binarized image
     '''
     if threshold == -1:
-        threshold = 128
-    ret, binarized = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
+        _, binarized = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    else:
+        _, binarized = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
     binarized = binarized[:,:,0]
     if vizualize:
         show_image(binarized)
