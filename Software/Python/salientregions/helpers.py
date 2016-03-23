@@ -75,7 +75,7 @@ def vizualize_elements(img, holes=None, islands=None, indentations=None, protrus
         show_image(img_to_show, window_name=display_name, display_time=display_time)
     return img_to_show
 
-def binarize(img, threshold=-1, vizualize=True):
+def binarize(img, threshold=-1, visualize=True):
     '''
     Binarize the image according to a given threshold.
     Returns a one-channel image with only values of 0 and 255.
@@ -86,7 +86,7 @@ def binarize(img, threshold=-1, vizualize=True):
         image to fill
     threshold: int, optional
         threshold value. If -1 (default), OTSU thresholding is used.
-    vizualize: bool, optional
+    visualize: bool, optional
         option for vizualizing the process
     
     Returns:
@@ -99,7 +99,7 @@ def binarize(img, threshold=-1, vizualize=True):
     else:
         _, binarized = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
     binarized = binarized[:,:,0]
-    if vizualize:
+    if visualize:
         show_image(binarized)
     return binarized
     
@@ -144,7 +144,7 @@ def read_matfile(filename, vizualize=True):
     
     
     
-def image_diff(img1, img2, vizualize=True):
+def image_diff(img1, img2, visualize=True):
     '''
     Compares two images and shows the difference.
     Useful for testing purposes.
@@ -155,7 +155,7 @@ def image_diff(img1, img2, vizualize=True):
         first image to compare
     img1: 2-dimensional numpy array with values 0/255
         second image to comparen
-    vizualize: bool, optional
+    visualize: bool, optional
         option for vizualizing the process
     
     Returns:
@@ -163,7 +163,7 @@ def image_diff(img1, img2, vizualize=True):
     is_same: bool
         True if all pixels of the two images are equal
     '''
-    if vizualize:
+    if visualize:
         show_image(cv2.bitwise_xor(img1, img2), 'difference')
     return np.all(img1 == img2)
     
