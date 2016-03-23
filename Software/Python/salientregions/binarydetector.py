@@ -160,7 +160,7 @@ def remove_small_elements(elements, lam, remove_border_elements=True, connectivi
     return result
     
     
-def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
+def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, lamhi=-1, area_factor=0.05, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'protrusion'
     
@@ -201,14 +201,15 @@ def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, ar
         SE = SE2 if SE is None else SE
         lam = lam2 if lam==-1 else lam
         
-    if SEhi is None:
-        SEhi = helpers.get_SEhi(SE)
+    if SEhi is None or lamhi==-1:
+        SEhi, lamhi = helpers.get_SEhi(SE, lam)
         
     #Calculate minimum area for connected components
     min_area = area_factor * img.size
     
     #initalize protrusion image
-    prots = np.zeros(img.shape, dtype='uint8')
+    prots1 = np.zeros(img.shape, dtype='uint8')
+    prots2 = np.zeros(img.shape, dtype='uint8')
     
     #Retrieve all connected components
     nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(filled, connectivity=connectivity)
@@ -218,12 +219,12 @@ def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, ar
         if area > min_area:            
             ccimage = np.array(255*(labels==i), dtype='uint8')
             wth = cv2.morphologyEx(ccimage, cv2.MORPH_TOPHAT, SE )
-            prots += wth
+            prots1 += wth
             if vizualize:
                 helpers.show_image(wth, 'Top hat')
-    if vizualize:
-        helpers.show_image(prots, 'Elements with noise')
-        
+            
+    prots1_nonoise = remove_small_elements(prots1, lam, connectivity=8, vizualize=vizualize)
+    
     #Now get indentations of significant holes
     nccs2, labels2, stats2, centroids2 = cv2.connectedComponentsWithStats(holes, connectivity=connectivity)
     for i in xrange(1, nccs2) :
@@ -233,14 +234,18 @@ def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, ar
         #For the significant CCs, perform tophat
         if area > min_area:            
             bth = cv2.morphologyEx(ccimage_filled, cv2.MORPH_BLACKHAT, SEhi )
-            prots += bth
+            prots2 += bth
             if vizualize:
                 helpers.show_image(bth, 'Black Top hat')
     
-    prots_nonoise = remove_small_elements(prots, lam, connectivity=8, vizualize=vizualize)
-    return filled, prots_nonoise
+    prots2_nonoise = remove_small_elements(prots2, lamhi, connectivity=8, vizualize=vizualize)
     
-def get_indentations(img,  invfilled=None, islands=None, SE=None, SEhi=None, lam=-1, area_factor=0.05, connectivity=4, vizualize=True):
+    prots = cv2.add(prots1_nonoise, prots2_nonoise)
+    return filled, prots
+
+
+    
+def get_indentations(img,  invfilled=None, islands=None, SE=None, SEhi=None, lam=-1, lamhi=-1, area_factor=0.05, connectivity=4, vizualize=True):
     '''
     Find salient regions of type 'island'
     
@@ -274,7 +279,8 @@ def get_indentations(img,  invfilled=None, islands=None, SE=None, SEhi=None, lam
     if invfilled is None:
         invfilled = fill_image(invimg, vizualize=vizualize)
     invfilled, indentations = get_protrusions(invimg, filled=invfilled, holes=islands, 
-                                              SE=SE, SEhi=SEhi, lam=lam, area_factor=area_factor, 
+                                              SE=SE, SEhi=SEhi, lam=lam, lamhi=lamhi, 
+                                              area_factor=area_factor, 
                                               connectivity=connectivity, vizualize=vizualize)
     return invfilled, indentations
     
@@ -321,7 +327,7 @@ def get_salient_regions(img, find_holes=True, find_islands=True, find_indentatio
     
     # Get structuring elements    
     SE, lam = helpers.get_SE(img, SE_size_factor=0.15)
-    SEhi = helpers.get_SEhi(SE)
+    SEhi, lamhi = helpers.get_SEhi(SE, lam)
     
     #Get holes and islands
     if find_holes or find_protrusions:

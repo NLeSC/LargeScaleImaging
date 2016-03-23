@@ -182,7 +182,7 @@ def get_SE(img, SE_size_factor=0.15):
     lam = 5*SE_size
     return SE, lam
 
-def get_SEhi(SE, scale=2):
+def get_SEhi(SE, lam, scaleSE=2, scalelam=10):
     '''
     Get the smaller structuring element from the large structuring element
     
@@ -197,6 +197,9 @@ def get_SEhi(SE, scale=2):
     ------
     SEhi: 2-dimensional numpy array of shape (k,k)
         The smaller structuring element to use in processing the image
+    lam_hi: float
+        Minimum area of salient region detected on boundaries of holes/islands
     '''
-    SE_hi = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(SE.shape[0]/scale), int(SE.shape[1]/scale)))
-    return SE_hi
+    SEhi = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(SE.shape[0]/scaleSE), int(SE.shape[1]/scaleSE)))
+    lamhi = lam/scalelam
+    return SEhi, lamhi

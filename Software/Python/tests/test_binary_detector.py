@@ -23,6 +23,7 @@ class BinaryDetectorTester(unittest.TestCase):
         self.SE = sio.loadmat(os.path.join(testdata_path,"SE_neighb_all_other.mat"))['SE_n']
         self.SEhi = sio.loadmat(os.path.join(testdata_path,"SEhi_neighb_all_other.mat"))['SEhi_n']
         self.lam = 50
+        self.lamhi = 5
         self.area_factor = 0.05
             
     def test_holes(self):
@@ -38,13 +39,15 @@ class BinaryDetectorTester(unittest.TestCase):
     def test_protrusions(self):
         _, prots_my = sr.get_protrusions(self.image, filled=None, holes=None, 
                                          SE=self.SE, SEhi=self.SEhi,
-                                         lam=self.lam, area_factor=self.area_factor, 
+                                         lam=self.lam, lamhi=self.lamhi,
+                                         area_factor=self.area_factor, 
                                          connectivity=4, vizualize=False)
         assert sr.image_diff(self.prots_true, prots_my, vizualize=False)
         
     def test_indentations(self):
         _, indents_my = sr.get_indentations(self.image, invfilled=None, islands=None, 
                                             SE=self.SE, SEhi=self.SEhi,
-                                            lam=self.lam, area_factor=self.area_factor, 
+                                            lam=self.lam, lamhi=self.lamhi,
+                                            area_factor=self.area_factor, 
                                             connectivity=4, vizualize=False)
         assert sr.image_diff(self.indents_true, indents_my, vizualize=False)
