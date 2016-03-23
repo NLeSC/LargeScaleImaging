@@ -14,6 +14,8 @@ def show_image(img, window_name='image', display_time=10000):
         image
     window_name: str, optional
         name of the window
+    display_time: int, optional
+        time for showing the image (in ms)    
     '''
     cv2.namedWindow(window_name)
     cv2.startWindowThread()
@@ -21,7 +23,7 @@ def show_image(img, window_name='image', display_time=10000):
     cv2.waitKey(display_time)
     cv2.destroyAllWindows()
     
-def vizualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, vizualize=True, display_time=100000):
+def vizualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, vizualize=True, display_name = 'salient regions', display_time=100000):
     '''
     Display the image with the salient regions provided.
     
@@ -37,6 +39,15 @@ def vizualize_elements(img, holes=None, islands=None, indentations=None, protrus
         The indentations, to display in green
     protrusions:  2-dimensional numpy array with values 0/255, optional
         The protrusions, to display in red
+    visualize:  bool, optional
+        vizualizations flag
+    display_name: str, optional
+        name of the window
+   display_time: int, optional
+        time for showing the image (in ms)  
+        
+    display_time: visualization time (in ms)
+    
     
     Returns:
     ------
@@ -61,7 +72,7 @@ def vizualize_elements(img, holes=None, islands=None, indentations=None, protrus
         img_to_show[[protrusions>0]] = colormap['protrusions']
     
     if vizualize:
-        show_image(img_to_show, window_name='salient regions', display_time=display_time)
+        show_image(img_to_show, window_name=display_name, display_time=display_time)
     return img_to_show
 
 def binarize(img, threshold=-1, vizualize=True):
