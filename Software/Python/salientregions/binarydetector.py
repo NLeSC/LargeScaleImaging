@@ -278,7 +278,8 @@ def get_indentations(img,  invfilled=None, islands=None, SE=None, SEhi=None, lam
                                               connectivity=connectivity, vizualize=vizualize)
     return invfilled, indentations
     
-def get_salient_regions(img, SE_size_factor=0.15, area_factor=0.05, connectivity=4, vizualize=True):
+def get_salient_regions(img, find_holes=True, find_islands=True, find_indentations=True, find_protrusions=True, 
+                        SE_size_factor=0.15, area_factor=0.05, connectivity=4, vizualize=True):
     '''
     Find salient regions of all four types
     
@@ -286,6 +287,14 @@ def get_salient_regions(img, SE_size_factor=0.15, area_factor=0.05, connectivity
     ------
     img: 2-dimensional numpy array with values 0/255
         image to detect islands
+    find_holes: bool, optional
+        Whether to detect regions of type hole
+    find_islands: bool, optional
+        Whether to detect regions of type island
+    find_indentations: bool, optional
+        Whether to detect regions of type indentation
+    find_protrusions: bool, optional
+        Whether to detect regions of type protrusion
     SE_size_factor: float, optional
         The fraction of the image size that the structuring element should be
     area_factor: float, optional
@@ -297,6 +306,7 @@ def get_salient_regions(img, SE_size_factor=0.15, area_factor=0.05, connectivity
     
     Returns:
     ------ 
+    dictiornary with the following possible items:
     holes: 2-dimensional numpy array with values 0/255
         Image with all holes as foreground.
     islands: 2-dimensional numpy array with values 0/255
@@ -306,24 +316,44 @@ def get_salient_regions(img, SE_size_factor=0.15, area_factor=0.05, connectivity
     protrusions: 2-dimensional numpy array with values 0/255
         Image with all protrusions as foreground.
     '''
+    #Make dictionary
+    regions = {}
+    
     # Get structuring elements    
     SE, lam = helpers.get_SE(img, SE_size_factor=0.15)
     SEhi = helpers.get_SEhi(SE)
     
     #Get holes and islands
-    filled, holes = get_holes(img, filled=None, lam=lam, connectivity=connectivity, vizualize=vizualize )
-    invfilled, islands = get_islands(img,  invfilled=None, lam=lam, connectivity=connectivity, vizualize=vizualize)
+    if find_holes or find_protrusions:
+        filled, holes = get_holes(img, filled=None, lam=lam, connectivity=connectivity, vizualize=vizualize )
+        if find_holes:
+            regions['holes'] = holes
+        
+    if find_islands or find_indentations:
+        invfilled, islands = get_islands(img,  invfilled=None, lam=lam, connectivity=connectivity, vizualize=vizualize)
+        if find_islands:
+            regions['islands'] = islands
     
     #Get indentations and protrusions
-    invfilled, indentations = get_indentations(img,  invfilled=invfilled, 
-                                               islands=islands, SE=SE, SEhi=SEhi, 
-                                               lam=lam, area_factor=area_factor, 
-                                               connectivity=connectivity, vizualize=vizualize)
-    filled, protrusions = get_protrusions(img, filled=filled, holes=holes, 
+    if find_indentations:
+        invfilled, indentations = get_indentations(img,  invfilled=invfilled, 
+                                                   islands=islands, SE=SE, SEhi=SEhi, 
+                                                   lam=lam, area_factor=area_factor, 
+                                                   connectivity=connectivity, vizualize=vizualize)
+        regions['indentations'] = indentations
+        
+    if find_protrusions:
+        filled, protrusions = get_protrusions(img, filled=filled, holes=holes, 
                                           SE=SE, SEhi=SEhi, lam=lam, 
                                           area_factor=area_factor, 
                                           connectivity=connectivity, vizualize=vizualize)
+        regions['protrusions'] = protrusions
+    
     if vizualize:
+        holes = holes if find_holes else None
+        islands = islands if find_islands else None
+        indentations = indentations if find_indentations else None
+        protrusions = protrusions if find_protrusions else None
         helpers.vizualize_elements(img, holes=holes, islands=islands, 
                                    indentations=indentations, protrusions=protrusions)
-    return holes, islands, indentations, protrusions
+    return regions
