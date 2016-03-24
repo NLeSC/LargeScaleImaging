@@ -5,6 +5,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 28 Sept 2015
+% last modification date: 24 March 2016
+% modification details: only 1 SE for all types of saliency is used now
 % last modification date: 17 March 2016
 % modification details: fixed indentations and protrusions in respect to
 % large holes; removing ind. and protr. touching the image boundary
@@ -68,11 +70,10 @@ protrusions_flag = saliency_type(4);
 ROI_Area = nrows*ncols;
 
 % SE
-%SE_size = fix(sqrt(SE_size_factor*ROI_Area/(2 * pi)));
 SE_size = fix(SE_size_factor*sqrt(ROI_Area/pi))
-SEhi_size = fix(SE_size/2)
+%SEhi_size = fix(SE_size/2)
 SE = strel('disk',SE_size);
-SEhi = strel('disk',SEhi_size);
+%SEhi = strel('disk',SEhi_size);
 
 % SE_n = getnhood(SE);
 % save('SE_neighb_all_other.mat', 'SE_n');
@@ -81,7 +82,7 @@ SEhi = strel('disk',SEhi_size);
 
 % area opening parameter
 lambda = 5*SE_size
-lambdahi = fix(SE_size/2)
+%lambdahi = fix(SE_size/2)
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
@@ -183,15 +184,15 @@ if (indentations_flag || protrusions_flag)
             CCLH(filled_region)= num_CCLH;
         end
     end
-    already_detected = false;
+    %already_detected = false;
     for i=1:numi
         if statsi(i).Area/ROI_Area >= area_factor;
             num_CCLI = num_CCLI + 1;
             region = (bwi==i);
             filled_region = imfill(region,'holes');
-            if filled_region == filled_ROI
-                already_detected = true;
-            end
+%             if filled_region == filled_ROI
+%                 already_detected = true;
+%             end
             CCLI(filled_region)= num_CCLI;
         end
     end
@@ -200,7 +201,7 @@ if (indentations_flag || protrusions_flag)
         subplot(222);imshow(CCLI);title('Significant components (from islands) labelled'); grid on;
     end
     
-    if not(already_detected)
+%    if not(already_detected)
         for i=1:num
             if stats(i).Area/ROI_Area >= area_factor;
                 num_CCL = num_CCL + 1;
@@ -208,7 +209,7 @@ if (indentations_flag || protrusions_flag)
                 CCL(region)= num_CCL;
             end
         end
-    end
+ %   end
     
     % find the indentations and protrusions
     % inside the significant CCs
@@ -216,18 +217,20 @@ if (indentations_flag || protrusions_flag)
         SCCH = (CCLH==j);
         if indentations_flag
             % black top hat
-            SCCH_bth = imbothat(SCCH,SEhi);
-            SCCH_bth = bwareaopen(SCCH_bth,lambdahi,4);
+           % SCCH_bth = imbothat(SCCH,SEhi);
+           % SCCH_bth = bwareaopen(SCCH_bth,lambdahi,4);
+            SCCH_bth = imbothat(SCCH,SE);
+            SCCH_bth = bwareaopen(SCCH_bth,lambda,4);
             % the indentaitons in the largeholes are actually protrusions in respect to the whole image!
             protrusions = protrusions|SCCH_bth;
-            % indentations = indentations|SCCH_bth;
         end
         if protrusions_flag
             % white top hat
-            SCCH_wth = imtophat(SCCH,SEhi);
-            SCCH_wth = bwareaopen(SCCH_wth,lambdahi,4);
-            % the prorusions in the large holes are actually indentaitions in respect to the whole image!
-            % protrusions = protrusions|SCCH_wth;
+%             SCCH_wth = imtophat(SCCH,SEhi);
+%             SCCH_wth = bwareaopen(SCCH_wth,lambdahi,4);
+            SCCH_wth = imtophat(SCCH,SE);
+            SCCH_wth = bwareaopen(SCCH_wth,lambda,4);
+            % the prorusions in the large holes are actually indentaitions in respect to the whole image!            
             indentations = indentations|SCCH_wth;
         end
     end
@@ -236,19 +239,23 @@ if (indentations_flag || protrusions_flag)
         SCCI = (CCLI==j);
         if indentations_flag
             % black top hat
-            SCCI_bth = imbothat(SCCI,SEhi);
-            SCCI_bth = bwareaopen(SCCI_bth,lambdahi,4);
+%             SCCI_bth = imbothat(SCCI,SEhi);
+%             SCCI_bth = bwareaopen(SCCI_bth,lambdahi,4);
+             SCCI_bth = imbothat(SCCI,SE);
+             SCCI_bth = bwareaopen(SCCI_bth,lambda,4);
             indentations = indentations|SCCI_bth;
         end
         if protrusions_flag
             % white top hat
-            SCCI_wth = imtophat(SCCI,SEhi);
-            SCCI_wth = bwareaopen(SCCI_wth,lambdahi,4);
+%             SCCI_wth = imtophat(SCCI,SEhi);
+%             SCCI_wth = bwareaopen(SCCI_wth,lambdahi,4);
+            SCCI_wth = imtophat(SCCI,SE);
+            SCCI_wth = bwareaopen(SCCI_wth,lambda,4);
             protrusions = protrusions|SCCI_wth;
         end
     end
     
-    if not(already_detected)
+%    if not(already_detected)
         for j = 1:num_CCL
             SCCL = (CCL==j);
             if visualise
@@ -269,7 +276,7 @@ if (indentations_flag || protrusions_flag)
                 protrusions = protrusions|SCCA_wth;
             end
         end
-    end
+ %   end
 end
 
 

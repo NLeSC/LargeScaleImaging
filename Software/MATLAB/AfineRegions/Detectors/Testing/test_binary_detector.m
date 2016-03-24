@@ -26,7 +26,7 @@ if interactive
     % image_base_filename = input('Enter the base image filename: ','s');
     test_image = input('Enter test case: [all|noise|holes|islands|indent_protr|nested]: ','s');
 else
-    test_image = 'all'
+    test_image = 'nested'
 end
 switch lower(test_image)
     case 'all'
