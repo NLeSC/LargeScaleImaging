@@ -7,7 +7,7 @@ import numpy as np
 def grayscale_detector(img,  find_holes=True, find_islands=True, 
                        find_indentations=True, find_protrusions=True, 
                         SE_size_factor=0.15, area_factor=0.05, connectivity=4, 
-                        vizualize=True):
+                        visualize=True):
     '''
     Find salient regions of all four types
     
@@ -29,7 +29,7 @@ def grayscale_detector(img,  find_holes=True, find_islands=True,
         factor that describes the minimum area of a significent CC
     connectivity: int
         What connectivity to use to define CCs
-    vizualize: bool, optional
+    visualize: bool, optional
         option for vizualizing the process
     
     Returns:
@@ -46,12 +46,12 @@ def grayscale_detector(img,  find_holes=True, find_islands=True,
     '''
     
     #Binarize image
-    binarized = helpers.binarize(img, vizualize=vizualize)
+    binarized = helpers.binarize(img, visualize=visualize)
     result = binarydetector.get_salient_regions(binarized, find_holes, find_islands, 
                        find_indentations, find_protrusions, SE_size_factor, 
-                       area_factor, connectivity, vizualize)
+                       area_factor, connectivity, visualize)
     return result
     
 def data_driven_binarization(img):
     #TODO
-    return helpers.binarize(img, vizualize=False)
+    return helpers.binarize(img, visualize=False)

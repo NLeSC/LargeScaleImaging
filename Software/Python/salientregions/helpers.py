@@ -23,7 +23,7 @@ def show_image(img, window_name='image', display_time=10000):
     cv2.waitKey(display_time)
     cv2.destroyAllWindows()
     
-def vizualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, vizualize=True, display_name = 'salient regions', display_time=100000):
+def visualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, visualize=True, display_name = 'salient regions', display_time=100000):
     '''
     Display the image with the salient regions provided.
     
@@ -71,7 +71,7 @@ def vizualize_elements(img, holes=None, islands=None, indentations=None, protrus
     if protrusions is not None:
         img_to_show[[protrusions>0]] = colormap['protrusions']
     
-    if vizualize:
+    if visualize:
         show_image(img_to_show, window_name=display_name, display_time=display_time)
     return img_to_show
 
@@ -104,7 +104,7 @@ def binarize(img, threshold=-1, visualize=True):
     return binarized
     
 
-def read_matfile(filename, vizualize=True):
+def read_matfile(filename, visualize=True):
     '''
     Read a matfile with the binary masks for the salient regions.
     Returns:
@@ -115,7 +115,7 @@ def read_matfile(filename, vizualize=True):
     ------
     filename: str
         Path to the mat file
-    vizualize: bool, optional
+    visualize: bool, optional
         option for vizualizing the process
     
     Returns:
@@ -135,7 +135,7 @@ def read_matfile(filename, vizualize=True):
     islands = regions[:,:,1]
     indentations = regions[:,:,2]
     protrusions = regions[:,:,3]
-    if vizualize:
+    if visualize:
         show_image(holes, 'holes')
         show_image(islands, 'islands')     
         show_image(indentations, 'indentations')
