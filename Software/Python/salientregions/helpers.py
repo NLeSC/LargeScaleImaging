@@ -171,7 +171,7 @@ def image_diff(img1, img2, visualize=True):
     return np.all(img1 == img2)
     
     
-def get_SE(img, SE_size_factor=0.15):
+def get_SE(img, SE_size_factor=0.15, lam_factor=5):
     '''
     Get the structuring element en minimum salient region area for this image.
     
@@ -194,7 +194,7 @@ def get_SE(img, SE_size_factor=0.15):
     SE_size = int(SE_size_factor*np.sqrt(ROI_area/np.pi))
     SE_dim_size = SE_size * 2 - 1
     SE = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (SE_dim_size, SE_dim_size))
-    lam = 5*SE_size
+    lam = lam_factor*SE_size
     return SE, lam
 
 def get_SEhi(SE, lam, scaleSE=2, scalelam=10):
