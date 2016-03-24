@@ -91,7 +91,7 @@ end
 % cross-section
 switch thresh_type
     case 's'
-        binary_image = image >= level;
+        binary_image = image > level;
         if visualise
              figure(f);imshow(binary_image);axis on; grid on; title(['Segmented image at gray level: ' ...
                  num2str(level)]);
