@@ -17,28 +17,22 @@ class HelpersTester(unittest.TestCase):
     def setUp(self):
         testdata_path = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../TestData/Gray/'))
         self.image = cv2.imread(os.path.join(testdata_path, 'Gray_scale.png'))
-        self.binarized_true_130 = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binarized_thresh130.png')), threshold=128, visualize=False)
-        self.threshold130 = 130
-        self.binarized_true_180 = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binarized_thresh180.png')), threshold=128, visualize=False)
-        self.threshold180 = 180
-        self.binarized_true_30 = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binarized_thresh30.png')), threshold=128, visualize=False)
-        self.threshold30 = 30
+        self.binarized_true_175 = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binarized_thresh175.png')), threshold=128, visualize=False)
+        self.threshold175 = 175
+        self.binarized_true_57 = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binarized_thresh57.png')), threshold=128, visualize=False)
+        self.threshold57 = 57
         self.binarized_true_0 = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binarized_thresh0.png')), threshold=128, visualize=False)
         self.threshold0 = 0
         self.binarized_true_255 = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binarized_thresh255.png')), threshold=128, visualize=False)
         self.threshold255 = 255
         
-    def test_binarize180(self):
-        binarized = sr.binarize(self.image, self.threshold180, visualize=False)
-        assert sr.image_diff(self.binarized_true_180, binarized, visualize=False)
+    def test_binarize175(self):
+        binarized = sr.binarize(self.image, self.threshold175, visualize=False)
+        assert sr.image_diff(self.binarized_true_175, binarized, visualize=False)
         
-    def test_binarize130(self):
-        binarized = sr.binarize(self.image, self.threshold130, visualize=False)
-        assert sr.image_diff(self.binarized_true_130, binarized, visualize=False)
-        
-    def test_binarize30(self):
-        binarized = sr.binarize(self.image, self.threshold30, visualize=False)
-        assert sr.image_diff(self.binarized_true_30, binarized, visualize=False)       
+    def test_binarize57(self):
+        binarized = sr.binarize(self.image, self.threshold57, visualize=False)
+        assert sr.image_diff(self.binarized_true_57, binarized, visualize=False)       
         
     def test_binarize0(self):
         binarized = sr.binarize(self.image, self.threshold0, visualize=False)
