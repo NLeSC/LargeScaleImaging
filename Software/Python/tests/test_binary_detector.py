@@ -20,6 +20,7 @@ class BinaryDetectorTester(unittest.TestCase):
         self.image = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_all_types_noise.png')), threshold=128, visualize=False)
         self.holes_true, self.islands_true, self.indents_true,  self.prots_true = \
             sr.read_matfile(os.path.join(testdata_path, 'Binary_all_types_noise_binregions.mat'), visualize=False)
+        self.filled_image_true = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_all_types_noise_filled.png')), threshold=128, visualize=False)                
         self.SE = sio.loadmat(os.path.join(testdata_path,"SE_neighb_all_other.mat"))['SE_n']
         self.lam = 50
         self.area_factor = 0.05
@@ -47,3 +48,7 @@ class BinaryDetectorTester(unittest.TestCase):
                                             area_factor=self.area_factor, 
                                             connectivity=4, visualize=False)
         assert sr.image_diff(self.indents_true, indents_my, visualize=False)
+        
+    def test_fill_image(self):
+        filled = sr.fill_image(self.image, visualize=False)
+        assert sr.image_diff(self.filled_image_true, filled, visualize= False)
