@@ -160,7 +160,7 @@ def remove_small_elements(elements, lam, remove_border_elements=True, connectivi
     return result
     
     
-def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, lamhi=-1, area_factor=0.05, connectivity=4, visualize=True):
+def get_protrusions(img, filled=None, holes=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, visualize=True):
     '''
     Find salient regions of type 'protrusion'
     
@@ -201,8 +201,6 @@ def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, la
         SE = SE2 if SE is None else SE
         lam = lam2 if lam==-1 else lam
         
-    if SEhi is None or lamhi==-1:
-        SEhi, lamhi = helpers.get_SEhi(SE, lam)
         
     #Calculate minimum area for connected components
     min_area = area_factor * img.size
@@ -233,19 +231,19 @@ def get_protrusions(img, filled=None, holes=None, SE=None, SEhi=None, lam=-1, la
         ccimage_filled = fill_image(ccimage, visualize=False)
         #For the significant CCs, perform tophat
         if area > min_area:            
-            bth = cv2.morphologyEx(ccimage_filled, cv2.MORPH_BLACKHAT, SEhi )
+            bth = cv2.morphologyEx(ccimage_filled, cv2.MORPH_BLACKHAT, SE )
             prots2 += bth
             if visualize:
                 helpers.show_image(bth, 'Black Top hat')
     
-    prots2_nonoise = remove_small_elements(prots2, lamhi, connectivity=8, visualize=visualize)
+    prots2_nonoise = remove_small_elements(prots2, lam, connectivity=8, visualize=visualize)
     
     prots = cv2.add(prots1_nonoise, prots2_nonoise)
     return filled, prots
 
 
     
-def get_indentations(img,  invfilled=None, islands=None, SE=None, SEhi=None, lam=-1, lamhi=-1, area_factor=0.05, connectivity=4, visualize=True):
+def get_indentations(img,  invfilled=None, islands=None, SE=None, lam=-1, area_factor=0.05, connectivity=4, visualize=True):
     '''
     Find salient regions of type 'island'
     
@@ -279,7 +277,7 @@ def get_indentations(img,  invfilled=None, islands=None, SE=None, SEhi=None, lam
     if invfilled is None:
         invfilled = fill_image(invimg, visualize=visualize)
     invfilled, indentations = get_protrusions(invimg, filled=invfilled, holes=islands, 
-                                              SE=SE, SEhi=SEhi, lam=lam, lamhi=lamhi, 
+                                              SE=SE, lam=lam, 
                                               area_factor=area_factor, 
                                               connectivity=connectivity, visualize=visualize)
     return invfilled, indentations
@@ -327,7 +325,6 @@ def get_salient_regions(img, find_holes=True, find_islands=True, find_indentatio
     
     # Get structuring elements    
     SE, lam = helpers.get_SE(img, SE_size_factor=0.15)
-    SEhi, lamhi = helpers.get_SEhi(SE, lam)
     
     #Get holes and islands
     if find_holes or find_protrusions:
@@ -343,14 +340,14 @@ def get_salient_regions(img, find_holes=True, find_islands=True, find_indentatio
     #Get indentations and protrusions
     if find_indentations:
         invfilled, indentations = get_indentations(img,  invfilled=invfilled, 
-                                                   islands=islands, SE=SE, SEhi=SEhi, 
+                                                   islands=islands, SE=SE,
                                                    lam=lam, area_factor=area_factor, 
                                                    connectivity=connectivity, visualize=visualize)
         regions['indentations'] = indentations
         
     if find_protrusions:
         filled, protrusions = get_protrusions(img, filled=filled, holes=holes, 
-                                          SE=SE, SEhi=SEhi, lam=lam, 
+                                          SE=SE, lam=lam, 
                                           area_factor=area_factor, 
                                           connectivity=connectivity, visualize=visualize)
         regions['protrusions'] = protrusions
