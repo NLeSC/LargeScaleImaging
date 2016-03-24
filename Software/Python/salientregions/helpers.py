@@ -98,7 +98,10 @@ def binarize(img, threshold=-1, visualize=True):
         _, binarized = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     else:
         _, binarized = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
-    binarized = binarized[:,:,0]
+        
+    #If the image still has three channels, only pick one
+    if len(binarized.shape) > 2:
+        binarized = binarized[:,:,0]
     if visualize:
         show_image(binarized)
     return binarized
