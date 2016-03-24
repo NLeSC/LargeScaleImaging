@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 import scipy.io as sio
+import matplotlib.pyplot as plt
 
 def show_image(img, window_name='image', display_time=10000):
     '''
@@ -219,7 +220,7 @@ def get_SEhi(SE, lam, scaleSE=2, scalelam=10):
     lamhi = lam/scalelam
     return SEhi, lamhi
     
-def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge=0.1, lam=-1, weights=(0.33,0.33,0.33), connectivity=4, visualize=True):
+def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge=0.1, lam=-1, weights=(0.33,0.33,0.33), offset=80, num_levels=256, otsu_only=False, connectivity=4, visualize=True):
     '''
     Binarize the image such that the desired number of (large) connected 
     components is maximized.
@@ -237,6 +238,13 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
     weights: (float, float, float)
         weights for number of CC, number of large CC and number of very large CC
         respectively.
+    offset: int, optional
+        The offset (number of gray levels) to search for around the Otsu level
+    num_levels: int, optional
+        number of gray levels to be considered [1..255], 
+        the default number 256 gives a stepsize of 1.
+    otsu_only: bool, optional
+        Option to only perform otsu binarization
     connectivity: int
         What connectivity to use to define CCs
     visualize: bool, optional
@@ -249,29 +257,30 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
     binarized: 2-dimensional numpy array with values 0/255
         The binarized image
     '''
+    t_otsu, binarized_otsu = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    t_otsu = int(t_otsu)
+    if otsu_only:
+        return t_otsu, binarized_otsu
     area = img.size
     if lam == -1:
         _, lam = get_SE(img) 
     area_large = area_factor_large*area
     area_verylarge = area_factor_verylarge*area
     
-    if visualize:
-        print 'lambda is: %i' % lam
-        print 'Area large is: %i' % area_large
-        print 'Area very large is: %i' % area_verylarge
-    
-    #Initialize the
+    #Initialize the count arrays
     a_nccs = np.zeros(256)
     a_nccs_large = np.zeros(256)
     a_nccs_verylarge = np.zeros(256)
-    for t in xrange(256) :
+    
+    step = 256/num_levels;
+    for t in xrange(max(t_otsu-offset, 0), min(t_otsu+offset, 255), step) :
         bint = binarize(img, threshold=t, visualize=False)
         nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(bint, connectivity=connectivity)
         areas = stats[:, cv2.CC_STAT_AREA]
         a_nccs[t] = sum(areas > lam)
         a_nccs_large[t] = sum(areas > area_large)
         a_nccs_verylarge[t] = sum(areas > area_verylarge)
-
+    
     #Normalize
     a_nccs = a_nccs/float(a_nccs.max())
     a_nccs_large = a_nccs_large/float(a_nccs_large.max())
@@ -279,4 +288,10 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
     scores = weights[0]*a_nccs + weights[1]*a_nccs_large + weights[2]*a_nccs_verylarge
     t_opt = scores.argmax()
     binarized = binarize(img, threshold=t_opt, visualize=visualize)
+    if visualize:
+        plt.plot(scores)
+        plt.axvline(x=t_opt, color='red')
+        plt.axvline(x=t_otsu, color='green')
+        plt.xlim(0, 255)
+        plt.show()
     return t_opt, binarized
