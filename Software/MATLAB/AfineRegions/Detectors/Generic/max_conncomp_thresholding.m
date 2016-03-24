@@ -149,7 +149,7 @@ if not (otsu_only)
         disp('Thresholding and denoising for the specified range of gray levels...');
     end
     for level = otsu - off: step: otsu + off
-        binary = gray_image >= level;
+        binary = gray_image > level;
         binary_filt = bwareaopen(binary, lambda, connectivity);
         clear binary
         binary_filt2 = 1- bwareaopen(1- binary_filt, lambda, connectivity);

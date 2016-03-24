@@ -71,7 +71,7 @@ saliency_masks = zeros(nrows,ncols,4);
 % pre-processing
 %--------------------------------------------------------------------------
 % cross-section
-ROI = image >= level;
+ROI = image > level;
 % remove small bits
 ROI = bwareaopen(ROI, lambda);
 

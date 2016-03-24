@@ -342,7 +342,7 @@ for it = 1:num_levels
          subplot(224);imagesc(protrusions_acc);axis image;axis on;grid on;
          set(gcf, 'Colormap',mycmap);title('protrusions');colorbar('South');                   
         end
-        figure(f);imshow(ROI_only >= level); 
+        figure(f);imshow(ROI_only > level); 
         title(['Segmented image at gray level: ' num2str(fix(level))]);
         axis image; axis on;
     end
