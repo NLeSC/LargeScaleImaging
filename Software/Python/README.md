@@ -13,4 +13,20 @@ The code implementing salient region detection functionality.
 ## tests
 Unit tests for the code in salientregions.
 
+# Installation
+## Prerequisites
+* Python 2.7
+* pip
+* [conda](http://conda.pydata.org/docs/) . If you don't want to use conda, you need to build and install [opencv 3.1.0](http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_setup/py_table_of_contents_setup/py_table_of_contents_setup.html#py-table-of-content-setup) manually. 
 
+
+## Installing the package
+If desired, activate an virtual environment. In the current directory:
+
+`make install`
+
+This should make the package <salientregions> available in your environment.
+
+To perform tests:
+
+`make test`

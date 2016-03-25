@@ -17,6 +17,8 @@ Publications/Papers/ICIP2016/ranguelova*.*
 Publications/ResearchDirections/MasterStudentProposal.*
 Data/AffineRegions/bikes/*.ppm
 Software/Python/Notebooks/.ipynb_checkpoints/
+Software/Python/dist
+Software/Python/build
 *.aux
 *.toc
 *.*~
@@ -25,4 +27,5 @@ Software/Python/Notebooks/.ipynb_checkpoints/
 *.blg
 *.out
 *.pyc
-
+*.egg
+*.egg-info
