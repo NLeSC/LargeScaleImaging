@@ -62,7 +62,11 @@ def visualize_elements(img, holes=None, islands=None, indentations=None, protrus
                 'protrusions': [0,0,255] #RED
                }
     
-    img_to_show = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    #if the image is grayscale, make it BGR:
+    if len(img.shape) == 2:
+        img_to_show = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    else:
+        img_to_show = img.copy()
     if holes is not None:
         img_to_show[[holes>0]] = colormap['holes']
     if islands is not None:
@@ -104,7 +108,7 @@ def binarize(img, threshold=-1, visualize=True):
     if len(binarized.shape) > 2:
         binarized = binarized[:,:,0]
     if visualize:
-        show_image(binarized)
+        show_image(binarized, window_name=('Binarized with threshold %i'%threshold))
     return binarized
     
 
@@ -220,7 +224,9 @@ def get_SEhi(SE, lam, scaleSE=2, scalelam=10):
     lamhi = lam/scalelam
     return SEhi, lamhi
     
-def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge=0.1, lam=-1, weights=(0.33,0.33,0.33), offset=80, num_levels=256, otsu_only=False, connectivity=4, visualize=True):
+def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge=0.1, 
+                            lam=-1, SE_size_factor=0.15, weights=(0.33,0.33,0.33), offset=80, 
+                            num_levels=256, otsu_only=False, connectivity=4, visualize=True):
     '''
     Binarize the image such that the desired number of (large) connected 
     components is maximized.
