@@ -7,6 +7,7 @@ import numpy as np
 def get_salient_regions_gray(img,  find_holes=True, find_islands=True, 
                        find_indentations=True, find_protrusions=True, 
                         SE_size_factor=0.15, area_factor=0.05, connectivity=4, 
+                        binarize_datadriven=True,
                         visualize=True):
     '''
     Find salient regions of all four types
@@ -44,9 +45,12 @@ def get_salient_regions_gray(img,  find_holes=True, find_islands=True,
     protrusions: 2-dimensional numpy array with values 0/255
         Image with all protrusions as foreground.
     '''
-    
-    #Binarize image
-    binarized = helpers.binarize(img, visualize=visualize)
+    SE, lam = helpers.get_SE(img, SE_size_factor=SE_size_factor)
+    if binarize_datadriven:
+        _, binarized = helpers.data_driven_binarization(img,lam=lam, connectivity=connectivity, visualize=visualize)
+                                
+    else:
+        binarized = helpers.binarize(img, visualize=visualize)
     result = binarydetector.get_salient_regions(binarized, find_holes, find_islands, 
                        find_indentations, find_protrusions, SE_size_factor, 
                        area_factor, connectivity, visualize)
