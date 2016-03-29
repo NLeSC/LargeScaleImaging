@@ -4,9 +4,9 @@ import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
 
-def show_image(img, window_name='image', display_time=10000):
+def show_image(img, window_name='image'):
     '''
-    Display the image for 10 seconds.
+    Display the image.
     When a key is pressed, the window is closed
     
     Parameters:
@@ -14,17 +14,19 @@ def show_image(img, window_name='image', display_time=10000):
     img: multidimensional numpy array
         image
     window_name: str, optional
-        name of the window
-    display_time: int, optional
-        time for showing the image (in ms)    
+        name of the window 
     '''
-    cv2.namedWindow(window_name)
-    cv2.startWindowThread()
-    cv2.imshow(window_name, img)
-    cv2.waitKey(display_time)
-    cv2.destroyAllWindows()
+    fig = plt.figure()
+    plt.axis("off") 
+    if len(img.shape) == 3:
+        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    else:
+        plt.imshow(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
+    fig.canvas.set_window_title(window_name)
+    plt.gcf().canvas.mpl_connect('key_press_event', lambda event: plt.close(event.canvas.figure))
+    plt.show()
     
-def visualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, visualize=True, display_name = 'salient regions', display_time=100000):
+def visualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, visualize=True, display_name = 'salient regions'):
     '''
     Display the image with the salient regions provided.
     
@@ -44,10 +46,7 @@ def visualize_elements(img, holes=None, islands=None, indentations=None, protrus
         vizualizations flag
     display_name: str, optional
         name of the window
-   display_time: int, optional
-        time for showing the image (in ms)  
-        
-    display_time: visualization time (in ms)
+    
     
     
     Returns:
@@ -77,7 +76,7 @@ def visualize_elements(img, holes=None, islands=None, indentations=None, protrus
         img_to_show[[protrusions>0]] = colormap['protrusions']
     
     if visualize:
-        show_image(img_to_show, window_name=display_name, display_time=display_time)
+        show_image(img_to_show, window_name=display_name)
     return img_to_show
 
 def binarize(img, threshold=-1, visualize=True):
@@ -295,9 +294,12 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
     t_opt = scores.argmax()
     binarized = binarize(img, threshold=t_opt, visualize=visualize)
     if visualize:
+        fig = plt.figure()
+        fig.canvas.set_window_title('Number of CCs per threshold level')
         plt.plot(scores)
         plt.axvline(x=t_opt, color='red')
         plt.axvline(x=t_otsu, color='green')
         plt.xlim(0, 255)
+        plt.gcf().canvas.mpl_connect('key_press_event', lambda event: plt.close(event.canvas.figure))
         plt.show()
     return t_opt, binarized
