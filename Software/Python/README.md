@@ -21,11 +21,13 @@ Unit tests for the code in salientregions.
 
 
 ## Installing the package
-If desired, activate an virtual environment. In the current directory:
+If desired, activate an virtual environment. To build the package, type the following command in the current directory (`Software/Python/`):
+
+`make`
+
+To install the package `salientregions`  in your environment:
 
 `make install`
-
-This should make the package <salientregions> available in your environment.
 
 To perform tests:
 
