@@ -309,7 +309,7 @@ def get_indentations(img,
     return invfilled, indentations
 
 
-def get_salient_regions(img,
+def get_salient_regions_binary(img,
                         find_holes=True, find_islands=True,
                         find_indentations=True, find_protrusions=True,
                         SE_size_factor=0.15, area_factor=0.05,

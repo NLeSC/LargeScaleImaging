@@ -3,8 +3,10 @@ from helpers import show_image, binarize, read_matfile, \
                     data_driven_binarization
 from binarydetector import get_holes, get_islands, fill_image, \
                            remove_small_elements, get_protrusions, \
-                           get_indentations, get_salient_regions
-from salientregiondetector import get_salient_regions_gray, \
-                                  get_salient_regions_color, BinarizationMethod
+                           get_indentations, get_salient_regions_binary
+from salientregiondetector import get_salient_regions, \
+                                  BinarizationMethod
+from binarization import Binarizer, ThresholdBinarizer, \
+                        OtsuBinarizer, DatadrivenBinarizer
 
-__all__ = ['helpers', 'binarydetector', 'salientregiondetector']
+__all__ = ['helpers', 'binarydetector', 'salientregiondetector', 'binarization']
