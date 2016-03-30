@@ -9,9 +9,9 @@ import unittest
 import cv2
 import os
 
-class HelpersTester(unittest.TestCase):
+class HelpersImageTester(unittest.TestCase):
     '''
-    Tests for the helper functions
+    Tests for the helper functions related to images
     '''
     
     def setUp(self):
@@ -41,3 +41,20 @@ class HelpersTester(unittest.TestCase):
     def test_binarize255(self):
         binarized = sr.binarize(self.image, self.threshold255, visualize=False)
         assert sr.image_diff(self.binarized_true_255, binarized, visualize=False)  
+        
+class HelpersArrayTester(unittest.TestCase):
+    '''
+    Tests for the helper functions related to arrays
+    '''
+    
+    def setUp(self):
+        self.major_axis_len = 15
+        self.minor_axis_len = 9
+        self.theta = 0.52 
+        self.coeff = [0.006395179230685, -0.003407029045900, 0.010394944226105]
+
+        
+    def test_region2ellipse(self):
+        A, B, C = sr.helpers.region2ellipse(self.major_axis_len, self.minor_axis_len, self.theta)
+        coeff = [A,B,C]
+        assert sr.helpers.array_diff(self.coeff,coeff)

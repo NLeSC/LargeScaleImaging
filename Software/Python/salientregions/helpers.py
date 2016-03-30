@@ -161,7 +161,7 @@ def image_diff(img1, img2, visualize=True):
     img1: 2-dimensional numpy array with values 0/255
         first image to compare
     img1: 2-dimensional numpy array with values 0/255
-        second image to comparen
+        second image to compare
     visualize: bool, optional
         option for vizualizing the process
     
@@ -173,6 +173,23 @@ def image_diff(img1, img2, visualize=True):
     if visualize:
         show_image(cv2.bitwise_xor(img1, img2), 'difference')
     return np.all(img1 == img2)
+
+def array_diff(arr1, arr2):
+    '''
+    Compares two arrays. Useful for testing purposes.
+    
+    Parameters:
+    ------
+    arr1: 2-dimensional numpy, first array to compare
+    arr2: 2-dimensional numpy, second array to compare
+   
+    Returns:
+    ------
+    is_close: bool
+        True if elemetns of the two arrays are close within the given tolerance
+    '''
+ 
+    return np.allclose(arr1,arr2)
     
     
 def get_SE(img, SE_size_factor=0.15, lam_factor=5):
@@ -303,3 +320,37 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
         plt.gcf().canvas.mpl_connect('key_press_event', lambda event: plt.close(event.canvas.figure))
         plt.show()
     return t_opt, binarized
+
+def region2ellipse(half_major_axis, half_minor_axis, theta):
+    ''' Conversion of elliptic parameters to polynomial coefficients.
+    
+    Parameters:
+    ------
+    half_major_axis: float, half of the length of the ellipse's major axis
+    half_minor_axis: float, half of the length of the ellipse's minor axis
+    thetha- the ellipse orientaiton- angle (radians) between the major and x axis
+    
+    Returns:
+    ------ 
+    A, B, C: floats, the coefficients of the equation of ellipse
+    ''' 
+    
+    # thrigonometric functions
+    sin_theta = np.sin(theta);
+    cos_theta = np.cos(theta);
+    sin_cos_theta = sin_theta * cos_theta;
+    
+    # squares
+    a_sq = half_major_axis * half_major_axis;
+    b_sq = half_minor_axis * half_minor_axis;
+    sin_theta_sq = sin_theta * sin_theta;
+    cos_theta_sq = cos_theta * cos_theta;
+
+    #common denominator
+    denom = a_sq*b_sq;
+
+    A = (b_sq*cos_theta_sq + a_sq*sin_theta_sq)/denom;
+    B = ((b_sq - a_sq)*sin_cos_theta)/denom;
+    C = (b_sq*sin_theta_sq + a_sq*cos_theta_sq)/denom;
+    
+    return A, B, C
