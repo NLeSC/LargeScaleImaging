@@ -29,6 +29,6 @@ To install the package `salientregions`  in your environment:
 
 `make install`
 
-To perform tests:
+If you want to run tests, you need to pull the test images from this git repository using [git lfs](https://git-lfs.github.com/). To perform tests:
 
 `make test`
