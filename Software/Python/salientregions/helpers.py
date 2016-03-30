@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
+import math
 
 def show_image(img, window_name='image'):
     '''
@@ -186,7 +187,8 @@ def array_diff(arr1, arr2):
     Returns:
     ------
     is_close: bool
-        True if elemetns of the two arrays are close within the given tolerance
+        True if elemetns of the two arrays are close within the defaults tolerance
+        (see numpy.allclose documentaiton for tolerance values)
     '''
  
     return np.allclose(arr1,arr2)
@@ -326,16 +328,20 @@ def region2ellipse(half_major_axis, half_minor_axis, theta):
     
     Parameters:
     ------
-    half_major_axis: float, half of the length of the ellipse's major axis
-    half_minor_axis: float, half of the length of the ellipse's minor axis
-    thetha- the ellipse orientaiton- angle (radians) between the major and x axis
+    half_major_axis: float 
+        Half of the length of the ellipse's major axis
+    half_minor_axis: float
+        Half of the length of the ellipse's minor axis
+    theta: float
+        The ellipse orientation angle (radians) between the major and the x axis
     
     Returns:
     ------ 
-    A, B, C: floats, the coefficients of the equation of ellipse
+    A, B, C: floats
+        The coefficients of the polynomial equation of an ellipse Ax^2 + Bxy + Cy^2 = 1
     ''' 
     
-    # thrigonometric functions
+    # trigonometric functions
     sin_theta = np.sin(theta);
     cos_theta = np.cos(theta);
     sin_cos_theta = sin_theta * cos_theta;
@@ -349,8 +355,74 @@ def region2ellipse(half_major_axis, half_minor_axis, theta):
     #common denominator
     denom = a_sq*b_sq;
 
+    # polynomial coefficients
     A = (b_sq*cos_theta_sq + a_sq*sin_theta_sq)/denom;
     B = ((b_sq - a_sq)*sin_cos_theta)/denom;
     C = (b_sq*sin_theta_sq + a_sq*cos_theta_sq)/denom;
     
     return A, B, C
+    
+    
+def binary_mask2ellipse_features(binary_mask, connectivity=4, saliency_type=1):
+    ''' Conversion of binary regions to ellipse features.
+    
+    Parameters:
+    ------
+    binary_mask: 2-D numpy array 
+        Binary mask of the detected salient regions of the given saliency type
+    connectivity: int
+        Neighborhood connectivity
+    saliency_type: int
+        Type of salient regions. The code  is:
+        1: holes
+        2: islands
+        3: indentaitons
+        4: protrusions        
+    
+    Returns:
+    ------ 
+    num_regions: int
+        The number of saleint regions of saliency_type
+    features: 2-D numpy array with he equivalnet ellipse features
+        Every row corresponds to a single region/ellipse ans is of format
+        x0 y0 A B C saliency_type ,
+        where (x0,y0) are the coordinates of the ellipse centroid and A, B and C 
+        are the polynomial coefficients from the ellipse equation Ax^2 + Bxy + Cy^2 = 1
+    '''    
+   
+    #num_regions, labels, stats, centroids = cv2.connectedComponentsWithStats(binary_mask, connectivity=connectivity)
+    _, contours, _ = cv2.findContours(binary_mask, cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE)
+    
+    num_regions = len(contours)
+    features = np.zeros((num_regions, 6), float)
+    index_regions = 0
+    
+    for cnt in contours:
+        
+        index_regions = index_regions + 1
+        
+        # fit an ellipse to the contour
+        (x,y),(MA,ma),angle = cv2.fitEllipse(cnt)
+        print "x,y: ", x, y 
+        # ellipse parameters
+        a = np.fix(MA/2)
+        b = np.fix(ma/2)
+
+        if ((a>0) and (b>0)):
+            x0 = x; y0= y
+            if (angle==0):
+                angle = 180                
+            angle_rad = angle*math.pi/180
+
+            # compute the elliptic polynomial coefficients, aka features
+            [A, B, C] = region2ellipse(a, b, -angle_rad)
+            features[index_regions-1,] = ([x0, y0, A, B, C, saliency_type])
+        else:
+            features[index_regions-1,] = ([np.nan, np.nan, np.nan, np.nan, np.nan, saliency_type])
+            
+    return num_regions, features    
+
+    
+
+        
+    
