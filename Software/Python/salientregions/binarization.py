@@ -82,7 +82,7 @@ class DatadrivenBinarizer(Binarizer):
         self.num_levels = num_levels
         self.connectivity = connectivity
 
-    def binarize(self, img, visualise=True):
+    def binarize_withthreshold(self, img, visualise=True):
         t_otsu, binarized_otsu = cv2.threshold(img, 0, 255,
                                                cv2.THRESH_BINARY+cv2.THRESH_OTSU)
         t_otsu = int(t_otsu)
@@ -132,4 +132,8 @@ class DatadrivenBinarizer(Binarizer):
             plt.show()
             helpers.show_image(binarized,
                    window_name=('Binarized with threshold %i' % t_opt))
+        return t_opt, binarized
+
+    def binarize(self, img, visualise=True):
+        _, binarized = self.binarize_withthreshold(img, visualise)
         return binarized

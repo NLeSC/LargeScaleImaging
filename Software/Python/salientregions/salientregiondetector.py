@@ -3,14 +3,7 @@ import cv2
 import helpers
 import binarydetector
 import numpy as np
-from enum import IntEnum
-
-
-class BinarizationMethod(IntEnum):
-    datadriven = 0
-    otsu = 1
-    levels = 2
-    threshold = 3
+import binarization
 
 
 def get_salient_regions(img,
@@ -18,8 +11,7 @@ def get_salient_regions(img,
                         find_indentations=True, find_protrusions=True,
                         SE_size_factor=0.15, area_factor=0.05,
                         connectivity=4,
-                        binarizationmethod=BinarizationMethod.datadriven,
-                        threshold=-1,
+                        binarizer=None,
                         visualize=True):
     '''
     Find salient regions of all four types
@@ -42,10 +34,9 @@ def get_salient_regions(img,
         factor that describes the minimum area of a significent CC
     connectivity: int
         What connectivity to use to define CCs
-    binarizationmethod: BinarizationMethod (enum)
-        Which method to use for binarizing.
-    threshold
-        Which threshold to use if binarizationmethod is ´levels´
+    binarizer: Binerizer object, optional
+        Binerizer object that handles the binarization.
+        By default, we use datadriven binarization
     visualize: bool, optional
         option for vizualizing the process
 
@@ -66,19 +57,14 @@ def get_salient_regions(img,
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
     SE, lam = helpers.get_SE(img, SE_size_factor=SE_size_factor)
-    if binarizationmethod == BinarizationMethod.datadriven:
-        _, binarized = helpers.data_driven_binarization(img, lam=lam,
-                                                        connectivity=connectivity,
-                                                        visualize=visualize)
-    elif binarizationmethod == BinarizationMethod.otsu:
-        _, binarized = helpers.data_driven_binarization(img, lam=lam,
-                                                        connectivity=connectivity,
-                                                        otsu_only=True,
-                                                        visualize=visualize)
-    else:
-        binarized = helpers.binarize(img,
-                                     threshold=threshold, visualize=visualize)
-
+    # The default binarizer is the Data Driven binarizer
+    if binarizer is None:
+        binarizer = binarization.DatadrivenBinarizer(lam=lam,
+                                                     connectivity=connectivity)
+    # Binarize the image
+    binarized = binarizer.binarize(img, visualize)
+    
+    # Find regions in the binary image
     result = binarydetector.get_salient_regions_binary(binarized,
                                                        find_holes,
                                                        find_islands,
