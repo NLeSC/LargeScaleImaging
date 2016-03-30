@@ -2,7 +2,7 @@
 import cv2
 import helpers
 import binarydetector
-import numpy as np
+#import numpy as np
 from enum import IntEnum
 
 
