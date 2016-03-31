@@ -96,17 +96,7 @@ class HelpersEllipseTester(unittest.TestCase):
                 [0.637312844759653,   1.872269503546099,   0.000036609265896,   0.000019432485225,   0.000024816969531,   0.020000000000000],
                 [1.010000000000000,   0.890000000000000,   0.000016000000000, -0.000000000000000,   0.000017361111111,   0.020000000000000],
                 [2.000000000000000,   1.750000000000000,   0.000008650519031,  -0.000000000000000,   0.000051020408163,   0.020000000000000],
-                [1.870000000000000,  0.385000000000000,   0.000400000000000,   0.000000000000000,   0.000100000000000,   0.020000000000000]])
-        
-        self.indentations_mask = np.array(sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_indentations_mask.png')), threshold=128, visualize=False))
-        self.features_indentations = 100.00*np.array([
-            [1.266124260355030,   1.852189349112426,   0.000088587345319,   0.000014395112021,   0.000117514072903,   0.030000000000000],
-            [1.422552693208431,   0.454707259953162,   0.000160825502563,  -0.000074977484068,   0.000074120327621,   0.030000000000000]  ])        
-        self.protrusions_mask = np.array(sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_protrusions_mask.png')), threshold=128, visualize=False))
-        self.features_protrusions = 100.00*np.array([
-            [1.408666666666667,   1.974148148148148,   0.000230797258120,  -0.000059179970645,   0.000203230519657,   0.040000000000000],
-            [1.533061224489796,   0.407891156462585,   0.000167346120798,   0.000050809010498,   0.000388903879202,   0.040000000000000],
-            [1.716145833333333,   1.235000000000000,   0.000374319920480,  -0.000049791664982,   0.000303457857298,   0.040000000000000] ])
+                [1.870000000000000,  0.385000000000000,   0.000400000000000,   0.000000000000000,   0.000100000000000,   0.020000000000000]])    
         
         self.connectivty = 4
         
@@ -133,26 +123,5 @@ class HelpersEllipseTester(unittest.TestCase):
         print "Python features:", features
         print 'Difference: ', features - self.features_islands
         print '********************************************************************************************'
-        assert sr.helpers.array_diff(self.features_islands, features)
-        
-    def test_mask2features_indentaions(self):
-        print "---Testing binary_mask2ellipse_features for indentations----------------"
-        num_regions, features = sr.helpers.binary_mask2ellipse_features(self.indentations_mask, self.connectivty, 3)
-        
-        print "MATLAB features:", self.features_indentations
-        print "Python features:", features
-        print 'Difference: ', features - self.features_indentations
-        print '********************************************************************************************'
-        assert sr.helpers.array_diff(self.features_indentations, features)  
-        
-    def test_mask2features_protrusions(self):
-        print "---Testing binary_mask2ellipse_features for protrusions----------------"
-        num_regions, features = sr.helpers.binary_mask2ellipse_features(self.protrusions_mask, self.connectivty, 4)
-        
-        print "MATLAB features:", self.features_protrusions
-        print "Python features:", features
-        print 'Difference: ', features - self.features_protrusions
-        print '********************************************************************************************'
-        assert sr.helpers.array_diff(self.features_protrusions, features)  
-        
+        assert sr.helpers.array_diff(self.features_islands, features)        
         
