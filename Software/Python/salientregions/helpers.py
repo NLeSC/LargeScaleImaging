@@ -220,7 +220,7 @@ def get_SE(img, SE_size_factor=0.15, lam_factor=5):
     '''
     nrows, ncols = img.shape
     ROI_area = nrows*ncols
-    SE_size = int(SE_size_factor*np.sqrt(ROI_area/np.pi))
+    SE_size = int(np.round(SE_size_factor*np.sqrt(ROI_area/np.pi)))
     SE_dim_size = SE_size * 2 - 1
     SE = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
                                    (SE_dim_size, SE_dim_size))
