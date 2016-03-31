@@ -85,18 +85,9 @@ class HelpersEllipseTester(unittest.TestCase):
         self.coeff = [0.006395179230685, -0.003407029045900, 0.010394944226105]
         
         testdata_path = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../TestData/Binary/'))
-        self.holes_mask = 255-sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_holes.png')), threshold=128, visualize=False)
-        self.features_holes = 100.00*np.array([
-                [0.637312844759653,   1.872269503546099,   0.000036609265896,   0.000019432485225,   0.000024816969531,   0.010000000000000],
-                [1.010000000000000,   0.890000000000000,   0.000016000000000, -0.000000000000000,   0.000017361111111,   0.010000000000000],
-                [2.000000000000000,   1.750000000000000,   0.000008650519031,  -0.000000000000000,   0.000051020408163,   0.010000000000000],
-                [1.870000000000000,  0.385000000000000,   0.000400000000000,   0.000000000000000,   0.000100000000000,   0.010000000000000]])
-        self.islands_mask = np.array(sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_islands.png')), threshold=128, visualize=False))
-        self.features_islands = 100.00*np.array([
-                [0.637312844759653,   1.872269503546099,   0.000036609265896,   0.000019432485225,   0.000024816969531,   0.020000000000000],
-                [1.010000000000000,   0.890000000000000,   0.000016000000000, -0.000000000000000,   0.000017361111111,   0.020000000000000],
-                [2.000000000000000,   1.750000000000000,   0.000008650519031,  -0.000000000000000,   0.000051020408163,   0.020000000000000],
-                [1.870000000000000,  0.385000000000000,   0.000400000000000,   0.000000000000000,   0.000100000000000,   0.020000000000000]])    
+
+        self.ellipse1_mask = np.array(sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_ellipse1.png')), threshold=128, visualize=False))
+        self.features_ellipse1 = 100.00*np.array([2.000000000000000,   1.750000000000000,   0.000008650519031,  -0.000000000000000,   0.000051020408163,   0.020000000000000])    
         
         self.connectivty = 4
         
@@ -105,23 +96,14 @@ class HelpersEllipseTester(unittest.TestCase):
         coeff = [A,B,C]
         assert sr.helpers.array_diff(self.coeff,coeff)
         
-    def test_mask2features_holes(self):
-        print "---Testing binary_mask2ellipse_features for holes----------------"
-        num_regions, features = sr.helpers.binary_mask2ellipse_features(self.holes_mask, self.connectivty, 1)
         
-        print "MATLAB features:", self.features_holes
+    def test_mask2features_ellipse1(self):
+        print "---Testing binary_mask2ellipse_features for ellipse1----------------"
+        num_regions, features = sr.helpers.binary_mask2ellipse_features(self.ellipse1_mask, self.connectivty, 2)
+        
+        print "MATLAB features:", self.features_ellipse1
         print "Python features:", features
-        print 'Difference: ', features - self.features_holes
+        print 'Difference: ', features - self.features_ellipse1
         print '********************************************************************************************'
-        assert sr.helpers.array_diff(self.features_holes, features)
-        
-    def test_mask2features_islands(self):
-        print "---Testing binary_mask2ellipse_features for islands----------------"
-        num_regions, features = sr.helpers.binary_mask2ellipse_features(self.islands_mask, self.connectivty, 2)
-        
-        print "MATLAB features:", self.features_islands
-        print "Python features:", features
-        print 'Difference: ', features - self.features_islands
-        print '********************************************************************************************'
-        assert sr.helpers.array_diff(self.features_islands, features)        
+        assert sr.helpers.array_diff(self.features_ellipse1, features)        
         
