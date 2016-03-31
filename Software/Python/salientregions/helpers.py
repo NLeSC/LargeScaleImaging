@@ -9,7 +9,7 @@ def show_image(img, window_name='image'):
     '''
     Display the image.
     When a key is pressed, the window is closed
-    
+
     Parameters:
     ------
     img: multidimensional numpy array
@@ -24,13 +24,18 @@ def show_image(img, window_name='image'):
     else:
         plt.imshow(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
     fig.canvas.set_window_title(window_name)
-    plt.gcf().canvas.mpl_connect('key_press_event', lambda event: plt.close(event.canvas.figure))
+    plt.gcf().canvas.mpl_connect('key_press_event',
+                                lambda event: plt.close(event.canvas.figure))
     plt.show()
-    
-def visualize_elements(img, holes=None, islands=None, indentations=None, protrusions=None, visualize=True, display_name = 'salient regions'):
+
+
+def visualize_elements(img,
+                       holes=None, islands=None,
+                       indentations=None, protrusions=None,
+                       visualize=True,
+                       display_name='salient regions'):
     '''
     Display the image with the salient regions provided.
-    
     Parameters:
     
     img: multidimensional numpy array
@@ -55,14 +60,14 @@ def visualize_elements(img, holes=None, islands=None, indentations=None, protrus
     img_to_show: 3-dimensional numpy array
         image with the colored regions
     '''
-    #colormap bgr
-    colormap = {'holes': [255,0,0], #BLUE
-                'islands': [0,255,255], #YELLOW
-                'indentations': [0,255,0], #GREEN
-                'protrusions': [0,0,255] #RED
-               }
-    
-    #if the image is grayscale, make it BGR:
+    # colormap bgr
+    colormap = {'holes': [255, 0, 0],  # BLUE
+                'islands': [0, 255, 255],  # YELLOW
+                'indentations': [0, 255, 0],  # GREEN
+                'protrusions': [0, 0, 255]  # RED
+                }
+
+    # if the image is grayscale, make it BGR:
     if len(img.shape) == 2:
         img_to_show = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
     else:
@@ -103,8 +108,8 @@ def binarize(img, threshold=-1, visualize=True):
         _, binarized = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     else:
         _, binarized = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
-        
-    #If the image still has three channels, only pick one
+
+    # If the image still has three channels, only pick one
     if len(binarized.shape) > 2:
         binarized = binarized[:,:,0]
     if visualize:
@@ -149,14 +154,13 @@ def read_matfile(filename, visualize=True):
         show_image(indentations, 'indentations')
         show_image(protrusions, 'protrusions')   
     return holes, islands, indentations, protrusions
-    
-    
-    
+
+
 def image_diff(img1, img2, visualize=True):
     '''
     Compares two images and shows the difference.
     Useful for testing purposes.
-    
+
     Parameters:
     ------
     img1: 2-dimensional numpy array with values 0/255
@@ -165,7 +169,7 @@ def image_diff(img1, img2, visualize=True):
         second image to compare
     visualize: bool, optional
         option for vizualizing the process
-    
+
     Returns:
     ------
     is_same: bool
@@ -178,7 +182,7 @@ def image_diff(img1, img2, visualize=True):
 def array_diff(arr1, arr2):
     '''
     Compares two arrays. Useful for testing purposes.
-    
+
     Parameters:
     ------
     arr1: 2-dimensional numpy, first array to compare
@@ -190,10 +194,9 @@ def array_diff(arr1, arr2):
         True if elemetns of the two arrays are close within the defaults tolerance
         (see numpy.allclose documentaiton for tolerance values)
     '''
- 
-    return np.allclose(arr1,arr2)
-    
-    
+    return np.allclose(arr1, arr2)
+
+
 def get_SE(img, SE_size_factor=0.15, lam_factor=5):
     '''
     Get the structuring element en minimum salient region area for this image.
@@ -204,7 +207,7 @@ def get_SE(img, SE_size_factor=0.15, lam_factor=5):
         image to detect islands
     SE_size_factor: float, optional
         The fraction of the image size that the SE should be
-    
+
     Returns:
     ------
     SE: 2-dimensional numpy array of shape (k,k)
@@ -216,21 +219,22 @@ def get_SE(img, SE_size_factor=0.15, lam_factor=5):
     ROI_area = nrows*ncols
     SE_size = int(SE_size_factor*np.sqrt(ROI_area/np.pi))
     SE_dim_size = SE_size * 2 - 1
-    SE = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (SE_dim_size, SE_dim_size))
+    SE = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
+                                   (SE_dim_size, SE_dim_size))
     lam = lam_factor*SE_size
     return SE, lam
 
 def get_SEhi(SE, lam, scaleSE=2, scalelam=10):
     '''
     Get the smaller structuring element from the large structuring element
-    
+
     Parameters:
     ------
     SE: 2-dimensional numpy array of shape (k,k)
         The large structuring element
     scale: int
         scale indicating how much smaller the smal SE should be
-    
+
     Returns:
     ------
     SEhi: 2-dimensional numpy array of shape (k,k)
@@ -238,17 +242,25 @@ def get_SEhi(SE, lam, scaleSE=2, scalelam=10):
     lam_hi: float
         Minimum area of salient region detected on boundaries of holes/islands
     '''
-    SEhi = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(SE.shape[0]/scaleSE), int(SE.shape[1]/scaleSE)))
+    SEhi = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
+                                     (int(SE.shape[0]/scaleSE),
+                                      int(SE.shape[1]/scaleSE)))
     lamhi = lam/scalelam
     return SEhi, lamhi
-    
-def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge=0.1, 
-                            lam=-1, SE_size_factor=0.15, weights=(0.33,0.33,0.33), offset=80, 
-                            num_levels=256, otsu_only=False, connectivity=4, visualize=True):
+
+
+def data_driven_binarization(img,
+                             area_factor_large=0.001,
+                             area_factor_verylarge=0.1,
+                             lam=-1, SE_size_factor=0.15,
+                             weights=(0.33, 0.33, 0.33),
+                             offset=80,
+                             num_levels=256, otsu_only=False,
+                             connectivity=4, visualize=True):
     '''
-    Binarize the image such that the desired number of (large) connected 
+    Binarize the image such that the desired number of (large) connected
     components is maximized.
-    
+
     Parameters:
     ------
     img: 2-dimensional numpy array with values between 0 and 255
@@ -260,12 +272,12 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
     lam: float, optional
         lambda, minimumm area of a connected component
     weights: (float, float, float)
-        weights for number of CC, number of large CC and number of very large CC
-        respectively.
+        weights for number of CC, number of large CC
+        and number of very large CC respectively.
     offset: int, optional
         The offset (number of gray levels) to search for around the Otsu level
     num_levels: int, optional
-        number of gray levels to be considered [1..255], 
+        number of gray levels to be considered [1..255],
         the default number 256 gives a stepsize of 1.
     otsu_only: bool, optional
         Option to only perform otsu binarization
@@ -273,43 +285,47 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
         What connectivity to use to define CCs
     visualize: bool, optional
         option for vizualizing the process
-    
+
     Returns:
-    ------ 
+    ------
     t_opt: int
         optimal threshold
     binarized: 2-dimensional numpy array with values 0/255
         The binarized image
     '''
-    t_otsu, binarized_otsu = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    t_otsu, binarized_otsu = cv2.threshold(img, 0, 255,
+                                           cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     t_otsu = int(t_otsu)
     if otsu_only:
         return t_otsu, binarized_otsu
     area = img.size
     if lam == -1:
-        _, lam = get_SE(img) 
+        _, lam = get_SE(img)
     area_large = area_factor_large*area
     area_verylarge = area_factor_verylarge*area
-    
-    #Initialize the count arrays
+
+    # Initialize the count arrays
     a_nccs = np.zeros(256)
     a_nccs_large = np.zeros(256)
     a_nccs_verylarge = np.zeros(256)
-    
-    step = 256/num_levels;
-    for t in xrange(max(t_otsu-offset, 0), min(t_otsu+offset, 255), step) :
+
+    step = 256/num_levels
+    for t in xrange(max(t_otsu-offset, 0), min(t_otsu+offset, 255), step):
         bint = binarize(img, threshold=t, visualize=False)
-        nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(bint, connectivity=connectivity)
+        nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(
+                                            bint, connectivity=connectivity)
         areas = stats[:, cv2.CC_STAT_AREA]
         a_nccs[t] = sum(areas > lam)
         a_nccs_large[t] = sum(areas > area_large)
         a_nccs_verylarge[t] = sum(areas > area_verylarge)
-    
-    #Normalize
+
+    # Normalize
     a_nccs = a_nccs/float(a_nccs.max())
     a_nccs_large = a_nccs_large/float(a_nccs_large.max())
     a_nccs_verylarge = a_nccs_verylarge/float(a_nccs_verylarge.max())
-    scores = weights[0]*a_nccs + weights[1]*a_nccs_large + weights[2]*a_nccs_verylarge
+    scores = weights[0]*a_nccs + \
+             weights[1]*a_nccs_large + \
+             weights[2]*a_nccs_verylarge
     t_opt = scores.argmax()
     binarized = binarize(img, threshold=t_opt, visualize=visualize)
     if visualize:
@@ -319,9 +335,11 @@ def data_driven_binarization(img, area_factor_large=0.001, area_factor_verylarge
         plt.axvline(x=t_opt, color='red')
         plt.axvline(x=t_otsu, color='green')
         plt.xlim(0, 255)
-        plt.gcf().canvas.mpl_connect('key_press_event', lambda event: plt.close(event.canvas.figure))
+        plt.gcf().canvas.mpl_connect('key_press_event',
+                                    lambda event: plt.close(event.canvas.figure))
         plt.show()
     return t_opt, binarized
+
 
 def region2ellipse(half_major_axis, half_minor_axis, theta):
     ''' Conversion of elliptic parameters to polynomial coefficients.
