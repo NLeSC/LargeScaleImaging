@@ -339,8 +339,8 @@ def get_salient_regions_binary(img,
         option for vizualizing the process
 
     Returns:
-    ------
-    dictiornary with the following possible items:
+    ------ 
+    dictionary with the following possible items:
     holes: 2-dimensional numpy array with values 0/255
         Image with all holes as foreground.
     islands: 2-dimensional numpy array with values 0/255
