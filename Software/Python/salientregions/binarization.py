@@ -5,13 +5,16 @@ import helpers
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 class Binarizer:
+
     @abstractmethod
     def binarize(self, img, visualise=True):
         pass
 
 
 class ThresholdBinarizer(Binarizer):
+
     def __init__(self, threshold=127):
         self.threshold = threshold
 
@@ -19,23 +22,27 @@ class ThresholdBinarizer(Binarizer):
         _, binarized = cv2.threshold(img, self.threshold, 255,
                                      cv2.THRESH_BINARY)
         if len(binarized.shape) > 2:
-            binarized = binarized[:,:,0]
+            binarized = binarized[:, :, 0]
         if visualise:
-            helpers.show_image(binarized,
-                   window_name=('Binarized with threshold %i' % self.threshold))
+            helpers.show_image(
+                binarized, window_name=(
+                    'Binarized with threshold %i' %
+                    self.threshold))
         return binarized
 
 
 class OtsuBinarizer(Binarizer):
 
     def binarize(self, img, visualise=True):
-        threshold, binarized = cv2.threshold(img, 0, 255,
-                                     cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        threshold, binarized = cv2.threshold(
+            img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         if len(binarized.shape) > 2:
-            binarized = binarized[:,:,0]
+            binarized = binarized[:, :, 0]
         if visualise:
-            helpers.show_image(binarized,
-                   window_name=('Binarized with threshold %i' % threshold))
+            helpers.show_image(
+                binarized, window_name=(
+                    'Binarized with threshold %i' %
+                    threshold))
         return binarized
 
 
@@ -64,6 +71,7 @@ class DatadrivenBinarizer(Binarizer):
     visualize: bool, optional
         option for vizualizing the process
     '''
+
     def __init__(self,
                  area_factor_large=0.001,
                  area_factor_verylarge=0.1,
@@ -83,40 +91,40 @@ class DatadrivenBinarizer(Binarizer):
         self.connectivity = connectivity
 
     def binarize_withthreshold(self, img, visualise=True):
-        t_otsu, binarized_otsu = cv2.threshold(img, 0, 255,
-                                               cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        t_otsu, binarized_otsu = cv2.threshold(
+            img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         t_otsu = int(t_otsu)
         area = img.size
         if self.lam == -1:
             _, self.lam = helpers.get_SE(img)
-        area_large = self.area_factor_large*area
-        area_verylarge = self.area_factor_verylarge*area
+        area_large = self.area_factor_large * area
+        area_verylarge = self.area_factor_verylarge * area
 
         # Initialize the count arrays
         a_nccs = np.zeros(256)
         a_nccs_large = np.zeros(256)
         a_nccs_verylarge = np.zeros(256)
 
-        step = 256/self.num_levels
-        for t in xrange(max(t_otsu-self.offset, 0),
-                        min(t_otsu+self.offset, 255),
+        step = 256 / self.num_levels
+        for t in xrange(max(t_otsu - self.offset, 0),
+                        min(t_otsu + self.offset, 255),
                         step):
             _, bint = cv2.threshold(img, t, 255,
-                                     cv2.THRESH_BINARY)
+                                    cv2.THRESH_BINARY)
             nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(
-                                                bint, connectivity=self.connectivity)
+                bint, connectivity=self.connectivity)
             areas = stats[:, cv2.CC_STAT_AREA]
             a_nccs[t] = sum(areas > self.lam)
             a_nccs_large[t] = sum(areas > area_large)
             a_nccs_verylarge[t] = sum(areas > area_verylarge)
 
         # Normalize
-        a_nccs = a_nccs/float(a_nccs.max())
-        a_nccs_large = a_nccs_large/float(a_nccs_large.max())
-        a_nccs_verylarge = a_nccs_verylarge/float(a_nccs_verylarge.max())
-        scores = self.weights[0]*a_nccs + \
-                 self.weights[1]*a_nccs_large + \
-                 self.weights[2]*a_nccs_verylarge
+        a_nccs = a_nccs / float(a_nccs.max())
+        a_nccs_large = a_nccs_large / float(a_nccs_large.max())
+        a_nccs_verylarge = a_nccs_verylarge / float(a_nccs_verylarge.max())
+        scores = self.weights[0] * a_nccs + \
+            self.weights[1] * a_nccs_large + \
+            self.weights[2] * a_nccs_verylarge
         t_opt = scores.argmax()
         _, binarized = cv2.threshold(img, t_opt, 255,
                                      cv2.THRESH_BINARY)
@@ -127,11 +135,15 @@ class DatadrivenBinarizer(Binarizer):
             plt.axvline(x=t_opt, color='red')
             plt.axvline(x=t_otsu, color='green')
             plt.xlim(0, 255)
-            plt.gcf().canvas.mpl_connect('key_press_event',
-                                         lambda event: plt.close(event.canvas.figure))
+            plt.gcf().canvas.mpl_connect(
+                'key_press_event',
+                lambda event: plt.close(
+                    event.canvas.figure))
             plt.show()
-            helpers.show_image(binarized,
-                   window_name=('Binarized with threshold %i' % t_opt))
+            helpers.show_image(
+                binarized, window_name=(
+                    'Binarized with threshold %i' %
+                    t_opt))
         return t_opt, binarized
 
     def binarize(self, img, visualise=True):

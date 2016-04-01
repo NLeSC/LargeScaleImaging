@@ -86,7 +86,7 @@ def get_holes(img, filled=None, lam=-1, connectivity=4, visualize=True):
     return filled, theholes
 
 
-def get_islands(img,  invfilled=None, lam=-1, connectivity=4, visualize=True):
+def get_islands(img, invfilled=None, lam=-1, connectivity=4, visualize=True):
     '''
     Find salient regions of type 'island'
 
@@ -144,8 +144,8 @@ def remove_small_elements(elements, lam, remove_border_elements=True,
         Image with all elements larger then lam
     '''
     result = elements.copy()
-    nr_elements, labels, stats, _ = cv2.connectedComponentsWithStats(elements,
-                                                        connectivity=connectivity)
+    nr_elements, labels, stats, _ = cv2.connectedComponentsWithStats(
+        elements, connectivity=connectivity)
 
     leftborder = 0
     rightborder = elements.shape[1]
@@ -154,7 +154,7 @@ def remove_small_elements(elements, lam, remove_border_elements=True,
     for i in xrange(1, nr_elements):
         area = stats[i, cv2.CC_STAT_AREA]
         if area < lam:
-            result[[labels==i]] = 0
+            result[[labels == i]] = 0
 
         if remove_border_elements:
             xmin = stats[i, cv2.CC_STAT_LEFT]
@@ -162,10 +162,10 @@ def remove_small_elements(elements, lam, remove_border_elements=True,
             ymin = stats[i, cv2.CC_STAT_TOP]
             ymax = stats[i, cv2.CC_STAT_TOP] + stats[i, cv2.CC_STAT_HEIGHT]
             if xmin <= leftborder \
-              or xmax >= rightborder \
-              or ymin <= upperborder \
-              or ymax >= lowerborder :
-                    result[[labels==i]] = 0
+                    or xmax >= rightborder \
+                    or ymin <= upperborder \
+                    or ymax >= lowerborder:
+                result[[labels == i]] = 0
     if visualize:
         helpers.show_image(result, 'small elements removed')
     return result
@@ -224,13 +224,13 @@ def get_protrusions(img,
     prots2 = np.zeros(img.shape, dtype='uint8')
 
     # Retrieve all connected components
-    nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(filled,
-                                                    connectivity=connectivity)
+    nccs, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        filled, connectivity=connectivity)
     for i in xrange(1, nccs):
-        area =  stats[i, cv2.CC_STAT_AREA]
+        area = stats[i, cv2.CC_STAT_AREA]
         # For the significant CCs, perform tophat
         if area > min_area:
-            ccimage = np.array(255*(labels==i), dtype='uint8')
+            ccimage = np.array(255 * (labels == i), dtype='uint8')
             wth = cv2.morphologyEx(ccimage, cv2.MORPH_TOPHAT, SE)
             prots1 += wth
             if visualize:
@@ -241,11 +241,11 @@ def get_protrusions(img,
                                            visualize=visualize)
 
     # Now get indentations of significant holes
-    nccs2, labels2, stats2, centroids2 = cv2.connectedComponentsWithStats(holes,
-                                                    connectivity=connectivity)
+    nccs2, labels2, stats2, centroids2 = cv2.connectedComponentsWithStats(
+        holes, connectivity=connectivity)
     for i in xrange(1, nccs2):
         area = stats2[i, cv2.CC_STAT_AREA]
-        ccimage = np.array(255*(labels2==i), dtype='uint8')
+        ccimage = np.array(255 * (labels2 == i), dtype='uint8')
         ccimage_filled = fill_image(ccimage, visualize=False)
         # For the significant CCs, perform tophat
         if area > min_area:
@@ -310,10 +310,10 @@ def get_indentations(img,
 
 
 def get_salient_regions_binary(img,
-                        find_holes=True, find_islands=True,
-                        find_indentations=True, find_protrusions=True,
-                        SE_size_factor=0.15, area_factor=0.05,
-                        connectivity=4, visualize=True):
+                               find_holes=True, find_islands=True,
+                               find_indentations=True, find_protrusions=True,
+                               SE_size_factor=0.15, area_factor=0.05,
+                               connectivity=4, visualize=True):
     '''
     Find salient regions of all four types
 
@@ -339,7 +339,7 @@ def get_salient_regions_binary(img,
         option for vizualizing the process
 
     Returns:
-    ------ 
+    ------
     dictionary with the following possible items:
     holes: 2-dimensional numpy array with values 0/255
         Image with all holes as foreground.
@@ -365,7 +365,7 @@ def get_salient_regions_binary(img,
             regions['holes'] = holes
 
     if find_islands or find_indentations:
-        invfilled, islands = get_islands(img,  invfilled=None, lam=lam,
+        invfilled, islands = get_islands(img, invfilled=None, lam=lam,
                                          connectivity=connectivity,
                                          visualize=visualize)
         if find_islands:
@@ -403,4 +403,3 @@ def get_salient_regions_binary(img,
                                    indentations=indentations,
                                    protrusions=protrusions)
     return regions
-    
