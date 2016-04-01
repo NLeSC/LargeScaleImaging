@@ -8,7 +8,7 @@
 %**************************************************************************
 %% execution paramaters
 interactive = false;
-save_flag = 1;
+save_flag = 0;
 vis_flag = 1;
 vis_only = false;
 vis_steps = false;
@@ -26,7 +26,7 @@ if interactive
     % image_base_filename = input('Enter the base image filename: ','s');
     test_image = input('Enter test case: [all|noise|holes|islands|indent_protr|nested]: ','s');
 else
-    test_image = 'nested'
+    test_image = 'islands'
 end
 switch lower(test_image)
     case 'all'
@@ -36,7 +36,8 @@ switch lower(test_image)
     case 'holes'
         image_base_filename = 'Binary_holes.png';
     case 'islands'
-        image_base_filename = 'Binary_islands.png';
+       image_base_filename = 'Binary_islands.png';
+       % image_base_filename = 'Binary_ellipse4.png';
     case 'indent_protr'
         image_base_filename = 'Binary_indentations_protrusions.png';
     case 'nested'
@@ -232,5 +233,5 @@ if vis_flag || vis_only
     scaling, labels, col_ellipse, line_width, col_label,...
     original, f4, []);
         
-    title('Elliptic representaiton ofthe regions overlaid on the image');
+    title('Elliptic representaiton of the regions overlaid on the image');
 end
