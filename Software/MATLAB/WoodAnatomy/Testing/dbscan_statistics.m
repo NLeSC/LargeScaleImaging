@@ -5,6 +5,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 18 March 2016
+% last modification date: 1 April 2016
+% modification details: normalize the number of elements per class witht he
+% total number of elements
 % last modification date: 22 March 2016
 % modification details: better code documentation
 %**************************************************************************
@@ -45,6 +48,7 @@ end
 %% initializations
 num_stats = 6; % 6 features are computed
 stats = zeros(1, num_stats);
+num_all_elem = length(dbscan_vector);
 unique_elem = unique(dbscan_vector);
 nonz_unique_elem = nonzeros(unique_elem)';
 elem_per_class = zeros(1, length(nonz_unique_elem));
@@ -57,7 +61,7 @@ stats(1) = num_classes;
 %% find the elemtns which are considered noise
 num_noise_elem = length(find(dbscan_vector==0));
 % add
-stats(2) = num_noise_elem;
+stats(2) = num_noise_elem/num_all_elem;
 
 %% find the maximum index 
 max_ind = max(unique_elem);
@@ -74,15 +78,15 @@ if max_ind > 0
     %% statistics from the elements per class
     max_el = max(elem_per_class);
     % add
-    stats(3) = max_el;
+    stats(3) = max_el/num_all_elem;
     
     min_el = min(elem_per_class);
     % append output
-    stats(4) = min_el;
+    stats(4) = min_el/num_all_elem;
     
     mean_el = mean(elem_per_class);
     % append output
-    stats(5) = mean_el;
+    stats(5) = mean_el/num_all_elem;
     
     std_el = std(elem_per_class);
     % append output
