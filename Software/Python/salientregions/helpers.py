@@ -186,7 +186,7 @@ def image_diff(img1, img2, visualize=True):
     return np.all(img1 == img2)
 
 
-def array_diff(arr1, arr2):
+def array_diff(arr1, arr2, rtol=1e-05, atol=1e-08):
     '''
     Compares two arrays. Useful for testing purposes.
 
@@ -201,7 +201,7 @@ def array_diff(arr1, arr2):
         True if elemetns of the two arrays are close within the defaults tolerance
         (see numpy.allclose documentaiton for tolerance values)
     '''
-    return np.allclose(arr1, arr2)
+    return np.allclose(arr1, arr2, rtol, atol)
 
 
 def get_SE(img, SE_size_factor=0.15, lam_factor=5):
@@ -432,7 +432,7 @@ def binary_mask2ellipse_features(binary_mask, connectivity=4, saliency_type=1):
 
         # fit an ellipse to the contour
         (x, y), (MA, ma), angle = cv2.fitEllipse(cnt)
-        print "x,y: ", x, y
+       # print "x,y: ", x, y
         # ellipse parameters
         a = np.fix(MA / 2)
         b = np.fix(ma / 2)

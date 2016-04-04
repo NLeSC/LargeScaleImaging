@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+
+\bibitem{RangHumpb06}
+E.~B. Ranguelova and E.~J. Pauwels,
+\newblock ``{Saliency Detection and Matching for Photo-Identification of
+  Humpback Whales},''
+\newblock {\em International Journal on Graphics, Vision and Image Processing},
+  2006.
+
+\bibitem{RangMSSR06}
+E.~B. Ranguelova and E.~J. Pauwels,
+\newblock ``{Morphology-Based Stable Salient Regions Detector},''
+\newblock in {\em Proceedings of International Conference on Image and Vision
+  Computing New Zealand}, 2006, pp. 97 -- 102.
+
+\bibitem{Matas2002BMVC}
+J.~Matas, O.~Chum, M.~Urban, and T.~Pajdla,
+\newblock ``{Robust Wide Baseline Stereo from Maximally Stable Extremal
+  Regions},''
+\newblock in {\em Proceedings BMVC}, 2002, pp. 36.1--36.10.
+
+\end{thebibliography}
