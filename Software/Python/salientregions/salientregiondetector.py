@@ -89,7 +89,9 @@ def get_salient_regions_MSSR(img,
                              step=1,
                              visualize=True):
     '''
-    Find salient regions of all four types using MSSR
+    Find salient regions of all four types using MSSR.
+    This is considerably slower then the DMSR-type detector,
+    because it will perform detection for a range of threshold values.
 
     Parameters:
     ------
@@ -146,20 +148,27 @@ def get_salient_regions_MSSR(img,
     if find_protrusions:
         result['protrusions'] = np.zeros(img.shape, dtype='uint8')
 
+    # Remember image from previous theshold
+    previmg = np.zeros_like(img, dtype='uint8')
+    regions = {}
     for t in xrange(min_thres, max_thres, step):
         _, bint = cv2.threshold(img, t, 255, cv2.THRESH_BINARY)
-        regions = binarydetector.get_salient_regions_binary(bint,
-                                                            find_holes,
-                                                            find_islands,
-                                                            find_indentations,
-                                                            find_protrusions,
-                                                            SE_size_factor,
-                                                            area_factor,
-                                                            connectivity,
-                                                            visualize=False)
-        for regtype in result.keys():
+        # Only search for regions if the thresholded image is not different:
+        if not helpers.image_diff(bint, previmg, visualize=False):
+            regions = binarydetector.get_salient_regions_binary(
+                bint,
+                find_holes,
+                find_islands,
+                find_indentations,
+                find_protrusions,
+                SE_size_factor,
+                area_factor,
+                connectivity,
+                visualize=False)
+        for regtype in regions.keys():
             result[regtype] += np.array(1 *
                                         (regions[regtype] > 0), dtype='uint8')
+        previmg = bint
 
     for regtype in result.keys():
         if visualize:
