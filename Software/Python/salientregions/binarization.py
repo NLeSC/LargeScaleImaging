@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-class Binarizer:
+class Binarizer(object):
 
     @abstractmethod
     def binarize(self, img, visualise=True):
