@@ -23,38 +23,42 @@ class BinaryDetectorTester(unittest.TestCase):
             sr.read_matfile(os.path.join(testdata_path, 'Binary_all_types_noise_binregions.mat'), visualize=False)
         self.filled_image_noise_true = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_all_types_noise_filled.png')), threshold=128, visualize=False) 
         self.filled_image_nested_true = sr.binarize(cv2.imread(os.path.join(testdata_path, 'Binary_nested_filled.png')), threshold=128, visualize=False)
-        self.SE = sio.loadmat(os.path.join(testdata_path,"SE_neighb_all_other.mat"))['SE_n']
-        self.lam = 50
-        self.area_factor = 0.05
+        
+        SE = sio.loadmat(os.path.join(testdata_path,"SE_neighb_all_other.mat"))['SE_n']
+        lam = 50
+        area_factor = 0.05
+        connectivity = 4
+        self.binarydetector = sr.BinaryDetector(SE=SE, lam=lam, area_factor=area_factor, 
+                                                connectivity=connectivity)
             
     def test_holes(self):
-        _, holes_my = sr.get_holes(self.image_noise, filled=None, lam=self.lam, 
-                                   connectivity=4, visualize=False)
+        results = self.binarydetector.detect(self.image_noise, find_holes=True, find_islands=False,
+               find_indentations=False, find_protrusions=False, visualize=False)
+        holes_my = results['holes']
         assert sr.image_diff(self.holes_true, holes_my, visualize=False)
         
     def test_islands(self):
-        _, islands_my = sr.get_islands(self.image_noise,  invfilled=None, lam=self.lam, 
-                                       connectivity=4, visualize=False)
+        results = self.binarydetector.detect(self.image_noise, find_holes=False, find_islands=True,
+               find_indentations=False, find_protrusions=False, visualize=False)
+        islands_my = results['islands']
         assert sr.image_diff(self.islands_true, islands_my, visualize=False)
         
     def test_protrusions(self):
-        _, prots_my = sr.get_protrusions(self.image_noise, filled=None, holes=None, 
-                                         SE=self.SE, lam=self.lam, 
-                                         area_factor=self.area_factor, 
-                                         connectivity=4, visualize=False)
+        results = self.binarydetector.detect(self.image_noise, find_holes=False, find_islands=False,
+               find_indentations=False, find_protrusions=True, visualize=False)
+        prots_my = results['protrusions']
         assert sr.image_diff(self.prots_true, prots_my, visualize=False)
         
     def test_indentations(self):
-        _, indents_my = sr.get_indentations(self.image_noise, invfilled=None, islands=None, 
-                                            SE=self.SE, lam=self.lam,
-                                            area_factor=self.area_factor, 
-                                            connectivity=4, visualize=False)
+        results = self.binarydetector.detect(self.image_noise, find_holes=False, find_islands=False,
+               find_indentations=True, find_protrusions=False, visualize=False)
+        indents_my = results['indentations']
         assert sr.image_diff(self.indents_true, indents_my, visualize=False)
         
     def test_fill_image_noise(self):
-        filled = sr.fill_image(self.image_noise, visualize=False)
+        filled = sr.BinaryDetector.fill_image(self.image_noise)
         assert sr.image_diff(self.filled_image_noise_true, filled, visualize= False)
         
     def test_fill_image_nested(self):
-        filled = sr.fill_image(self.image_nested, visualize=False)
+        filled = sr.BinaryDetector.fill_image(self.image_nested)
         assert sr.image_diff(self.filled_image_nested_true, filled, visualize= False)
