@@ -139,7 +139,7 @@ class BinaryDetector(object):
         self._img = img
         #Get holes and islands
         if find_holes or find_protrusions:
-            self._filled = self.fill_image(self._img, visualize)
+            self._filled = self.fill_image(self._img)
             self.holes = self.get_holes(img=self._img, filled=self._filled, visualize=visualize)
             if find_holes:
                 regions['holes'] = self.holes
@@ -147,7 +147,7 @@ class BinaryDetector(object):
         # Islands are just holes of the inverse image
         if find_islands or find_indentations:
             self._invimg = cv2.bitwise_not(self._img)
-            self._invfilled = self.fill_image(self._invimg, visualize=visualize)
+            self._invfilled = self.fill_image(self._invimg)
             islands = self.get_holes(self._invimg, self._invfilled, visualize=visualize)
             if find_islands:
                 regions['islands'] = islands
@@ -270,7 +270,7 @@ class BinaryDetector(object):
         for i in xrange(1, nccs2):
             area = stats2[i, cv2.CC_STAT_AREA]
             ccimage = np.array(255 * (labels2 == i), dtype='uint8')
-            ccimage_filled = self.fill_image(ccimage, visualize=False)
+            ccimage_filled = self.fill_image(ccimage)
             # For the significant CCs, perform tophat
             if area > min_area:
                 bth = cv2.morphologyEx(ccimage_filled, cv2.MORPH_BLACKHAT, self.SE)
@@ -307,11 +307,11 @@ class BinaryDetector(object):
         result: 2-dimensional numpy array with values 0/255
             Image with all elements larger then lam
         '''
-        if connectivity < 0 :
+        if connectivity is None :
             connectivity = self.connectivity
         result = elements.copy()
         nr_elements, labels, stats, _ = cv2.connectedComponentsWithStats(
-            elements, connectivity=self.connectivity)
+            elements, connectivity=connectivity)
     
         leftborder = 0
         rightborder = elements.shape[1]
@@ -338,8 +338,8 @@ class BinaryDetector(object):
     
     
 
-    
-    def fill_image(self, img, visualize=False):
+    @staticmethod
+    def fill_image(img):
         '''
         Fills all holes in connected components in the image.
     
@@ -347,8 +347,6 @@ class BinaryDetector(object):
         ------
         img: 2-dimensional numpy array with values 0/255
             image to fill
-        visualize: bool, optional
-            option for vizualizing the process
     
         Returns:
         ------
@@ -365,7 +363,5 @@ class BinaryDetector(object):
             cv2.drawContours(filled, [cnt], 0, 255, -1)
     
         filled = cv2.bitwise_or(filled, img)
-        if visualize:
-            helpers.show_image(filled, 'filled image')
     
         return filled
