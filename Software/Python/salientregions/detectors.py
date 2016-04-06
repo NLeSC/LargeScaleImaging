@@ -9,7 +9,7 @@ import binarization
 import numpy as np
 
 class Detector(object):
-     '''
+    '''
     Abstract class for salient region detectors.
     
 
@@ -138,41 +138,26 @@ class BinaryDetector(object):
         self.reset()
         self._img = img
         #Get holes and islands
-        if find_holes or find_protrusions:
-            self._filled = self.fill_image(self._img)
-            self.holes = self.get_holes(img=self._img, filled=self._filled, visualize=visualize)
-            if find_holes:
-                regions['holes'] = self.holes
+        if find_holes:
+            regions['holes'] = self.get_holes()
     
         # Islands are just holes of the inverse image
-        if find_islands or find_indentations:
-            self._invimg = cv2.bitwise_not(self._img)
-            self._invfilled = self.fill_image(self._invimg)
-            islands = self.get_holes(self._invimg, self._invfilled, visualize=visualize)
-            if find_islands:
-                regions['islands'] = islands
+        if find_islands:
+            regions['islands'] = self.get_islands()
     
         # Get indentations and protrusions
         if find_indentations:
-            self.indentations = self.get_protrusions(self._invimg,
-                                                  filled=self._invfilled,
-                                                  holes=self.islands,
-                                                 visualize=visualize)
-            regions['indentations'] = self.indentations
+            regions['indentations'] = self.get_indentations()
     
         if find_protrusions:
-            self.protrusions = self.get_protrusions(self._img,
-                                                  filled=self._filled,
-                                                  holes=self.holes,
-                                                 visualize=visualize)
-            regions['protrusions'] = self.protrusions
+            regions['protrusions'] = self.get_protrusions()
     
         if visualize:
             helpers.visualize_elements(img,
-                                       holes=self.holes,
-                                       islands=self.islands,
-                                       indentations=self.indentations,
-                                       protrusions=self.protrusions)
+                                       holes=regions.get('holes', None),
+                                       islands=regions.get('islands', None),
+                                       indentations=regions.get('indentations', None),
+                                       protrusions=regions.get('protrusions',  None))
         return regions
         
     def reset(self):
@@ -184,10 +169,53 @@ class BinaryDetector(object):
         self.islands = None
         self.indentations = None
         self.protrusions = None
-    
-    def get_holes(self, img, filled, visualize=True):
+
+    def get_holes(self):
         '''
-        Find salient regions of type 'hole'
+        Get salient regions of type 'hole'
+        '''
+        if self.holes is None:
+            # Fill the image
+            self._filled = self.fill_image(self._img)
+            
+            # Detect the holes 
+            self.holes = self.detect_holelike(img=self._img, filled=self._filled)
+        return self.holes
+         
+    def get_islands(self):
+        '''
+        Get salient regions of type 'island'
+        '''
+        if self.islands is None:
+            # Get the inverse image
+            self._invimg = cv2.bitwise_not(self._img)
+            # Fill the inverse image
+            self._invfilled = self.fill_image(self._invimg)
+            self.islands = self.detect_holelike(img=self._invimg, filled=self._invfilled)
+        return self.islands
+         
+    def get_protrusions(self):
+        '''
+        Get salient regions of type 'protrusion'
+        '''
+        if self.protrusions is None:
+            holes = self.get_holes()
+            self.protrusions = self.detect_protrusionlike(self._img, self._filled, holes)
+        return self.protrusions
+        
+    def get_indentations(self):
+        '''
+        Get salient regions of type 'indentation'
+        '''
+        if self.indentations is None:
+            islands = self.get_islands()
+            self.indentations = self.detect_protrusionlike(self._invimg, self._invfilled, islands)
+        return self.indentations
+        
+    
+    def detect_holelike(self, img, filled):
+        '''
+        Detect hole-like salient regions, using the image and its filled version
     
         Parameters:
         ------
@@ -195,8 +223,6 @@ class BinaryDetector(object):
             image to detect holes
         filled: 2-dimensional numpy array with values 0/255, optional
             precomputed filled image
-        visualize: bool, optional
-            option for vizualizing the process
     
         Returns:
         ------
@@ -210,18 +236,13 @@ class BinaryDetector(object):
         all_the_holes = cv2.bitwise_and(filled, cv2.bitwise_not(img))
         # Substract the noise elements
         theholes = self.remove_small_elements(all_the_holes,
-                                         remove_border_elements=True,
-                                         visualize=visualize)
-    
-        if visualize:
-            helpers.show_image(all_the_holes, 'holes with noise')
-            helpers.show_image(theholes, 'holes without noise')
+                                         remove_border_elements=True)
         return theholes
     
     
-    def get_protrusions(self, img, filled, holes, visualize=True):
+    def detect_protrusionlike(self, img, filled, holes):
         '''
-        Find salient regions of type 'protrusion'
+        Detect 'protrusion'-like salient regions
     
         Parameters:
         ------
@@ -259,10 +280,8 @@ class BinaryDetector(object):
                 ccimage = np.array(255 * (labels == i), dtype='uint8')
                 wth = cv2.morphologyEx(ccimage, cv2.MORPH_TOPHAT, self.SE)
                 prots1 += wth
-                if visualize:
-                    helpers.show_image(wth, 'Top hat')
     
-        prots1_nonoise = self.remove_small_elements(prots1, visualize=visualize)
+        prots1_nonoise = self.remove_small_elements(prots1)
     
         # Now get indentations of significant holes
         nccs2, labels2, stats2, centroids2 = cv2.connectedComponentsWithStats(
@@ -275,18 +294,15 @@ class BinaryDetector(object):
             if area > min_area:
                 bth = cv2.morphologyEx(ccimage_filled, cv2.MORPH_BLACKHAT, self.SE)
                 prots2 += bth
-                if visualize:
-                    helpers.show_image(bth, 'Black Top hat')
     
-        prots2_nonoise = self.remove_small_elements(prots2, connectivity=8,
-                                               visualize=visualize)
+        prots2_nonoise = self.remove_small_elements(prots2, connectivity=8)
     
         prots = cv2.add(prots1_nonoise, prots2_nonoise)
         return prots
         
     
     def remove_small_elements(self, elements, connectivity=None, remove_border_elements=True,
-                               visualize=True):
+                               visualize=False):
         '''
         Remove elements (Connected Components) that are smaller
         then a given threshold
