@@ -204,7 +204,6 @@ def array_diff(arr1, arr2, rtol=1e-05, atol=1e-08):
     return np.allclose(arr1, arr2, rtol, atol)
 
 
-
 def data_driven_binarization(img,
                              area_factor_large=0.001,
                              area_factor_verylarge=0.1,
