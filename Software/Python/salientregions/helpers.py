@@ -204,58 +204,6 @@ def array_diff(arr1, arr2, rtol=1e-05, atol=1e-08):
     return np.allclose(arr1, arr2, rtol, atol)
 
 
-def get_SE(img, SE_size_factor=0.15, lam_factor=5):
-    '''
-    Get the structuring element en minimum salient region area for this image.
-
-    Parameters:
-    ------
-    img: 2-dimensionalnumpyarray with values 0/255
-        image to detect islands
-    SE_size_factor: float, optional
-        The fraction of the image size that the SE should be
-
-    Returns:
-    ------
-    SE: 2-dimensional numpy array of shape (k,k)
-        The structuring element to use in processing the image
-    lam: float
-        lambda, minimumm area of a salient region
-    '''
-    nrows, ncols = img.shape
-    ROI_area = nrows * ncols
-    SE_size = int(np.round(SE_size_factor * np.sqrt(ROI_area / np.pi)))
-    SE_dim_size = SE_size * 2 - 1
-    SE = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
-                                   (SE_dim_size, SE_dim_size))
-    lam = lam_factor * SE_size
-    return SE, lam
-
-
-def get_SEhi(SE, lam, scaleSE=2, scalelam=10):
-    '''
-    Get the smaller structuring element from the large structuring element
-
-    Parameters:
-    ------
-    SE: 2-dimensional numpy array of shape (k,k)
-        The large structuring element
-    scale: int
-        scale indicating how much smaller the smal SE should be
-
-    Returns:
-    ------
-    SEhi: 2-dimensional numpy array of shape (k,k)
-        The smaller structuring element to use in processing the image
-    lam_hi: float
-        Minimum area of salient region detected on boundaries of holes/islands
-    '''
-    SEhi = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
-                                     (int(SE.shape[0] / scaleSE),
-                                      int(SE.shape[1] / scaleSE)))
-    lamhi = lam / scalelam
-    return SEhi, lamhi
-
 
 def data_driven_binarization(img,
                              area_factor_large=0.001,

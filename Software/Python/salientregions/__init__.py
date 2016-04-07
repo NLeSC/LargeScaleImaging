@@ -1,5 +1,5 @@
 from helpers import show_image, binarize, read_matfile, \
-    image_diff, get_SE, get_SEhi, visualize_elements, \
+    image_diff,  visualize_elements, \
     data_driven_binarization
 from binarydetector import BinaryDetector
 from detectors import SalientDetector
