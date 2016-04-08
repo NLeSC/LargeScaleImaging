@@ -93,6 +93,43 @@ class BinaryDetectorTester(unittest.TestCase):
             visualize=False)
         indents_my = results['indentations']
         assert sr.image_diff(self.indents_true, indents_my, visualize=False)
+        
+    def test_holesislands(self):
+        results = self.binarydetector.detect(
+            self.image_noise,
+            find_holes=True,
+            find_islands=True,
+            find_indentations=False,
+            find_protrusions=False,
+            visualize=False)
+        holes_my = results['holes']
+        islands_my = results['islands']
+        assert sr.image_diff(self.holes_true, holes_my, visualize=False)
+        assert sr.image_diff(self.islands_true, islands_my, visualize=False)
+        
+    def test_protsindents(self):
+        results = self.binarydetector.detect(
+            self.image_noise,
+            find_holes=False,
+            find_islands=False,
+            find_indentations=True,
+            find_protrusions=True,
+            visualize=False)
+        assert sr.image_diff(self.indents_true, results['indentations'], visualize=False)
+        assert sr.image_diff(self.prots_true, results['protrusions'], visualize=False)
+        
+    def test_detect(self):
+        results = self.binarydetector.detect(
+            self.image_noise,
+            find_holes=True,
+            find_islands=True,
+            find_indentations=True,
+            find_protrusions=True,
+            visualize=False)
+        assert sr.image_diff(self.holes_true, results['holes'], visualize=False)
+        assert sr.image_diff(self.islands_true, results['islands'], visualize=False)
+        assert sr.image_diff(self.indents_true, results['indentations'], visualize=False)
+        assert sr.image_diff(self.prots_true, results['protrusions'], visualize=False)
 
     def test_fill_image_noise(self):
         filled = sr.BinaryDetector.fill_image(self.image_noise)
