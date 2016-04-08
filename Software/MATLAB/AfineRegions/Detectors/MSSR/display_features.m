@@ -184,8 +184,8 @@ if original
 end
 
 % display the (relevant part of the) image
-%I = uint8(I);
-I = logical(I);
+I = uint8(I);
+%I = logical(I);
 f = figure('units','normalized','outerposition',[0 0 1 1]); imshow(I);axis on; hold on;
 %--------------------------------------------------------------------------
 % parameters depending on pre-processing
