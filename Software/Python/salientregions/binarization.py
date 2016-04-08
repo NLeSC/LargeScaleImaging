@@ -32,7 +32,9 @@ class ThresholdBinarizer(Binarizer):
 
 
 class OtsuBinarizer(Binarizer):
-
+    """
+    Binarizes the image with the Otsu method.
+    """
     def binarize(self, img, visualize=True):
         threshold, binarized = cv2.threshold(
             img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -47,11 +49,12 @@ class OtsuBinarizer(Binarizer):
 
 
 class DatadrivenBinarizer(Binarizer):
-    '''
+    """
     Binarizes the image such that the desired number of (large) connected
     components is maximized.
 
-    Parameters:
+    Parameters
+    ------
     area_factor_large: float, optional
         factor that describes the minimum area of a large CC
     area_factor_verylarge: float, optional
@@ -70,7 +73,7 @@ class DatadrivenBinarizer(Binarizer):
         What connectivity to use to define CCs
     visualize: bool, optional
         option for vizualizing the process
-    '''
+    """
 
     def __init__(self,
                  area_factor_large=0.001,
