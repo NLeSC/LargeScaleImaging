@@ -55,8 +55,8 @@ else
     starting_path = fullfile(filesep,'home','elena');
 end
 project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path = fullfile(project_path, 'Data', 'FreiburgRegenerated');
-results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
+data_path = fullfile(project_path, 'Data', 'Freiburg');
+results_path = fullfile(project_path, 'Results', 'Freiburg');
 
 if interactive
     test_images = input('Enter test case: [01_graffiti|03_freiburg_center|',...
@@ -83,7 +83,7 @@ else
                 
         end
     else
-        test_images = {'01_graffiti'};
+        test_images = {'09_cool_car'};
     end
 end
 mask_filename =[];
@@ -100,9 +100,9 @@ for test_image = test_images
     len = length(image_filenames);
     
     %% loop over all test images
-    for i = 1:len
+    %for i = 1:len
          disp('Test image #: ');disp(i);
-        %for i = 1
+    for i = 1
         %% load the image & convert to gray-scale if  color
         image_data_or = imread(char(image_filenames{i}));
         if ndims(image_data_or) > 2

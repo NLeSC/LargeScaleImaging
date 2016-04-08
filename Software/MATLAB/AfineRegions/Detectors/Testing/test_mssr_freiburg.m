@@ -13,7 +13,7 @@ visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
+batch_structural = false;
 batch = 2;
 
 if interactive
@@ -26,7 +26,7 @@ if interactive
     num_levels = input('Enter the number of gray-levels: ');
     thresh = input('Enter the region threshold: ');
 else
-    saliency_types = [1 1 0 0];
+    saliency_types = [1 1 1 1];
     SE_size_factor = 0.02;
     Area_factor = 0.03;
     num_levels = 20;
@@ -52,9 +52,10 @@ else
     starting_path = fullfile(filesep,'home','elena');
 end
 project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path = fullfile(project_path, 'Data', 'FreiburgRegenerated');
-results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
-
+%data_path = fullfile(project_path, 'Data', 'FreiburgRegenerated');
+%results_path = fullfile(project_path, 'Results', 'FreiburgRegenerated');
+data_path = fullfile(project_path, 'Data', 'Freiburg');
+results_path = fullfile(project_path, 'Results', 'Freiburg');
 if interactive
     
     test_images = input('Enter test case: [01_graffiti|03_freiburg_center|',...
@@ -81,7 +82,7 @@ else
                 
         end
     else
-        test_images = {'01_graffiti'};
+        test_images = {'09_cool_car'};
     end
 end
 mask_filename =[];
@@ -100,9 +101,9 @@ for test_image = test_images
     len = length(image_filenames);
     
     %% loop over all test images
-    for i = 1:len
+%    for i = 1:len
         disp('Test image #: ');disp(i);
-        % for i =2
+     for i =1
         %% load the image & convert to gray-scale if  color
         image_data = imread(char(image_filenames{i}));
         
