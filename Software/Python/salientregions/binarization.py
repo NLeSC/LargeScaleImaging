@@ -9,7 +9,7 @@ import numpy as np
 class Binarizer(object):
 
     @abstractmethod
-    def binarize(self, img, visualise=True):
+    def binarize(self, img, visualize=True):
         pass
 
 
@@ -18,12 +18,12 @@ class ThresholdBinarizer(Binarizer):
     def __init__(self, threshold=127):
         self.threshold = threshold
 
-    def binarize(self, img, visualise=True):
+    def binarize(self, img, visualize=True):
         _, binarized = cv2.threshold(img, self.threshold, 255,
                                      cv2.THRESH_BINARY)
         if len(binarized.shape) > 2:
             binarized = binarized[:, :, 0]
-        if visualise:
+        if visualize:
             helpers.show_image(
                 binarized, window_name=(
                     'Binarized with threshold %i' %
@@ -33,12 +33,12 @@ class ThresholdBinarizer(Binarizer):
 
 class OtsuBinarizer(Binarizer):
 
-    def binarize(self, img, visualise=True):
+    def binarize(self, img, visualize=True):
         threshold, binarized = cv2.threshold(
             img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         if len(binarized.shape) > 2:
             binarized = binarized[:, :, 0]
-        if visualise:
+        if visualize:
             helpers.show_image(
                 binarized, window_name=(
                     'Binarized with threshold %i' %
@@ -90,7 +90,7 @@ class DatadrivenBinarizer(Binarizer):
         self.num_levels = num_levels
         self.connectivity = connectivity
 
-    def binarize_withthreshold(self, img, visualise=True):
+    def binarize_withthreshold(self, img, visualize=True):
         t_otsu, binarized_otsu = cv2.threshold(
             img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         t_otsu = int(t_otsu)
@@ -128,7 +128,7 @@ class DatadrivenBinarizer(Binarizer):
         t_opt = scores.argmax()
         _, binarized = cv2.threshold(img, t_opt, 255,
                                      cv2.THRESH_BINARY)
-        if visualise:
+        if visualize:
             fig = plt.figure()
             fig.canvas.set_window_title('Number of CCs per threshold level')
             plt.plot(scores)
@@ -146,6 +146,6 @@ class DatadrivenBinarizer(Binarizer):
                     t_opt))
         return t_opt, binarized
 
-    def binarize(self, img, visualise=True):
-        _, binarized = self.binarize_withthreshold(img, visualise)
+    def binarize(self, img, visualize=True):
+        _, binarized = self.binarize_withthreshold(img, visualize)
         return binarized
