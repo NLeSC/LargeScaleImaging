@@ -20,6 +20,9 @@ Data/AffineRegions/bikes/*.ppm
 Software/Python/Notebooks/.ipynb_checkpoints/
 Software/Python/dist
 Software/Python/build
+Software/Python/docs/_build
+Software/Python/docs/_static
+Software/Python/docs/_templates
 *.aux
 *.toc
 *.*~

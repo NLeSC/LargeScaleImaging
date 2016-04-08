@@ -11,11 +11,10 @@ from binarydetector import BinaryDetector
 
 
 class Detector(object):
-    '''
+    """
     Abstract class for salient region detectors.
 
-
-    Parameters:
+    Parameters
     ------
     SE_size_factor: float, optional
         The fraction of the image size that the structuring element should be
@@ -24,7 +23,7 @@ class Detector(object):
     connectivity: int
         What connectivity to use to define CCs
 
-    '''
+    """
 
     __metaclass__ = ABCMeta
 
@@ -41,29 +40,33 @@ class Detector(object):
     def detect(self, img, find_holes=True, find_islands=True,
                find_indentations=True, find_protrusions=True,
                visualize=True):
-        '''
+        """
         This method should be implemented to return a
          dictionary with the salientregions.
         Calling this function from the superclass makes sure the
          structuring elemnt and lamda are created.
 
-        '''
+        """
         nrows, ncols = img.shape[0], img.shape[1]
         self.get_SE(nrows * ncols)
 
     def get_SE(self, imgsize):
-        '''
-        Get the structuring element en minimum salient region area for this image.
+        """Get the structuring element en minimum salient region area for this image.
         The standard type of binarization is Datadriven (as in DMSR),
         but it is possible to pass a different Binarizer.
+        
+        Parameters        
+        ------
+        imgsize: int
+            size (nr of pixels) of the image
 
-        Returns:
+        Returns
         ------
         SE: 2-dimensional numpy array of shape (k,k)
             The structuring element to use in processing the image
         lam: float
             lambda, minimumm area of a salient region
-        '''
+        """
 
         SE_size = int(np.round(self.SE_size_factor * np.sqrt(imgsize / np.pi)))
         SE_dim_size = SE_size * 2 - 1
@@ -74,8 +77,7 @@ class Detector(object):
 
 
 class SalientDetector(Detector):
-    '''
-    Find salient regions of all four types, in color or greyscale images.
+    """Find salient regions of all four types, in color or greyscale images.
     The image is first binarized using the specified binarizer,
     then a binary detector is used.
 
@@ -86,7 +88,7 @@ class SalientDetector(Detector):
         By default, we use datadriven binarization
     **kwargs
         Other arguments to pass along to the constructor of the superclass Detector
-    '''
+    """
 
     def __init__(self, binarizer=None, **kwargs):
         super(SalientDetector, self).__init__(**kwargs)
@@ -102,9 +104,9 @@ class SalientDetector(Detector):
             find_indentations=True,
             find_protrusions=True,
             visualize=True):
-        '''
-        Find salient regions of the types specified.
-        Parameters:
+        """Find salient regions of the types specified.
+        
+        Parameters
         ------
         img: 2-dimensional numpy array with values between 0 and 255
             grayscale image to detect regions
@@ -118,7 +120,8 @@ class SalientDetector(Detector):
             Whether to detect regions of type protrusion
         visualize: bool, optional
             option for vizualizing the process
-        Returns:
+            
+        Returns
         ------
         dictionary with the following possible items:
         holes: 2-dimensional numpy array with values 0/255
@@ -129,7 +132,7 @@ class SalientDetector(Detector):
             Image with all indentations as foreground.
         protrusions: 2-dimensional numpy array with values 0/255
             Image with all protrusions as foreground.
-        '''
+        """
         super(
             SalientDetector,
             self).detect(
@@ -168,8 +171,7 @@ class SalientDetector(Detector):
 class MSSRDetector(Detector):
 
     def __init__(self, min_thres=0, max_thres=255, step=1, perc=0.7, **kwargs):
-        '''
-        Find salient regions of all four types, in color or greyscale images.
+        """Find salient regions of all four types, in color or greyscale images.
         It uses MSSR, meaning that it detects on a series of thershold levels.
 
         Parameters
@@ -184,7 +186,7 @@ class MSSRDetector(Detector):
             stepsize for looping through threshold levels
         **kwargs
             Other arguments to pass along to the constructor of the superclass Detector
-        '''
+        """
         super(MSSRDetector, self).__init__(**kwargs)
         self.min_thres = min_thres
         self.max_thres = max_thres
@@ -199,9 +201,9 @@ class MSSRDetector(Detector):
             find_indentations=True,
             find_protrusions=True,
             visualize=True):
-        '''
-        Find salient regions of the types specified.
-        Parameters:
+        """Find salient regions of the types specified.
+        
+        Parameters
         ------
         img: 2-dimensional numpy array with values between 0 and 255
             grayscale image to detect regions
@@ -215,7 +217,8 @@ class MSSRDetector(Detector):
             Whether to detect regions of type protrusion
         visualize: bool, optional
             option for vizualizing the process
-        Returns:
+        
+        Returns
         ------
         dictionary with the following possible items:
         holes: 2-dimensional numpy array with values 0/255
@@ -226,7 +229,7 @@ class MSSRDetector(Detector):
             Image with all indentations as foreground.
         protrusions: 2-dimensional numpy array with values 0/255
             Image with all protrusions as foreground.
-        '''
+        """
         super(
             MSSRDetector,
             self).detect(
@@ -288,17 +291,18 @@ class MSSRDetector(Detector):
         return result
 
     def threshold_cumsum(self, data):
-        '''
-        Thresholds an image based on a percentile of the non-zero pixel values.
-        Parameters:
+        """Thresholds an image based on a percentile of the non-zero pixel values.
+        
+        Parameters
         ------
         data: 2-dimensional numpy array
             the image to threshold
-        Returns:
+
+        Returns
         ------
         binarized: 2-dimensional numpy array
             Thresholded image
-        '''
+        """
         # If the data is already binary, don't do the percentile
         if len(np.unique(data)) == 2:
             thres = np.min(data)

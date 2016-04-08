@@ -59,9 +59,8 @@ class BinaryDetector(object):
         self.protrusions = None
 
     def get_holes(self):
-        '''
-        Get salient regions of type 'hole'
-        '''
+        """Get salient regions of type 'hole'
+        """
         if self.holes is None:
             # Fill the image
             self._filled = self.fill_image(self._img)
@@ -72,9 +71,8 @@ class BinaryDetector(object):
         return self.holes
 
     def get_islands(self):
-        '''
-        Get salient regions of type 'island'
-        '''
+        """Get salient regions of type 'island'
+        """
         if self.islands is None:
             # Get the inverse image
             self._invimg = cv2.bitwise_not(self._img)
@@ -85,9 +83,8 @@ class BinaryDetector(object):
         return self.islands
 
     def get_protrusions(self):
-        '''
-        Get salient regions of type 'protrusion'
-        '''
+        """Get salient regions of type 'protrusion'
+        """
         if self.protrusions is None:
             holes = self.get_holes()
             self.protrusions = self.detect_protrusionlike(
@@ -95,9 +92,8 @@ class BinaryDetector(object):
         return self.protrusions
 
     def get_indentations(self):
-        '''
-        Get salient regions of type 'indentation'
-        '''
+        """Get salient regions of type 'indentation'
+        """
         if self.indentations is None:
             islands = self.get_islands()
             self.indentations = self.detect_protrusionlike(
@@ -105,23 +101,22 @@ class BinaryDetector(object):
         return self.indentations
 
     def detect_holelike(self, img, filled):
-        '''
-        Detect hole-like salient regions, using the image and its filled version
+        """Detect hole-like salient regions, using the image and its filled version
 
-        Parameters:
+        Parameters
         ------
         img: 2-dimensional numpy array with values 0/255
             image to detect holes
         filled: 2-dimensional numpy array with values 0/255, optional
             precomputed filled image
 
-        Returns:
+        Returns
         ------
         filled:  2-dimensional numpy array with values 0/255
             The filled image
         holes: 2-dimensional numpy array with values 0/255
             Image with all holes as foreground.
-        '''
+        """
 
         # Get all the holes (including those that are noise)
         all_the_holes = cv2.bitwise_and(filled, cv2.bitwise_not(img))
@@ -131,10 +126,9 @@ class BinaryDetector(object):
         return theholes
 
     def detect_protrusionlike(self, img, filled, holes):
-        '''
-        Detect 'protrusion'-like salient regions
+        """Detect 'protrusion'-like salient regions
 
-        Parameters:
+        Parameters
         ------
         img: 2-dimensional numpy array with values 0/255
             image to detect holes
@@ -145,13 +139,13 @@ class BinaryDetector(object):
         visualize: bool, optional
             option for vizualizing the process
 
-        Returns:
+        Returns
         ------
         filled:  2-dimensional numpy array with values 0/255
             The filled image
         protrusions: 2-dimensional numpy array with values 0/255
             Image with all protrusions as foreground.
-        '''
+        """
 
         # Calculate minimum area for connected components
         min_area = self.area_factor * img.size
@@ -197,11 +191,10 @@ class BinaryDetector(object):
             connectivity=None,
             remove_border_elements=True,
             visualize=False):
-        '''
-        Remove elements (Connected Components) that are smaller
+        """Remove elements (Connected Components) that are smaller
         then a given threshold
 
-        Parameters:
+        Parameters
         ------
         img: 2-dimensional numpy array with values 0/255
             binary image with elements
@@ -212,11 +205,11 @@ class BinaryDetector(object):
         visualize: bool, optional
             option for vizualizing the process
 
-        Returns:
+        Returns
         ------
         result: 2-dimensional numpy array with values 0/255
             Image with all elements larger then lam
-        '''
+        """
         if connectivity is None:
             connectivity = self.connectivity
         result = elements.copy()
@@ -248,19 +241,18 @@ class BinaryDetector(object):
 
     @staticmethod
     def fill_image(img):
-        '''
-        Fills all holes in connected components in the image.
+        """Fills all holes in connected components in the image.
 
-        Parameters:
+        Parameters
         ------
         img: 2-dimensional numpy array with values 0/255
             image to fill
 
-        Returns:
+        Returns
         ------
         filled:  2-dimensional numpy array with values 0/255
             The filled image
-        '''
+        """
 
         filled = img.copy()
         _, contours, hierarchy = cv2.findContours(filled,
