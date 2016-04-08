@@ -1,0 +1,714 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>salientregions package &mdash; Salient Region Detectors 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Salient Region Detectors 0.1 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Salient Region Detectors 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="salientregions-package">
+<h1>salientregions package<a class="headerlink" href="#salientregions-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-salientregions.binarization">
+<span id="salientregions-binarization-module"></span><h2>salientregions.binarization module<a class="headerlink" href="#module-salientregions.binarization" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="salientregions.binarization.Binarizer">
+<em class="property">class </em><code class="descclassname">salientregions.binarization.</code><code class="descname">Binarizer</code><a class="headerlink" href="#salientregions.binarization.Binarizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="salientregions.binarization.Binarizer.binarize">
+<code class="descname">binarize</code><span class="sig-paren">(</span><em>img</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarization.Binarizer.binarize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="salientregions.binarization.DatadrivenBinarizer">
+<em class="property">class </em><code class="descclassname">salientregions.binarization.</code><code class="descname">DatadrivenBinarizer</code><span class="sig-paren">(</span><em>area_factor_large=0.001</em>, <em>area_factor_verylarge=0.1</em>, <em>lam=-1</em>, <em>SE_size_factor=0.15</em>, <em>weights=(0.33</em>, <em>0.33</em>, <em>0.33)</em>, <em>offset=80</em>, <em>num_levels=256</em>, <em>connectivity=4</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarization.DatadrivenBinarizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#salientregions.binarization.Binarizer" title="salientregions.binarization.Binarizer"><code class="xref py py-class docutils literal"><span class="pre">salientregions.binarization.Binarizer</span></code></a></p>
+<p>Binarizes the image such that the desired number of (large) connected
+components is maximized.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>area_factor_large</strong> (<em>float, optional</em>) &#8211; factor that describes the minimum area of a large CC</li>
+<li><strong>area_factor_verylarge</strong> (<em>float, optional</em>) &#8211; factor that describes the minimum area of a very large CC</li>
+<li><strong>lam</strong> (<em>float, optional</em>) &#8211; lambda, minimumm area of a connected component</li>
+<li><strong>weights</strong> (<em>(float, float, float)</em>) &#8211; weights for number of CC, number of large CC
+and number of very large CC respectively.</li>
+<li><strong>offset</strong> (<em>int, optional</em>) &#8211; The offset (number of gray levels) to search for around the Otsu level</li>
+<li><strong>num_levels</strong> (<em>int, optional</em>) &#8211; number of gray levels to be considered [1..255],
+the default number 256 gives a stepsize of 1.</li>
+<li><strong>connectivity</strong> (<em>int</em>) &#8211; What connectivity to use to define CCs</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; option for vizualizing the process</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="salientregions.binarization.DatadrivenBinarizer.binarize">
+<code class="descname">binarize</code><span class="sig-paren">(</span><em>img</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarization.DatadrivenBinarizer.binarize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarization.DatadrivenBinarizer.binarize_withthreshold">
+<code class="descname">binarize_withthreshold</code><span class="sig-paren">(</span><em>img</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarization.DatadrivenBinarizer.binarize_withthreshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="salientregions.binarization.OtsuBinarizer">
+<em class="property">class </em><code class="descclassname">salientregions.binarization.</code><code class="descname">OtsuBinarizer</code><a class="headerlink" href="#salientregions.binarization.OtsuBinarizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#salientregions.binarization.Binarizer" title="salientregions.binarization.Binarizer"><code class="xref py py-class docutils literal"><span class="pre">salientregions.binarization.Binarizer</span></code></a></p>
+<p>Binarizes the image with the Otsu method.</p>
+<dl class="method">
+<dt id="salientregions.binarization.OtsuBinarizer.binarize">
+<code class="descname">binarize</code><span class="sig-paren">(</span><em>img</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarization.OtsuBinarizer.binarize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="salientregions.binarization.ThresholdBinarizer">
+<em class="property">class </em><code class="descclassname">salientregions.binarization.</code><code class="descname">ThresholdBinarizer</code><span class="sig-paren">(</span><em>threshold=127</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarization.ThresholdBinarizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#salientregions.binarization.Binarizer" title="salientregions.binarization.Binarizer"><code class="xref py py-class docutils literal"><span class="pre">salientregions.binarization.Binarizer</span></code></a></p>
+<dl class="method">
+<dt id="salientregions.binarization.ThresholdBinarizer.binarize">
+<code class="descname">binarize</code><span class="sig-paren">(</span><em>img</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarization.ThresholdBinarizer.binarize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-salientregions.binarydetector">
+<span id="salientregions-binarydetector-module"></span><h2>salientregions.binarydetector module<a class="headerlink" href="#module-salientregions.binarydetector" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="salientregions.binarydetector.BinaryDetector">
+<em class="property">class </em><code class="descclassname">salientregions.binarydetector.</code><code class="descname">BinaryDetector</code><span class="sig-paren">(</span><em>SE</em>, <em>lam</em>, <em>area_factor</em>, <em>connectivity</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.detect">
+<code class="descname">detect</code><span class="sig-paren">(</span><em>img</em>, <em>find_holes=True</em>, <em>find_islands=True</em>, <em>find_indentations=True</em>, <em>find_protrusions=True</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.detect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.detect_holelike">
+<code class="descname">detect_holelike</code><span class="sig-paren">(</span><em>img</em>, <em>filled</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.detect_holelike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect hole-like salient regions, using the image and its filled version</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211; image to detect holes</li>
+<li><strong>filled</strong> (<em>2-dimensional numpy array with values 0/255, optional</em>) &#8211; precomputed filled image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>filled</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+The filled image</li>
+<li><strong>holes</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all holes as foreground.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.detect_protrusionlike">
+<code class="descname">detect_protrusionlike</code><span class="sig-paren">(</span><em>img</em>, <em>filled</em>, <em>holes</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.detect_protrusionlike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect &#8216;protrusion&#8217;-like salient regions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211; image to detect holes</li>
+<li><strong>filled</strong> (<em>2-dimensional numpy array with values 0/255, optional</em>) &#8211; precomputed filled image</li>
+<li><strong>holes</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211; The earlier detected holes</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; option for vizualizing the process</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>filled</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+The filled image</li>
+<li><strong>protrusions</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all protrusions as foreground.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="salientregions.binarydetector.BinaryDetector.fill_image">
+<em class="property">static </em><code class="descname">fill_image</code><span class="sig-paren">(</span><em>img</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.fill_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills all holes in connected components in the image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>img</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211; image to fill</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>filled</strong> &#8211;
+The filled image</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">2-dimensional numpy array with values 0/255</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.get_holes">
+<code class="descname">get_holes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.get_holes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get salient regions of type &#8216;hole&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.get_indentations">
+<code class="descname">get_indentations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.get_indentations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get salient regions of type &#8216;indentation&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.get_islands">
+<code class="descname">get_islands</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.get_islands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get salient regions of type &#8216;island&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.get_protrusions">
+<code class="descname">get_protrusions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.get_protrusions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get salient regions of type &#8216;protrusion&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.remove_small_elements">
+<code class="descname">remove_small_elements</code><span class="sig-paren">(</span><em>elements</em>, <em>connectivity=None</em>, <em>remove_border_elements=True</em>, <em>visualize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.remove_small_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove elements (Connected Components) that are smaller
+then a given threshold</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211; binary image with elements</li>
+<li><strong>lam</strong> (<em>float, optional</em>) &#8211; lambda, minimumm area of a salient region</li>
+<li><strong>remove_border_elements</strong> (<em>bool, optional</em>) &#8211; Also remove elements that are attached to the border</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; option for vizualizing the process</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> &#8211;
+Image with all elements larger then lam</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2-dimensional numpy array with values 0/255</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.binarydetector.BinaryDetector.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.binarydetector.BinaryDetector.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-salientregions.detectors">
+<span id="salientregions-detectors-module"></span><h2>salientregions.detectors module<a class="headerlink" href="#module-salientregions.detectors" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="salientregions.detectors.Detector">
+<em class="property">class </em><code class="descclassname">salientregions.detectors.</code><code class="descname">Detector</code><span class="sig-paren">(</span><em>SE_size_factor=0.15</em>, <em>lam_factor=5</em>, <em>area_factor=0.05</em>, <em>connectivity=4</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.Detector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Abstract class for salient region detectors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>SE_size_factor</strong> (<em>float, optional</em>) &#8211; The fraction of the image size that the structuring element should be</li>
+<li><strong>area_factor</strong> (<em>float, optional</em>) &#8211; factor that describes the minimum area of a significent CC</li>
+<li><strong>connectivity</strong> (<em>int</em>) &#8211; What connectivity to use to define CCs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="salientregions.detectors.Detector.detect">
+<code class="descname">detect</code><span class="sig-paren">(</span><em>img</em>, <em>find_holes=True</em>, <em>find_islands=True</em>, <em>find_indentations=True</em>, <em>find_protrusions=True</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.Detector.detect" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>This method should be implemented to return a</dt>
+<dd>dictionary with the salientregions.</dd>
+<dt>Calling this function from the superclass makes sure the</dt>
+<dd>structuring elemnt and lamda are created.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.detectors.Detector.get_SE">
+<code class="descname">get_SE</code><span class="sig-paren">(</span><em>imgsize</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.Detector.get_SE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the structuring element en minimum salient region area for this image.
+The standard type of binarization is Datadriven (as in DMSR),
+but it is possible to pass a different Binarizer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>imgsize</strong> (<em>int</em>) &#8211; size (nr of pixels) of the image</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>SE</strong> (<em>2-dimensional numpy array of shape (k,k)</em>) &#8211;
+The structuring element to use in processing the image</li>
+<li><strong>lam</strong> (<em>float</em>) &#8211;
+lambda, minimumm area of a salient region</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="salientregions.detectors.MSSRDetector">
+<em class="property">class </em><code class="descclassname">salientregions.detectors.</code><code class="descname">MSSRDetector</code><span class="sig-paren">(</span><em>min_thres=0</em>, <em>max_thres=255</em>, <em>step=1</em>, <em>perc=0.7</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.MSSRDetector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#salientregions.detectors.Detector" title="salientregions.detectors.Detector"><code class="xref py py-class docutils literal"><span class="pre">salientregions.detectors.Detector</span></code></a></p>
+<dl class="method">
+<dt id="salientregions.detectors.MSSRDetector.detect">
+<code class="descname">detect</code><span class="sig-paren">(</span><em>img</em>, <em>find_holes=True</em>, <em>find_islands=True</em>, <em>find_indentations=True</em>, <em>find_protrusions=True</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.MSSRDetector.detect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find salient regions of the types specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>2-dimensional numpy array with values between 0 and 255</em>) &#8211; grayscale image to detect regions</li>
+<li><strong>find_holes</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type hole</li>
+<li><strong>find_islands</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type island</li>
+<li><strong>find_indentations</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type indentation</li>
+<li><strong>find_protrusions</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type protrusion</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; option for vizualizing the process</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>dictionary with the following possible items</em></li>
+<li><strong>holes</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all holes as foreground.</li>
+<li><strong>islands</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all islands as foreground.</li>
+<li><strong>indentations</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all indentations as foreground.</li>
+<li><strong>protrusions</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all protrusions as foreground.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="salientregions.detectors.MSSRDetector.threshold_cumsum">
+<code class="descname">threshold_cumsum</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.MSSRDetector.threshold_cumsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thresholds an image based on a percentile of the non-zero pixel values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>2-dimensional numpy array</em>) &#8211; the image to threshold</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>binarized</strong> &#8211;
+Thresholded image</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">2-dimensional numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="salientregions.detectors.SalientDetector">
+<em class="property">class </em><code class="descclassname">salientregions.detectors.</code><code class="descname">SalientDetector</code><span class="sig-paren">(</span><em>binarizer=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.SalientDetector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#salientregions.detectors.Detector" title="salientregions.detectors.Detector"><code class="xref py py-class docutils literal"><span class="pre">salientregions.detectors.Detector</span></code></a></p>
+<p>Find salient regions of all four types, in color or greyscale images.
+The image is first binarized using the specified binarizer,
+then a binary detector is used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>binarizer</strong> (<em>Binerizer object, optional</em>) &#8211; Binerizer object that handles the binarization.
+By default, we use datadriven binarization</li>
+<li><strong>**kwargs</strong> &#8211; <p>Other arguments to pass along to the constructor of the superclass Detector</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="salientregions.detectors.SalientDetector.detect">
+<code class="descname">detect</code><span class="sig-paren">(</span><em>img</em>, <em>find_holes=True</em>, <em>find_islands=True</em>, <em>find_indentations=True</em>, <em>find_protrusions=True</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.detectors.SalientDetector.detect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find salient regions of the types specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>2-dimensional numpy array with values between 0 and 255</em>) &#8211; grayscale image to detect regions</li>
+<li><strong>find_holes</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type hole</li>
+<li><strong>find_islands</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type island</li>
+<li><strong>find_indentations</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type indentation</li>
+<li><strong>find_protrusions</strong> (<em>bool, optional</em>) &#8211; Whether to detect regions of type protrusion</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; option for vizualizing the process</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>dictionary with the following possible items</em></li>
+<li><strong>holes</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all holes as foreground.</li>
+<li><strong>islands</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all islands as foreground.</li>
+<li><strong>indentations</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all indentations as foreground.</li>
+<li><strong>protrusions</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Image with all protrusions as foreground.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-salientregions.helpers">
+<span id="salientregions-helpers-module"></span><h2>salientregions.helpers module<a class="headerlink" href="#module-salientregions.helpers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="salientregions.helpers.array_diff">
+<code class="descclassname">salientregions.helpers.</code><code class="descname">array_diff</code><span class="sig-paren">(</span><em>arr1</em>, <em>arr2</em>, <em>rtol=1e-05</em>, <em>atol=1e-08</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.helpers.array_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares two arrays. Useful for testing purposes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>arr1</strong> (<em>2-dimensional numpy, first array to compare</em>) &#8211; </li>
+<li><strong>arr2</strong> (<em>2-dimensional numpy, second array to compare</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>is_close</strong> &#8211;
+True if elemetns of the two arrays are close within the defaults tolerance
+(see numpy.allclose documentaiton for tolerance values)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="salientregions.helpers.binary_mask2ellipse_features">
+<code class="descclassname">salientregions.helpers.</code><code class="descname">binary_mask2ellipse_features</code><span class="sig-paren">(</span><em>binary_mask</em>, <em>connectivity=4</em>, <em>saliency_type=1</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.helpers.binary_mask2ellipse_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of binary regions to ellipse features.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>binary_mask</strong> (<em>2-D numpy array</em>) &#8211; Binary mask of the detected salient regions of the given saliency type</li>
+<li><strong>connectivity</strong> (<em>int</em>) &#8211; Neighborhood connectivity</li>
+<li><strong>saliency_type</strong> (<em>int</em>) &#8211; Type of salient regions. The code  is:
+1: holes
+2: islands
+3: indentaitons
+4: protrusions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>num_regions</strong> (<em>int</em>) &#8211;
+The number of saleint regions of saliency_type</li>
+<li><strong>features</strong> (<em>2-D numpy array with he equivalnet ellipse features</em>) &#8211;
+Every row corresponds to a single region/ellipse ans is of format
+x0 y0 A B C saliency_type ,
+where (x0,y0) are the coordinates of the ellipse centroid and A, B and C
+are the polynomial coefficients from the ellipse equation Ax^2 + Bxy + Cy^2 = 1</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="salientregions.helpers.image_diff">
+<code class="descclassname">salientregions.helpers.</code><code class="descname">image_diff</code><span class="sig-paren">(</span><em>img1</em>, <em>img2</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.helpers.image_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares two images and shows the difference.
+Useful for testing purposes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img1</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211; first image to compare</li>
+<li><strong>img1</strong> &#8211; second image to compare</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; option for vizualizing the process</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>is_same</strong> &#8211;
+True if all pixels of the two images are equal</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="salientregions.helpers.read_matfile">
+<code class="descclassname">salientregions.helpers.</code><code class="descname">read_matfile</code><span class="sig-paren">(</span><em>filename</em>, <em>visualize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.helpers.read_matfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a matfile with the binary masks for the salient regions.
+Returns the masks with 0/255 values for the 4 salient types</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; Path to the mat file</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; option for vizualizing the process</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>holes</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Binary image with holes as foreground</li>
+<li><strong>islands</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Binary image with islands as foreground</li>
+<li><strong>protrusions</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Binary image with protrusions as foreground</li>
+<li><strong>indentations</strong> (<em>2-dimensional numpy array with values 0/255</em>) &#8211;
+Binary image with indentations as foreground</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="salientregions.helpers.region2ellipse">
+<code class="descclassname">salientregions.helpers.</code><code class="descname">region2ellipse</code><span class="sig-paren">(</span><em>half_major_axis</em>, <em>half_minor_axis</em>, <em>theta</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.helpers.region2ellipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of elliptic parameters to polynomial coefficients.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>half_major_axis</strong> (<em>float</em>) &#8211; Half of the length of the ellipse&#8217;s major axis</li>
+<li><strong>half_minor_axis</strong> (<em>float</em>) &#8211; Half of the length of the ellipse&#8217;s minor axis</li>
+<li><strong>theta</strong> (<em>float</em>) &#8211; The ellipse orientation angle (radians) between the major and the x axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>A, B, C</strong> &#8211;
+The coefficients of the polynomial equation of an ellipse Ax^2 + Bxy + Cy^2 = 1</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">floats</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="salientregions.helpers.show_image">
+<code class="descclassname">salientregions.helpers.</code><code class="descname">show_image</code><span class="sig-paren">(</span><em>img</em>, <em>window_name='image'</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.helpers.show_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the image.
+When a key is pressed, the window is closed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>img</strong> (<em>multidimensional numpy array)</em>) &#8211; image</li>
+<li><strong>window_name</strong> (<em>str, optional</em>) &#8211; name of the window</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="salientregions.helpers.visualize_elements">
+<code class="descclassname">salientregions.helpers.</code><code class="descname">visualize_elements</code><span class="sig-paren">(</span><em>img</em>, <em>holes=None</em>, <em>islands=None</em>, <em>indentations=None</em>, <em>protrusions=None</em>, <em>visualize=True</em>, <em>display_name='salient regions'</em><span class="sig-paren">)</span><a class="headerlink" href="#salientregions.helpers.visualize_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the image with the salient regions provided.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<em>multidimensional numpy array</em>) &#8211; image</li>
+<li><strong>holes</strong> (<em>2-dimensional numpy array with values 0/255, optional</em>) &#8211; The holes, to display in blue</li>
+<li><strong>islands</strong> (<em>2-dimensional numpy array with values 0/255, optional</em>) &#8211; The islands, to display in yellow</li>
+<li><strong>indentations</strong> (<em>2-dimensional numpy array with values 0/255, optional</em>) &#8211; The indentations, to display in green</li>
+<li><strong>protrusions</strong> (<em>2-dimensional numpy array with values 0/255, optional</em>) &#8211; The protrusions, to display in red</li>
+<li><strong>visualize</strong> (<em>bool, optional</em>) &#8211; vizualizations flag</li>
+<li><strong>display_name</strong> (<em>str, optional</em>) &#8211; name of the window</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>img_to_show</strong> &#8211;
+image with the colored regions</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">3-dimensional numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-salientregions"></span></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">salientregions package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-salientregions.binarization">salientregions.binarization module</a></li>
+<li><a class="reference internal" href="#module-salientregions.binarydetector">salientregions.binarydetector module</a></li>
+<li><a class="reference internal" href="#module-salientregions.detectors">salientregions.detectors module</a></li>
+<li><a class="reference internal" href="#module-salientregions.helpers">salientregions.helpers module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/salientregions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Salient Region Detectors 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Netherlands eScience Center.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
+    </div>
+  </body>
+</html>
