@@ -23,5 +23,6 @@
 % test_bwstatsfilt_LMwood- testing the bw region filtering of LMwood data
 % test_geom_distr- testing geometric distribution of centroids
 % test_dbscan_filt_centroids.m - testing DBSCAN algorithms on the filtered regions centroids
+% test_dilate_components_LMwood.m- testing sucessive dilation of filtered DMSR regions on LMwood data
 
 
