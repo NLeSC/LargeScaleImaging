@@ -4,7 +4,38 @@ import numpy as np
 
 
 class BinaryDetector(object):
+    """
+    Class for detecting salient regions in binary images.
 
+    Parameters
+    ------
+    SE : numpy array
+            The structuring element to use in processing the image
+    lam : float
+        lambda, minimumm area of a connected component
+    area_factor: float
+        factor that describes the minimum area of a significent CC    
+    connectivity: int
+        What connectivity to use to define CCs
+
+    Attributes
+    ------
+    holes : numpy array
+        binary mask of the holes
+    islands : numpy array
+        binary mask of the islands
+    indentations : numpy array
+        binary mask of the indentations
+    protrusions : numpy array
+        binary mask of the protrusions
+        
+    Note
+    ------
+    The methods `detect`, `get_holes`, `get_islands`, `get_indentations` 
+    and `get_protrusions` invoke the calculation of the regions. After that, the 
+    regions are also available as attributes `holes`, `islands`, `indentations` 
+    and `protrusions`.
+    """
     def __init__(self, SE, lam, area_factor, connectivity):
         self.SE = SE
         self.lam = lam
@@ -21,6 +52,28 @@ class BinaryDetector(object):
 
     def detect(self, img, find_holes=True, find_islands=True,
                find_indentations=True, find_protrusions=True, visualize=True):
+        """Find salient regions of the types specified.
+        
+        Parameters
+        ------
+        img: numpy array
+            binary image to detect regions
+        find_holes: bool, optional
+            Whether to detect regions of type hole
+        find_islands: bool, optional
+            Whether to detect regions of type island
+        find_indentations: bool, optional
+            Whether to detect regions of type indentation
+        find_protrusions: bool, optional
+            Whether to detect regions of type protrusion
+        visualize: bool, optional
+            option for vizualizing the process
+            
+        Returns
+        ------
+        regions: dict 
+            For each type of region, the maks with detected regions.
+        """
         regions = {}
         self.reset()
         self._img = img
@@ -106,16 +159,14 @@ class BinaryDetector(object):
         Parameters
         ------
         img: 2-dimensional numpy array with values 0/255
-            image to detect holes
+            Image to detect holes
         filled: 2-dimensional numpy array with values 0/255, optional
-            precomputed filled image
+            Precomputed filled image
 
         Returns
         ------
-        filled:  2-dimensional numpy array with values 0/255
-            The filled image
         holes: 2-dimensional numpy array with values 0/255
-            Image with all holes as foreground.
+            Mask with all holes as foreground.
         """
 
         # Get all the holes (including those that are noise)
@@ -136,13 +187,9 @@ class BinaryDetector(object):
             precomputed filled image
         holes: 2-dimensional numpy array with values 0/255
             The earlier detected holes
-        visualize: bool, optional
-            option for vizualizing the process
 
         Returns
         ------
-        filled:  2-dimensional numpy array with values 0/255
-            The filled image
         protrusions: 2-dimensional numpy array with values 0/255
             Image with all protrusions as foreground.
         """
@@ -196,19 +243,19 @@ class BinaryDetector(object):
 
         Parameters
         ------
-        img: 2-dimensional numpy array with values 0/255
+        img : numpy array
             binary image with elements
         lam: float, optional
             lambda, minimumm area of a salient region
         remove_border_elements: bool, optional
             Also remove elements that are attached to the border
         visualize: bool, optional
-            option for vizualizing the process
+            option for visualizing the process
 
         Returns
         ------
-        result: 2-dimensional numpy array with values 0/255
-            Image with all elements larger then lam
+        result : numpy array
+            Binary image with all elements larger then lam
         """
         if connectivity is None:
             connectivity = self.connectivity
@@ -241,16 +288,16 @@ class BinaryDetector(object):
 
     @staticmethod
     def fill_image(img):
-        """Fills all holes in connected components in the image.
+        """Fills all holes in connected components in a binary image.
 
         Parameters
         ------
-        img: 2-dimensional numpy array with values 0/255
-            image to fill
+        img : numpy array
+            binary image to fill
 
         Returns
         ------
-        filled:  2-dimensional numpy array with values 0/255
+        filled : numpy array
             The filled image
         """
 

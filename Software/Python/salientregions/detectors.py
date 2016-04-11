@@ -88,6 +88,13 @@ class SalientDetector(Detector):
         By default, we use datadriven binarization
     **kwargs
         Other arguments to pass along to the constructor of the superclass Detector
+        
+    Attributes
+    ------
+    gray : numpy array
+        The image converted to grayscale
+    binarized : numpy array
+        The binarized image
     """
 
     def __init__(self, binarizer=None, **kwargs):
@@ -108,8 +115,8 @@ class SalientDetector(Detector):
         
         Parameters
         ------
-        img: 2-dimensional numpy array with values between 0 and 255
-            grayscale image to detect regions
+        img: numpy arrary
+            grayscale or color image to detect regions
         find_holes: bool, optional
             Whether to detect regions of type hole
         find_islands: bool, optional
@@ -119,19 +126,12 @@ class SalientDetector(Detector):
         find_protrusions: bool, optional
             Whether to detect regions of type protrusion
         visualize: bool, optional
-            option for vizualizing the process
+            Option for visualizing the process
             
         Returns
         ------
-        dictionary with the following possible items:
-        holes: 2-dimensional numpy array with values 0/255
-            Image with all holes as foreground.
-        islands: 2-dimensional numpy array with values 0/255
-            Image with all islands as foreground.
-        indentations: 2-dimensional numpy array with values 0/255
-            Image with all indentations as foreground.
-        protrusions: 2-dimensional numpy array with values 0/255
-            Image with all protrusions as foreground.
+        regions: dict 
+            For each type of region, the maks with detected regions.
         """
         super(
             SalientDetector,
@@ -169,29 +169,38 @@ class SalientDetector(Detector):
 
 
 class MSSRDetector(Detector):
+    """Find salient regions of all four types, in color or greyscale images.
+    It uses MSSR, meaning that it detects on a series of threshold levels.
+
+    Parameters
+    ------
+    min_thres: int, optional
+        Minimum threshold level
+    max_thres: int, optional
+        Maximum threshold level
+    step: int, optional
+        Stepsize for looping through threshold levels
+    perc: float, optional
+        The percentile at which the threshold is taken
+    **kwargs
+        Other arguments to pass along to the constructor of the superclass `Detector`
+        
+    Attributes
+    ------
+    gray : numpy array
+        The image converted to grayscale
+    regions_sum : numpy array
+        The sum of the regions of all levels, before thresholding
+    """
 
     def __init__(self, min_thres=0, max_thres=255, step=1, perc=0.7, **kwargs):
-        """Find salient regions of all four types, in color or greyscale images.
-        It uses MSSR, meaning that it detects on a series of thershold levels.
-
-        Parameters
-        ------
-        perc: float, optional
-            The percentile at which the threshold is taken
-        min_thres: int, optional
-            Minimum threshold level
-        max_thres: int, optional
-            Maximum threshold level
-        step: int, optional
-            stepsize for looping through threshold levels
-        **kwargs
-            Other arguments to pass along to the constructor of the superclass Detector
-        """
         super(MSSRDetector, self).__init__(**kwargs)
         self.min_thres = min_thres
         self.max_thres = max_thres
         self.step = step
         self.perc = perc
+        self.gray = None
+        self.regions_sum = None
 
     def detect(
             self,
@@ -205,8 +214,8 @@ class MSSRDetector(Detector):
         
         Parameters
         ------
-        img: 2-dimensional numpy array with values between 0 and 255
-            grayscale image to detect regions
+        img: numpy arrary
+            grayscale or color image to detect regions
         find_holes: bool, optional
             Whether to detect regions of type hole
         find_islands: bool, optional
@@ -216,19 +225,12 @@ class MSSRDetector(Detector):
         find_protrusions: bool, optional
             Whether to detect regions of type protrusion
         visualize: bool, optional
-            option for vizualizing the process
+            Option for visualizing the process
         
         Returns
         ------
-        dictionary with the following possible items:
-        holes: 2-dimensional numpy array with values 0/255
-            Image with all holes as foreground.
-        islands: 2-dimensional numpy array with values 0/255
-            Image with all islands as foreground.
-        indentations: 2-dimensional numpy array with values 0/255
-            Image with all indentations as foreground.
-        protrusions: 2-dimensional numpy array with values 0/255
-            Image with all protrusions as foreground.
+        regions: dict 
+            For each type of region, the maks with detected regions.
         """
         super(
             MSSRDetector,
@@ -277,6 +279,7 @@ class MSSRDetector(Detector):
                                             (regions[regtype] > 0), dtype='uint8')
             previmg = bint
 
+        self.regions_sum = result.copy()
         for regtype in result.keys():
             if visualize:
                 helpers.show_image(
