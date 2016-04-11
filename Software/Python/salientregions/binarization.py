@@ -7,18 +7,44 @@ import numpy as np
 
 
 class Binarizer(object):
-
+    """ Abstract class for objects that can binarize an image.
+    """
     @abstractmethod
     def binarize(self, img, visualize=True):
+        """ Subclasses should implement this method.
+        """
         pass
 
 
 class ThresholdBinarizer(Binarizer):
+    """
+    Binarizes the image with a given threshold.
+    
+    Parameters
+    ------
+    threshold :  int, optional
+        Threshold value
+    """
 
     def __init__(self, threshold=127):
         self.threshold = threshold
 
     def binarize(self, img, visualize=True):
+        """
+        Binarizes the image according to the threshold.
+    
+        Parameters
+        ------
+        img : numpy array
+            grayscale image to be binarized.
+        visualize: bool, optional
+            Option for vizualizing the process
+            
+        Returns
+        ------
+        binarized : numpy array
+            Binary image with values 0 and 255
+        """
         _, binarized = cv2.threshold(img, self.threshold, 255,
                                      cv2.THRESH_BINARY)
         if len(binarized.shape) > 2:
@@ -36,6 +62,21 @@ class OtsuBinarizer(Binarizer):
     Binarizes the image with the Otsu method.
     """
     def binarize(self, img, visualize=True):
+        """
+        Binarizes the image with the Otsu method.
+    
+        Parameters
+        ------
+        img : numpy array
+            grayscale image to be binarized.
+        visualize: bool, optional
+            Option for vizualizing the process
+            
+        Returns
+        ------
+        binarized : numpy array
+            Binary image with values 0 and 255
+        """
         threshold, binarized = cv2.threshold(
             img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         if len(binarized.shape) > 2:
@@ -55,12 +96,12 @@ class DatadrivenBinarizer(Binarizer):
 
     Parameters
     ------
+    lam: float
+        lambda, minimumm area of a connected component
     area_factor_large: float, optional
         factor that describes the minimum area of a large CC
     area_factor_verylarge: float, optional
         factor that describes the minimum area of a very large CC
-    lam: float, optional
-        lambda, minimumm area of a connected component
     weights: (float, float, float)
         weights for number of CC, number of large CC
         and number of very large CC respectively.
@@ -69,17 +110,14 @@ class DatadrivenBinarizer(Binarizer):
     num_levels: int, optional
         number of gray levels to be considered [1..255],
         the default number 256 gives a stepsize of 1.
-    connectivity: int
+    connectivity: int, optional
         What connectivity to use to define CCs
-    visualize: bool, optional
-        option for vizualizing the process
     """
 
     def __init__(self,
+                 lam,
                  area_factor_large=0.001,
                  area_factor_verylarge=0.1,
-                 lam=-1,
-                 SE_size_factor=0.15,
                  weights=(0.33, 0.33, 0.33),
                  offset=80,
                  num_levels=256,
@@ -87,19 +125,34 @@ class DatadrivenBinarizer(Binarizer):
         self.area_factor_large = area_factor_large
         self.area_factor_verylarge = area_factor_verylarge
         self.lam = lam
-        self.SE_size_factor = SE_size_factor
         self.weights = weights
         self.offset = offset
         self.num_levels = num_levels
         self.connectivity = connectivity
 
     def binarize_withthreshold(self, img, visualize=True):
+        """
+        Binarizes the image  such that the desired number of (large) connected
+        components is maximized. Also returns the optimal threshold.
+    
+        Parameters
+        ------
+        img : numpy array
+            grayscale image to be binarized.
+        visualize: bool, optional
+            Option for vizualizing the process
+            
+        Returns
+        ------
+        t_opt : int
+            Optimal threshold
+        binarized : numpy array
+            Binary image with values 0 and 255
+        """
         t_otsu, binarized_otsu = cv2.threshold(
             img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         t_otsu = int(t_otsu)
         area = img.size
-        if self.lam == -1:
-            _, self.lam = helpers.get_SE(img)
         area_large = self.area_factor_large * area
         area_verylarge = self.area_factor_verylarge * area
 
@@ -150,5 +203,21 @@ class DatadrivenBinarizer(Binarizer):
         return t_opt, binarized
 
     def binarize(self, img, visualize=True):
+        """
+        Binarizes the image  such that the desired number of (large) connected
+        components is maximized.
+    
+        Parameters
+        ------
+        img : numpy array
+            grayscale image to be binarized.
+        visualize: bool, optional
+            Option for vizualizing the process
+            
+        Returns
+        ------
+        binarized : numpy array
+            Binary image with values 0 and 255
+        """
         _, binarized = self.binarize_withthreshold(img, visualize)
         return binarized
