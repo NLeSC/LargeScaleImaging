@@ -4,7 +4,7 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 12 April 2016
-% last modification date: 
+% last modification date:
 % modification details:
 
 %% header message
@@ -15,19 +15,19 @@ verbose = 1;
 visualize = 1;
 
 %% parameters
-distance_metrics = {'euclidean'}; %'seuclidean','cosine'};
+distance_metrics = {'euclidean'}; %,'minkowski','cosine','correlation', 'cityblock'};
 
 test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s' , 'Chrys', 'Citronella',...
     'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
 
-% factor_large = 1/8;
-% factor_small = 3/8;
-% factor_small_ell_vert = 3/8;
-% factor_small_round_hor = 1/8;
- factor_large = 0;
- factor_small = 2/5;
- factor_small_ell_vert = 2/5;
- factor_small_round_hor = 1/5;
+factor_large = 0.1;
+factor_small = 0.3;
+factor_small_ell_vert = 0.4;
+factor_small_round_hor = 0.2;
+%  factor_large = 1/4
+%  factor_small = 1/4
+%  factor_small_ell_vert = 1/4
+%  factor_small_round_hor = 1/4
 
 
 %% paths and filenames
@@ -35,67 +35,66 @@ data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM 
 results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
 detector  = 'DMSR';
 
-
+%% loop over test cases
+k =0;
+for test_case = test_cases
+    if verbose
+        disp(['Loading data for species: ' test_case]);
+    end
+    
+    %% get the filenames
+    [image_filenames, features_filenames, regions_filenames, ...
+        regions_props_filenames, ~] = ...
+        get_wood_test_filenames(test_case, detector, data_path, results_path);
+    
+    
+    num_images = numel(image_filenames);
+    
+    %% loop over images per test case
+    for i = 1:num_images
+        k = k + 1;
+        
+        %% load data
+        image_filename = char(image_filenames{i});
+        [~, baseFileName, ~] = fileparts(image_filename);
+        
+        YLabels{k} = strcat(baseFileName, ' :  ', num2str(k));
+        regions_props_filename = char(regions_props_filenames{i});
+        
+        load(regions_props_filename,'features');
+        
+        %% compute the matrix of distances
+        % weight the features
+        features(1,:) = features(1,:).* factor_large;
+        features(2,:) = features(2,:).*factor_small;
+        features(3,:) = features(3,:).*factor_small_ell_vert;
+        features(4,:) = features(4,:).*factor_small_round_hor;
+        all_features(k,:) = features(:)';
+        
+    end
+end
 %% loop over distances
 for m = 1:numel(distance_metrics)
     %for m =1
-    figure('units','normalized','outerposition',[0 0 1 1]);
+    fig=figure('units','normalized','outerposition',[0 0 1 1]);
     dm = char(distance_metrics{m});
     if verbose
         disp(['Using metric: ' dm]);
     end
     
     
-    %% loop over test cases
-    j =0;
-    for test_case = test_cases
-        if verbose
-            disp(['Loading data for species: ' test_case]);
-        end
-        
-        %% get the filenames
-        [image_filenames, features_filenames, regions_filenames, ...
-            regions_props_filenames, ~] = ...
-            get_wood_test_filenames(test_case, detector, data_path, results_path);
-        
-        
-        num_images = numel(image_filenames);
-        
-        %% loop over images per test case
-        for i = 1:num_images
-            j = j+1;
-            
-            %% load data
-            image_filename = char(image_filenames{i});
-            [~, baseFileName, ~] = fileparts(image_filename);
-            
-            YLabels{j} = strcat(baseFileName, ' :  ', num2str(j));
-            regions_props_filename = char(regions_props_filenames{i});                                   
-            
-            load(regions_props_filename,'features');
-            
-            %% compute the matrix of distances
-            % weight the features
-            features(1,:) = factor_large * features(1,:);
-            features(2,:) = factor_small * features(2,:);
-            features(3,:) = factor_small_ell_vert * features(3,:);
-            features(4,:) = factor_small_round_hor * features(4,:);
-            all_features(j,:) = features(:)';
-            
-        end
-    end
-    
     D = pdist2(all_features,all_features,distance_metrics{m});
     
     %% visualize
-   % subplot(2,2,k);
+    % subplot(2,2,k);
+    figure(fig);
     hold on;
     imagesc(1-D);
     ax =gca;
-    ax.XTick = [1:j];
-    ax.XTickLabels = [1:j];
+    ax.XTick = [1:k];
+    ax.XTickLabels = [1:k];
     ax.XTickLabelRotation = 45;
-    ax.YTick = [1:j];
+    ax.YTick = [1:k];
     ax.YTickLabel = YLabels;
     % ax.YTickLabelRotation = 30;
     
@@ -127,7 +126,5 @@ for m = 1:numel(distance_metrics)
     hold off;
     
     disp('-----------------------------------------------------------');
-    
-    
     
 end

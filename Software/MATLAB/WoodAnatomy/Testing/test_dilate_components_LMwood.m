@@ -13,6 +13,7 @@ disp('Testing successive dilation and counting number of connected componentson 
 %% execution parameters
 verbose = 1;
 visualize = 1;
+visualize_dil = 1;
 saving = 1;
 batch = true;
 
@@ -29,7 +30,7 @@ filtering_cond_string{2} = 'AREA in_0_0.199_AND_S in_0.85_1'; % small
 filtering_cond_string{3} = 'ORI in_-90_-55_Or_ORI in_55_90_AND_ECC in_0.75_1_AND_AREA in_0_0.2';% small elliptical- vertical
 filtering_cond_string{4} = 'ECC in_0_0.85_AND_SOL in_0.85_1_AND_AREA in_0_0.199'; %  small roundish - horizontal
 num_iter = 9;
-SE_size_base = 10;
+SE_size_base = 5;
 
 %% paths
 data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
@@ -41,7 +42,7 @@ if batch
     test_cases = {'Argania' ,'Brazzeia_c', 'Brazzeia_s', 'Chrys', 'Citronella',...
         'Desmo', 'Gluema', 'Rhaptop', 'Stem'};
 else
-    test_cases = {'Citronella'};
+    test_cases = {'Desmo'};
 end
 
 %% processing all test cases
@@ -79,10 +80,7 @@ for test_case = test_cases
                 end
         end
         
-        %% algorithm parameters
-        res = 100/micro_res;
-        SE_size = round(SE_size_base * res);
-        
+       
         %% visualize
         if visualize
             ff = figure('units','normalized','outerposition',[0 0 1 1]);
@@ -102,21 +100,35 @@ for test_case = test_cases
             bw = bw_filt;
             clear bw_filt
             cc = bwconncomp(bw);
+            
+            %% algorithm parameters depending ont he regions
+            if j > 1
+                %% algorithm parameters
+                res = 100/micro_res;
+                SE_size = round(SE_size_base * res);
+            else
+                props = regionprops(cc,'EquivDiameter');
+                allED = [props.EquivDiameter];
+                meanED = mean(allED);
+                SE_size = fix(meanED/4);
+            end
             features(j,1) = cc.NumObjects;
             
             %% visualize
-%             if visualize
-%                 f = figure;imshow(bw);title('original filtered binary image');
-%                 pause(0.5);
-%             end
+            if visualize_dil
+                f = figure;imshow(bw);title([test_case]);
+                xlabel(['original filtered binary image']);
+                pause(0.1);
+            end
             %% successive dilations
             for k = 1: num_iter
                 [num_cc, bw_dil] = dilate_components(bw, SE_size);
                 %% visualize
-%                 if visualize
-%                     figure(f);imshow(bw_dil);title(['dilated binary image at iteration ' num2str(k)]);
-%                     pause(0.5);
-%                 end
+                if visualize_dil
+                    figure(f);imshow(bw_dil);title([test_case]);
+                    xlabel(['dilated binary image at iteration ' num2str(k)]);
+                    pause(0.1);
+                end
                 %% features
                 features(j,k+1) = num_cc;
                 bw= bw_dil;
