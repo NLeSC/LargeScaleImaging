@@ -30,4 +30,5 @@
 % test_dmsr_combined.m- testing the DMSR detector on Combined dataset
 % test_dmsr_scientific.m- testing the DMSR detector on Scientific datasets
 % test_dmsr_tnt.m- testing the DMSR detector on TNT dataset
+% test_max_conncomp_thresholding_oxfrei.m- testing the data-driven binarization on Oxfrei dataset
 
