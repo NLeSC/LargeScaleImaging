@@ -140,7 +140,7 @@ end
 otsu = fix(255*graythresh(gray_image));
 off = min(otsu-1, offset);
 %if visualization
-binary_otsu = gray_image >= otsu;
+binary_otsu = gray_image > otsu;
 %end
 
 if not (otsu_only)
@@ -220,6 +220,7 @@ if not (otsu_only)
     
     if verbose
         disp('Combined maximum number of CCs:'); disp(max_combined);
+        disp('Combined index of the maximum number of CCs:'); disp(thresh);
     end
     
     binary_image = gray_image > thresh; %binary_masks(:,:,thresh);  
