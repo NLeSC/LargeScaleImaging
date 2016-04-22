@@ -6,9 +6,12 @@
 % modification details:
 %**************************************************************************
 %% paramaters
-verbose = false;
+verbose = true;
 visualize = true;
-
+if visualize
+    set(0,'Units','pixels')
+    scnsize = get(0,'ScreenSize');
+end
 batch_structural = false;
 
 
@@ -104,6 +107,25 @@ for test_image = test_images
             num_levels, offset, otsu_only, ...
             morphology_parameters, weights, ...
             execution_flags);
+        
+        if visualize
+            figure('Position',scnsize);
+            
+            subplot(221); imshow(image_data); title('Gray-scale image'); axis on, grid on;
+            %subplot(222);imshow(ROI_only); title('ROI'); axis on, grid on;
+            
+            subplot(223); plot(1:num_levels, num_combined_cc, 'b');
+            title('Normalized number of Combined Connected Components');
+            hold on; line('XData',[thresh thresh], ...
+                'YData', [0 1.2], 'Color', 'r');
+            hold on; line('XData',[otsu otsu], ...
+                'YData', [0 1.2], 'Color', 'b');
+            
+            hold off;axis on; grid on;
+            
+            subplot(224); imshow(double(binary_image)); axis on;grid on;
+            title(['Binarized image at level ' num2str(thresh)]);
+        end
         
         toc
     end
