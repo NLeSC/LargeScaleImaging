@@ -222,7 +222,7 @@ if not (otsu_only)
         disp('Combined maximum number of CCs:'); disp(max_combined);
     end
     
-    binary_image = gray_image >= thresh; %binary_masks(:,:,thresh);  
+    binary_image = gray_image > thresh; %binary_masks(:,:,thresh);  
     clear binary_masks
     
     if verbose
