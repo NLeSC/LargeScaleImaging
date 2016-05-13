@@ -43,7 +43,7 @@ else
     else if batch_textural
             test_images = {'bark', 'trees', 'ubc', 'wall'};
         else
-            test_images = {'leuven'};
+            test_images = {'boat'};
         end
     end
     mask_filename =[];

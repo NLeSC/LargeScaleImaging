@@ -59,8 +59,8 @@ for j = 1:num_regions
         C = getfield(stats,{j},'Centroid');
         x0 = C(1); y0= C(2); %ORIGINAL LINE!!
        % x0 = C(1)-1; y0= C(2)-1; % added for comparision to Python as indexing starts from 0,not 1 
-        disp(x0), disp(y0)
-        disp('---');
+%         disp(x0), disp(y0)
+%         disp('---');
         phi_deg = getfield(stats,{j},'Orientation');
         if (phi_deg==0)
             phi_deg = 180;

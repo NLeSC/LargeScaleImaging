@@ -10,12 +10,12 @@
 %% paramaters
 interactive = false;
 verbose = false;
-visualize = false;
+visualize = true;
 visualize_major = false;
 visualize_minor = false;
 lisa = false;
 
-batch_structural = true;
+batch_structural = false;
 batch_textural = false;
  
 detector = 'MSSRA';
@@ -61,8 +61,8 @@ for test_image = test_images
     len = length(image_filenames);
     
     %% loop over all test images
-    for i = 1:len
-       % for i =2
+    %for i = 1:len
+        for i =1
         %% load the image & convertto gray-scale if  color
         image_data = imread(char(image_filenames{i}));
         if ndims(image_data) > 2
@@ -151,7 +151,7 @@ for test_image = test_images
             title(detector);
         end
     end
-    close all
+    %close all
 end
  disp('--------------- The End ---------------------------------');
 

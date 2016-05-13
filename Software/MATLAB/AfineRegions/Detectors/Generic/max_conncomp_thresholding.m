@@ -116,7 +116,8 @@ if not(otsu_only)
     Area_size_very_large = Area * Area_factor_very_large;
     
     % area opening parameter
-    lambda = lambda_factor* fix(SE_size_factor*sqrt(Area/pi));
+    disp('lambda for the maxx conn_componet_thresh');
+    lambda = lambda_factor* fix(SE_size_factor*sqrt(Area/pi))
     
     %**************************************************************************
     % initialisations

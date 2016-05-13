@@ -2,8 +2,8 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 21-04-2016
-% last modification date:
-% modification details:
+% last modification date: 26-04-2006
+% modification details: another test case; removed the batch flag 
 %**************************************************************************
 %% paramaters
 verbose = true;
@@ -12,7 +12,6 @@ if visualize
     set(0,'Units','pixels')
     scnsize = get(0,'ScreenSize');
 end
-batch_structural = false;
 
 
 %% parameters
@@ -44,13 +43,8 @@ data_path = fullfile(project_path, 'TestData');
 results_path = fullfile(project_path, 'Results', 'AffineRegions');
 
 
-if batch_structural
-    switch batch
-        
-    end
-else
-    test_images = {'Gray'};
-end
+test_images = {'gray'};
+
 
 mask_filename =[];
 
@@ -130,8 +124,5 @@ for test_image = test_images
         toc
     end
     disp('****************************************************************');
-    if batch_structural
-        close all
-    end
 end
 disp('--------------- The End ---------------------------------');
