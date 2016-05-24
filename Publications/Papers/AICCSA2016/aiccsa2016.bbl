@@ -60,9 +60,43 @@ S.~Wang \emph{et~al.}, ``{Enhanced Maximally Stable Extremal Regions with Canny
   Detector and Application in Image Classification},'' \emph{Journal of
   Computational Information Systems}, vol.~10, no.~14, pp. 6093--6100, 2014.
 
-\bibitem{DonoserB06}
-M.~Donoser and H.~Bischof, ``{3D Segmentation by Maximally Stable Volumes
-  (MSVs)}.'' in \emph{ICPR (1)}, 2006, pp. 63--66.
+\bibitem{Chen11}
+H.~Chen \emph{et~al.}, ``{Robust Text Detection in Natural Images with
+  Edge-enhanced Maximally Stable Extremal Regions}.'' in \emph{ICIP 11}, 2011.
+
+\bibitem{MartinsVisapp12}
+P.~Martins, C.~Gatta, and P.~Carvalho, ``Feature-driven maximally stable
+  extremal regions.'' in \emph{VISAPP (1)}, G.~Csurka and J.~Braz, Eds.\hskip
+  1em plus 0.5em minus 0.4em\relax SciTePress, 2012, pp. 490--497.
+
+\bibitem{Martins12}
+P.~Martins, P.~Carvalho, and C.~Gatta, ``Stable salient shapes,'' in \emph{2012
+  International Conference on Digital Image Computing Techniques and
+  Applications, {DICTA} 2012, Fremantle, Australia, December 3-5, 2012}, 2012,
+  pp. 1--8.
+
+\bibitem{Dickscheid2011}
+T.~Dickscheid, F.~Schindler, and W.~F{\"o}rstner, ``Coding images with local
+  features,'' \emph{International Journal of Computer Vision}, vol.~94, no.~2,
+  pp. 154--174, 2011.
+
+\bibitem{Martins2016OnTC}
+P.~Martins, P.~D. Carvalho, and C.~Gatta, ``On the completeness of
+  feature-driven maximally stable extremal regions,'' \emph{Pattern Recognition
+  Letters}, vol.~74, pp. 9--16, 2016.
+
+\bibitem{DengZMDS07}
+H.~Deng, W.~Zhang, E.~N. Mortensen, T.~G. Dietterich, and L.~G. Shapiro,
+  ``Principal curvature-based region detector for object recognition.'' in
+  \emph{CVPR}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE Computer Society,
+  2007.
+
+\bibitem{Kadir2004}
+T.~Kadir, A.~Zisserman, and M.~Brady, \emph{Computer Vision - ECCV 2004: 8th
+  European Conference on Computer Vision, Prague, Czech Republic, May 11-14,
+  2004. Proceedings, Part I}.\hskip 1em plus 0.5em minus 0.4em\relax Berlin,
+  Heidelberg: Springer Berlin Heidelberg, 2004, ch. An Affine Invariant Salient
+  Region Detector, pp. 228--241.
 
 \bibitem{Kuehl2013}
 H.~Kuehl and T.~Burghardt, ``{Animal Biometrics: quantifying and detecting
@@ -74,10 +108,39 @@ N.~{\em et al.}, Kumar, ``{Leafsnap: Computer Vision System for Automatic Plant
   Species Identification},'' in \emph{The 12th European Conference on Computer
   Vision (ECCV)}, October 2012, pp. 502--516.
 
+\bibitem{Brunel2014}
+G.~Brunel and other, ``Automatic identification and characterization of radial
+  files in light microscopy images of wood,'' \emph{Annals of Botany}, vol.
+  114, no.~4, pp. 829--890, 2014.
+
+\bibitem{Quelhas2011}
+P.~Quelhas, J.~Nieuwland, W.~Dewitte, A.~M. Mendon{\c{c}}a, J.~Murray, and
+  A.~Campilho, \emph{Image Analysis and Recognition: 8th International
+  Conference, ICIAR 2011, Burnaby, BC, Canada, June 22-24, 2011. Proceedings,
+  Part II}.\hskip 1em plus 0.5em minus 0.4em\relax Berlin, Heidelberg: Springer
+  Berlin Heidelberg, 2011, ch. Arabidopsis Thaliana Automatic Cell File
+  Detection and Cell Length Estimation, pp. 1--11.
+
+\bibitem{Gasson2011}
+P.~Gasson, ``How precise can wood identification be? wood anatomyâ€™s role
+  in support of the legal timber trade, especially cites,'' \emph{IAWA
+  Journal}, vol.~32, no.~2, pp. 137--154, 2011.
+
 \bibitem{FischerDB14}
 P.~Fischer, A.~Dosovitskiy, and T.~Brox, ``{Descriptor Matching with
   Convolutional Neural Networks: a Comparison to {SIFT}},'' \emph{CoRR}, vol.
   abs/1405.5769, 2014.
+
+\bibitem{AanaesDP12}
+H.~Aanæs, A.~L. Dahl, and K.~S. Pedersen, ``Interesting interest points - a
+  comparative study of interest point performance on a unique data set.''
+  \emph{International Journal of Computer Vision}, vol.~97, no.~1, pp. 18--35,
+  2012.
+
+\bibitem{Tuytelaars:2004}
+T.~Tuytelaars and L.~Van~Gool, ``Matching widely separated views based on
+  affine invariant regions,'' \emph{Int. J. Comput. Vision}, vol.~59, no.~1,
+  pp. 61--85, Aug. 2004.
 
 \bibitem{elena_ranguelova_2016_45156}
 E.~Ranguelova, ``Large scale imaging: Data, software, results,'' DOI:
