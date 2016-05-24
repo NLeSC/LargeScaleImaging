@@ -16,7 +16,7 @@
 % \else
 %   % dvi code
 % \fi
-
+\usepackage{verbatim}
 % *** CITATION PACKAGES ***
 %
 \ifCLASSOPTIONcompsoc
@@ -146,13 +146,14 @@ Email: E.Ranguelova@esciencecenter.nl}
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-Finding correspondences between two images of the same scene, taken from different viewpoints and under different illumination conditions, is a challenging task. It becomes even more challenging when the detected identifying features should reflect the human saliency perception. This is often required when analyzing scientific imagery of structured type, for example in ecology.
-
-This paper proposes a Data-driven Morphology Salient Regions (DMSR) approach for detecting salient regions in structured images. A new binarization algorithm creates a single image representation that is then analyzed for saliency using morphology. The binarization threshold is derived directly from the data. The DMSR detector has comparable repeatability to the renowned Maximally Stable Extremal Regions (MSER) detector on generic structured images. At the same time it shows better invariance to lighting and blur on several benchmarks and also on a newly introduced dataset. The DMSR also performs equally well on images with increasing resolution unlike the MSER and other generic detectors. This is achieved via significantly fewer detected regions, leading to better scalability- a much desired property in the big data era.
-
- Some preliminary results in the animal and plant biometrics domain, indicate that DMSR is a very suitable detector when analyzing scientific imagery. The detector is able to automatically identify meaningful regions in images used for the photo-identification tasks in wild-life biometrics, where the generic detectors fail. 
-
-The paper also introduces OxFrei, a new dataset for transformation-independent detection evaluation. The well-documented dataset, software and results from all experiments are made available online.
+% background
+Finding correspondences between two images of the same scene or object, taken from different viewpoints and conditions, is a challenging task. Analyzing scientific imagery often requires the detected local features to match meaningful image structures, thus adding more complexity to the task. Ecologists use photo-identification methods in their population studies and conservational efforts. In addition to the task of identifying an individual plant or animal or classifying species, precise phenotypic measurements are often  needed.
+% objectives
+Generic detectors, such as the renowned Maximally Stable Extremal Regions (MSER) perform very well on structured images, but have difficulties with blur, lighting and increased resolution. The detected regional features do not always correspond to semantically meaningful structures and their large number hampers scalability. 
+%methods
+This paper proposes a Data-driven Morphology Salient Regions (DMSR) detector which overcomes the above limitations. A new binarization algorithm uses a threshold derived from the data. The binary image is analyzed for saliency using morphology. 
+% results & conclusions
+DMSR shows transformation invariance and comparable repeatability to MSER on three evaluation benchmarks while having better invariance to lighting, blur and increased image resolution. This is achieved via significantly fewer detected regions, leading to better scalability. Some preliminary results on animal and plant images, indicate that DMSR could be a suitable approach for such application as the detected regions match semantically interesting structures well. The paper also introduces OxFrei - a dataset for transformation-independent detection evaluation. All experimental results, well-documented dataset and the open-source software are available online making the research reported in this paper repeatable.
 
 \end{abstract}
 
@@ -174,16 +175,84 @@ The paper also introduces OxFrei, a new dataset for transformation-independent d
 
 \section{Introduction}
 % no \IEEEPARstart
-This demo file is intended to serve as a ``starter file''
-for IEEE Computer Society conference papers produced under \LaTeX\ using
-IEEEtran.cls version 1.8b and later.
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
-I wish you the best of success.
+\label{sec:intro}
+The first fundamental step in numerous computer vision applications (wide baseline stereo matching, image retrieval, visual mining, etc.\,) is to reliably and repeatedly find  the correspondence between a pair of different images of the same scene \cite{Matas2002BMVC, Rodriguez2013, EscaleraCVPR07}. One class of methods- {\em region detectors} find distinct (salient) regions, which correspond to the same image patches, detected independently in each image. The detectors must be {\em covariant} (often called {\em invariant}) to, usually, {\em affine} transformations and various photometric distortions. 
 
-\hfill mds
- 
-\hfill August 26, 2015
+A decade ago, a performance evaluation paper by the Visual Geometry Group in Oxford compared existing region detectors \cite{Mikolajczyk:2005}. 
+A clear conclusion of the comparison was that {\em  Maximally Stable Extremal Regions (MSER)} is the best performing detector for {\em structured} scenes, e.g., those containing homogeneous regions with distinctive boundaries \cite{Matas2002BMVC}. MSER has become the de-facto standard in the field, e.g., it is in the MATLAB Computer Vision Systems Toolbox and OpenCV. Despite its success, the detector has several drawbacks: it is sensitive to image blur; it produces nested and redundant regions and its performance degrades with the increase of image resolution \cite{CorRos2013}. Analysis in geometric scale-space have showed that the formulation of the region stability criterion makes MSER prefer regular shapes \cite{Kimmel11}.
+
+\begin{comment}
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.48\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4cm]{./Figs/mserTailA}}
+\end{minipage}
+\begin{minipage}[b]{0.51\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4cm]{./Figs/mserTailB}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{.48\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4cm]{./Figs/dmsrTailA}}
+\end{minipage}
+\begin{minipage}[b]{0.51\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4cm]{./Figs/dmsrTailB}}
+\end{minipage}
+\hfill
+\vspace{-0.4cm}
+\caption{Region detection on two images of the tail of the same humpback whale. 
+Top row: MSER, bottom row: DMSR(All).}
+\label{fig:tails}
+\vspace{-0.3cm}
+\end{figure}
+
+%----------------------------------------------------------------
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.24\linewidth}
+  \centering
+  \centerline{\includegraphics[width=1.8cm]{./Figs/mserLeatherbackA}}
+   \centerline{(a)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.24\linewidth}
+  \centering
+  \centerline{\includegraphics[width=1.8cm]{./Figs/mserLeatherbackB}}
+\centerline{(b)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{.24\linewidth}
+  \centering
+  \centerline{\includegraphics[width=1.8cm]{./Figs/dmsrLeatherbackA}}
+\centerline{(c)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.24\linewidth}
+  \centering
+  \centerline{\includegraphics[width=1.8cm]{./Figs/dmsrLeatherbackB}}
+ \centerline{(d)}\medskip
+\end{minipage}
+ \vspace{-0.2cm} 
+\caption{Region detection on two images of the pineal spot of the same leatherback turtle.
+(a),(b): MSER, (c),(d): DMSR.}
+\label{fig:turtle}
+ \vspace{-0.2cm}
+\end{figure}
+
+\end{comment}
+Since then, many researchers have proposed improvements to MSER with no drastic increase of performance. An MSER color extension, {\em Maximally Stable Color Region}, outperforms both an MSER-per-color-channel combination and a color blob detector \cite{Forssen07}. Improving the MSER region distinctiveness by morphological dilation on the detected Canny edges is proposed in \cite{Wang14}. The improved detector shows better performance in classification application, but evaluation of repeatability is not reported. MSER has been extended to {\em Maximally Stable Volumes} for successful segmentation of 3D medical images and paper fiber networks \cite{DonoserB06}.
+
+While most research has focused on generic applications, the emerging fields of {\em animal and plant biometrics} are attracting more attention \cite{Kuehl2013, leafsnap_eccv2012}. Computer vision is becoming a vital technology enabling the wild-life preservation efforts of ecologists in the big data era. Along with the individual or species photo-ID, the scientists wish to obtain reliable measurements of meaningful structures from images. The generic region detectors do not satisfy this need: Fig.\,\ref{fig:tails}, top row shows over-abundant or not semantic regions and Fig.\,\ref{fig:turtle}, (a), (b) shows missed detection. On the contrary, our {\em Data-driven Morphology Salient Regions (DMSR) detector} finds the semantic regions (Fig.\,\ref{fig:tails}, bottom row and Fig.\,\ref{fig:turtle}, (c), (d)). 
+
+
+Although crucial for the development of detectors, there is a shortage of evaluation benchmarks, especially for performance analysis independently of the image content. The standard {\em Oxford dataset} is very small: eight test sequences containing six (one base and five transformed) images of the same scene each. Every pair (base, transformed) is related via a given transformation matrix (homography) \cite{Mikolajczyk:2005}.  The {\em Freiburg dataset} contains $416$ higher resolution images, generated by transforming $16$ base images in order to de-tangle transformations from content \cite{FischerDB14}.  
+The {\em TNT dataset} contains versions of the same viewpoint sequences with increasing resolution from $1.5$ to $8$~MPixel per image. Highly accurate image pair homographies are given. It is suitable for evaluating robustness to resolution rather than to transformations \cite{CorRos2013}. 
+
+This paper contributes to solving the identified problems. We propose a new regions detector, DMSR, and made the software available as open source \cite{elena_ranguelova_2016_45156}. It is related to the {\em Morphology-based Stable Salient Regions (MSSR)} detector that we developed in the context of humpback whale identification \cite{RangMSSR06, RangHumpb06}. DMRS includes a binarization, robust-to-lighting-and-blur, that yields a much smaller number of regions and is more stable across transformations. It has similar or higher (lighting, blur and increased resolution) repeatability compared to MSER, while detecting non-redundant perceptually salient regions (Fig.~\ref{fig:tails}). Also, we compose and share an openly available dataset, OxFrei, combining the natural homographies of the Oxford and the higher resolution images of the Freiburg datasets \cite{elena_ranguelova_2016_45156}.
+
 
 \subsection{Subsection Heading Here}
 Subsection text here.
@@ -338,15 +407,9 @@ The authors would like to thank...
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
-
-
+\bibliographystyle{IEEEtran}
+\bibliography{aiccsa2016}
 
 
 % that's all folks
