@@ -362,23 +362,23 @@ where $w^{\cdot}$ are the weights per set of CCs.
 
 In comparison to the standard Otsu thresholding which does not select a single stable $CS$, choosing $t_{opt}$ as defined, ensures stable number of regions across transformations (see Figs.~\ref{fig:binary_hist} and \ref{fig:leuven_bin} for lighting).
 %------------------------------------------------------------------------
-\vspace{-0.8cm}
+%\vspace{-0.8cm}
 \begin{figure}[htb]
 
-\begin{minipage}[b]{0.49\linewidth}
+\begin{minipage}[b]{0.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=4.65cm]{hist_otsu_leuven_1_4}}
+  \centerline{\includegraphics[width=8.5cm]{hist_otsu_leuven_1_4}}
   \centerline{(a) Otsu}\medskip
 \end{minipage}
 \hfill
 %\vspace{-0.5cm}
-\begin{minipage}[b]{0.49\linewidth}
+\begin{minipage}[b]{0.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=4.8cm]{hist_numcc_leuven_1_4}}
+  \centerline{\includegraphics[width=8.5cm]{hist_numcc_leuven_1_4}}
 \centerline{(b) Max number CC}\medskip
 \end{minipage}
 \hfill
-\vspace{-0.5cm}
+%\vspace{-0.5cm}
 \caption{Finding the optimal threshold for two images from the 'Leuven' sequence 
 (Oxford dataset, lighting): the base image- solid black line, the forth image - dotted blue line.}
 \label{fig:binary_hist}
@@ -389,50 +389,49 @@ In comparison to the standard Otsu thresholding which does not select a single s
 
 \begin{figure}[htb]
 
-\begin{minipage}[b]{.3\linewidth}
+\begin{minipage}[b]{.48\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.8cm]{leuven1}}
+  \centerline{\includegraphics[width=3.5cm]{leuven1}}
 %  \vspace{1.5cm}
 %   \centerline{(a)}\medskip
 \end{minipage}
 \hfill
-\begin{minipage}[b]{0.3\linewidth}
+\begin{minipage}[b]{0.48\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.7cm]{leuven1_otsu}}
+  \centerline{\includegraphics[width=3.5cm]{leuven4}}
 %  \vspace{1.5cm}
   % \centerline{(b)}\medskip
 \end{minipage}
 \hfill
-\begin{minipage}[b]{0.3\linewidth}
+\begin{minipage}[b]{0.48\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.7cm]{leuven1_numcc}}
+  \centerline{\includegraphics[width=3.5cm]{leuven1_otsu}}
 %  \vspace{1.5cm}
   % \centerline{(c)}\medskip
 \end{minipage}
-
-\begin{minipage}[b]{.3\linewidth}
+\begin{minipage}[b]{.48\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.7cm]{leuven4}}
+  \centerline{\includegraphics[width=3.5cm]{leuven4_otsu}}
 %  \vspace{1.5cm}
-   \centerline{(a)}\medskip
+%   \centerline{(a)}\medskip
 \end{minipage}
 \hfill
-\begin{minipage}[b]{0.3\linewidth}
+\begin{minipage}[b]{0.48\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.7cm]{leuven4_otsu}}
+  \centerline{\includegraphics[width=3.5cm]{leuven1_numcc}}
 %  \vspace{1.5cm}
-   \centerline{(b)}\medskip
+%   \centerline{(b)}\medskip
 \end{minipage}
 \hfill
-\begin{minipage}[b]{0.3\linewidth}
+\begin{minipage}[b]{0.48\linewidth}
   \centering
-  \centerline{\includegraphics[width=2.7cm]{leuven4_numcc}}
+  \centerline{\includegraphics[width=3.5cm]{leuven4_numcc}}
 %  \vspace{1.5cm}
-   \centerline{(c)}\medskip
+%   \centerline{(c)}\medskip
 \end{minipage}
 
- \vspace{-0.5cm}
-\caption{Binarization of two images of the 'Leuven' sequence (lighting). Top row- base image, bottom row- forth image;   (a) gray scale; (b) Otsu binarization, (c) proposed binarization.}
+ %\vspace{-0.5cm}
+\caption{Binarization of two images of the 'Leuven' sequence (lighting). Left: base image, right: forth image;   top row: gray scale; middlerow: Otsu binarization, bottom row: proposed binarization.}
 \label{fig:leuven_bin}
 %
 \end{figure}
@@ -603,35 +602,76 @@ Again, the $N_C$ plane of DMSR has the lowest values and the least slope of all 
 
 \subsection{Animal and plant biometrics}
 \label{ssec:bio}
-Challended by the photo-identification and phenotypical measurement tasks of ecologists, we aimed to test if our detector is able to solve both tasks simultanaously. It is very difficult to find large-scale annotated animal or plant biometric datasets. Therefore, we performed only preliminary experiments, from which we could gain spme insights for the suiability of the detector. We have compared qualitatively DMSR and MSER on several small animal individual photo-ID datasets (humpback whales, leatherback turtles, newts) and on a wood species identification dataset \cite{RangHumpb06, PauwelsZB08, wood}. In all cases DMSR produces fewer and perceptually more acurate salient regions as illustrated by Figures~\ref{fig:tails}, \ref{fig:turtle} and \ref{fig:wood}. For some of the leatherback turtles, the MSER did not find any or very few regions, which will make the subsequent mathcing for photo-identification impossible. On the other hand the DMSR regions were detected consistently and repeatedly. For the wood microscopy images, we observe that it is not possible to obtain accurate statistics on the cell properties using the regions from the MSER  detector, while the regions found by our detector would enable such wood anatomy research. Using all $4$ types of regions does not improve performance over using only $ISS$ (holes and islands) with the exception of detecting markings on humpback whale tails. 
+Challended by the photo-identification and phenotypical measurement tasks of ecologists, we aimed to test if our detector is able to solve both tasks simultanaously. It is very difficult to find large-scale annotated animal or plant biometric datasets. Therefore, we performed only preliminary experiments, from which we could gain spme insights for the suiability of the detector. We have compared qualitatively DMSR and MSER on several small animal individual photo-ID datasets (humpback whales, leatherback turtles, newts) and on a wood species identification dataset \cite{RangHumpb06, PauwelsZB08, wood}. In all cases DMSR produces fewer and perceptually more acurate salient regions as illustrated by Figures~\ref{fig:tails_mser}, \ref{fig:tails_dmsr}, \ref{fig:turtle} and \ref{fig:wood}. For some of the leatherback turtles, the MSER did not find any or very few regions, which will make the subsequent mathcing for photo-identification impossible. On the other hand the DMSR regions were detected consistently and repeatedly. For the wood microscopy images, we observe that it is not possible to obtain accurate statistics on the cell properties using the regions from the MSER  detector, while the regions found by our detector would enable such wood anatomy research. Using all $4$ types of regions does not improve performance over using only $ISS$ (holes and islands) with the exception of detecting markings on humpback whale tails. 
 
 \begin{figure}[htb]
 
-\begin{minipage}[b]{.48\linewidth}
+\begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=4cm]{mserTailA}}
+  \centerline{\includegraphics[width=8cm]{mserTailA}}
 \end{minipage}
-\begin{minipage}[b]{0.51\linewidth}
+\begin{minipage}[b]{0.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=4cm]{mserTailB}}
-\end{minipage}
-\hfill
-\begin{minipage}[b]{.48\linewidth}
-  \centering
-  \centerline{\includegraphics[width=4cm]{dmsrTailA}}
-\end{minipage}
-\begin{minipage}[b]{0.51\linewidth}
-  \centering
-  \centerline{\includegraphics[width=4cm]{dmsrTailB}}
+  \centerline{\includegraphics[width=8cm]{mserTailB}}
 \end{minipage}
 \hfill
 \vspace{-0.4cm}
-\caption{Region detection on two images of the tail of the same humpback whale. 
-Top row: MSER, bottom row: DMSR(All).}
-\label{fig:tails}
+\caption{MSER detection on two images of the tail of the same humpback whale. }
+\label{fig:tails_mser}
+\vspace{-0.3cm}
+\end{figure}
+
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.99\linewidth}
+  \centering
+  \centerline{\includegraphics[width=8cm]{dmsrTailA}}
+\end{minipage}
+\begin{minipage}[b]{0.99\linewidth}
+  \centering
+  \centerline{\includegraphics[width=8cm]{dmsrTailB}}
+\end{minipage}
+\hfill
+\vspace{-0.4cm}
+\caption{DMSRA detection on two images of the tail of the same humpback whale. }
+\label{fig:tails_dmsr}
 \vspace{-0.3cm}
 \end{figure}
 %----------------------------------------------------------------
+\begin{comment}
+\begin{figure}[htb]
+
+\begin{minipage}[b]{.45\linewidth}
+  \centering
+  \centerline{\includegraphics[width=3cm]{mserLeatherbackA}}
+  % \centerline{(a)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\linewidth}
+  \centering
+  \centerline{\includegraphics[width=3cm]{mserLeatherbackB}}
+%\centerline{(b)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{.45\linewidth}
+  \centering
+  \centerline{\includegraphics[width=3cm]{dmsrLeatherbackA}}
+%\centerline{(c)}\medskip
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\linewidth}
+  \centering
+  \centerline{\includegraphics[width=3cm]{dmsrLeatherbackB}}
+% \centerline{(d)}\medskip
+\end{minipage}
+ \vspace{-0.2cm} 
+\caption{Region detection on two images of the pineal spot of the same leatherback turtle.
+Top: MSER, bottom: DMSR.}
+\label{fig:turtle}
+ \vspace{-0.2cm}
+\end{figure}
+\end{comment}
+
 \begin{figure}[htb]
 
 \begin{minipage}[b]{.23\linewidth}
@@ -663,25 +703,24 @@ Top row: MSER, bottom row: DMSR(All).}
 \label{fig:turtle}
  \vspace{-0.2cm}
 \end{figure}
-
  
 \begin{figure}[htb]
 
-\begin{minipage}[b]{.49\linewidth}
+\begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=4.0cm]{mserWood}}
+  \centerline{\includegraphics[width=8cm]{mserWood}}
   % \vspace{0.2cm}
  % \centerline{(a) MSER}\medskip
 \end{minipage}
 \hfill
-\begin{minipage}[b]{0.49\linewidth}
+\begin{minipage}[b]{0.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=4.0cm]{dmsrWood}}
+  \centerline{\includegraphics[width=8cm]{dmsrWood}}
  % \vspace{0.2cm}
  % \centerline{(b) DMSR}\medskip
 \end{minipage}
 %\vspace{-0.25cm}
-\caption{Salient region detectors on microscopy wood images. Left: MSER (every second region is shown), right: proposed detector, DMSR}
+\caption{Salient region detectors on microscopy wood images. Top: MSER (every second region is shown), bottom: proposed detector, DMSR}
 \label{fig:wood}
 %
 \end{figure}
