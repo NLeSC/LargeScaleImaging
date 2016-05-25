@@ -116,8 +116,8 @@ if not(otsu_only)
     Area_size_very_large = Area * Area_factor_very_large;
     
     % area opening parameter
-    disp('lambda for the maxx conn_componet_thresh');
-    lambda = lambda_factor* fix(SE_size_factor*sqrt(Area/pi))
+   % disp('lambda for the maxx conn_componet_thresh');
+    lambda = lambda_factor* fix(SE_size_factor*sqrt(Area/pi));
     
     %**************************************************************************
     % initialisations
@@ -237,38 +237,38 @@ if not (otsu_only)
     % visualization
     %--------------------------------------------------------------------------
     if visualization
-        figure('Position',get(0,'ScreenSize'));
-        [counts, centers] = hist(double(gray_image(:)),num_levels);
-        subplot(221); plot(centers, counts,'k'); title('Gray-level histogram with Otsu threshold');
-        hold on; line('XData',[otsu otsu], ...
-            'YData', [0 max(counts)], 'Color', 'r'); hold off;axis on;grid on;
-        legend;
-        subplot(222);imshow(binary_otsu); axis on;grid on;
-        title(['Image thresholded at Otsu s level ' num2str(otsu)]);
-        
-        %     subplot(223); plot(1:num_levels, norm_num_cc, 'k',...
-        %         1:max_level, norm_large_num_cc,'b',...
-        %         1:max_level, norm_very_large_num_cc,'m',...
-        %         1:max_level, num_combined_cc, 'r');
-        subplot(223); plot(1:num_levels, num_cc, 'k',...
-            1:max_level, num_large_cc,'b',...
-            1:max_level, num_very_large_cc,'m',...
-            1:max_level, num_combined_cc, 'r');
-        
-        title('Normalized number of Connected Components');
-        hold on; line('XData',[thresh thresh], ...
-            'YData', [0 1.2], 'Color', 'r');
-        hold on; line('XData',[thresh_all thresh_all], ...
-            'YData', [0 1.2], 'Color', 'k');
-        hold on; line('XData',[thresh_large thresh_large], ...
-            'YData', [0 1.2], 'Color', 'b');
-        hold on; line('XData',[thresh_very_large thresh_very_large], ...
-            'YData', [0 1.2], 'Color', 'm');
-        hold off;axis on; grid on;
-        legend('all','large', 'very large', 'combined');
-        subplot(224); imshow(double(binary_image)); axis on;grid on;
-        title(['Binarized image at level ' num2str(thresh)]);
-        
+%         figure('Position',get(0,'ScreenSize'));
+%         [counts, centers] = hist(double(gray_image(:)),num_levels);
+%         subplot(221); plot(centers, counts,'k'); title('Gray-level histogram with Otsu threshold');
+%         hold on; line('XData',[otsu otsu], ...
+%             'YData', [0 max(counts)], 'Color', 'r'); hold off;axis on;grid on;
+%         legend;
+%         subplot(222);imshow(binary_otsu); axis on;grid on;
+%         title(['Image thresholded at Otsu s level ' num2str(otsu)]);
+%         
+%         %     subplot(223); plot(1:num_levels, norm_num_cc, 'k',...
+%         %         1:max_level, norm_large_num_cc,'b',...
+%         %         1:max_level, norm_very_large_num_cc,'m',...
+%         %         1:max_level, num_combined_cc, 'r');
+%         subplot(223); plot(1:num_levels, num_cc, 'k',...
+%             1:max_level, num_large_cc,'b',...
+%             1:max_level, num_very_large_cc,'m',...
+%             1:max_level, num_combined_cc, 'r');
+%         
+%         title('Normalized number of Connected Components');
+%         hold on; line('XData',[thresh thresh], ...
+%             'YData', [0 1.2], 'Color', 'r');
+%         hold on; line('XData',[thresh_all thresh_all], ...
+%             'YData', [0 1.2], 'Color', 'k');
+%         hold on; line('XData',[thresh_large thresh_large], ...
+%             'YData', [0 1.2], 'Color', 'b');
+%         hold on; line('XData',[thresh_very_large thresh_very_large], ...
+%             'YData', [0 1.2], 'Color', 'm');
+%         hold off;axis on; grid on;
+%         legend('all','large', 'very large', 'combined');
+%         subplot(224); imshow(double(binary_image)); axis on;grid on;
+%         title(['Binarized image at level ' num2str(thresh)]);
+%         
         
     end
 else
