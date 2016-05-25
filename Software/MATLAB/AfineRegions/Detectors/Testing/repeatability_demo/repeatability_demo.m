@@ -11,8 +11,10 @@ small_dim_c = 6;
 off = 0.1; off_s = 0.05;
 w = 0.4; h = 0.6;
 
-transformations_axis = [2 3 4 5 6];
-transformations_fig= {'blur'};
+% transformations_axis = [2 3 4 5 6];
+% transformations_fig= {'blur'};
+transformations_axis = [20 30 40 50 60];
+transformations_fig= {'viewpoint'};
 
 % transformations_fig= {'viewpoint' , 'scale: rotation + zoom', 'blur', 'ligthing'};
 % transformations_axis = {[20 30 40 50 60], [1.1 1.3 1.9 2.3 2.8],...
@@ -36,7 +38,7 @@ results_path = fullfile(project_path, 'Results', 'AffineRegions');
 if batch_structural
     test_cases = {'graffiti','boat', 'bikes', 'leuven'};
 else
-    test_cases = {'bikes'};
+    test_cases = {'graffiti'};
 end
 
 j = 0;
@@ -48,7 +50,7 @@ for test_case_cell = test_cases
     image_filename = fullfile(data_path,test_case,'img');
     %% repeatabiliy figures
     
-    mark=['-ks';'-bv'; '-gv';'-rp'; '-mp'];
+    mark=['-ks';'-bd'; '-gv';'-r.'; '-m.'];
     %mark=['-ks';'-bv'; '-rp'];
     % reference image filename
     imf1=[image_filename '1.ppm'];
@@ -60,7 +62,7 @@ for test_case_cell = test_cases
     set(gcf, 'Position', get(0,'Screensize'));
     subplot(small_dim_r, small_dim_c, 1);
     image(im1); title(test_case,'Interpreter','none');
-    xlabel('Reference image');
+    xlabel('Base image');
     ax = gca; set(ax, 'Xtick', [], 'YTick',[]);
     hold on;
     
@@ -68,15 +70,15 @@ for test_case_cell = test_cases
     grid on;
    % title('Performance');
     ylabel('repeatability %')
-    xlabel('transformation magnitude (TM)');
+    xlabel('transf. magnitude (TM)');
     
     hold on;
     
     s2 = subplot('Position',[off+off_s+w off w h]);
     grid on;
-    title('Regions count');
+   % title('Regions count');
     ylabel('nb of correspondencies')
-    xlabel('transformation magnitude (TM)');
+    xlabel('transf. magnitude (TM)');
     
     hold on;
     
