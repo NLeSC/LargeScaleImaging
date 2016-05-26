@@ -104,7 +104,7 @@ H.~Kuehl and T.~Burghardt, ``{Animal Biometrics: quantifying and detecting
   432--441, 2013.
 
 \bibitem{leafsnap_eccv2012}
-N.~{\em et al.}, Kumar, ``{Leafsnap: Computer Vision System for Automatic Plant
+N.~Kumar \emph{et~al.}, ``{Leafsnap: Computer Vision System for Automatic Plant
   Species Identification},'' in \emph{The 12th European Conference on Computer
   Vision (ECCV)}, October 2012, pp. 502--516.
 
@@ -117,9 +117,9 @@ P.~Quelhas, J.~Nieuwland, W.~Dewitte, A.~M. Mendon{\c{c}}a, J.~Murray, and
   Detection and Cell Length Estimation, pp. 1--11.
 
 \bibitem{Brunel2014}
-G.~Brunel and other, ``Automatic identification and characterization of radial
-  files in light microscopy images of wood,'' \emph{Annals of Botany}, vol.
-  114, no.~4, pp. 829--890, 2014.
+G.~Brunel \emph{et~al.}, ``Automatic identification and characterization of
+  radial files in light microscopy images of wood,'' \emph{Annals of Botany},
+  vol. 114, no.~4, pp. 829--890, 2014.
 
 \bibitem{Gasson2011}
 P.~Gasson, ``How precise can wood identification be? wood anatomyâ€™s role
@@ -163,12 +163,12 @@ E.~Pauwels, P.~de~Zeeuw, and D.~Bounantony, ``Leatherbacks matching by
   2008, pp. 417--425.
 
 \bibitem{wood}
-I.~courtesy~to Frederic~Lens, ``Microscopy images wood,''
-  http://www.naturalis.nl/en/, naturalis Biodiversity Center, Leiden, The
-  Netherlands.
+F.~Lens, ``Microscopy images wood,'' http://www.naturalis.nl/en/, naturalis
+  Biodiversity Center, Leiden, The Netherlands.
 
 \bibitem{elena_ranguelova_wood}
 E.~Ranguelova, ``Wood image classification- initial results. nlesc report.''
-  DOI: http://dx.doi.org/10.5281/zenodo.45156, May 2016.
+  http://knowledge.esciencecenter.nl/books/wood-image-classification/, May
+  2016.
 
 \end{thebibliography}
