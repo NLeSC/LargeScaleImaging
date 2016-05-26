@@ -165,7 +165,7 @@ Email: E.Ranguelova@esciencecenter.nl}
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-Finding correspondences between two images of the same scene or object, taken from different viewpoints and conditions, is a challenging task. Analyzing scientific imagery often requires the detected local features to coincide with the human perception, thus making the task even more complex. Ecologists use photo-identification methods in their population studies and conservation efforts. In addition to the task of identifying an individual plant or animal or classifying species, precise phenotypic measurements are needed. Generic detectors, such as the renowned Maximally Stable Extremal Regions (MSER) perform very well on structured images, but have difficulties with blur, lighting and increased resolution. The detected regions do not always correspond to semantically meaningful structures and their large number hampers scalability. This paper proposes a Data-driven Morphology Salient Regions (DMSR) detector which overcomes the above limitations. A new binarization algorithm uses a threshold derived from the data and the resulting binary image is analyzed for saliency using morphology.  DMSR shows transformation invariance and comparable repeatability to MSER on several benchmarks while achieves better invariance to lighting, blur and on images with increasing resolution. This is achieved via significantly fewer regions, leading to better scalability. Some preliminary results on animal and plant images, indicate that DMSR could be a suitable approach for such wild-life biometric application as the detected regions correspond well to the semantic salient structures. The paper also introduces OxFrei - a dataset for transformation-independent detection evaluation. 
+Finding correspondences between two images of the same scene or object, taken from different viewpoints and conditions, is a challenging task. Analyzing scientific imagery often requires detected local features to coincide with the human perception, thus making the task even more complex. Ecologists use photo-identification methods in their population studies and conservation efforts. In addition to the task of identifying an individual plant or animal or classifying species, precise phenotypic measurements are needed. A renowned generic region detector, Maximally Stable Extremal Regions (MSER), performs very well on structured images, but have difficulties with blur, lighting and increased resolution. The detected regions do not always correspond to semantically meaningful image structures and their large number hampers scalability. This paper proposes a Data-driven Morphology Salient Regions (DMSR) detector which overcomes the above limitations. A new binarization algorithm uses a threshold derived from the data and the resulting binary image is analyzed for saliency using morphology.  DMSR shows transformation invariance and comparable repeatability to MSER on several evaluation benchmarks while obtaining better invariance to lighting, blur and resolution. This is achieved via significantly fewer regions, leading to better scalability. Some preliminary results on animal and plant images, indicate that DMSR could be a suitable approach for such wild-life biometric application as the detected regions correspond well to the semantic salient image structures. The paper also introduces OxFrei - a dataset for transformation-independent detection evaluation. 
 
 \end{abstract}
 
@@ -211,37 +211,37 @@ The first fundamental step in numerous computer vision applications (wide baseli
 \end{minipage}
 \hfill
 \vspace{-0.5cm}
-\caption{Region detection on the 'underground' image (detail) from the TNT dataset.  
-Top row: MSER, bottom row: DMSR (proposed detector). Left: low $1.5$, right: high $8$~MPixel resolution}
+\caption{Region detection on the 'underground' image (detail), TNT dataset.  
+Top row: MSER, bottom row: DMSR (proposed detector). Left: low $1.5$~MPixel, right: high $8$~MPixel resolution}
 \label{fig:tnt_zoom}
 \vspace{-0.4cm}
 \end{figure}
 
 A decade ago, a performance evaluation paper by the Visual Geometry Group in Oxford compared existing region detectors \cite{Mikolajczyk:2005}. 
-A clear conclusion of the comparison was that {\em  Maximally Stable Extremal Regions (MSER)} is the best performing detector for {\em structured} scenes, e.g., those containing homogeneous regions with distinctive boundaries \cite{Matas2002BMVC}. MSER has become the de-facto standard in the field, e.g., it is in the MATLAB Computer Vision Systems Toolbox, OpenCV, VLFeat etc. Despite its success, the detector has several drawbacks: it is sensitive to image blur; it produces nested and redundant regions and its performance degrades with the increase of image resolution \cite{CorRos2013}. Figure \ref{fig:tnt_zoom} illustrates this degradation and the robustness of our proposed {\em Data-driven Morphology Salient Regions (DMSR)} detector to increased image resolution on a detail from the 'underground' image from TNT dataset \cite{CorRos2013}. While many of the MSER regions are not detected when the image resolution increased from $1.5$ to $8$~MPixel, the DMSR regions are detected consistently invariant to the resolution. Analysis in geometric scale-space have shown that the formulation of the region stability criterion makes MSER prefer regular shapes \cite{Kimmel11}.
+A clear conclusion of the comparison was that {\em  Maximally Stable Extremal Regions (MSER)} is the best performing detector for {\em structured} scenes, e.g., those containing homogeneous regions with distinctive boundaries \cite{Matas2002BMVC}. MSER has become the de-facto standard in the field, e.g., it is in the MATLAB Computer Vision Systems Toolbox, OpenCV, VLFeat etc. Despite its success, the detector has several drawbacks: it is sensitive to image blur; it produces nested and redundant regions and its performance degrades with the increase of image resolution \cite{CorRos2013}. Figure \ref{fig:tnt_zoom} illustrates this degradation in contrast to the robustness to resolution of our proposed {\em Data-driven Morphology Salient Regions (DMSR)} detector on a detail from the 'underground' image from TNT dataset \cite{CorRos2013}. While many of the MSER regions are not found when the image resolution increases from $1.5$~MPixel to $8$~MPixel, the DMSR regions are detected consistently invariant to the resolution. Analysis in geometric scale-space have shown that the formulation of the region stability criterion makes MSER prefer regular shapes \cite{Kimmel11}.
 
 \subsection{Related work}
-Many researchers have proposed improvements to MSER with no drastic increase of performance. An MSER color extension, {\em Maximally Stable Color Region}, outperforms both an MSER-per-color-channel combination and a color blob detector \cite{Forssen07}. Improving the MSER region distinctiveness by morphological dilation on the detected Canny edges is proposed in \cite{Wang14}. The improved detector shows better performance in classification application, but evaluation of repeatability is not reported. 
-Chen et al.~ also combine MSER with Canny edges in order to cope with blur for detecting text in natural images \cite{Chen11}.
+Many researchers have proposed improvements to MSER, without drastic increase of performance. An MSER color extension, {\em Maximally Stable Color Region}, outperforms both an MSER-per-color-channel combination and a color blob detector \cite{Forssen07}. Improving the MSER region distinctiveness by morphological dilation on the detected Canny edges is proposed in \cite{Wang14}. The improved detector shows better performance in classification application, but evaluation of repeatability is not reported. 
+Chen et al.~also combine MSER with Canny edges in order to cope with blur for detecting text in natural images \cite{Chen11}.
 Kimmel et al. %not only point out the preference of the algorithm towards regular shapes, but also 
 propose several reinterpretations of the stability measure in order to define more informative shape descriptors \cite{Kimmel11}. 
 
-Interesting research has been conducted by Martins et al.~ who propose {\em feature-driven MSER}, called  {\em Stable Salient Shapes} (SSS) by extending the concept of stable regions from detection using the original image, to a boundary-related features enhanced representation, \cite{MartinsVisapp12, Martins12}. This is done via ``feature-highlighting'' of edges and ridges generating saliency maps which are used as domains for the MSER detector. As a result, SSS is less sensitive to blurring, but it also detects more regions per image in comparison to MSER. While the authors consider the latter an improvement since it decreases the detector's sensitivity to occlusion, we argue that in the context of scaling up or when processing animal biometrics imagery usually obtained with care for minimal occlusion, that is a drawback. Their approach also improves the {\em completeness} of the local features (``the information contained in the image should be preserved by the features as much as possible'' as defined in \cite{Dickscheid2011}) \cite{Martins2016OnTC}. The authors claim that the completeness property of SSS makes it a suitable detector to solve object recognition tasks, but their software is not available.
+Interesting research has been conducted by Martins et al.~who propose {\em feature-driven} MSER, called  {\em Stable Salient Shapes} (SSS) by extending the concept of stable regions from detection using the original image, to one from a boundary-related features enhanced representation \cite{MartinsVisapp12, Martins12}. This is done via ``feature-highlighting'' of edges and ridges generating saliency maps which are used as domains for the MSER detector. As a result, SSS is less sensitive to blurring, but it also detects more regions per image in comparison to MSER. While the authors consider the latter an improvement since it decreases the detector's sensitivity to occlusion, we argue that in the context of scaling up or when processing animal biometrics imagery usually obtained with care for minimal occlusion, that is a drawback. Their approach also improves the {\em completeness} (``the information contained in the image should be preserved by the features as much as possible'' \cite{Dickscheid2011}) of the local features \cite{Martins2016OnTC}. The authors claim that the completeness property of SSS makes it a suitable detector to solve object recognition tasks, but their software is not shared.
 
 % PCBR
-A region detector suitable for object class recognition, the {\em Principal Curvature-Based Region (PCBR)} using curvilinear structures (ridges), has been introduced in \cite{DengZMDS07}. PCBR differs from MSER in two aspects- it analyses regions in scale space, thus providing different levels of region abstraction and also overcomes the problems caused by local variations within regions by focusing on region boundaries rather than interiors. PCBR is similar to our approach in using morphological operators for detecting robust watershed regions, but on the principal curvature image instead of on the intensity (or binarized) image. The reported average repeatability on the Oxford dataset,\cite{Mikolajczyk:2005}, is worse than that of MSER given that PCBR has been designed for object-class recognition. The PCBR detector in combination with object-class recognition algorithms has been shown to distinguish between two related species of stone-fly larva with very similar appearance. The comparison, however, is with Kadir's salient detector, \cite{Kadir2004} and Hessian-affine, not with MSER.  Dzeng et al. point out the importance of designing feature detectors more suitable for object recognition tasks different for the detectors designed for wide-baseline matching of scenes (such as MSER). Our aim is, however, to addresses both applications simultaneously.
+A region detector suitable for object class recognition, the {\em Principal Curvature-Based Region (PCBR)} uses curvilinear structures (ridges) to enhance the regions \cite{DengZMDS07}. PCBR differs from MSER in two aspects- it analyses regions in scale space, thus providing different levels of region abstraction and also overcomes the problems caused by local variations within regions by focusing on their boundaries rather than interiors. PCBR is similar to our approach in using morphological operators for detecting robust watershed regions, but on the principal curvature image instead of on the intensity (or binarized) image. The reported average repeatability on the Oxford dataset is worse than that of MSER given that PCBR has been designed for object-class recognition. The PCBR detector in combination with object-class recognition algorithms has been able to distinguish between two related species of stone-fly larva with very similar appearance. The comparison, however, is with Kadir's salient detector, \cite{Kadir2004} and Hessian-affine, not with MSER.  Dzeng et al.~point out the importance of designing detectors tailored to object recognition tasks separately from the detectors designed for general applications like wide-baseline stereo matching (such as MSER). Our aim is, however, to addresses both applications with the same technology.
 
 
-\subsection{Possible application}
-While most research has focused on generic applications, the emerging fields of {\em animal and plant biometrics} are attracting more attention \cite{Kuehl2013, leafsnap_eccv2012}. Computer vision is becoming a vital technology enabling the wild-life preservation efforts of ecologists. Along with the individual or species photo-identification, the scientists wish to obtain reliable measurements of meaningful structures from images. For example the automated identification of cell structures is one of the new challenges to be met in studies of the structural biology of plants \cite{Quelhas2011}. Analysis of these microscopic features from anatomical sections of wood are very important for studying the secondary growth and development of trees \cite{Brunel2014}. Classifying the cell types can be approached by examining their shape, size and spatial distribution. At the same time these characteristics are used for automated wood species classification \cite{Gasson2011}. Therefore, the  automatic detector of regions corresponding to wood cells has to perform well for both tasks ecology scientists face: identification of species or individuals and phenotypic measurements. The generic detectors do not satisfy this need, they produce redundant overlapping regions which often do not coincide with semantic structures (Figures \ref{fig:wood}, left).
+\subsection{Envisioned scientific application}
+While most research has been focused on generic applications, the
+ fields of {\em animal and plant biometrics} are attracting more attention \cite{Kuehl2013, leafsnap_eccv2012}. Computer vision is becoming a vital technology enabling the wild-life preservation efforts of ecologists. Along with the individual or species photo-identification, the scientists wish to obtain reliable measurements of meaningful structures from images. For example the automated identification of cell structures is one of the new challenges to be met in studies of the structural biology of plants \cite{Quelhas2011}. Analysis of these microscopic features from anatomical sections of wood are very important for studying the secondary growth and development of trees \cite{Brunel2014}. Classifying the cell types can be approached by examining their shape, size and spatial distribution. At the same time these characteristics are used for automated wood species classification \cite{Gasson2011}. Therefore, the  automatic detector of regions corresponding to wood cells has to perform well for both tasks ecology scientists face: identification of species or individuals followed by phenotypic measurements. The generic detectors do not satisfy this need, they produce redundant overlapping regions which often do not coincide with semantic structures (Fig.~\ref{fig:wood},top and \ref{fig:wood_C}, left).
 
 \subsection{Evaluation benchmarks}
 Although crucial for the development of detectors, there is a shortage of region-based evaluation benchmarks, especially for performance analysis independently of the image content.  The standard {\em Oxford dataset} is very small: eight test sequences containing six (one base and five transformed) images of the same scene each. Every pair (base, transformed) is related via a given transformation matrix (homography) \cite{Mikolajczyk:2005}.  The {\em Freiburg dataset} contains $416$ higher resolution images, generated by transforming $16$ base images in order to de-tangle transformations from content \cite{FischerDB14}.  
-The {\em TNT dataset} contains versions of the same viewpoint sequences with increasing resolution from $1.5$ to $8$~MPixel per image. Highly accurate image pair homographies are given. It is suitable for evaluating robustness to resolution rather than to transformations \cite{CorRos2013}.  A more resent and larger dataset is the point feature {\em DTU Robot Data Set}, \cite{AanaesDP12}. It  consists of $60$ scenes acquired from $119$ positions (executed with a robotic arm), totaling $135, 660$ color images of a resolution of $1200 \times 1600$. While of a much larger scale and with better precision of correspondences than the Oxford dataset, it is a very limited indoor setup, hence does not capture natural outdoor variations of acquisition conditions. Interestingly, the authors report the performance (Recall, not Repeatability) of MSER on their dataset as moderate. 
+The {\em TNT dataset} contains versions of the same viewpoint sequences with increasing resolution from $1.5$ to $8$~MPixel per image. Highly accurate image pair homographies are given. It is suitable for evaluating robustness to resolution rather than to transformations \cite{CorRos2013}.  A more resent and larger dataset is the point feature {\em DTU Robot Data Set}, \cite{AanaesDP12}. It  consists of $60$ scenes acquired from $119$ positions (executed with a robotic arm), totaling $135, 660$ color images of a resolution of $1200 \times 1600$. While of a much larger scale and with better precision of correspondences than the Oxford dataset, it is a very limited indoor setup, hence does not capture natural outdoor variations of acquisition conditions. Interestingly, the authors report the performance (recall, not repeatability score) of MSER on their dataset as moderate. 
 
 \subsection{Contributions}
-%This paper contributes to solving the identified problems. 
-We propose a new regions detector, DMSR, and made the software available as open source \cite{elena_ranguelova_2016_45156}. It is related to the {\em Morphology-based Stable Salient Regions (MSSR)} detector that we have developed \cite{RangMSSR06, RangHumpb06}. 
+We propose a new salient regions detector, DMSR which improves on the discussed limitations and meets needs. It is related to the {\em Morphology-based Stable Salient Regions (MSSR)} detector that we have developed \cite{RangMSSR06, RangHumpb06}. 
 %----------------------------------------------------------------------
 \begin{table}[hbt]
 \caption{Binary saliency definitions used in Section \ref{ssec:binary}.}\label{table:binary_sal}
@@ -262,23 +262,22 @@ $2$ types & $S^b_{10}$ (protr.), $S^b_{01}$ (indent.); $\S^b = S_{01}^b \cup S_{
 \end{table}
 
 
-DMRS includes a data-driven binarization, robust-to-lighting-and-blur, that yields a much smaller number of regions and is more stable across transformations. Unlike SSS, which consists of two separate detection steps (feature saliency map followed by MSER), we propose an integrated solution for both image correspondence and object recognition tasks simultaneously. It has similar or higher (lighting, blur and increased resolution) repeatability compared to MSER, while detecting non-redundant perceptually salient regions. DMSR achives consistantly the lowest number of detected regions, which will lead to the best scalability during the following region descriptors matching step.  Also, we compose and share an openly available dataset, OxFrei, combining the natural homographies of the Oxford and the higher resolution images of the Freiburg datasets. All experimental results, dataset and the open-source software are available online facilitating research repeatability \cite{elena_ranguelova_2016_45156}. 
+DMRS includes a robust-to-lighting-and-blur data-driven binarization, that yields a much smaller number of regions and is more stable across transformations. Unlike SSS, which consists of two separate detection steps (feature saliency map followed by MSER), we propose an integrated solution for both image correspondence and object recognition tasks simultaneously. It has similar or higher (lighting, blur and increased resolution) repeatability compared to MSER, while detecting non-redundant perceptually salient regions. DMSR achieves consistently the lowest number of detected regions, which will lead to the best scalability during the following region descriptors matching step.  Also, we compose and share OxFrei- dataset combining the natural homographies of the Oxford and the higher resolution images of the Freiburg datasets. All experimental results, dataset and the open-source software are available online facilitating research repeatability \cite{elena_ranguelova_2016_45156}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Data-driven Morphology Salient Regions Detection}
 \label{sec:DMSR}
 
 
-MSER decomposes a gray-scale image into binary cross-sections and evaluates the stability of the connected components (CCs) to determine maximally stable regions. DMSR starts with a data-driven binarization, producing one binary image which is analyzed for saliency using binary morphology. Thus the problem of salient region detection is transformed into binary saliency.
+MSER decomposes a gray-scale image into binary cross-sections and evaluates the stability of the connected components (CCs) across sections to determine maximally stable regions. In contrast, DMSR starts with a data-driven binarization. The single binary image is then analyzed for saliency using binary morphology. Thus the problem of salient region detection is transformed into binary saliency.
 
 \subsection{Binary Salient Regions Detection}
 \label{ssec:binary}
 We claim that the perceptual saliency in a binary image of a structured scene 
  $\B: \mcD \subset \mathcal{Z}^2 \rightarrow \{0,1\}$ (1-white, 0-black)
 is only due to the spatial layout of the image regions. 
-There are  $4$ types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are (1) {\em holes} -- set of connected black pixels entirely surrounded by white pixels, and (2) {\em islands} -- set of connected white pixels surrounded by black ones, i.e.~inverse of holes. A significant connected component ${\cal B}^1$ is defined as a CC with area proportional to the image area by $\Lambda$. 
-%The radius of the morphological structuring element (SE) is $r$ and  the area opening parameter for  noise filtering is $\lambda$. 
-The $2$ {\em boundary salient structures (BSS)} are (3) {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, will increase its boundary with no more than $2\pi r$ (where $r$ is the radius of the morphological structuring element (SE)), and (4) the {\em indentations}- protrusions inverse. These types are defined in Table \ref{table:binary_sal} and also valid for the MSSR detector \cite{RangHumpb06}. 
+There are  $4$ types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are (1) {\em holes} -- set of connected black pixels entirely surrounded by white pixels, and (2) {\em islands} -- set of connected white pixels surrounded by black ones, i.e.~inverse of holes. A significant connected component ${\cal B}^1$ is defined as a CC with area proportional to the image area by $\Lambda$. . 
+The $2$ {\em boundary salient structures (BSS)} are (3) {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, will increase its boundary with no more than $2\pi r$, where $r$ is the radius of the morphological structuring element (SE), and (4) the {\em indentations}- protrusions inverse. These types are defined in Table \ref{table:binary_sal} and also valid for the MSSR detector \cite{RangHumpb06}. 
 
 \begin{figure}[htb]
 %\vspace{-0.5cm}
@@ -301,21 +300,19 @@ indentations - green, protrusions- red. }
 \end{figure}
 %----------------------------------------------------------------------
 %holes
-The regions are obtained from $\B$ by morphological operations \cite{Soille}. To detect holes, the {\em hole filling}
-operation $\bullet (\cdot)$ on the set of all white pixels $\B ^1$ intersected with the set of all black pixels $\B^0$ can be used:
+The regions are obtained from $\B$ by morphological operations \cite{Soille}. To detect holes, the {\em hole filling} operation $\bullet (\cdot)$ on the set of all white pixels $\B ^1$ intersected with the set of all black pixels $\B^0$ can be used:
 \be
 S^i_{01} = \rho^i_{01}(\B)= \bullet(\B ^1) \cap \B^0 \label{eqn:sal:inn:01}.
 \ee
 %islands
-Islands can be obtained either similarly but from the background or by identifying all non-significant CCs:
+Islands can be obtained either similarly but from the inverted image or by identifying all non-significant CCs:
 \be
 S^i_{10} = \rho^i_{10}(\B)= \bullet(\B ^0) \cap \B^1 = \B^1 \backslash \bigcup_j{{\cal B}_j^1} \label{eqn:sal:inn:10}.
 \ee
 
 The morphological {\em opening} operator (based on SE
-$E$- disk with radius $r$)  $\gamma_E(\B)$ generally smooths a CC contour 
-eliminating thin protrusions. As a consequence, protrusions can be obtained by subtracting the opened CC
-from the original (this is known as the {\it white tophat
+$E$- disk with radius $r$)  $\gamma_E(\B)$ generally smooths a CC's contour 
+eliminating thin protrusions. As a consequence, protrusions can be obtained by subtracting an opened CC from the original (this is known as the {\it white tophat
 transform} $WTH_E(\B) = \B - \gamma_E(\B)$):
 \be
 S^b_{10} = \rho^b_{10}(\B)=   \bigcup_j WTH_E({\cal B}_j^1) \label{eqn:sal:bor:10}.
@@ -325,9 +322,9 @@ Therefore, indentations can be picked up by applying the {\em black top hat (BTH
 \be
 S^b_{01} = \rho^b_{01}(\B)=  \bigcup_j BTH_E({\cal B}_j^1) \label{eqn:sal:bor:01}
 \ee
-or by applying the WTH to the reversed image.
+or by applying the WTH to the inverted image.
 
-The binary saliency operator $\rho$ is therefore finally defined via:
+The binary saliency operator $\rho$ is therefore defined via:
 \be
 \rho = \gamma_\lambda \circ (\rho^i_{01} \cup\rho^i_{10} \cup
 \rho^b_{01} \cup \rho^b_{10}),
@@ -339,19 +336,18 @@ This is not the case for the scale-invariance of the detected BSS.
 We propose choosing a small $r$ which also minimizes the inaccuracy of maximum $2 \pi r$ along the ``disconnection boundary''
 $\partial ({\cal B}^f \backslash S_{fb}^b)$. All detected salient regions $\S$ have accurate boundaries as there is no smoothing involved.
 \end{comment}
+
 The ISS are similar to the definition of the MSER+ and MSER- regions \cite{Matas2002BMVC}. While, MSER detects both types, DMSR (and MSSR) is parametrised with the desired type(s) of salient regions to look for. In this paper, detectors using only ISS, i.e., directly comparable to MSER, are denoted by DMSR/MSSR, while DMSRA/MSSRA are detectors using all region types. An illustration of the exact shaped binary salient 
-regions from a synthetic $100 \times 100$ binary image with parameters $\Lambda=100$, $r=5$ and $\lambda = 10$ are shown on Fig.~\ref{fig:binary_sal}.
-
-
+regions detected from a synthetic $100 \times 100$ binary image is shown on Fig.~\ref{fig:binary_sal}. The DMSR parameters used are: $\Lambda=1/100$, $r=5$ and $\lambda = 10$.
 
 \subsection{Data-driven binarization}
 \label{ssec:binarize}
-Any gray-scale image  $\I:~\mcD~\subset~\mathcal{Z}^2~\rightarrow ~\mcT $, where $\mcT=\{0,1,\ldots, t_{max}\}$ and $t_{max}~=~2^n-1~=~255$ is the maximum gray value encoded by $n~=~8$ bits, can be decomposed into cross-sections at
+Any gray-scale image  $\I:~\mcD~\subset~\mathcal{Z}^2~\rightarrow ~\mcT $, where $\mcT=\{0,1,\ldots, t_{max}\}$ and $t_{max}=255$ is the maximum gray value $2^n-1$ encoded by $n=8$ bits, can be decomposed into cross-sections at
 every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$. Obtaining a section at level $t$ is equivalent to thresholding the image at threshold $t$: $CS_t(\I)= 1.(\I>t) + 0.(\I<t)$ is a binary image. 
 
-Both MSER and MSSRs need multiple binary cross-sections, the former using minimum area change of a CC as stability criteria, while the latter generates cumulative binary saliency masks to determine salient regions. In this paper we argue that it is possible to obtain a single optimum binarization inspired by the notion of feature completeness \cite{Dickscheid2011}. Along with robustness (invariance to transformations), speed (detection should be fast) and sparseness (features should be less than the image itself), important prerequisite for a good detector is completeness- the salient information present in an image should be maximally preserved. We argue that for a good detector which should also reflect saliency, preserving maximum number of CCs is a manner of achieving completeness. On the other hand, larger CCs (as we refer to them as to significant CCs) are perceptually more salient than smaller CCs. 
+Both MSER and MSSR need multiple binary cross-sections, the former using minimum area change of a CC as stability criteria, while the latter generates cumulative binary saliency masks to determine salient regions. In this paper we argue that it is possible to obtain a single optimum binarization inspired by the notion of feature completeness \cite{Dickscheid2011}. Along with robustness (invariance to transformations), speed (detection should be fast) and sparseness (features should be less than the image itself), important prerequisite for a good detector is completeness- the salient information present in an image should be maximally preserved. We argue that for a detector which should also reflect saliency, preserving maximum number of CCs is a manner of achieving completeness. On the other hand, larger (significant) CCs are perceptually more salient than smaller CCs. 
 
-We define, then, three sets of connected components in $CS_t(\I)$: $\mcA_t$- {\em all}, $\mcL_t$- the {\em large} and $\mcV_t$- the {\em very large} CCs.  The size of each CC category is defined by$\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Let us denote the normalized number of elements in a set ($|\cdot|$) by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$.
+We define, then, three sets of connected components in $CS_t(\I)$: $\mcA_t$- {\em all}, $\mcL_t$- the {\em large} and $\mcV_t$- the {\em very large} CCs.  The CC size in the last two categories are defined by $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Let us denote the normalized number of elements in a set ($|\cdot|$) by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$.
 Finding the optimal binarization threshold $t_{opt}$ is then defined as:
 \begin{equation} \label{eq:bin}
 \vspace{-0.05cm}
@@ -360,7 +356,7 @@ t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mc
 \end{equation}
 where $w^{\cdot}$ are the weights per set of CCs.  
 
-In comparison to the standard Otsu thresholding which does not select a single stable $CS$, choosing $t_{opt}$ as defined, ensures stable number of regions across transformations (see Figs.~\ref{fig:binary_hist} and \ref{fig:leuven_bin} for lighting).
+In comparison to the standard Otsu thresholding which does not select a single $CS$ stable across photometric transformations, choosing $t_{opt}$ as defined, ensures stable number of regions across transformations. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} show the comparison of Otsu and the data-driven threshold in respect to lighting.
 %------------------------------------------------------------------------
 %\vspace{-0.8cm}
 \begin{figure}[htb]
@@ -431,13 +427,14 @@ In comparison to the standard Otsu thresholding which does not select a single s
 \end{minipage}
 
  %\vspace{-0.5cm}
-\caption{Binarization of two images of the 'Leuven' sequence (lighting). Left: base image, right: forth image;   top row: gray scale; middlerow: Otsu binarization, bottom row: proposed binarization.}
+\caption{Binarization of two images of the 'Leuven' sequence (lighting). Left: base image, right: forth image;   top row: gray scale; middle row: Otsu binarization, bottom row: proposed binarization.}
 \label{fig:leuven_bin}
 %
 \end{figure}
 %------------------------------------------------------------------------
 
-After the data-driven binarization, the DMSR detector finds the set of affine-covariant regions $\S$ from the single binary image $CS_{t_{opt}}$ as described in Section \ref{ssec:binary} and \cite{RangMSSR06, RangHumpb06}. DMSR produces fewer non-overlapping and perceptually salient regionsd to MSER. This is illustrated on  Figures~\ref{fig:det_graffiti} and \ref{fig:wood} where the regions are visualized by their equivalent ellipses, not by their exact detected shapes.
+\subsection{DMSR}
+After the data-driven binarization, the DMSR detector finds the set of affine-covariant regions $\S$ from the single binary image $CS_{t_{opt}}$ as described in Section \ref{ssec:binary} and \cite{RangMSSR06, RangHumpb06}. As a result, DMSR produces fewer non-overlapping and perceptually salient regions compared to MSER. This is illustrated on Figures \ref{fig:tnt_zoom}, \ref{fig:det_graffiti}, \ref{fig:tails_mser}, \ref{fig:tails_dmsr} and \ref{fig:wood},\ref{fig:wood_C} where the regions are visualized by their equivalent ellipses, not by their exact detected shapes.
 
 %------------------------------------------------------------------------
 \begin{figure}[htb]
@@ -465,11 +462,11 @@ After the data-driven binarization, the DMSR detector finds the set of affine-co
 \label{sec:perf}
 
 
-We have applied the standard performance evaluation metrics- the {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is set to $40\%$ as in \cite{Mikolajczyk:2005}. The repeatability score between a pair of base and transformed image, $(\I_B,\I_T)$, is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. Since we are intrested in finding correspondencies between (hopefully semantically menaingful) salient regions from structured images we only focus on this subset from each dataset and we ignore the textured scenece (e.g. 'Trees, 'Bark' etc. from Oxford dataset). We considered and five region detectors for evaluation: MSER, MSSR(A) and DMSR(A). For MSER we used the original Matas software with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$, $\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$.
+We have applied the standard performance evaluation metrics- the {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is set to $40\%$ as in \cite{Mikolajczyk:2005}. The repeatability score between a pair of base and transformed image, $(\I_B,\I_T)$, is the ratio between $N_C$ in the common image part and the smaller number of regions in the pair. Since we are intrested in finding correspondencies between (hopefully semantically menaingful) salient regions from structured images we only focus on this subset from each dataset and we ignore the textured scenes (e.g. 'Trees, 'Bark' etc. from Oxford dataset). We considered five region detectors for evaluation: MSER, MSSR(A) and DMSR(A). For MSER we used the original Matas software with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$, $\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$.
 All performance plots and detected regions on all data are available online \cite{elena_ranguelova_2016_45156}.
 
 \subsection{Binarization}
-In order to determine the binarization weights from equation (\ref{eq:bin}), we have tested all posible menaingful combinations of weights ($\sum w^{\cdot} =1, w^{\cdot} \in [0.1,0.6] $) for the sequences of the Oxford dataset.
+In order to determine the binarization weights from equation (\ref{eq:bin}), we have tested all possible meaningful combinations of weights ($\sum w^{\cdot} =1, w^{\cdot} \in [0.1,0.6] $) for the sequences of the Oxford dataset.
 %------------------------------------------------------------------------
 \begin{figure}[htb]
 \centering
@@ -481,18 +478,19 @@ In order to determine the binarization weights from equation (\ref{eq:bin}), we 
 \end{minipage}
 \hfill
 %\vspace{-0.25cm}
-\caption{Determining binarization weights. Difference between maximum number of CC for each pair of images (base, transf) for 7 weight combinations are shown. Blur sequence ('Bikes'), Oxford dataset.}
+\caption{Determining binarization weights. Difference between maximum number of CC for each pair of images (base, transf) for 7 weight combinations. Blur sequence ('Bikes'), Oxford dataset.}
 \label{fig:bin_bikes}
 %
 \end{figure}
 
-Figure \ref{fig:bin_bikes} shows several of the plots of the difference between the normalised maximum number of CC of the first reference image and each of the transformed images from the blur sequence 'Bikes', Oxford dataset for several combinaiton of weights. The combinations of weights for whcih the differences are below $0$ are not desirable, since the number of CC decreases. The combination of weights with the smallest and uniform positive differences and preferably small for the extrame transormaiton (the $6$th image of the sequence) is preferred. We have found out that the most stable maximum number of CCs across all transformations is achived when all weights are equal, i.e.  $w^{\cdot}=0.33$. 
+Figure \ref{fig:bin_bikes} shows several of the plots of the difference between the normalized maximum number of CC of the first reference image and each of the $5$ transformed images from the blur sequence 'Bikes', Oxford dataset for several combinations of weights. Those for which the differences are below $0$ are not desirable, since the number of CC decreases with transformation. The combination of weights with the smallest and uniform positive differences and preferably small for the most extreme transformation (the $6$th image of the sequence) is preferred. We have found out that the most stable maximum number of CCs across all transformations is achieved when all weights are equal, i.e.  $w^{\cdot}=0.33$. 
 
 %------------------------------------------------------------------------
 \subsection{Oxford dataset}
 \label{ssec:oxford}
-Each image sequence of the Oxford dataset consists of one base and five increasingly distorted images \cite{Mikolajczyk:2005}. They are obtained independently of each other and the homographies between each pair $(\I_B,\I_T)$ are the provided  ground truth. Each sequence can be used to test only one transformation $T$.
-For the viewpoint ('Graffiti'), the best repeatability $R$ is achieved by DMSR with up to $72\%$, which is $10\%$ more than the second performing MSER for a $40^{\circ}$ change (Figure \ref{fig:det_graffiti}). DMSR is performing worse on the scale ('Boat'), but as good as or better than MSER on the blur ('Bikes', Fig.~\ref{fig:det_bikes}) and lighting ('Leuven') sequences. These $R$ scores for all sequences of the dataset are achived with conssitently the smallest number of detected regions by DMSR, making the detector the best scallable one.  
+Each image sequence of the Oxford dataset consists of one base and five increasingly distorted images \cite{Mikolajczyk:2005}. They are obtained independently of each other and the homographies between each pair $(\I_B,\I_T)$ are the provided  ground truth. Each sequence can be used to test only one transformation $T$. Therefore, it is not possible to separate transformation from image content. On the other hand, the Oxford dataset provides real homographies unlike many other datasets.
+
+For the viewpoint transformation ('Graffiti'), the best repeatability $R$ is achieved by DMSR with up to $72\%$, which is $10\%$ more than the second performing MSER for a $40^{\circ}$ change (Figure \ref{fig:det_graffiti}). DMSR is performing worse on the scale ('Boat'), but as good as or better than MSER on the blur ('Bikes', Fig.~\ref{fig:det_bikes}) and lighting ('Leuven') sequences \cite{elena_ranguelova_2016_45156}. These $R$ scores for all sequences of the dataset are achived with consistently the smallest number of detected regions by DMSR, making the detector the most scallable.  
 %------------------------------------------------------------------------
 \begin{figure}[htb]
 \centering
@@ -527,9 +525,9 @@ For the viewpoint ('Graffiti'), the best repeatability $R$ is achieved by DMSR w
 
 \subsection{OxFrei dataset}
 \label{ssec:combined}
-A major drawback when the Oxford dataset is tha tone cannot determine weather the performance is robust to a transformation as every sequence represents only one transformation $T$. The creators of the Freiburg dataset separated $T$ from the image content by applying a few transformations (alas not fully documented) to different base images \cite{FischerDB14}. To address the shortage of evaluation datasets, we release OxFrei - a combination of the strong features of the Oxford and Freiburg datasets \cite{elena_ranguelova_2016_45156}. We transform the Freiburg base images with all homographies of the Oxford dataset. In this way, we create $54$ images in $9$ structured scenes each under realistic blur, lighting, scaling and viewpoint transformations.
+A major drawback of the Oxford dataset is that one cannot determine whether the detector is robust to a transformation $T$ as every sequence represents only one $T$. The creators of the Freiburg dataset separated $T$ from the image content by applying a few transformations (alas not fully documented) to different base images \cite{FischerDB14}. To address the shortage of evaluation datasets, we release OxFrei which combines the strong features of the Oxford and Freiburg datasets \cite{elena_ranguelova_2016_45156}. We transform the Freiburg base images with all homographies of the Oxford dataset. In this way, we create $54$ images in $9$ structured scenes each under realistic blur, lighting, scaling and viewpoint transformations.
 
-The dataset allows a transformation independent robustness study by comparing performance on all data subject to the same realistic $T$. Figures~\ref{fig:det_frei} and \ref{fig:blur} show the $R$ score for lighting for one and blur for a few sequences. The standard plots (like on Fig.~\ref{fig:det_frei}) are cross-sections along the data dimension of the 3D plots (like on Fig.~\ref{fig:blur}) for one sequence. The 2D plots for all OxFrei experiments are online \cite{elena_ranguelova_2016_45156}. We conclude that MSER is better for zoom and viewpoint (the latter contradicting with the result on the single Oxford 'Graffiti' sequence), while DMSR is robust to lighting and blur (Fig. \ref{fig:blur}). Again the number of detected regions by DMSR is consistently the smallest across different image content and transformations.
+The dataset allows a transformation independent robustness study by comparing performance on all data subject to the same realistic $T$. Figures~\ref{fig:det_frei} and \ref{fig:blur} show the $R$ score for lighting for one and blur for a few sequences. The standard plots (like on Fig.~\ref{fig:det_frei}) are cross-sections along the data dimension of the 3D plots (like on Fig.~\ref{fig:blur}) for one sequence. The 2D plots for all OxFrei experiments are online \cite{elena_ranguelova_2016_45156}. From all experiemnts, we concluded that MSER is better for zoom and viewpoint (the latter contradicting with the result on the single Oxford 'Graffiti' sequence), while DMSR is robust to lighting and blur (Fig. \ref{fig:blur}). Again the number of detected regions by DMSR is consistently the smallest across different image content and transformations.
 
 %------------------------------------------------------------------------
 %\vspace{-0.5cm}
@@ -567,7 +565,7 @@ The dataset allows a transformation independent robustness study by comparing pe
 \subsection{TNT hi-res benchmark}
 \label{ssec:tnt}
 
-The $R$ score of all detectors from the Oxford study drops down on hi-res images \cite{CorRos2013}. On the 'underground' sequence from the TNT set, MSER loses up to $25\%$ between $1.5$~Mpx ($R_1$) and $8$Mpx ($R_4$) resolutions. On the contrary, DMSR increases the $R$ score as resolution increases on 'underground' and 'posters' sequences with up to $75\%$, which is a $15\%$ increase from $R_1$ to $R_4$ for a $40^{\circ}$ viewpoint change (Figure \ref{fig:tnt}). We can even observe that easily by qualitative inspection of the actual detected regions as we already have shown on Figure \ref{fig:tnt_zoom}. While MSER increasinly loses salient regions as the image resolution increases, the number and location of DMSR regions remains stable.
+The $R$ score of all detectors from the Oxford evaluation study drops down on hi-res images \cite{CorRos2013}. On the 'underground' sequence from the TNT set, MSER loses up to $25\%$ between $1.5$~Mpx ($R_1$) and $8$Mpx ($R_4$) resolutions. On the contrary, DMSR increases the $R$ score as resolution increases on 'underground' and 'posters' sequences with up to $75\%$, which is a $15\%$ increase from $R_1$ to $R_4$ for a $40^{\circ}$ viewpoint change (Figure \ref{fig:tnt}). We can even observe that easily by qualitative inspection of the actual detected regions as we already have shown on Figure \ref{fig:tnt_zoom}. While MSER increasinly loses salient regions as the image resolution increases, the number and location of DMSR regions remains stable.
 
 \begin{figure}[htb]
 
@@ -598,11 +596,13 @@ The $R$ score of all detectors from the Oxford study drops down on hi-res images
 \end{figure}
 %------------------------------------------------------------------------
 
-Again, the $N_C$ plane of DMSR has the lowest values and the least slope of all detectors (Figs.~\ref{fig:det_bikes}, \ref{fig:det_frei}, right and Fig.~\ref{fig:tnt_numreg}) \cite{elena_ranguelova_2016_45156}. The number of detected DMSR regions is up to an order of magnitude lower compared to MSER - crucial for the efficiency of the following matching step on large-scale image data.
+Again, the $N_C$ plane of DMSR has the lowest values and the least slope of all detectors (Figs.~\ref{fig:det_graffiti}, \ref{fig:det_bikes}, \ref{fig:det_frei}, right and Fig.~\ref{fig:tnt_numreg} and \cite{elena_ranguelova_2016_45156}). The number of detected DMSR regions is up to an order of magnitude lower compared to MSER - crucial for the efficiency of the following matching step on large-scale image datasets.
 
 \subsection{Animal and plant biometrics}
 \label{ssec:bio}
-Challended by the photo-identification and phenotypical measurement tasks of ecologists, we aimed to test if our detector is able to solve both tasks simultanaously. It is very difficult to find large-scale annotated animal or plant biometric datasets. Therefore, we performed only preliminary experiments, from which we could gain spme insights for the suiability of the detector. We have compared qualitatively DMSR and MSER on several small animal individual photo-ID datasets (humpback whales, leatherback turtles, newts) and on a wood species identification dataset \cite{RangHumpb06, PauwelsZB08, wood}. In all cases DMSR produces fewer and perceptually more acurate salient regions as illustrated by Figures~\ref{fig:tails_mser}, \ref{fig:tails_dmsr}, \ref{fig:turtle} and \ref{fig:wood}. For some of the leatherback turtles, the MSER did not find any or very few regions, which will make the subsequent mathcing for photo-identification impossible. On the other hand the DMSR regions were detected consistently and repeatedly. For the wood microscopy images, we observe that it is not possible to obtain accurate statistics on the cell properties using the regions from the MSER  detector, while the regions found by our detector would enable such wood anatomy research. Using all $4$ types of regions does not improve performance over using only $ISS$ (holes and islands) with the exception of detecting markings on humpback whale tails. 
+Challenged by the photo-identification and phenotypical measurement tasks of ecologists, we aimed to test if our detector is able to solve both problems with the same detector. Photo-identification of individual or species involves comparision of a new image to exsisting catalogue of known individuals or species, simiarly to many generic applicaitons. Phenotypic measurements involes ciomputing properties of (exact-shaped) regions with semantic meaning.
+
+It is very difficult to find open large-scale annotated animal or plant biometric datasets. Therefore, we performed only preliminary experimentson few small datasets, from which we could gain some insights for the performance of the detector. We have compared qualitatively DMSR and MSER on several small animal individual photo-ID datasets (humpback whales, leatherback turtles, newts) and on a wood species identification dataset \cite{RangHumpb06, PauwelsZB08, wood}. In all cases DMSR produced fewer and perceptually more acurate salient regions as illustrated by Figures~\ref{fig:tails_mser}, \ref{fig:tails_dmsr}, \ref{fig:turtle} and \ref{fig:wood}, \ref{fig:wood_C}. For some of the leatherback turtles, the MSER did not find any or very few regions, which will make the subsequent matching for photo-identification impossible. On the other hand the DMSR regions were detected consistently and repeatedly (Fig.~\ref{fig:turtle}). For the wood microscopy images, we observed that it is not possible to obtain accurate statistics on the cell properties using the regions from the MSER detector, while the regions found by our detector would enable such wood anatomy research (Fig.~\ref{fig:wood},\ref{fig:wood_C}). At the same time we have used the exact-shaped detected regions to compute the wood cell shape properties (size, eccentricity , orientaiton, etc.) using those for successful classificaiton of $19$ images into $9$ wood species \cite{elena_ranguelova_wood}. Another advantage of DMSR is the option to selectively detect only some types of salient regions (unlike MSER or any other detector), in which the ecologists are interested. In the wood microsctopy images only in the light cells are of interest, hence we can chose only to detect 'islands'. Using all $4$ types of regions does not improve performance over using only $ISS$ (holes and islands) with the exception of detecting markings on humpback whale tails (Figs.~\ref{fig:tails_mser}, \ref{fig:tails_dmsr}). 
 
 \begin{figure}[htb]
 
@@ -610,13 +610,14 @@ Challended by the photo-identification and phenotypical measurement tasks of eco
   \centering
   \centerline{\includegraphics[width=8cm]{mserTailA}}
 \end{minipage}
+\vspace{0.1cm}
 \begin{minipage}[b]{0.99\linewidth}
   \centering
   \centerline{\includegraphics[width=8cm]{mserTailB}}
 \end{minipage}
 \hfill
-\vspace{-0.4cm}
-\caption{MSER detection on two images of the tail of the same humpback whale. }
+%\vspace{-0.4cm}
+\caption{MSER detection on two images of the tail of a humpback whale. }
 \label{fig:tails_mser}
 \vspace{-0.3cm}
 \end{figure}
@@ -627,50 +628,17 @@ Challended by the photo-identification and phenotypical measurement tasks of eco
   \centering
   \centerline{\includegraphics[width=8cm]{dmsrTailA}}
 \end{minipage}
+\vspace{0.1cm}
 \begin{minipage}[b]{0.99\linewidth}
   \centering
   \centerline{\includegraphics[width=8cm]{dmsrTailB}}
 \end{minipage}
 \hfill
-\vspace{-0.4cm}
-\caption{DMSRA detection on two images of the tail of the same humpback whale. }
+%\vspace{-0.4cm}
+\caption{DMSRA detection on two images of humpback whale tail. }
 \label{fig:tails_dmsr}
 \vspace{-0.3cm}
 \end{figure}
-%----------------------------------------------------------------
-\begin{comment}
-\begin{figure}[htb]
-
-\begin{minipage}[b]{.45\linewidth}
-  \centering
-  \centerline{\includegraphics[width=3cm]{mserLeatherbackA}}
-  % \centerline{(a)}\medskip
-\end{minipage}
-\hfill
-\begin{minipage}[b]{0.45\linewidth}
-  \centering
-  \centerline{\includegraphics[width=3cm]{mserLeatherbackB}}
-%\centerline{(b)}\medskip
-\end{minipage}
-\hfill
-\begin{minipage}[b]{.45\linewidth}
-  \centering
-  \centerline{\includegraphics[width=3cm]{dmsrLeatherbackA}}
-%\centerline{(c)}\medskip
-\end{minipage}
-\hfill
-\begin{minipage}[b]{0.45\linewidth}
-  \centering
-  \centerline{\includegraphics[width=3cm]{dmsrLeatherbackB}}
-% \centerline{(d)}\medskip
-\end{minipage}
- \vspace{-0.2cm} 
-\caption{Region detection on two images of the pineal spot of the same leatherback turtle.
-Top: MSER, bottom: DMSR.}
-\label{fig:turtle}
- \vspace{-0.2cm}
-\end{figure}
-\end{comment}
 
 \begin{figure}[htb]
 
@@ -703,37 +671,49 @@ Top: MSER, bottom: DMSR.}
 \label{fig:turtle}
  \vspace{-0.2cm}
 \end{figure}
+
  
 \begin{figure}[htb]
-
 \begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=8cm]{mserWood}}
-  % \vspace{0.2cm}
- % \centerline{(a) MSER}\medskip
+  \centerline{\includegraphics[width=6.5cm]{mserWood}}
 \end{minipage}
 \hfill
+\vspace{0.2cm}
 \begin{minipage}[b]{0.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=8cm]{dmsrWood}}
- % \vspace{0.2cm}
- % \centerline{(b) DMSR}\medskip
+  \centerline{\includegraphics[width=6.5cm]{dmsrWood}}
 \end{minipage}
-%\vspace{-0.25cm}
-\caption{Salient region detectors on microscopy wood images. Top: MSER (every second region is shown), bottom: proposed detector, DMSR}
+\vspace{-0.1cm}
+\caption{Salient region detectors on microscopy wood (Argania spinosa) image. Elliptic representation. Top: MSER (every second region is shown), bottom: DMSR}
 \label{fig:wood}
-%
 \end{figure}
-\vspace{-0.4cm}
+%\vspace{-0.3cm}
 
+\begin{figure}[htb]
+\begin{minipage}[b]{.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4cm]{mser_wood_C}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+  \centering
+  \centerline{\includegraphics[width=4cm]{dmsr_wood_C}}
+\end{minipage}
+\vspace{-0.25cm}
+\caption{Salient region detectors on microscopy wood (Chrys afr) image (detail). Elliptic representation. Left: MSER (every $3$rd region is shown), right: DMSR}
+\label{fig:wood_C}
 
+\end{figure}
+%\pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusion}
 
-Combining data-driven binarization with morphological operations yeilds a region detector with comparable to superior performance to MSER on various datasets. DMSR produces a much smaller number of regions- a very desired property in large scale processing. It copes better with blur, lighting and increased resolution and detects perceptually salient regions, which makes it a good choice for scientific imagery analytics. 
-For detection evaluation, high-resolution transformation-independent datasets should become the standard.
-\label{sec:concl} {\em more...}
+Combining data-driven binarization with morphological operations yeilds a region detector with comparable to superior performance to MSER on various datasets. DMSR produces a much smaller number of regions- a very desired property in large scale processing. It copes better with blur, lighting and increased resolution and detects perceptually salient regions, which makes it a good candidate for scientific imagery analytics, especially for the photo-identification and phenotypic measurements tasks. For detection evaluation, high-resolution transformation-independent datasets should become the standard.
+
+Further we plan to formally evaluate the completness of the DMSR detector and to run extensive validation experiments on large-scale animal and plant biometric datasets.
+
 % use section* for acknowledgment
 \ifCLASSOPTIONcompsoc
   % The Computer Society usually uses the plural form
@@ -742,9 +722,7 @@ For detection evaluation, high-resolution transformation-independent datasets sh
   % regular IEEE prefers the singular form
   \section*{Acknowledgment}
 \fi
-
-
-The authors would like to thank...
+The authors would like to thank Frederic Lens from the Naturalis biodiversity institute in Leiden, Netherlands, for providing the wood microscopy images \cite{wood}.
 
 
 

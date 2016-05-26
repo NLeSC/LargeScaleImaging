@@ -108,11 +108,6 @@ N.~{\em et al.}, Kumar, ``{Leafsnap: Computer Vision System for Automatic Plant
   Species Identification},'' in \emph{The 12th European Conference on Computer
   Vision (ECCV)}, October 2012, pp. 502--516.
 
-\bibitem{Brunel2014}
-G.~Brunel and other, ``Automatic identification and characterization of radial
-  files in light microscopy images of wood,'' \emph{Annals of Botany}, vol.
-  114, no.~4, pp. 829--890, 2014.
-
 \bibitem{Quelhas2011}
 P.~Quelhas, J.~Nieuwland, W.~Dewitte, A.~M. Mendon{\c{c}}a, J.~Murray, and
   A.~Campilho, \emph{Image Analysis and Recognition: 8th International
@@ -120,6 +115,11 @@ P.~Quelhas, J.~Nieuwland, W.~Dewitte, A.~M. Mendon{\c{c}}a, J.~Murray, and
   Part II}.\hskip 1em plus 0.5em minus 0.4em\relax Berlin, Heidelberg: Springer
   Berlin Heidelberg, 2011, ch. Arabidopsis Thaliana Automatic Cell File
   Detection and Cell Length Estimation, pp. 1--11.
+
+\bibitem{Brunel2014}
+G.~Brunel and other, ``Automatic identification and characterization of radial
+  files in light microscopy images of wood,'' \emph{Annals of Botany}, vol.
+  114, no.~4, pp. 829--890, 2014.
 
 \bibitem{Gasson2011}
 P.~Gasson, ``How precise can wood identification be? wood anatomyâ€™s role
@@ -137,15 +137,6 @@ H.~Aanæs, A.~L. Dahl, and K.~S. Pedersen, ``Interesting interest points - a
   \emph{International Journal of Computer Vision}, vol.~97, no.~1, pp. 18--35,
   2012.
 
-\bibitem{Tuytelaars:2004}
-T.~Tuytelaars and L.~Van~Gool, ``Matching widely separated views based on
-  affine invariant regions,'' \emph{Int. J. Comput. Vision}, vol.~59, no.~1,
-  pp. 61--85, Aug. 2004.
-
-\bibitem{elena_ranguelova_2016_45156}
-E.~Ranguelova, ``Large scale imaging: Data, software, results,'' DOI:
-  http://dx.doi.org/10.5281/zenodo.45156, Jan. 2016.
-
 \bibitem{RangMSSR06}
 E.~B. Ranguelova and E.~J. Pauwels, ``{Morphology-Based Stable Salient Regions
   Detector},'' in \emph{Proceedings of International Conference on Image and
@@ -155,5 +146,29 @@ E.~B. Ranguelova and E.~J. Pauwels, ``{Morphology-Based Stable Salient Regions
 ------, ``{Saliency Detection and Matching for Photo-Identification of Humpback
   Whales},'' \emph{International Journal on Graphics, Vision and Image
   Processing}, 2006.
+
+\bibitem{elena_ranguelova_2016_45156}
+E.~Ranguelova, ``Large scale imaging: Data, software, results,'' DOI:
+  http://dx.doi.org/10.5281/zenodo.45156, Jan. 2016.
+
+\bibitem{Soille}
+P.~Soille, \emph{{Morphological Image Analysis}}.\hskip 1em plus 0.5em minus
+  0.4em\relax Springer, 2003.
+
+\bibitem{PauwelsZB08}
+E.~Pauwels, P.~de~Zeeuw, and D.~Bounantony, ``Leatherbacks matching by
+  automated image recognition,'' in \emph{Advances in Data Mining. Medical
+  Applications, E-Commerce, Marketing, and Theoretical Aspects, 8th Industrial
+  Conference, {ICDM} 2008, Leipzig, Germany, July 16-18, 2008, Proceedings},
+  2008, pp. 417--425.
+
+\bibitem{wood}
+I.~courtesy~to Frederic~Lens, ``Microscopy images wood,''
+  http://www.naturalis.nl/en/, naturalis Biodiversity Center, Leiden, The
+  Netherlands.
+
+\bibitem{elena_ranguelova_wood}
+E.~Ranguelova, ``Wood image classification- initial results. nlesc report.''
+  DOI: http://dx.doi.org/10.5281/zenodo.45156, May 2016.
 
 \end{thebibliography}
