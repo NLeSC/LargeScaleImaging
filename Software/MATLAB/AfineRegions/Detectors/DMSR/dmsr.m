@@ -8,6 +8,9 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 12 Oct 2015
+% last modification date: 30 May 2016
+% modification details: using morphological parameters also for the binary
+% detector
 % last modification date: 6 Oct 2015
 % modification details: added flag for Otsu only
 %**************************************************************************
@@ -121,8 +124,10 @@ end
 % morphology parameters
 SE_size_factor = morphology_parameters(1);
 Area_factor_large = morphology_parameters(3);
+lambda_factor = morphology_parameters(4);
 connectivity = morphology_parameters(5);
 
+morph_params_binary =[SE_size_factor Area_factor_large lambda_factor, connectivity];
 % saliency types
 holes_flag = saliency_type(1);
 islands_flag = saliency_type(2);
@@ -235,7 +240,7 @@ end
 if verbose
     disp('Binary saliency... ');tic
 end
-[saliency_masks] = binary_detector(binary_image, SE_size_factor, Area_factor_large,...
+[saliency_masks] = binary_detector(binary_image, morph_params_binary,...
                                         saliency_type, visualise_minor);
 if verbose
     disp('Elapsed time for binary saliency... ');toc

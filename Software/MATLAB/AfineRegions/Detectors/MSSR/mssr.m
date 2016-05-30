@@ -3,10 +3,16 @@
 % [num_regions, features, saliency_masks] = mssr(image_data,ROI_mask,...
 %                                           num_levels,saliency_type,... 
 %                                           thresh_type, ...
-%                                           region_params, execution_flags)
+%                                           region_thresh, 
+%                                           morphology_params, ...
+%                                           execution_flags)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 May 2015
+% last modification date: 30 May 2016
+% modification details: added 2 more parameters for the gray-level 
+% detector: lambda_factor and connectivity; region_parameters regrouped to
+% morphology_parameters; thresh renamed to region_thresh
 % last modification date: 30 September 2015
 % modification details: otsu thresholding parameter removed, 
 %                       thresholding type introduced. Compliant with the 
@@ -26,11 +32,15 @@
 % [thresh_type]     character 's' for simple thresholding, 
 %                   'm' for multithresholding or 'h' for
 %                   hysteresis, [optional], if left out default is 'h'
-% [region_params]   salient region parameters [SE_size_factor, ...
-%                                                      area_factor, thresh]
-%                   SE_size_factor- structuring element (SE) size factor  
-%                   area_factor- area factor for the significant CC, 
-%                   thresh- percentage of kept regions
+% [region_thresh]   percentage of kept regions
+% [morphology_parameters] vector with 4 values corresponding to
+%                   SE_size_factor- size factor for the structuring element
+%                   area_factor - area factor for the significant connected 
+%                   components (CCs)
+%                   lambda_factor- factor for the parameter lambda for the
+%                   morphological opening (noise reduction)
+%                   connectivity - for the morhpological opening
+%                   default values [0.02 0.05 3 4]
 % [execution_flags] vector with 3 flags [verbose, visualise_major, ...
 %                                                       visualise_minor]
 %                   [optional], if left out- default is [0 0 0]
@@ -64,7 +74,7 @@
 % finds all types of saleint regions for the image
 %--------------------------------------------------------------------------
 % [num_regions, features, saliency_masks] = ...
-%                        mssr(image_data,[],[],[1 1 1 1],[],[1 1 0 0]);
+%                        mssr(image_data,[],[],[1 1 0 0],[],[],[1 0 0]);
 % finds only the 'holes' and 'islands' for the whole image in verbose mode
 %--------------------------------------------------------------------------
 % load ROI_mask; 
@@ -80,17 +90,23 @@
 function [num_regions, features, saliency_masks] = mssr(image_data,ROI_mask,...
                                            num_levels, saliency_type, ...
                                            thresh_type, ...
-                                           region_params, execution_flags)
+                                           region_thresh,...
+                                           morphology_parameters, ...
+                                           execution_flags)
 
                                          
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 7
+if nargin < 8
     execution_flags = [0 0 0];
 end
-if nargin < 6 || isempty(region_params)
-    region_params = [0.02 0.03 0.7];
+if nargin < 7 || length(morphology_parameters)<4
+    morphology_parameters = [0.02 0.05 3 4]; 
+end
+if nargin < 6 || isempty(region_thresh)
+    region_thresh = 0.7;
+    %[0.02 0.03 0.7];
 end
 if nargin < 5
     thresh_type = 's';
@@ -115,21 +131,6 @@ end
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
-% structuring element (SE) size factor  
-SE_size_factor=region_params(1);
-if ndims(region_params) > 1
-    % area factor for the significant CC
-    area_factor = region_params(2);
-else
-    area_factor = 0.03;
-end
-
-if length(region_params) > 2   
-    % thresholding the salient regions
-    thresh = region_params(3);
-else
-    thresh =  0.7;
-end
 % saliency flags
 holes_flag = saliency_type(1);
 islands_flag = saliency_type(2);
@@ -302,7 +303,7 @@ for it = 1:num_levels
     %pause
     [saliency_masks_level, binary_image] = gray_level_detector(ROI_only, ...
                                             thresh_type, level, ...
-                                            SE_size_factor, area_factor,...
+                                            morphology_parameters,...
                                             saliency_type, visualise_minor);
     % cumulative saliency masks
     if holes_flag
@@ -395,18 +396,18 @@ end
 tic;
 % the holes and islands
 if find(holes_acc)
-    holes_thresh = thresh_cumsum(double(holes_acc), thresh, verbose);
+    holes_thresh = thresh_cumsum(double(holes_acc), region_thresh, verbose);
 end
 if find(islands_acc)
-    islands_thresh = thresh_cumsum(double(islands_acc), thresh, verbose);
+    islands_thresh = thresh_cumsum(double(islands_acc), region_thresh, verbose);
 end
 
 % the indentations and protrusions
 if find(indentations_acc)
-    indentations_thresh = thresh_cumsum(double(indentations_acc), thresh, verbose);
+    indentations_thresh = thresh_cumsum(double(indentations_acc), region_thresh, verbose);
 end
 if find(protrusions_acc)
-    protrusions_thresh = thresh_cumsum(double(protrusions_acc), thresh, verbose);
+    protrusions_thresh = thresh_cumsum(double(protrusions_acc), region_thresh, verbose);
 end
   
 %visualisation

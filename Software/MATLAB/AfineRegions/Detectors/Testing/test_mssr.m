@@ -2,6 +2,8 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 15-05-2015
+% last modification date: 30 May 2016
+% modification details: uses the morphology_parameters parameter group
 % last modification date: 1-06-2015
 % modification details: added saving of the features and displaying them as ellipses
 % last modification date: 12-10-2015
@@ -19,7 +21,7 @@ batch_structural = false;
 batch_textural = false;
  
 detector = 'MSSRA';
-save_flag = 1;
+save_flag = 0;
 vis_flag = 1;
 vis_only = false;
 
@@ -96,25 +98,31 @@ for test_image = test_images
                 saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
                 SE_size_factor = input('Enter the Structuring Element size factor: ');
                 Area_factor = input('Enter the Connected Component size factor: ');
+                lambda_factor = input('Enter the morphological opening size factor: ');
+                conn = input('Enter the connectivity [4|8]: ');
                 num_levels = input('Enter the number of gray-levels: ');
-                thresh = input('Enter the region threshold: ');
+                region_thresh = input('Enter the region threshold: ');
             else
                 saliency_types = [1 1 1 1];
                 SE_size_factor = 0.02;
-                Area_factor = 0.03;
+                area_factor = 0.03;
+                lamdba_factor = 5;
+                conn = 4; 
                 num_levels = 20;
-                thresh = 0.6;
+                region_thresh = 0.6;
                 thresh_type = 's';
             end
+           
             
-            
+            %% call the detector
             disp('Test case: ');disp(test_image);
             
             disp(detector);
-            region_params = [SE_size_factor Area_factor thresh];
+            morphology_parameters = [SE_size_factor area_factor lamdba_factor conn];
             execution_params = [verbose visualize_major visualize_minor];
             [num_regions, features, saliency_masks] = mssr(image_data, ROI, ...
-                num_levels, saliency_types, thresh_type, region_params, execution_params);
+                num_levels, saliency_types, thresh_type, region_thresh, ...
+                morphology_parameters, execution_params);
             toc
             
             %% save the features

@@ -1,11 +1,13 @@
 % smssr_acc_masks- obtain the accumulated masks of the SMSSR detector 
 %**************************************************************************
 % [acc_masks] = smssr_acc_masks(image_ROI, num_levels, steps, thresh_type,...
-%                               SE_size_factor, area_factor,...
+%                               morphology_params, ...
 %                               saliency_type, execution_flags, figs)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 11 August 2015
+% last modification date: 30 May 2016
+% modification details: added 2 morphology_parameters
 % last modification date: 19.08.205
 % modification details: added number of gray level steps as parameters
 % last modification date: 12.08.205
@@ -19,8 +21,14 @@
 % [thresh_type]    character 's' for simple thresholding, 
 %                  'm' for multithresholding or 'h' for
 %                  hysteresis, [optional], if left out default is 'h'
-% [SE_size_factor]   structuring element (SE) size factor  
-% [area_factor]      area factor for the significant CC 
+% [morphology_parameters] vector with 4 values corresponding to
+%                   SE_size_factor- size factor for the structuring element
+%                   area_factor - area factor for the significant connected 
+%                   components (CCs)
+%                   lambda_factor- factor for the parameter lambda for the
+%                   morphological opening (noise reduction)
+%                   connectivity - for the morhpological opening
+%                   default values [0.02 0.05 3 4]
 % [saliency_type]  array with 4 flags for the 4 saliency types 
 %                  (Holes, Islands, Indentations, Protrusions)
 %                  [optional], if left out- default is [1 1 1 1]
@@ -40,24 +48,21 @@
 % RERERENCES:
 %**************************************************************************
 function [acc_masks] = smssr_acc_masks(image_ROI, num_levels, steps, thresh_type,...
-                               SE_size_factor, area_factor,...
+                               morphology_parameters,...
                                saliency_type, execution_flags, figs)
 
                                          
 %**************************************************************************
 % input control                                         
 %--------------------------------------------------------------------------
-if nargin < 8 || length(execution_flags) <3
+if nargin < 7 || length(execution_flags) <3
     execution_flags = [0 0 0];
 end
-if nargin < 7 || isempty(saliency_type) || length(saliency_type) < 4
+if nargin < 6 || isempty(saliency_type) || length(saliency_type) < 4
     saliency_type = [1 1 1 1];
 end
-if nargin < 6
-    area_factor = 0.03;
-end
-if nargin < 5
-    SE_size_factor = 0.02;
+if nargin < 5 || length(morphology_parameters)<4
+    morphology_parameters = [0.02 0.05 3 4]; 
 end
 if nargin < 4
     thresh_type = 's';
@@ -206,7 +211,7 @@ for st = [steps]
         
         [saliency_masks_level, binary_image] = gray_level_detector(image_ROI, ...
                                                 thresh_type, level, ...
-                                                SE_size_factor, area_factor,...
+                                                morphology_parameters,...
                                                 saliency_type, visualise_minor);
         % cumulative saliency masks
         i =0;

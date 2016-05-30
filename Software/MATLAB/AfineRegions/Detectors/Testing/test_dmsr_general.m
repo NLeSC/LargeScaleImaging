@@ -18,7 +18,7 @@ batch_textural = false;
 
 detector = 'DMSR';
 
-save_flag = 1;
+save_flag = 0;
 vis_flag = 1;
 vis_only = false;
 

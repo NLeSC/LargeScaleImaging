@@ -199,7 +199,7 @@ if (indentations_flag || protrusions_flag)
         if statsh(i).Area/ROI_Area >= area_factor;
             num_CCLH = num_CCLH + 1;
             region = (bwh==i);
-            filled_region = imfill(region,'holes', connectivity);
+            filled_region = imfill(region,'holes');
             CCLH(filled_region)= num_CCLH;
         end
     end
@@ -208,7 +208,7 @@ if (indentations_flag || protrusions_flag)
         if statsi(i).Area/ROI_Area >= area_factor;
             num_CCLI = num_CCLI + 1;
             region = (bwi==i);
-            filled_region = imfill(region,'holes', connectivity);
+            filled_region = imfill(region,'holes');
 %             if filled_region == filled_ROI
 %                 already_detected = true;
 %             end
