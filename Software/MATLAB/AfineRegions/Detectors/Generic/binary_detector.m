@@ -7,7 +7,7 @@
 % date created: 28 Sept 2015
 % last modification date: 30 May 2016
 % modification details: added 2 more parameters- lambda_factor and
-% connectivity; most parameters are grouped as mrphology_parameters like
+% connectivity; most parameters are grouped as morphology_parameters like
 % in dmsr
 % last modification date: 24 March 2016
 % modification details: only 1 SE for all types of saliency is used now
