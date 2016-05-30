@@ -39,8 +39,8 @@
 %                  and i =4-"protrusions"  if saliency_types is [1 1 1 1]
 %**************************************************************************
 % EXAMPLES USAGE:
-% [saliency_masks] = binary_detector(ROI, se_size_factor, area_factor, ...
-%                                saliency_type, visualise);
+% [saliency_masks] = binary_detector(ROI, morphology_parameters
+%                    saliency_type, visualise);
 %                    as called from a gray level detector
 %**************************************************************************
 % REFERENCES: Ranguelova, E., Pauwels, E. J. ``Morphology-based Stable
