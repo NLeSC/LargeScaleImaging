@@ -2,8 +2,8 @@
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 11-03-2016
-% last modification date:
-% modification details:
+% last modification date: 30 May 2016
+% modification details: uses the morphology_parameters parameter group
 % NOTE: replaces test_mssr_binary.m
 %**************************************************************************
 %% execution paramaters
@@ -26,7 +26,7 @@ if interactive
     % image_base_filename = input('Enter the base image filename: ','s');
     test_image = input('Enter test case: [all|noise|holes|islands|indent_protr|nested]: ','s');
 else
-    test_image = 'islands'
+    test_image = 'noise';
 end
 switch lower(test_image)
     case 'all'
@@ -62,7 +62,8 @@ if interactive
     saliency_types(3) = input('Detect "indentations"? [0/1]: ');
     saliency_types(4) = input('Detect "protrusions"? [0/1]: ');
     SE_size_factor = input('Enter the Structuring Element size factor: ');
-    Area_factor = input('Enter the Connected Component size factor: ');
+    area_factor = input('Enter the Connected Component size factor: ');
+    lambda_factor = input('Enter the morphological opening size factor: ');
     conn = input('Enter the connectivity [4|8]: ');
 else
     %saliency_types = [1 1 1 1]
@@ -78,10 +79,12 @@ else
         otherwise
             error('test_binary_detector: unknown test_image!');
     end
-    SE_size_factor = 0.075
-    Area_factor = 0.05
-    conn = 4
+    SE_size_factor = 0.075;
+    area_factor = 0.05;
+    lamdba_factor = 5;
+    conn = 4;    
 end
+morphological_parameters = [SE_size_factor area_factor lamdba_factor conn];
 
 % saliency types
 holes_flag = saliency_types(1);
@@ -155,7 +158,7 @@ image_data = logical(imread(image_filename));
 %% run the binary detector on the test image
 disp('Binary detctor');
 tic
-[saliency_masks] = binary_detector(image_data, SE_size_factor,Area_factor,...
+[saliency_masks] = binary_detector(image_data, morphological_parameters,...
     saliency_types, vis_steps);
 toc
 %% convert the regions into ellipses

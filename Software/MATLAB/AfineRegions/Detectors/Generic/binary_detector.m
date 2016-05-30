@@ -1,10 +1,14 @@
 % binary_detector.m- binary morphological detector
 %**************************************************************************
-% [saliency_masks] = binary_detector(ROI, SE_size_factor, area_factor, ...
+% [saliency_masks] = binary_detector(ROI, morphology_parameters, ...
 %                                saliency_type, visualise)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 28 Sept 2015
+% last modification date: 30 May 2016
+% modification details: added 2 more parameters- lambda_factor and
+% connectivity; most parameters are grouped as mrphology_parameters like
+% in dmsr
 % last modification date: 24 March 2016
 % modification details: only 1 SE for all types of saliency is used now
 % last modification date: 17 March 2016
@@ -13,8 +17,14 @@
 %**************************************************************************
 % INPUTS:
 % ROI- binary mask of the Region Of Interest
-% SE_size_factor- structuring element (SE) size factor
-% area_factor - area factor for the significant connected components (CCs)
+% [morphology_parameters] vector with 5 values corresponding to
+%                   SE_size_factor- size factor for the structuring element
+%                   area_factor - area factor for the significant connected 
+%                   components (CCs)
+%                   lambda_factor- factor for the parameter lambda for the
+%                   morphological opening (noise reduction)
+%                   connectivity - for the morhpological opening
+%                   default values [0.02 0.05 3 4]
 % [saliency_type]- array with 4 flags for the 4 saliency types
 %                (Holes, Islands, Indentations, Protrusions)
 %                [optional], if left out- default is [1 1 1 1]
@@ -38,18 +48,21 @@
 % Computing New Zealand (IVCNZ'06), Great Barrier Island, New Zealand,
 % November 2006, pp.97-102
 %**************************************************************************
-function [saliency_masks] = binary_detector(ROI, SE_size_factor, area_factor,...
+function [saliency_masks] = binary_detector(ROI, morphology_parameters,...
     saliency_type, visualise)
 
 %**************************************************************************
 % input control
 %--------------------------------------------------------------------------
-if nargin < 5
+if nargin < 4
     visualise = 0;
-elseif nargin < 4
-    saliency_type = [1 1 1 1];
 elseif nargin < 3
-    error('binary_detector.m requires at least 3 input arguments!');
+    saliency_type = [1 1 1 1];
+if nargin < 3 || length(morphology_parameters) < 4
+    morphology_parameters = [0.02 0.05 3 4]; 
+end    
+elseif nargin < 1
+    error('binary_detector.m requires at least 1 input argument- the gray_level image!');
     saliency_masks = [];
     return
 end
@@ -69,6 +82,12 @@ protrusions_flag = saliency_type(4);
 % ROI area
 ROI_Area = nrows*ncols;
 
+% morphology parameters
+SE_size_factor = morphology_parameters(1);
+area_factor = morphology_parameters(2);
+lambda_factor = morphology_parameters(3);
+connectivity = morphology_parameters(4);
+
 % SE
 SE_size = fix(SE_size_factor*sqrt(ROI_Area/pi))
 %SEhi_size = fix(SE_size/2)
@@ -81,7 +100,7 @@ SE = strel('disk',SE_size);
 % save('SEhi_neighb_all_other.mat', 'SEhi_n');
 
 % area opening parameter
-lambda = 5*SE_size
+lambda = lambda_factor*SE_size
 %lambdahi = fix(SE_size/2)
 %**************************************************************************
 % initialisations
@@ -168,11 +187,11 @@ end
 %..........................................................................
 if (indentations_flag || protrusions_flag)
     % find significant CC
-    [bw,num]=bwlabel(filled_ROI,4);
+    [bw,num]=bwlabel(filled_ROI,connectivity);
     stats = regionprops(bw,'Area');
-    [bwh,numh]=bwlabel(holes,4);
+    [bwh,numh]=bwlabel(holes,connectivity);
     statsh = regionprops(bwh,'Area');
-    [bwi,numi]=bwlabel(islands,4);
+    [bwi,numi]=bwlabel(islands,connectivity);
     statsi = regionprops(bwi,'Area');
     
     % compute the areas of all regions (to find the most significant ones?)
@@ -180,7 +199,7 @@ if (indentations_flag || protrusions_flag)
         if statsh(i).Area/ROI_Area >= area_factor;
             num_CCLH = num_CCLH + 1;
             region = (bwh==i);
-            filled_region = imfill(region,'holes');
+            filled_region = imfill(region,'holes', connectivity);
             CCLH(filled_region)= num_CCLH;
         end
     end
@@ -189,7 +208,7 @@ if (indentations_flag || protrusions_flag)
         if statsi(i).Area/ROI_Area >= area_factor;
             num_CCLI = num_CCLI + 1;
             region = (bwi==i);
-            filled_region = imfill(region,'holes');
+            filled_region = imfill(region,'holes', connectivity);
 %             if filled_region == filled_ROI
 %                 already_detected = true;
 %             end
@@ -220,7 +239,7 @@ if (indentations_flag || protrusions_flag)
            % SCCH_bth = imbothat(SCCH,SEhi);
            % SCCH_bth = bwareaopen(SCCH_bth,lambdahi,4);
             SCCH_bth = imbothat(SCCH,SE);
-            SCCH_bth = bwareaopen(SCCH_bth,lambda,4);
+            SCCH_bth = bwareaopen(SCCH_bth,lambda,connectivity);
             % the indentaitons in the largeholes are actually protrusions in respect to the whole image!
             protrusions = protrusions|SCCH_bth;
         end
@@ -229,7 +248,7 @@ if (indentations_flag || protrusions_flag)
 %             SCCH_wth = imtophat(SCCH,SEhi);
 %             SCCH_wth = bwareaopen(SCCH_wth,lambdahi,4);
             SCCH_wth = imtophat(SCCH,SE);
-            SCCH_wth = bwareaopen(SCCH_wth,lambda,4);
+            SCCH_wth = bwareaopen(SCCH_wth,lambda,connectivity);
             % the prorusions in the large holes are actually indentaitions in respect to the whole image!            
             indentations = indentations|SCCH_wth;
         end
@@ -242,7 +261,7 @@ if (indentations_flag || protrusions_flag)
 %             SCCI_bth = imbothat(SCCI,SEhi);
 %             SCCI_bth = bwareaopen(SCCI_bth,lambdahi,4);
              SCCI_bth = imbothat(SCCI,SE);
-             SCCI_bth = bwareaopen(SCCI_bth,lambda,4);
+             SCCI_bth = bwareaopen(SCCI_bth,lambda,connectivity);
             indentations = indentations|SCCI_bth;
         end
         if protrusions_flag
@@ -250,7 +269,7 @@ if (indentations_flag || protrusions_flag)
 %             SCCI_wth = imtophat(SCCI,SEhi);
 %             SCCI_wth = bwareaopen(SCCI_wth,lambdahi,4);
             SCCI_wth = imtophat(SCCI,SE);
-            SCCI_wth = bwareaopen(SCCI_wth,lambda,4);
+            SCCI_wth = bwareaopen(SCCI_wth,lambda,connectivity);
             protrusions = protrusions|SCCI_wth;
         end
     end
@@ -265,14 +284,14 @@ if (indentations_flag || protrusions_flag)
             if indentations_flag
                 % black top hat
                 SCCA_bth = imbothat(SCCL,SE);
-                SCCA_bth = bwareaopen(SCCA_bth,lambda);
+                SCCA_bth = bwareaopen(SCCA_bth,lambda, connectivity);
                 indentations = indentations|SCCA_bth;
             end
             
             if protrusions_flag
                 % white top hat
                 SCCA_wth = imtophat(SCCL,SE);
-                SCCA_wth = bwareaopen(SCCA_wth,lambda);
+                SCCA_wth = bwareaopen(SCCA_wth,lambda, connectivity);
                 protrusions = protrusions|SCCA_wth;
             end
         end
