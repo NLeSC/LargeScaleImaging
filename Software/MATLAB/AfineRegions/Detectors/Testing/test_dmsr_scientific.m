@@ -26,7 +26,7 @@ else
     Area_factor_very_large = 0.01;
     Area_factor_large = 0.001;
     lambda_factor = 1; %3
-    num_levels = 255;
+    step_size = 1;
     offset = 80;
     otsu_only = true; % false
     conn = 8;
@@ -150,7 +150,7 @@ disp(detector);
             execution_flags = [verbose visualize_major visualize_minor];
             
             [num_regions, features, saliency_masks] = dmsr(image_data,ROI,...
-                num_levels, offset,...
+                step_size, offset,...
                 otsu_only, saliency_type, ...
                 morphology_parameters, weights, ...
                 execution_flags);

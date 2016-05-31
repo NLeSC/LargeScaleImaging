@@ -8,6 +8,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 12 Oct 2015
+% last modification date: 31 May 2016
+% modification details: num_levels parameter is replased with step_size
 % last modification date: 30 May 2016
 % modification details: using morphological parameters also for the binary
 % detector
@@ -19,8 +21,8 @@
 % [ROI_mask]        the Region Of Interenst binary mask [optional]
 %                   if specified should contain the binary array ROI
 %                   if left out or empty [], the whole image is considered
-% [num_levels]      number of gray levels to be considered [1..255],
-%                   default 255, i.e. all, step 1
+% [step_size]       the size of the step between consequtive gray levels to
+%                   process, default is 1
 % [offset]          the offset (number of levels) from Otsu to be processed
 %                   default value- 80
 % [otsu_only]       flag to perform only Otsu thresholding
@@ -67,7 +69,7 @@
 % RERERENCES:
 %**************************************************************************
 function [num_regions, features, saliency_masks] = dmsr(image_data,ROI_mask,...
-                                           num_levels, offset,...
+                                           step_size, offset,...
                                            otsu_only,saliency_type, ...   
                                            morphology_parameters, weights, ...
                                            execution_flags)
@@ -95,8 +97,8 @@ end
 if nargin < 4 || isempty(offset)
     offset =  80;
 end
-if nargin < 3 || isempty(num_levels)
-    num_levels = 25;
+if nargin < 3 || isempty(step_size)
+    step_size = 1;
 end
 if nargin < 2
     ROI_mask = [];
@@ -209,7 +211,7 @@ if verbose
 end
 
 [binary_image, otsu, num_cc, thresh] = max_conncomp_thresholding(ROI_only, ...
-    num_levels, offset, otsu_only, ...
+    step_size, offset, otsu_only, ...
     morphology_parameters, weights, [verbose visualise_minor]);
 
 if visualise_major
@@ -218,7 +220,7 @@ if visualise_major
     subplot(221); imshow(image_data); title('Gray-scale image'); axis on, grid on;
     subplot(222);imshow(ROI_only); title('ROI'); axis on, grid on;
     
-    subplot(223); plot(1:num_levels, num_cc, 'b');
+    subplot(223); plot(1:length(num_cc), num_cc, 'b');
     title('Normalized number of Connected Components');
     hold on; line('XData',[thresh thresh], ...
         'YData', [0 1.2], 'Color', 'r');

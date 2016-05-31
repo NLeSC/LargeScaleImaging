@@ -7,6 +7,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 07.10.2015
+% last modification date: 31 May 2016
+% modification details: num_levels parameter is replaced with step_size
 % last modification date: 5 Jan 2016
 % modification details: binary_masks is decalred 'uint8' for memory saving!
 %                       also the binary_image is calculated explicitely
@@ -17,8 +19,8 @@
 %**************************************************************************
 % INPUTS:
 % gray_image        matrix containing the gray-scale image
-% [num_levels]      number of gray levels to be considered [1..255],
-%                   default 255, i.e. all, step 1
+% [step_size]       the size of the step between consequtive gray levels to
+%                   process, default is 1
 % [offset]          the offset (number of levels) from Otsu to be processed
 %                   default value- 80
 % [otsu_only]       flag to perform only Otsu thresholding
@@ -55,7 +57,7 @@
 % REFERENCES:
 %**************************************************************************
 function [binary_image, otsu, num_combined_cc, thresh] = max_conncomp_thresholding(gray_image, ...
-    num_levels, offset, otsu_only, ...
+    step_size, offset, otsu_only, ...
     morphology_parameters, weights, ...
     execution_flags)
 
@@ -73,7 +75,7 @@ elseif nargin < 4
 elseif nargin < 3
     offset = 80;
 elseif nargin < 2
-    num_levels = 255;
+    step_size = 1;
 elseif nargin < 1
     error('max_conncomp_thresholding.m requires at least 1 input argument!');
 end
@@ -99,10 +101,6 @@ connectivity = morphology_parameters(5);
 
 % gray levels
 min_level =  1; max_level = 255;
-step = (max_level - min_level)/(num_levels - 1);
-if step < 1
-    step = 1;
-end
 
 if not(otsu_only)
     
@@ -149,7 +147,7 @@ if not (otsu_only)
     if verbose
         disp('Thresholding and denoising for the specified range of gray levels...');
     end
-    for level = otsu - off: step: otsu + off
+    for level = otsu - off: step_size: otsu + off
         binary = gray_image > level;
         binary_filt = bwareaopen(binary, lambda, connectivity);
         clear binary
@@ -163,7 +161,7 @@ if not (otsu_only)
     if verbose
         disp('Counting the number of CCes per gray level...');
     end
-    for level = otsu - off: step: otsu + off
+    for level = otsu - off: step_size: otsu + off
         l = fix(level);
        % imshow(double(binary_masks(:,:,l))); title(num2str(l));         
         CC = bwconncomp(binary_masks(:,:,l),connectivity);
