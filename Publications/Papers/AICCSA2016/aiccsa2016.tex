@@ -269,15 +269,15 @@ DMRS includes a robust-to-lighting-and-blur data-driven binarization that yields
 \label{sec:DMSR}
 
 
-MSER decomposes a gray-scale image into binary cross-sections and evaluates the stability of the connected components (CCs) across sections to determine maximally stable regions. In contrast, DMSR starts with a data-driven binarization. The single binary image is then analyzed for saliency using binary morphology. Thus the problem of salient region detection is transformed into binary saliency.
+MSER decomposes a gray-scale image into binary cross-sections and evaluates the stability of the connected components (CCs) across sections to determine maximally stable regions. In contrast, DMSR starts with a data-driven binarization. The single binary image is then analyzed for saliency using binary morphology. Thus, the problem of salient region detection is transformed into binary saliency.
 
 \subsection{Binary Salient Regions Detection}
 \label{ssec:binary}
 We claim that the perceptual saliency in a binary image of a structured scene 
  $\B: \mcD \subset \mathcal{Z}^2 \rightarrow \{0,1\}$ (1-white, 0-black)
 is only due to the spatial layout of the image regions. 
-There are  $4$ types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are (1) {\em holes} -- set of connected black pixels entirely surrounded by white pixels, and (2) {\em islands} -- set of connected white pixels surrounded by black ones, i.e.~inverse of holes. A significant connected component ${\cal B}^1$ is defined as a CC with area proportional to the image area by $\Lambda$.  
-The $2$ {\em boundary salient structures (BSS)} are (3) {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC, will increase its boundary with no more than $2\pi r$, where $r$ is the radius of the morphological structuring element (SE), and (4) the {\em indentations}- protrusions inverse. These types are defined in Table \ref{table:binary_sal} and also valid for the MSSR detector \cite{RangHumpb06}. 
+There are  $4$ types of salient regions. The $2$ types of {\em inner salient structures (ISS)} are (1) {\em holes} -- set of connected black pixels entirely surrounded by white pixels, and (2) {\em islands} -- set of connected white pixels surrounded by black ones, i.e.~the inverse of holes. A significant connected component ${\cal B}^1$ is defined as a CC with area proportional to the image area by $\Lambda$.  
+The $2$ {\em boundary salient structures (BSS)} are (3) {\em protrusions}- set of white pixels on the border of a significant CC, which if pinched off from the CC will increase its boundary with no more than $2\pi r$, where $r$ is the radius of the morphological structuring element (SE), and (4) the {\em indentations}- protrusions inverse. These types are defined in Table \ref{table:binary_sal} and also valid for the MSSR detector \cite{RangHumpb06}. 
 
 \begin{figure}[htb]
 %\vspace{-0.5cm}
@@ -337,7 +337,7 @@ We propose choosing a small $r$ which also minimizes the inaccuracy of maximum $
 $\partial ({\cal B}^f \backslash S_{fb}^b)$. All detected salient regions $\S$ have accurate boundaries as there is no smoothing involved.
 \end{comment}
 
-The ISS are similar to the definition of the MSER+ and MSER- regions \cite{Matas2002BMVC}. While, MSER detects both types, DMSR (and MSSR) is parametrised with the desired type(s) of salient regions to look for. In this paper, detectors using only ISS, i.e., directly comparable to MSER, are denoted by DMSR/MSSR, while DMSRA/MSSRA are detectors using all region types. An illustration of the exact shaped binary salient 
+The ISS are similar to the definition of the MSER+ and MSER- regions \cite{Matas2002BMVC}. While MSER detects both types, DMSR (and MSSR) is parametrised with the desired type(s) of salient regions to look for. In this paper, detectors using only ISS, i.e., directly comparable to MSER, are denoted by DMSR/MSSR, while DMSRA/MSSRA are detectors using all region types. An illustration of the exact shaped binary salient 
 regions detected from a synthetic $100 \times 100$ binary image is shown on Fig.~\ref{fig:binary_sal}. The DMSR parameters used are: $\Lambda=1/100$, $r=5$ and $\lambda = 10$.
 
 \subsection{Data-driven binarization}
@@ -345,7 +345,7 @@ regions detected from a synthetic $100 \times 100$ binary image is shown on Fig.
 Any gray-scale image  $\I:~\mcD~\subset~\mathcal{Z}^2~\rightarrow ~\mcT $, where $\mcT=\{0,1,\ldots, t_{max}\}$ and $t_{max}=255$ is the maximum gray value $2^n-1$ encoded by $n=8$ bits, can be decomposed into cross-sections at
 every possible level $t$:  $\I = \sum_{t \in \mcT}CS_t(\I)$. Obtaining a section at level $t$ is equivalent to thresholding the image at threshold $t$: $CS_t(\I)= 1.(\I>t) + 0.(\I<t)$ is a binary image. 
 
-Both MSER and MSSR need multiple binary cross-sections, the former using minimum area change of a CC as stability criteria, while the latter generates cumulative binary saliency masks to determine salient regions. In this paper we argue that it is possible to obtain a single optimum binarization inspired by the notion of feature completeness \cite{Dickscheid2011}. Along with robustness (invariance to transformations), speed (detection should be fast) and sparseness (features should be less than the image itself), important prerequisite for a good detector is completeness- the salient information present in an image should be maximally preserved. We argue that for a detector which should also reflect saliency, preserving maximum number of CCs is a manner of achieving completeness. On the other hand, larger (significant) CCs are perceptually more salient than smaller CCs. 
+Both MSER and MSSR need multiple binary cross-sections: the former uses minimum area change of a CC as stability criteria, while the latter generates cumulative binary saliency masks to determine salient regions. In this paper we argue that it is possible to obtain a single optimum binarization inspired by the notion of feature completeness \cite{Dickscheid2011}. Along with robustness (invariance to transformations), speed (detection should be fast) and sparseness (features should be less than the image itself), an important prerequisite for a good detector is completeness - the salient information present in an image should be maximally preserved. We argue that for a detector which should also reflect saliency, preserving a maximum number of CCs is a way of achieving completeness. On the other hand, larger (significant) CCs are perceptually more salient than smaller CCs. 
 
 We define, then, three sets of connected components in $CS_t(\I)$: $\mcA_t$- {\em all}, $\mcL_t$- the {\em large} and $\mcV_t$- the {\em very large} CCs.  The CC size in the last two categories are defined by $\Lambda_{\mcL}$ and $\Lambda_{\mcV}$ fraction of the image area $A_{\I}$. Let us denote the normalized number of elements in a set ($|\cdot|$) by $\Vert \cdot \Vert = |\cdot| / \max_{t \in \mcT}|\cdot|$.
 Finding the optimal binarization threshold $t_{opt}$ is then defined as:
@@ -356,7 +356,7 @@ t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mc
 \end{equation}
 where $w^{\cdot}$ are the weights per set of CCs.  
 
-In comparison to the standard Otsu thresholding which does not select a single $CS$ stable across photometric transformations, choosing $t_{opt}$ as defined, ensures transformation-invariant stable number of regions. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} show the comparison of Otsu and the data-driven threshold in respect to lighting.
+In comparison to the standard Otsu thresholding which does not select a single $CS$ stable across photometric transformations, choosing $t_{opt}$ as defined ensures transformation-invariant stable number of regions. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} show the Otsu and the data-driven thresholding in respect to lighting.
 %------------------------------------------------------------------------
 %\vspace{-0.8cm}
 \begin{figure}[htb]
@@ -434,7 +434,7 @@ In comparison to the standard Otsu thresholding which does not select a single $
 %------------------------------------------------------------------------
 
 \subsection{DMSR}
-After the data-driven binarization, the DMSR detector finds the set of affine-covariant regions $\S$ from the single binary image $CS_{t_{opt}}$ as described in Section \ref{ssec:binary} and \cite{RangMSSR06, RangHumpb06}. As a result, DMSR produces fewer non-overlapping and perceptually salient regions compared to MSER. This is illustrated on Figures \ref{fig:tnt_zoom}, \ref{fig:det_graffiti}, \ref{fig:tails_mser}, \ref{fig:tails_dmsr}, \ref{fig:wood} and \ref{fig:wood_C} where the regions are visualized by their equivalent ellipses, not by their exact detected shapes.
+After the data-driven binarization, the DMSR detector finds the set of affine-covariant regions $\S$ from the single binary image $CS_{t_{opt}}$ as described in Section \ref{ssec:binary} and \cite{RangMSSR06, RangHumpb06}. As a result, DMSR produces fewer non-overlapping and perceptually salient regions compared to MSER. This is illustrated in Figures \ref{fig:tnt_zoom}, \ref{fig:det_graffiti}, \ref{fig:tails_mser}, \ref{fig:tails_dmsr}, \ref{fig:wood} and \ref{fig:wood_C} where the regions are visualized by their equivalent ellipses, not by their exact detected shapes.
 
 %------------------------------------------------------------------------
 \begin{figure}[htb]
@@ -462,7 +462,7 @@ After the data-driven binarization, the DMSR detector finds the set of affine-co
 \label{sec:perf}
 
 
-We have applied the standard performance evaluation metrics- the {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is set to $40\%$ as in \cite{Mikolajczyk:2005}. The repeatability score between a pair of base and transformed image, $(\I_B,\I_T)$, is the ratio between $N_C$ in the part of the images with common content and the minimum number of regions in the image pair. Since we were intrested in finding correspondencies between salient regions from structured images only, we focused on this subset from each dataset and ignored the textured scenes (e.g. 'Trees, 'Bark' etc. from Oxford dataset). We considered five region detectors for evaluation: MSER, MSSR(A) and DMSR(A). For MSER we used the original Matas software with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$, $\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$.
+We have applied the standard performance evaluation metrics - the {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is set to $40\%$ as in \cite{Mikolajczyk:2005}. The repeatability score between a pair of base and transformed image, $(\I_B,\I_T)$, is the ratio between $N_C$ in the part of the images with common content and the minimum number of regions in the image pair. Since we were intrested in finding correspondencies between salient regions from structured images only, we focused on this subset from each dataset and ignored the textured scenes (e.g. 'Trees, 'Bark' etc. from Oxford dataset). We considered five region detectors for evaluation: MSER, MSSR(A) and DMSR(A). For MSER we used the original Matas software with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$, $\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$.
 All performance plots and detected regions on all data are available online \cite{elena_ranguelova_2016_45156}.
 
 \subsection{Binarization}
