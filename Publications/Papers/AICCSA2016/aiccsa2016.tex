@@ -478,7 +478,7 @@ In order to determine the binarization weights from equation (\ref{eq:bin}), we 
 \centering
 \begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=9cm]{diff_num_cc_bin}}
+  \centerline{\includegraphics[width=8cm]{diff_num_cc_bin}}
  % \vspace{0.2cm}
  % \centerline{(a) MSER}\medskip
 \end{minipage}
@@ -608,9 +608,9 @@ Again, the $N_C$ plane of DMSR has the lowest values and the smallest slope of a
 \label{ssec:bio}
 Challenged by the photo-identification and phenotypical measurement tasks of ecologists, we aimed to test if our detector is able to solve both problems. Photo-identification of individuals or species involves the comparision of a new image to the exsisting catalogue of known individuals or species, simiar to many generic applications. Phenotypic measurements involes the computation of properties of (exact-shaped) regions with semantic meaning.
 
-Due to the lack of openly accessible large-scale annotated animal or plant biometric datasets, we performed only preliminary experiments on few small datasets, from which we could gain some insights into the performance of the detector. We have qualitatively compared DMSR and MSER on several small animal individual photo-ID datasets (humpback whales, leatherback turtles, newts) and on a wood species identification dataset \cite{RangHumpb06, PauwelsZB08, wood}. In all cases, DMSR produced fewer and perceptually more acurate salient regions, as illustrated by Figures~\ref{fig:tails_mser}, \ref{fig:tails_dmsr}, \ref{fig:turtle} and \ref{fig:wood}, \ref{fig:wood_C}. For some of the leatherback turtles, the MSER did not find any or very few regions, which will make the subsequent matching for photo-identification impossible. 
+Due to the lack of openly accessible large-scale annotated animal or plant biometric datasets, we performed only preliminary experiments on few small datasets, from which we could gain some insights into the performance of the detector. We have qualitatively compared DMSR and MSER on several small animal individual photo-ID datasets (humpback whales, leatherback turtles, newts) and on a wood species identification dataset \cite{RangHumpb06, PauwelsZB08, wood}. 
 
-On the other hand, the DMSR regions were detected consistently and repeatedly (Fig.~\ref{fig:turtle}). For the wood microscopy images, we observed that it is not possible to obtain accurate statistics on the cell properties using the regions from the MSER detector, while the regions found by our detector would enable such wood anatomy research (Fig.~\ref{fig:wood}, \ref{fig:wood_C}). At the same time, we used the exact shapes of detected regions to compute the wood cell properties (such as size, eccentricity and orientaiton) using those for successful classification of $19$ images into $9$ wood species \cite{elena_ranguelova_wood}. 
+In all cases, DMSR produced fewer and perceptually more acurate salient regions, as illustrated by Figures~\ref{fig:tails_mser}, \ref{fig:tails_dmsr}, \ref{fig:turtle} and \ref{fig:wood}, \ref{fig:wood_C}. For some of the leatherback turtles, the MSER did not find any or very few regions, which will make the subsequent matching for photo-identification impossible. On the other hand, the DMSR regions were detected consistently and repeatedly (Fig.~\ref{fig:turtle}). For the wood microscopy images, we observed that it is not possible to obtain accurate statistics on the cell properties using the regions from the MSER detector, while the regions found by our detector would enable such wood anatomy research (Fig.~\ref{fig:wood}, \ref{fig:wood_C}). Also, we used the exact shapes of detected regions to compute the wood cell properties (such as size, eccentricity and orientaiton) using those for successful classification of $19$ images into $9$ wood species \cite{elena_ranguelova_wood}. 
 
 Another advantage of DMSR is the option to selectively detect only some types of salient regions (unlike MSER or any other detector) in which the ecologists are interested. In the wood microscopy images only the light cells are of interest and hence we can chose only to detect 'islands'. Using all $4$ types of regions does not seem to improve performance over using only $ISS$ (holes and islands), with the exception of detecting markings on humpback whale tails (Figs.~\ref{fig:tails_mser}, \ref{fig:tails_dmsr}). 
 
@@ -686,13 +686,13 @@ Another advantage of DMSR is the option to selectively detect only some types of
 \begin{figure}[htb]
 \begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=6.5cm]{mserWood}}
+  \centerline{\includegraphics[width=6cm]{mserWood}}
 \end{minipage}
 \hfill
 \vspace{0.2cm}
 \begin{minipage}[b]{0.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=6.5cm]{dmsrWood}}
+  \centerline{\includegraphics[width=6cm]{dmsrWood}}
 \end{minipage}
 \vspace{-0.1cm}
 \caption{Salient region detectors on microscopy wood (Argania spinosa) image. Elliptic representation. Top: MSER (every second region is shown), bottom: DMSR}
