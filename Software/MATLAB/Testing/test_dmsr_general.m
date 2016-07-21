@@ -3,7 +3,7 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 01-10-2015
 % last modification date: 21-07-2016
-% modification details: brought from the git history & adapted 
+% modification details: brought from the git history & adapted
 % last modification date: 12-10-2015
 % modification details: this version tests the DMSR detector
 %**************************************************************************
@@ -20,7 +20,8 @@ batch_textural = false;
 detector = 'DMSR';
 
 save_flag = 1;
-vis_flag = 1;
+vis_flag_exact = 0;
+vis_flag_elliptic = 1;
 vis_only = false;
 
 %% image filename
@@ -58,9 +59,9 @@ for test_image = test_images
     %% find out the number of test files
     len = length(image_filenames);
     
-    %% loop over all test images
+    %% loop over all test images    
     for i = 1:len
-    %    for i = 1
+        %    for i = 1
         %% load the image & convert to gray-scale if  color
         image_data_or = imread(char(image_filenames{i}));
         if ndims(image_data_or) > 2
@@ -104,7 +105,7 @@ for test_image = test_images
                 weight_large = input('Enter the weight of large CC number (weight_all + weight_large + weight_very_large = 1): ');
                 weight_very_large = input('Enter the weight of very large CC number (weight_all + weight_large + weight_very_large = 1): ');
             else
-            %% parameters    
+                %% parameters
                 SE_size_factor = 0.02;
                 Area_factor_very_large = 0.01;
                 Area_factor_large = 0.001;
@@ -145,9 +146,9 @@ for test_image = test_images
         
         %% visualize
         
-        if vis_flag
+        if vis_flag_elliptic
             disp('Displaying... ');
-
+            
             type = 1; % distinguish region's types
             
             list_smartregions = [];     % display all regions
@@ -161,16 +162,17 @@ for test_image = test_images
             step_list_regions = [];
             
             original = 0; % no original region's outline
-            
+            f = figure(i);
             display_smart_regions(char(image_filenames{i}), detector, ...
                 char(features_filenames{i}), mask_filename, ...
                 char(regions_filenames{i}), type, ...
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
-                line_width, col_label, original);
+                line_width, col_label, original, f);
+           % pause(1);
         end
-        end
-        if batch_structural
-            close all
-        end
+    end
+    if batch_structural
+        close all
+    end
 end
 disp('--------------- The End ---------------------------------');
