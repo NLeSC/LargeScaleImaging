@@ -23,6 +23,7 @@
 % test_smssr_scientific.m- testiing SMSSR detector on scientific images
 % test_smssr_general.m- script to test the SMSSR detector on general images
 
+% test_dmsr_general.m- script to test the DMSR detector on general images
 % test_dmsr_freiburg.m- testing the DMSR detector on Freiburg dataset
 % test_dmsr_combined.m- testing the DMSR detector on Combined dataset
 % test_dmsr_scientific.m- testing the DMSR detector on Scientific datasets
