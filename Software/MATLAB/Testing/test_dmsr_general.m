@@ -20,7 +20,7 @@ batch_textural = false;
 detector = 'DMSR';
 
 save_flag = 1;
-vis_flag_exact = 0;
+vis_flag_exact = 1;
 vis_flag_elliptic = 1;
 vis_only = false;
 
@@ -43,7 +43,7 @@ else
     else if batch_textural
             test_images = {'bark', 'trees', 'ubc', 'wall'};
         else
-            test_images = {'leuven'};
+            test_images = {'boat'};
         end
     end
     mask_filename =[];
@@ -118,7 +118,7 @@ for test_image = test_images
                 weight_large = 0.33;
                 weight_very_large = 0.33;
                 python_test = 0;
-                saliency_type = [1 1 0 0];
+                saliency_types = [1 1 0 0];
             end
             
             %% run
@@ -133,7 +133,7 @@ for test_image = test_images
             
             [num_regions, features, saliency_masks] = dmsr(image_data,ROI,...
                 step_size, offset,...
-                otsu_only, saliency_type, ...
+                otsu_only, saliency_types, ...
                 morphology_parameters, weights, ...
                 execution_flags);
             toc
@@ -147,7 +147,7 @@ for test_image = test_images
         %% visualize
         
         if vis_flag_elliptic
-            disp('Displaying... ');
+            disp('Displaying elliptic regions... ');
             
             type = 1; % distinguish region's types
             
@@ -167,7 +167,20 @@ for test_image = test_images
                 char(features_filenames{i}), mask_filename, ...
                 char(regions_filenames{i}), type, ...
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
-                line_width, col_label, original, f);
+                line_width, col_label, original, f,(121));
+           % pause(1);
+        end
+        if vis_flag_exact
+            disp('Displaying exact regions... ');
+            type = 1; % distinguish region's types
+             
+            f = figure(i);
+            
+            image_data = imread(char(image_filenames{i}));
+            [~, ~, saliency_masks] = ...
+                open_regions(detector, char(features_filenames{i}), char(regions_filenames{i}), type);
+            visualize_regions_overlay(image_data, saliency_masks, saliency_types, f,(122));
+            
            % pause(1);
         end
     end
