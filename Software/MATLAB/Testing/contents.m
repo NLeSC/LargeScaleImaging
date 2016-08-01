@@ -29,7 +29,7 @@
 % test_dmsr_scientific.m- testing the DMSR detector on Scientific datasets
 % test_dmsr_tnt.m- testing the DMSR detector on TNT dataset
 %
-% test_flusser_moment.m- script for testing Flusser moment computation
+% test_flusser_moment_invariants.m- script for testing Flusser moment invariants
 
                                            
 

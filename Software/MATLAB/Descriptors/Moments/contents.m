@@ -14,6 +14,6 @@
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------
-% flusser_moment - 
+% flusser_moment.m- computing complex central moment proposed by Flusser
 % scale_moment_invariants
 % rotation_moment_invariants
