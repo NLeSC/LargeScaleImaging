@@ -56,14 +56,27 @@ if vis
   figure(f); subplot(223);imshow(RGB_label); title('Connected Components'); axis on, grid on;
 end
 
-%% compute complex central moments
-region_idx = 2;
+%% compute complex central moments of all CCs
 
-pixel_list = regions_properties(region_idx).PixelList;
-centroid = regions_properties(region_idx).Centroid;
+num_regions = length(cat(1,regions_properties.Area));
+complex_moments = zeros(num_regions,1);
 
-if verbose
-    disp('Compute the Flusser moment...');
+for region_idx = 1: num_regions
+
+    if verbose
+        disp('Processing region #: '); disp(region_idx);
+    end
+    pixel_list = regions_properties(region_idx).PixelList;
+    centroid = regions_properties(region_idx).Centroid;
+
+    if verbose
+        disp('Compute the Flusser moment...');
+    end
+
+    [complex_moments(region_idx)] = flusser_moment(u, v, pixel_list,centroid);
+    if verbose
+        disp('Complex moment: '); disp(complex_moments(region_idx));
+    end
+
 end
 
-[complex_moment] = flusser_moment(u, v, pixel_list,centroid)
