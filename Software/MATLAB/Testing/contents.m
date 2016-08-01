@@ -1,6 +1,6 @@
 % contents.m- contents of directory ..\Testing
 %
-% topic: Salient regions detection testing
+% topic: Salient regions detection and description testing
 % author: Elena Ranguelova, NLeSc
 % date: 2016
 %
@@ -28,5 +28,8 @@
 % test_dmsr_combined.m- testing the DMSR detector on Combined dataset
 % test_dmsr_scientific.m- testing the DMSR detector on Scientific datasets
 % test_dmsr_tnt.m- testing the DMSR detector on TNT dataset
+%
+% test_flusser_moment.m- script for testing Flusser moment computation
+
                                            
 

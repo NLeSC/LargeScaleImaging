@@ -14,6 +14,6 @@
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------
-% complex_central_moments
+% flusser_moment - 
 % scale_moment_invariants
 % rotation_moment_invariants

@@ -6,6 +6,5 @@
 %
 %**************************************************************************
 % Moments- contains the code for the 2D Binary complex moment invariants
-% 
-% Testing directory- contains the scripts for testing
+%
 %**************************************************************************
