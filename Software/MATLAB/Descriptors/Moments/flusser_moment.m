@@ -75,7 +75,7 @@ for n = 1:num_pixels
 end
 
 % multiply powered complex and complex conjugate
-sum_argument = complex_numbers.^u .* complex_conjugate_numbers.^v
+sum_argument = complex_numbers.^u .* complex_conjugate_numbers.^v;
 
 % final summation
 complex_moment = sum(sum_argument);
