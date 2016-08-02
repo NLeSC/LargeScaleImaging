@@ -8,16 +8,16 @@
 % modification details: 
 %**************************************************************************
 % INPUTS:
-% u,v- the order of the Flusser moment
-% pixel_list- the list of pixel coordinates belonging to a 2D binary shape
-% [centroid] - optional centroid of the 2D binary shape. If not given -
-%              average of the pixel_list coordinates
+% u,v              the order of the Flusser moment
+% pixel_list       the list of pixel coordinates belonging to a 2D binary shape
+% [centroid]       optional centroid of the 2D binary shape. If not given -
+%                  average of the pixel_list coordinates
 %**************************************************************************
 % OUTPUTS:
-% complex_moment- the complex central Flusser moment of order (u,v)
+% complex_moment   the complex central Flusser moment of order (u,v)
 %**************************************************************************
 % EXAMPLES USAGE:
-% see Testing scripts
+% see Testing scripts and scale_moment_invariant
 %**************************************************************************
 % NOTES:
 % See compute_region_props.m for exampleof obtaining the centroid, area and
@@ -39,7 +39,8 @@ function [complex_moment] = flusser_moment(u, v, pixel_list, centroid)
 centroid_unknown = false;
 if nargin < 4
     centroid_unknown = true;
-elseif nargin < 3
+end
+if nargin < 3
     error('flusser_moment.m requires at least 3 input arguments!');
     complex_moment = None;
     return
