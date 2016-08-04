@@ -4,8 +4,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 1 Aug 2016
-% last modification date: 
-% modification details: 
+% last modification date: 4 Aug 2016
+% modification details: Bug fix: the computation now uses the centroid!
 %**************************************************************************
 % INPUTS:
 % u,v              the order of the Flusser moment
@@ -70,7 +70,7 @@ for n = 1:num_pixels
     % normalised (centered) pixel list
     norm_pixel_list(n,:) = pixel_list(n,:) - centroid;
     % make the list of complex numbers
-    complex_numbers(n) = pixel_list(n,1) + i*pixel_list(n,2);
+    complex_numbers(n) = norm_pixel_list(n,1) + i*norm_pixel_list(n,2);
     % make the complex comjugate
     complex_conjugate_numbers(n) = conj(complex_numbers(n));    
 end
