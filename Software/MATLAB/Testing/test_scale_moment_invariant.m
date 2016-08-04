@@ -5,6 +5,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % last modification date: 4-08-2016
 % modification details: using pure scaling transformation for testing
+%                       visualizing the moments for all regions
+%                       interactive input of the moment orders
 % last modification date: 3-08-2016
 % modification details: tetsing scale invariants on a scaled image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,14 +22,13 @@ vis = 1;
 conn = 8;
 list_properties = {'Centroid', 'Area', 'PixelList'};
 
-
 % moments
-u = 1;
-v = 1;
+u = input('Enter the first moment order [1 2 3]: ');
+v = input('Enter the second moment order [0 1 2]: ');
 
 %% load a simple binary test image
 if verbose
-    disp('Loading a binary test image and a transformed image...');
+    disp('Loading a binary test image and transform it...');
 end
 
 bw = imread('Binary_islands.png');
@@ -36,22 +37,12 @@ bw = logical(bw);
 H = [2 0 0; 0 2 0; 0 0 1];
 %  obtain a transformed image
 bwtr = applyAffineTransform(bw, H', 0);
-%bwtr = imread('BinaryIslands_oxfrei_scale3trans.png');
 bwtr = logical(bwtr);
-
-
-
-% if vis
-%     f = figure; subplot(221); imshow(I); title('Test image'); axis on, grid on;
-%     subplot(222); imshow(Itr); title('Test image: scaled'); axis on, grid on;
-% end
-
-%% binarise the image
 
 % visualise
 if vis
     f = figure; subplot(221);imshow(bw); title('Binary'); axis on, grid on;
-    subplot(222);imshow(bwtr); title('Binary (transf.)'); axis on, grid on;
+    subplot(222);imshow(bwtr); title('Binary (scaled)'); axis on, grid on;
 end
 
 
@@ -71,7 +62,7 @@ if vis
     cc_tr = bwconncomp(bwtr);
     labeled = labelmatrix(cc_tr);
     RGB_label = label2rgb(labeled);
-    subplot(224);imshow(RGB_label); title('Connected Components - transformed'); axis on, grid on;
+    subplot(224);imshow(RGB_label); title('Connected Components - scaled'); axis on, grid on;
 end
 
 %% compute scale moments invariants of all CCs
@@ -80,7 +71,7 @@ num_regions = length(cat(1,regions_properties.Area));
 moment_invariant = zeros(1, num_regions);
 
 for region_idx = 1: num_regions
-    %region_idx = input('Enter a region index: ');
+   
     
     if verbose
         disp('Processing region #: '); disp(region_idx);
@@ -104,7 +95,6 @@ num_regions_tr = length(cat(1,regions_properties_tr.Area));
 moment_invariant_tr = zeros(1, num_regions_tr);
 
 for region_idx_tr = 1: num_regions_tr
-    %region_idx_tr = input('Enter a region index for the transformed image: ');
     
     if verbose
         disp('Processing region #: '); disp(region_idx_tr);
@@ -125,3 +115,10 @@ for region_idx_tr = 1: num_regions_tr
     
 end
 
+%% visualize the moments as features
+if vis
+     figure; plot(1:num_regions, moment_invariant, 'r-', 1:num_regions_tr, moment_invariant_tr, 'b-');
+     legend('original', 'scaled');
+     title(['Moment invariants for the 2D binary shape of order: (',num2str(u), ',',num2str(v),')']);
+     axis on; grid on;
+end
