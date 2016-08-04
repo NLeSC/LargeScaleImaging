@@ -31,6 +31,7 @@
 %
 % test_flusser_moment.m- script for testing Flusser moment computation
 % test_scale_moment_invariant.m- script for testing scale moment invariant computation
+% test_scale_moment_invariants.m- script for testing scale moment invariants computation
 
                                            
 
