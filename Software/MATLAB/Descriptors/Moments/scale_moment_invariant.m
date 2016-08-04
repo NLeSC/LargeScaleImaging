@@ -26,7 +26,9 @@
 %**************************************************************************
 % REFERENCES: 
 % B. Z. J. Flusser, T. Suk, "Moment and Moment Invariants in Pattern 
-% Recogntion", John Wiley and Sons, 2009.
+% Recognition", John Wiley and Sons, 2009.
+% Jan Flusser, "On the independence of rotation moment invariants": 
+% http://library.utia.cas.cz/prace/20000033.pdf
 % see also % http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/FISHER/MOMINV/
 % and 
 % http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.463.3980&rep=rep1&type=pdf
