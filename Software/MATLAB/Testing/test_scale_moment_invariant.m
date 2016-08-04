@@ -3,6 +3,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 2-08-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 4-08-2016
+% modification details: using pure scaling transformation for testing
 % last modification date: 3-08-2016
 % modification details: tetsing scale invariants on a scaled image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,7 +32,11 @@ end
 
 bw = imread('Binary_islands.png');
 bw = logical(bw);
-bwtr = imread('BinaryIslands_oxfrei_scale3trans.png');
+% define scaline matrix 
+H = [2 0 0; 0 2 0; 0 0 1];
+%  obtain a transformed image
+bwtr = applyAffineTransform(bw, H', 0);
+%bwtr = imread('BinaryIslands_oxfrei_scale3trans.png');
 bwtr = logical(bwtr);
 
 
