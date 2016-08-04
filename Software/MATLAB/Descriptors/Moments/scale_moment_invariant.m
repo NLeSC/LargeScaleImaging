@@ -60,6 +60,12 @@ else
     end
 end
 
+order_str = sprintf('%d',[u v]);
+switch order_str,
+    case {'11','20','12','21','30'}
+    otherwise
+        error('Wrong combination of moment orders (u,v)!');
+end
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
@@ -72,17 +78,7 @@ if area_unknown
     area = length(pixel_list);
 end
 % determine the power factor for the area
-area_power = 1;
-
-power_str = sprintf('%d',[u v]);
-switch power_str,
-    case {'11','20'}
-        area_power = 2;
-    case {'12','21','30'}
-        area_power = 2.5;
-    otherwise
-        error('Wrong combination of moment orders (u,v)!');
-end
+area_power = (u+v)/2 + 1;
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
