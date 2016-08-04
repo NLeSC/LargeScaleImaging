@@ -32,7 +32,7 @@
 % http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.463.3980&rep=rep1&type=pdf
 %**************************************************************************
 
-function [moment_invariant] = scale_moment_invatriant(u, v, pixel_list, ...
+function [moment_invariant] = scale_moment_invariant(u, v, pixel_list, ...
                                                         centroid, area)
 
 %**************************************************************************
