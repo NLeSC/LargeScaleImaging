@@ -24,6 +24,7 @@ if verbose
     disp('Loading a binary test image and transforming it...');
 end
 
+%bw = rgb2gray(imread('blob.png'));
 bw = imread('Binary_islands.png');
 bw = logical(bw);
 % define scaline matrix 
@@ -119,8 +120,15 @@ end
 
 %% visualize the moments as features
 if vis
-     figure; plot(1:num_regions, moment_invariants, 'r-', 1:num_regions_tr, moment_invariants_tr, 'b-');
-     legend('original', 'scaled');
+     
+     figure; 
+     for i = 1:num_regions
+        plot(real(moment_invariants(i,:)), imag(moment_invariants(i,:)),'r*',...
+             real(moment_invariants_tr(i,:)), imag(moment_invariants_tr(i,:)), 'bo');
+        legend('original', 'scaled');
+        hold on;       
+     end
+     hold off
      title(['Scale Moment invariants for the 2D binary shape']);
      axis on; grid on;
 end
