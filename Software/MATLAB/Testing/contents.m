@@ -33,6 +33,8 @@
 % test_scale_moment_invariant.m- script for testing scale moment invariant computation
 % test_scale_moment_invariants.m- script for testing scale moment invariants computation
 % test_rotation_moment_invariants.m- script for testing rotaiton moment invariants computation
-
+%
+% test_rotmi- testing the Flusser's book MATLAB code rotmi function
+%                                          (rotaiton translation and scaling)
                                            
 
