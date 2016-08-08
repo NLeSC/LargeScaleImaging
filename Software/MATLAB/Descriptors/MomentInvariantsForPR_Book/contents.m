@@ -21,8 +21,15 @@
 % main
 %--------------------------------------------------------------------------
 % rotmi.m - computation of the moment invariants to translation, rotation and scaling 
+% cafmi.m - computation of the affine moment invariants from the moments 
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------
 % cm.m - computation of the central geometric moments 
 % cmfromgm.m - conversion of the geometric moments to complex ones
+% readinv.m - reading of txt-files with invariants to MATLAB 
+%**************************************************************************
+% helpers
+%**************************************************************************
+% afinv12indep.txt - all independent invariants up to the weight 12 
+% afinvs4_19.txt - all irreducible invariants up to the order 4 
