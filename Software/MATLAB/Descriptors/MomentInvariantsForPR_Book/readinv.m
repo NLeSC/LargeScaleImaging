@@ -9,7 +9,7 @@ while(~feof(fid))
     m=fscanf(fid,'%d',1);
     c=fscanf(fid,'%d',1);
     r=fscanf(fid,'%d',1);
-    [i,m,c,r]
+    %[i,m,c,r]
     for k=1:c;
         for l=1:2*r+1;
             f(k,l,i)=fscanf(fid,'%d',1);
