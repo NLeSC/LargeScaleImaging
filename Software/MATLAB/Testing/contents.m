@@ -36,5 +36,8 @@
 %
 % test_rotmi- testing the Flusser's book MATLAB code rotmi function
 %                                          (rotaiton translation and scaling)
+% test_cafmi- testing the Flusser's book MATLAB code cafmi function
+%                                               (affine moment invariants)
+
                                            
 
