@@ -38,6 +38,8 @@
 %                                          (rotaiton translation and scaling)
 % test_cafmi- testing the Flusser's book MATLAB code cafmi function
 %                                               (affine moment invariants)
+% test_matching_mominv- testing matching using the Flusser's affine moment
+%                       invariants as descriptors of the salient regions
 
                                            
 
