@@ -133,18 +133,15 @@ end
 %% compute scale moments invariants of all CCs
 
 % load coefficients
-coeff = readinv('afinvs4_19.txt');
-
 if verbose
     disp('Processing original image ... ');
 end
 
 if distortion
-    moments = cm(bwd,order);
+    [moment_invariants] = affine_invariants(bwd);
 else
-    moments = cm(bw,order);
+   [moment_invariants] = affine_invariants(bw);  
 end
-[moment_invariants] = cafmi(coeff, moments);    %#ok<*SAGROW>
 
 
 % num_regions = cc.NumObjects;
@@ -164,8 +161,7 @@ if verbose
     disp('Processing affine image ... ');
 end
 
-moments = cm(bw_a,order);
-[moment_invariants_a] = cafmi(coeff, moments);    %#ok<*SAGROW>
+[moment_invariants_a] = affine_invariants(bw_a);
 
 % %num_regions = cc_t.NumObjects;
 % for i = 1:num_regions
