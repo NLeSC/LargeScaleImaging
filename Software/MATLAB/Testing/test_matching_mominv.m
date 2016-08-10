@@ -4,8 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 10-08-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 
-% modification details: 
+% last modification date:
+% modification details:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: matchFeatures from the CVS Toolbox is used
 %**************************************************************************
@@ -24,7 +24,10 @@ multiple = 1;
 % moments order
 %order = input('Enter the order (up to 4) of the moments: ');
 order = 4;
-
+distortion = false;
+if multiple
+    distortion = input('Distortion? [1/0]: ' );
+end
 %num_moments =  input('How many invariants to consider (max 66)?: ');
 max_num_moments = 66;
 %num_moments = 9;
@@ -38,12 +41,16 @@ end
 
 if multiple
     bw = rgb2gray(imread('Blobs.png'));
-    bwd = rgb2gray(imread('Blobs_distorted.png'));
+    if distortion
+        bwd = rgb2gray(imread('Blobs_distorted.png'));
+    end
 else
     bw = rgb2gray(imread('blob.png'));
 end
 bw = logical(bw);
-bwd = logical(bwd);
+if distortion
+    bwd = logical(bwd);
+end
 % define translation matrix
 dx = 15; dy = 35;
 Ht = [1 0 dx; 0 1 dy; 0 0 1];
@@ -65,9 +72,13 @@ bw_a = logical(applyAffineTransform(bw, Ha', 0));
 
 % visualise
 if vis
-    f = figure; 
+    f = figure;
     set(gcf, 'Position', get(0, 'Screensize'));
-    subplot(221);imshow(bwd); title('Binary - distorted'); axis on, grid on;
+    if distortion
+        subplot(221);imshow(bwd); title('Binary - distorted'); axis on, grid on;
+    else
+        subplot(221);imshow(bw); title('Binary'); axis on, grid on;
+    end
     subplot(222);imshow(bw_a); title('Binary (affine)'); axis on, grid on;
 end
 
@@ -75,7 +86,11 @@ end
 if verbose
     disp('Obtain the connected components...');
 end
-cc = bwconncomp(bwd);
+if distortion
+    cc = bwconncomp(bwd);
+else
+    cc = bwconncomp(bw);
+end
 cc_a = bwconncomp(bw_a);
 
 % visualise
@@ -91,16 +106,16 @@ if vis
             col = 'k';
         end
         text(stats_cc(k).Centroid(1), stats_cc(k).Centroid(2), num2str(k), ...
-        'Color', col, 'HorizontalAlignment', 'center')
+            'Color', col, 'HorizontalAlignment', 'center')
     end
     hold off;
-
+    
     title('Connected Components'); axis on, grid on;
     
-
+    
     stats_cc_a = regionprops(cc_a,list_properties);
     labeled = labelmatrix(cc_a);
-    subplot(224);imshow(label2rgb(labeled)); 
+    subplot(224);imshow(label2rgb(labeled));
     hold on;
     for k = 1:numel(stats_cc_a)
         if numel(stats_cc) > 3 && k <= 2
@@ -115,7 +130,6 @@ if vis
     title('Connected Components (affine)'); axis on, grid on;
 end
 
-pause;
 %% compute scale moments invariants of all CCs
 
 % load coefficients
@@ -125,49 +139,79 @@ if verbose
     disp('Processing original image ... ');
 end
 
-num_regions = cc.NumObjects;
-
-for i = 1:num_regions
-    bwi = zeros(size(bw));
-    bwi(cc.PixelIdxList{i}) = 1;
-    moments = cm(bwi,order);
-    [moment_invariants(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
+if distortion
+    moments = cm(bwd,order);
+else
+    moments = cm(bw,order);
 end
+[moment_invariants] = cafmi(coeff, moments);    %#ok<*SAGROW>
+
+
+% num_regions = cc.NumObjects;
+%
+% for i = 1:num_regions
+%     bwi = zeros(size(bw));
+%     bwi(cc.PixelIdxList{i}) = 1;
+%     moments = cm(bwi,order);
+%     [moment_invariants(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
+% end
 if verbose
     disp('Moment invariants: '); disp(moment_invariants);
     disp('--------------------------------------------');
 end
-
+%
 if verbose
     disp('Processing affine image ... ');
 end
-%num_regions = cc_t.NumObjects;
-for i = 1:num_regions
-    bwi = zeros(size(bw_a));
-    bwi(cc_a.PixelIdxList{i}) =1;
-    moments = cm(bwi,order);
-    [moment_invariants_a(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
-end
+
+moments = cm(bw_a,order);
+[moment_invariants_a] = cafmi(coeff, moments);    %#ok<*SAGROW>
+
+% %num_regions = cc_t.NumObjects;
+% for i = 1:num_regions
+%     bwi = zeros(size(bw_a));
+%     bwi(cc_a.PixelIdxList{i}) =1;
+%     moments = cm(bwi,order);
+%     [moment_invariants_a(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
+% end
 if verbose
     disp('Moment invariants: '); disp(moment_invariants_a);
     disp('--------------------------------------------');
 end
-%% matching the invariants and count the matches
-matched_pairs = {};
-num_matches = zeros(1, max_num_moments);
-for m = 2:max_num_moments
-    features = moment_invariants(:,1:m);
-    features_a = moment_invariants(:,1:m);
-    matched_pairs{m} = matchFeatures(features, features_a);
-    num_matches(m) = size(matched_pairs{m},1);
+% %% matching the invariants and count the matches
+% matched_pairs = {};
+% num_matches = zeros(1, max_num_moments);
+% for m = 2:max_num_moments
+%     features = moment_invariants(:,1:m);
+%     features_a = moment_invariants_a(:,1:m);
+%     matched_pairs{m} = matchFeatures(features, features_a);
+%     num_matches(m) = size(matched_pairs{m},1);
+% end
+%
+% %% matches
+% if vis
+%
+%     figure; set(gcf, 'Position', get(0, 'Screensize'));
+%     plot(1:max_num_moments,num_matches, 'r-^');
+%     axis on; grid on;
+%     xlabel('Number of invariants');
+%     title('Matched regions');
+% end
+
+%% compute the mean squared error as a function of number of moments
+for j = 1:max_num_moments
+    err(j) = immse(moment_invariants(1:j), moment_invariants_a(1:j));
 end
 
-%% matches
+%% visualise
 if vis
-    
-    figure; set(gcf, 'Position', get(0, 'Screensize'));
-    plot(1:max_num_moments,num_matches, 'r-^');
+    figure;
+    subplot(211);plot(1:max_num_moments, moment_invariants,'k-d',...
+        1:max_num_moments, moment_invariants_a,'b:s');
     axis on; grid on;
-    xlabel('Number of invariants');
-    title('Matched regions');
+    legend({'original', 'affine'});
+    title('Moment invariants');
+    subplot(212);plot(1:max_num_moments, err,'r-o');
+    axis on; grid on;
+    title('MSE');
 end
