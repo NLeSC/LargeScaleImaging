@@ -19,7 +19,8 @@
 verbose = 1;
 vis = 1;
 % the test image contains multiple binary shapes?
-multiple = input('Test image with muliple regions? [1/0]: ');
+%multiple = input('Test image with muliple regions? [1/0]: ');
+multiple = 1;
 % moments order
 %order = input('Enter the order (up to 4) of the moments: ');
 order = 4;
@@ -36,12 +37,13 @@ if verbose
 end
 
 if multiple
-   % bw = imread('Binary_islands.png');
     bw = rgb2gray(imread('Blobs.png'));
+    bwd = rgb2gray(imread('Blobs_distorted.png'));
 else
     bw = rgb2gray(imread('blob.png'));
 end
 bw = logical(bw);
+bwd = logical(bwd);
 % define translation matrix
 dx = 15; dy = 35;
 Ht = [1 0 dx; 0 1 dy; 0 0 1];
@@ -65,7 +67,7 @@ bw_a = logical(applyAffineTransform(bw, Ha', 0));
 if vis
     f = figure; 
     set(gcf, 'Position', get(0, 'Screensize'));
-    subplot(221);imshow(bw); title('Binary'); axis on, grid on;
+    subplot(221);imshow(bwd); title('Binary - distorted'); axis on, grid on;
     subplot(222);imshow(bw_a); title('Binary (affine)'); axis on, grid on;
 end
 
@@ -73,7 +75,7 @@ end
 if verbose
     disp('Obtain the connected components...');
 end
-cc = bwconncomp(bw);
+cc = bwconncomp(bwd);
 cc_a = bwconncomp(bw_a);
 
 % visualise
@@ -113,6 +115,7 @@ if vis
     title('Connected Components (affine)'); axis on, grid on;
 end
 
+pause;
 %% compute scale moments invariants of all CCs
 
 % load coefficients
