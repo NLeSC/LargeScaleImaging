@@ -14,13 +14,13 @@ visualize = true;
 visualize_major = false;
 visualize_minor = false;
 
-batch_structural = false;
+batch_structural = true;
 batch_textural = false;
 
 detector = 'DMSR';
 
 save_flag = 1;
-vis_flag_exact = 1;
+vis_flag_exact = 0;
 vis_flag_elliptic = 1;
 vis_only = false;
 
@@ -43,7 +43,8 @@ else
     else if batch_textural
             test_images = {'bark', 'trees', 'ubc', 'wall'};
         else
-            test_images = {'boat'};
+            %test_images = {'graffiti'};
+            test_images = {'leuven'};
         end
     end
     mask_filename =[];
@@ -163,11 +164,12 @@ for test_image = test_images
             
             original = 0; % no original region's outline
             f = figure(i);
+            set(gcf, 'Position', get(0, 'Screensize'));
             display_smart_regions(char(image_filenames{i}), detector, ...
                 char(features_filenames{i}), mask_filename, ...
                 char(regions_filenames{i}), type, ...
                 list_smartregions, step_list_regions, scaling, labels, col_ellipse, ...
-                line_width, col_label, original, f,(121));
+                line_width, col_label, original, f,[]);
            % pause(1);
         end
         if vis_flag_exact
@@ -175,7 +177,7 @@ for test_image = test_images
             type = 1; % distinguish region's types
              
             f = figure(i);
-            
+            set(gcf, 'Position', get(0, 'Screensize'));
             image_data = imread(char(image_filenames{i}));
             [~, ~, saliency_masks] = ...
                 open_regions(detector, char(features_filenames{i}), char(regions_filenames{i}), type);
