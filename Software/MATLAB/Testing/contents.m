@@ -40,6 +40,8 @@
 %                                               (affine moment invariants)
 % test_matching_mominv- testing matching using the Flusser's affine moment
 %                       invariants as descriptors of the salient regions
-
+% test_matching_mominv_affine_dataset- testing matching with Flusser's affine moment
+%                       invariants as descriptors of the salient regions
+%                       for the oxford dataset
                                            
 
