@@ -1,16 +1,17 @@
 % affine_invariants.m- function to computer Flusser's affine invariants
 %**************************************************************************
-% [invariants] = affine_invariants(bw, coeff_file)
+% [invariants] = affine_invariants(bw, order, coeff)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 10 Aug 2016
-% last modification date: 
-% modification details: 
+% last modification date: 11 Aug 2016
+% modification details: input are the coefficients not the file, order is
+% now also a parameter
 %**************************************************************************
 % INPUTS:
-% bw            binary image
-% [coeff_file]  [optional]. TXT file with the invariants coefficients. If
-% not specified   is used.
+% bw     binary image
+% order  the moments order
+% coeff  invariants coefficients (read from the TXT file provided with code)
 %**************************************************************************
 % OUTPUTS:
 % invariants   Flussers affine moment invariants
@@ -37,16 +38,13 @@
 % http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.463.3980&rep=rep1&type=pdf
 %**************************************************************************
 
-function [invariants] = affine_invariants(bw, coeff_file)
+function [invariants] = affine_invariants(bw, order, coeff)
 
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
-if nargin < 2
-    coeff_file = 'afinvs4_19.txt';
-end
-if nargin < 1
-    error('affine_invariants.m requires at least 1 input argument!');
+if nargin < 3
+    error('affine_invariants.m requires at least 3 input argument!');
     invariants = None;
     return
 end
@@ -54,12 +52,10 @@ end
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
-coeff = readinv(coeff_file);
 
 %**************************************************************************
 % initialisations/constants
 %--------------------------------------------------------------------------
-order = 4;
 
 %**************************************************************************
 % computations

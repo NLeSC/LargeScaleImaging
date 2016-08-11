@@ -4,8 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 10-08-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date:
-% modification details:
+% last modification date: 11-08-2016
+% modification details: using affine_invariants function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: matchFeatures from the CVS Toolbox is used
 %**************************************************************************
@@ -21,17 +21,21 @@ vis = 1;
 % the test image contains multiple binary shapes?
 %multiple = input('Test image with muliple regions? [1/0]: ');
 multiple = 1;
-% moments order
+distortion = false; %#ok<*NASGU>
+
+% moments parameters
 %order = input('Enter the order (up to 4) of the moments: ');
 order = 4;
-distortion = false;
+
 if multiple
     distortion = input('Distortion? [1/0]: ' );
 end
 %num_moments =  input('How many invariants to consider (max 66)?: ');
+coeff_file = 'afinvs4_19.txt';
 max_num_moments = 66;
 %num_moments = 9;
 
+% CC parameters
 list_properties = {'Centroid'};
 
 %% load a simple binary test image and make a transformed image
@@ -130,17 +134,18 @@ if vis
     title('Connected Components (affine)'); axis on, grid on;
 end
 
-%% compute scale moments invariants of all CCs
+%% compute affine moments invariants of all CCs
 
 % load coefficients
 if verbose
     disp('Processing original image ... ');
 end
 
+coeff = readinv(coeff_file);
 if distortion
-    [moment_invariants] = affine_invariants(bwd);
+    [moment_invariants] = affine_invariants(bwd, order, coeff);
 else
-   [moment_invariants] = affine_invariants(bw);  
+   [moment_invariants] = affine_invariants(bw, order, coeff);  
 end
 
 
@@ -161,7 +166,7 @@ if verbose
     disp('Processing affine image ... ');
 end
 
-[moment_invariants_a] = affine_invariants(bw_a);
+[moment_invariants_a] = affine_invariants(bw_a, order,coeff);
 
 % %num_regions = cc_t.NumObjects;
 % for i = 1:num_regions
