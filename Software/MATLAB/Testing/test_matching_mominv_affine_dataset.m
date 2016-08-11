@@ -36,90 +36,95 @@ list_properties = {'Centroid'};
 if verbose
     disp('Loading a binary DMSR regions files...');
 end
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat');
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat', 'saliency_masks')
- load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
-% take only islands
-bw = saliency_masks(:,:,2);
-clear saliency_masks
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti3_dmsrregions.mat');
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven5_dmsrregions.mat',
-%'saliency_masks');
-load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat6_dmsrregions.mat', 'saliency_masks')
-% take only islands
-bw_a = saliency_masks(:,:,2);
-clear saliency_masks
+load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
+saliency_masks_o = saliency_masks;
+load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti3_dmsrregions.mat','saliency_masks');
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven5_dmsrregions.mat','saliency_masks');
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat3_dmsrregions.mat', 'saliency_masks')
+saliency_masks_a = saliency_masks;
+
+% determine the number of saliency types
+dim  = ndims(saliency_masks);
+num_masks = size(saliency_masks,dim);
 
 % visualise
 if vis
-    f = figure; 
-    set(gcf, 'Position', get(0, 'Screensize'));
-    subplot(221);imshow(bw); title('Binary - base'); axis on, grid on;
-    subplot(222);imshow(bw_a); title('Binary - transformed)'); axis on, grid on;
-end
-
-%% obtain connected components
-if verbose
-    disp('Obtain the connected components...');
-end
-cc = bwconncomp(bw);
-cc_a = bwconncomp(bw_a);
-
-% visualise
-if vis
-    stats_cc = regionprops(cc,list_properties);
-    labeled = labelmatrix(cc);
-    figure(f); subplot(223);imshow(label2rgb(labeled));
-    hold on;
-    for k = 1:numel(stats_cc)
-        if numel(stats_cc) > 3 && k <= 2
-            col = 'w';
-        else
-            col = 'k';
+    if num_masks <= 2
+        figure; set(gcf, 'Position', get(0, 'Screensize'));
+        subplot(221);imshow(saliency_masks_o(:,:,1)); title('Binary mask or. (holes)'); axis on, grid on;
+        subplot(223);imshow(saliency_masks_a(:,:,1)); title('Binary mask trans. (holes)'); axis on, grid on;
+        if num_masks > 1
+            subplot(222);imshow(saliency_masks_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
+            subplot(224);imshow(saliency_masks_a(:,:,2)); title('Binary mask trans. (islands)'); axis on, grid on;
         end
-        text(stats_cc(k).Centroid(1), stats_cc(k).Centroid(2), num2str(k), ...
-        'Color', col, 'HorizontalAlignment', 'center')
-    end
-    hold off;
-
-    title('Connected Components'); axis on, grid on;
-    
-
-    stats_cc_a = regionprops(cc_a,list_properties);
-    labeled = labelmatrix(cc_a);
-    subplot(224);imshow(label2rgb(labeled)); 
-    hold on;
-    for k = 1:numel(stats_cc_a)
-        if numel(stats_cc) > 3 && k <= 2
-            col = 'w';
-        else
-            col = 'k';
+    else if num_masks <= 4
+            figure; set(gcf, 'Position', get(0, 'Screensize'));
+            subplot(221);imshow(saliency_masks_o(:,:,3)); title('Binary mask or. (indent.)'); axis on, grid on;
+            subplot(223);imshow(saliency_masks_a(:,:,3)); title('Binary mask trans. (indent.)'); axis on, grid on;
+            if num_masks > 3 
+                subplot(222);imshow(saliency_masks_o(:,:,4)); title('Binary mask or. (protr.)'); axis on, grid on;
+                subplot(224);imshow(saliency_masks_a(:,:,4)); title('Binary mask trans. (protr.)'); axis on, grid on;
+            end
         end
-        text(stats_cc_a(k).Centroid(1), stats_cc_a(k).Centroid(2), num2str(k), ...
-            'Color', col, 'HorizontalAlignment', 'center')
     end
-    hold off;
-    title('Connected Components (affine)'); axis on, grid on;
 end
+
+% %% obtain connected components
+% if verbose
+%     disp('Obtain the connected components...');
+% end
+% cc = bwconncomp(bw);
+% cc_a = bwconncomp(bw_a);
+% 
+% % visualise
+% if vis
+%     stats_cc = regionprops(cc,list_properties);
+%     labeled = labelmatrix(cc);
+%     figure(f); subplot(223);imshow(label2rgb(labeled));
+%     hold on;
+%     for k = 1:numel(stats_cc)
+%         if numel(stats_cc) > 3 && k <= 2
+%             col = 'w';
+%         else
+%             col = 'k';
+%         end
+%         text(stats_cc(k).Centroid(1), stats_cc(k).Centroid(2), num2str(k), ...
+%         'Color', col, 'HorizontalAlignment', 'center')
+%     end
+%     hold off;
+% 
+%     title('Connected Components'); axis on, grid on;
+%     
+% 
+%     stats_cc_a = regionprops(cc_a,list_properties);
+%     labeled = labelmatrix(cc_a);
+%     subplot(224);imshow(label2rgb(labeled)); 
+%     hold on;
+%     for k = 1:numel(stats_cc_a)
+%         if numel(stats_cc) > 3 && k <= 2
+%             col = 'w';
+%         else
+%             col = 'k';
+%         end
+%         text(stats_cc_a(k).Centroid(1), stats_cc_a(k).Centroid(2), num2str(k), ...
+%             'Color', col, 'HorizontalAlignment', 'center')
+%     end
+%     hold off;
+%     title('Connected Components (affine)'); axis on, grid on;
+% end
 
 %% compute scale moments invariants of all CCs
 
 % load coefficients
-coeff = readinv(coeff_file');
+coeff = readinv(coeff_file);
 
 if verbose
     disp('Processing original image ... ');
 end
 
-moment_invariants = affine_invariants(bw, order, coeff);
-% num_regions = cc.NumObjects;
-% 
-% for i = 1:num_regions
-%     bwi = zeros(size(bw));
-%     bwi(cc.PixelIdxList{i}) = 1;
-%     moments = cm(bwi,order);
-%     [moment_invariants(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
-% end
+moment_invariants = sal_masks2aff_inv(saliency_masks_o, order, coeff);
 if verbose
     disp('Moment invariants: '); disp(moment_invariants);
     disp('--------------------------------------------');
@@ -129,15 +134,8 @@ if verbose
     disp('Processing affine image ... ');
 end
 
-moment_invariants_a = affine_invariants(bw_a, order, coeff);    %#ok<*SAGROW>
+moment_invariants_a = sal_masks2aff_inv(saliency_masks_a, order, coeff);    %#ok<*SAGROW>
 
-% num_regions = cc_a.NumObjects;
-% for i = 1:num_regions
-%     bwi = zeros(size(bw_a));
-%     bwi(cc_a.PixelIdxList{i}) =1;
-%     moments = cm(bwi,order);
-%     [moment_invariants_a(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
-% end
 if verbose
     disp('Moment invariants: '); disp(moment_invariants_a);
     disp('--------------------------------------------');
@@ -145,14 +143,33 @@ end
 
 %% compute the mean squared error as a function of number of moments
 for j = 1:max_num_moments
-    err(j) = immse(moment_invariants(1:j), moment_invariants_a(1:j));
+    err(j) = immse(moment_invariants(:,1:j), moment_invariants_a(:,1:j));
 end
 
 %% visualise
 if vis
     figure;
-    subplot(211);plot(1:max_num_moments, moment_invariants,'k-d',...
-        1:max_num_moments, moment_invariants_a,'b:s');
+    subplot(211);
+    if num_masks >= 1
+        plot(1:max_num_moments, moment_invariants(1,:),'b-o',...
+            1:max_num_moments, moment_invariants_a(1,:),'b--o');
+        if num_masks >=2
+            hold on;
+            plot(1:max_num_moments, moment_invariants(2,:),'y-o',...
+                1:max_num_moments, moment_invariants_a(2,:),'y--o');
+            if num_masks >=3
+                hold on;
+                plot(1:max_num_moments, moment_invariants(3,:),'g-o',...
+                    1:max_num_moments, moment_invariants_a(3,:),'g--o');
+                if num_masks ==3
+                    hold on;
+                    plot(1:max_num_moments, moment_invariants(4,:),'r-o',...
+                        1:max_num_moments, moment_invariants_a(4,:),'r--o');
+                end
+            end
+        end
+    end
+    hold off
     axis on; grid on;
     legend({'original', 'affine'});
     title('Moment invariants');

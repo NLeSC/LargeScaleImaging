@@ -15,3 +15,4 @@
 % secondary
 %--------------------------------------------------------------------------
 % affine_invariants.m- function to computer Flusser's affine invariants
+% sal_masks2aff_inv.m- compute affine invariants from binary saliency masks
