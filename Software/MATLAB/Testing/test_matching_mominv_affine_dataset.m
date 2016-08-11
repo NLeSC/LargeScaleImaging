@@ -5,8 +5,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 10-08-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 
-% modification details: 
+% last modification date: 11-08-2016
+% modification details: using affine_invariants function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: matchFeatures from the CVS Toolbox is used
 %**************************************************************************
@@ -20,14 +20,16 @@
 verbose = 1;
 vis = 1;
 
-% moments order
+% moments parameters
 %order = input('Enter the order (up to 4) of the moments: ');
 order = 4;
 
+coeff_file = 'afinvs4_19.txt';
 %num_moments =  input('How many invariants to consider (max 66)?: ');
 max_num_moments = 66;
 %max_num_moments = 8;
 
+% CC parameters
 list_properties = {'Centroid'};
 
 %% load DMSR regions
@@ -43,7 +45,7 @@ clear saliency_masks
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti3_dmsrregions.mat');
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven5_dmsrregions.mat',
 %'saliency_masks');
-load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat2_dmsrregions.mat', 'saliency_masks')
+load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat6_dmsrregions.mat', 'saliency_masks')
 % take only islands
 bw_a = saliency_masks(:,:,2);
 clear saliency_masks
@@ -103,14 +105,13 @@ end
 %% compute scale moments invariants of all CCs
 
 % load coefficients
-coeff = readinv('afinvs4_19.txt');
+coeff = readinv(coeff_file');
 
 if verbose
     disp('Processing original image ... ');
 end
 
-moments = cm(bw,order);
-[moment_invariants] = cafmi(coeff, moments);
+moment_invariants = affine_invariants(bw, order, coeff);
 % num_regions = cc.NumObjects;
 % 
 % for i = 1:num_regions
@@ -128,8 +129,7 @@ if verbose
     disp('Processing affine image ... ');
 end
 
-moments = cm(bw_a,order);
-[moment_invariants_a] = cafmi(coeff, moments);    %#ok<*SAGROW>
+moment_invariants_a = affine_invariants(bw_a, order, coeff);    %#ok<*SAGROW>
 
 % num_regions = cc_a.NumObjects;
 % for i = 1:num_regions
