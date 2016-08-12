@@ -54,7 +54,11 @@ end
 % input parameters -> variables
 %--------------------------------------------------------------------------
 dim  = ndims(saliency_masks);
-num_masks = size(saliency_masks,dim);
+if dim > 2
+    num_masks = size(saliency_masks,dim);
+else
+    num_masks = 1;
+end
 
 %**************************************************************************
 % initialisations/constants
