@@ -33,7 +33,7 @@ end
 %num_moments =  input('How many invariants to consider (max 66)?: ');
 coeff_file = 'afinvs4_19.txt';
 max_num_moments = 66;
-%num_moments = 9;
+num_moments = 4;
 
 % CC parameters
 list_properties = {'Centroid'};
@@ -47,6 +47,8 @@ if multiple
     bw = rgb2gray(imread('Blobs.png'));
     if distortion
         bwd = rgb2gray(imread('Blobs_distorted.png'));
+       % bwd = rgb2gray(imread('Blobs_less.png'));
+       % bwd = rgb2gray(imread('Blobs_more.png'));
     end
 else
     bw = rgb2gray(imread('blob.png'));
@@ -142,21 +144,20 @@ if verbose
 end
 
 coeff = readinv(coeff_file);
-if distortion
-    [moment_invariants] = affine_invariants(bwd, order, coeff);
-else
-   [moment_invariants] = affine_invariants(bw, order, coeff);  
-end
-
-
-% num_regions = cc.NumObjects;
-%
-% for i = 1:num_regions
-%     bwi = zeros(size(bw));
-%     bwi(cc.PixelIdxList{i}) = 1;
-%     moments = cm(bwi,order);
-%     [moment_invariants(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
+% if distortion
+%     [moment_invariants] = affine_invariants(bwd, order, coeff);
+% else
+%    [moment_invariants] = affine_invariants(bw, order, coeff);  
 % end
+
+
+num_regions = cc.NumObjects;
+
+for i = 1:num_regions
+    bwi = zeros(size(bw));
+    bwi(cc.PixelIdxList{i}) = 1;
+    [moment_invariants(i,:)] = affine_invariants(bwi, order, coeff);  
+end
 if verbose
     disp('Moment invariants: '); disp(moment_invariants);
     disp('--------------------------------------------');
@@ -166,38 +167,37 @@ if verbose
     disp('Processing affine image ... ');
 end
 
-[moment_invariants_a] = affine_invariants(bw_a, order,coeff);
+%[moment_invariants_a] = affine_invariants(bw_a, order,coeff);
 
-% %num_regions = cc_t.NumObjects;
-% for i = 1:num_regions
-%     bwi = zeros(size(bw_a));
-%     bwi(cc_a.PixelIdxList{i}) =1;
-%     moments = cm(bwi,order);
-%     [moment_invariants_a(i,:)] = cafmi(coeff, moments);    %#ok<*SAGROW>
-% end
+num_regions = cc_a.NumObjects;
+for i = 1:num_regions
+    bwi = zeros(size(bw_a));
+    bwi(cc_a.PixelIdxList{i}) =1;
+    [moment_invariants_a(i,:)] = affine_invariants(bwi, order, coeff);  
+end
 if verbose
     disp('Moment invariants: '); disp(moment_invariants_a);
     disp('--------------------------------------------');
 end
-% %% matching the invariants and count the matches
-% matched_pairs = {};
-% num_matches = zeros(1, max_num_moments);
-% for m = 2:max_num_moments
-%     features = moment_invariants(:,1:m);
-%     features_a = moment_invariants_a(:,1:m);
-%     matched_pairs{m} = matchFeatures(features, features_a);
-%     num_matches(m) = size(matched_pairs{m},1);
-% end
-%
-% %% matches
-% if vis
-%
-%     figure; set(gcf, 'Position', get(0, 'Screensize'));
-%     plot(1:max_num_moments,num_matches, 'r-^');
-%     axis on; grid on;
-%     xlabel('Number of invariants');
-%     title('Matched regions');
-% end
+%% matching the invariants and count the matches
+matched_pairs = {};
+num_matches = zeros(1, max_num_moments);
+for m = 2:max_num_moments
+    features = moment_invariants(:,1:m);
+    features_a = moment_invariants_a(:,1:m);
+    matched_pairs{m} = matchFeatures(features, features_a);
+    num_matches(m) = size(matched_pairs{m},1);
+end
+
+%% matches
+if vis
+
+    figure; set(gcf, 'Position', get(0, 'Screensize'));
+    plot(1:max_num_moments,num_matches, 'r-^');
+    axis on; grid on;
+    xlabel('Number of invariants');
+    title('Matched regions');
+end
 
 %% compute the mean squared error as a function of number of moments
 for j = 1:max_num_moments
