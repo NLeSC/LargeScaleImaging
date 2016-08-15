@@ -43,5 +43,6 @@
 % test_matching_mominv_affine_dataset- testing matching with Flusser's affine moment
 %                       invariants as descriptors of the salient regions
 %                       for the oxford dataset
+% test_filter_regions.m- script to test filter_regions function
                                            
 
