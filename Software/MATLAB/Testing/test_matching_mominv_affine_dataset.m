@@ -5,6 +5,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 10-08-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 15-08-2016
+% modification details: using region filtering
 % last modification date: 11-08-2016
 % modification details: using affine_invariants function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,19 +29,20 @@ order = 4;
 coeff_file = 'afinvs4_19.txt';
 %num_moments =  input('How many invariants to consider (max 66)?: ');
 %max_num_moments = 66;
-max_num_moments = 4;
+max_num_moments = 12;
 
 % CC parameters
 list_properties = {'Centroid','Area'};
+area_factor = 0.001;
 
-%% load DMSR regions
+%% load DMSR regions for base image
 if verbose
     disp('Loading a binary DMSR regions files...');
 end
 
 
-load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
+load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
 
@@ -53,9 +56,12 @@ imageArea = size(saliency_masks,1) * size(saliency_masks,2);
 %for m = 1:num_masks
 saliency_masks_o = imfill(saliency_masks(:,:,ind),'holes');
 %end
+
+
+%% load DMSR regions for transformedimage(s)
 for h = 2%:6
-    load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-   %load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+   % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+   load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
     %load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks')
     %load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat','saliency_masks');
     
@@ -63,74 +69,84 @@ for h = 2%:6
     %for m = 1:num_masks
     saliency_masks_a = imfill(saliency_masks(:,:,ind),'holes');
     %end
-    
-    
-    %% visualise
-    if vis
-        if num_masks <= 2
-            f = figure; set(gcf, 'Position', get(0, 'Screensize'));
-            subplot(221);imshow(saliency_masks_o(:,:,1)); title('Binary mask or. (holes)'); axis on, grid on;
-            subplot(223);imshow(saliency_masks_a(:,:,1)); title('Binary mask trans. (holes)'); axis on, grid on;
-            if num_masks > 1
-                subplot(222);imshow(saliency_masks_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
-                subplot(224);imshow(saliency_masks_a(:,:,2)); title('Binary mask trans. (islands)'); axis on, grid on;
-            end
-        else if num_masks <= 4
-               f1 =  figure; set(gcf, 'Position', get(0, 'Screensize'));
-                subplot(221);imshow(saliency_masks_o(:,:,3)); title('Binary mask or. (indent.)'); axis on, grid on;
-                subplot(223);imshow(saliency_masks_a(:,:,3)); title('Binary mask trans. (indent.)'); axis on, grid on;
-                if num_masks > 3
-                    subplot(222);imshow(saliency_masks_o(:,:,4)); title('Binary mask or. (protr.)'); axis on, grid on;
-                    subplot(224);imshow(saliency_masks_a(:,:,4)); title('Binary mask trans. (protr.)'); axis on, grid on;
-                end
-            end
-        end
-    end
+       
     
     %% obtain connected components
     if verbose
         disp('Obtain the connected components...');
     end
     cc = bwconncomp(saliency_masks_o);
-    cc_a = bwconncomp(saliency_masks_a);
+    cc_a_f = bwconncomp(saliency_masks_a);
+   
+    %% filter out the smallest regions
+    stats_cc = regionprops(cc,list_properties);
+    stats_cc_a = regionprops(cc_a_f,list_properties);
     
-    % visualise
+    prop_types = {'Area'};
+    ranges = {[area_factor*imageArea imageArea]};    
+    [saliency_mask_o_f, index_o, ~] = filter_regions(saliency_masks_o, stats_cc, prop_types, {}, ranges, cc);
+    [saliency_mask_a_f, index_a, ~] = filter_regions(saliency_masks_a, stats_cc_a, prop_types, {}, ranges, cc_a_f);
+    
+    %% visualise
     if vis
-        stats_cc = regionprops(cc,list_properties);
-        labeled = labelmatrix(cc);
+        % original images  (masks)
+        if num_masks <= 2
+            f = figure; set(gcf, 'Position', get(0, 'Screensize'));
+            subplot(221);imshow(saliency_masks_o(:,:,1)); title('Binary mask or. (holes)'); axis on, grid on;
+            subplot(223);imshow(saliency_masks_a(:,:,1)); title('Binary mask transf. (holes)'); axis on, grid on;
+            if num_masks > 1
+                subplot(222);imshow(saliency_masks_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
+                subplot(224);imshow(saliency_masks_a(:,:,2)); title('Binary mask transf. (islands)'); axis on, grid on;
+            end
+        else if num_masks <= 4
+               f1 =  figure; set(gcf, 'Position', get(0, 'Screensize'));
+                subplot(221);imshow(saliency_masks_o(:,:,3)); title('Binary mask or. (indent.)'); axis on, grid on;
+                subplot(223);imshow(saliency_masks_a(:,:,3)); title('Binary mask transf. (indent.)'); axis on, grid on;
+                if num_masks > 3
+                    subplot(222);imshow(saliency_masks_o(:,:,4)); title('Binary mask or. (protr.)'); axis on, grid on;
+                    subplot(224);imshow(saliency_masks_a(:,:,4)); title('Binary mask transf. (protr.)'); axis on, grid on;
+                end
+            end
+        end
+        
+        % filtered and labelled
+        cc_f = bwconncomp(saliency_mask_o_f);
+        cc_a_f = bwconncomp(saliency_mask_a_f);
+        
+        labeled = labelmatrix(cc_f);
         figure(f); subplot(222);imshow(label2rgb(labeled));
         hold on;
-        for k = 1:numel(stats_cc)
-            if numel(stats_cc) > 3 && k <= 2
+        for k = 1:length(index_o)
+            if length(index_o) > 3 && k <= 2
                 col = 'w';
             else
                 col = 'k';
             end
-            text(stats_cc(k).Centroid(1), stats_cc(k).Centroid(2), num2str(k), ...
-            'Color', col, 'HorizontalAlignment', 'center')
+            text(stats_cc(index_o(k)).Centroid(1), stats_cc(index_o(k)).Centroid(2), ...
+                num2str(index_o(k)), 'Color', col, 'HorizontalAlignment', 'center')
         end
         hold off;
     
-        title('Connected Components'); axis on, grid on;
-    
-    
-        stats_cc_a = regionprops(cc_a,list_properties);
-        labeled = labelmatrix(cc_a);
+        title('Conn. Comp. (after filtering)'); axis on, grid on;
+               
+        labeled = labelmatrix(cc_a_f);
         subplot(224);imshow(label2rgb(labeled));
         hold on;
-        for k = 1:numel(stats_cc_a)
-            if numel(stats_cc) > 3 && k <= 2
+        for k = 1:length(index_a)
+            if length(index_a) > 3 && k <= 2
                 col = 'w';
             else
                 col = 'k';
             end
-            text(stats_cc_a(k).Centroid(1), stats_cc_a(k).Centroid(2), num2str(k), ...
-                'Color', col, 'HorizontalAlignment', 'center')
+            text(stats_cc_a(index_a(k)).Centroid(1), stats_cc_a(index_a(k)).Centroid(2),...
+                num2str(index_a(k)), 'Color', col, 'HorizontalAlignment', 'center')
         end
         hold off;
-        title('Connected Components (affine)'); axis on, grid on;
+        title('Conn. Comp. transf. (after filt.)'); axis on, grid on;
     end
+   
     
+
     %% compute scale moments invariants of all CCs
     
     % load coefficients
@@ -141,11 +157,11 @@ for h = 2%:6
     end
     
    % moment_invariants = sal_masks2aff_inv(saliency_masks_o, order, coeff
-   num_regions = cc.NumObjects;
+   num_regions = length(index_o); %cc.NumObjects;
 
 for i = 1:num_regions
-    bwi = zeros(size(saliency_masks_o));
-    bwi(cc.PixelIdxList{i}) = 1;
+    bwi = zeros(size(saliency_mask_o_f));
+    bwi(cc_f.PixelIdxList{i}) = 1;
     [moment_invariants(i,:)] = affine_invariants(bwi, order, coeff);  
 end
     if verbose
@@ -158,10 +174,10 @@ end
     end
     
    % moment_invariants_a = sal_masks2aff_inv(saliency_masks_a, order, coeff);    %#ok<*SAGROW
-  num_regions = cc_a.NumObjects;
+  num_regions = length(index_a); %cc_a.NumObjects;
 for i = 1:num_regions
     bwi = zeros(size(saliency_masks_a));
-    bwi(cc_a.PixelIdxList{i}) =1;
+    bwi(cc_a_f.PixelIdxList{i}) =1;
     [moment_invariants_a(i,:)] = affine_invariants(bwi, order, coeff);  
 end  
     if verbose
@@ -176,7 +192,7 @@ end
         end
     end
     
-    %% visualise
+     % visualise
     if vis
         figure;
         subplot(211);
@@ -209,26 +225,36 @@ end
     end
     
     %% matching the invariants and count the matches
-    matched_pairs = {};
+    matched_pairs = [];
+    matched_indicies = {};
     num_matches = zeros(1, max_num_moments);
     for m = 2:max_num_moments
         features = moment_invariants(:,1:m);
         features_a = moment_invariants_a(:,1:m);
-        [matched_pairs{m},cost{m}] = matchFeatures(features, features_a);
-        num_matches(m) = size(matched_pairs{m},1);
+        [matched_indicies{m},cost{m}] = matchFeatures(features, features_a);
+        num_matches(m) = size(matched_indicies{m},1);
     end
     
-    %% matches
-    if vis
-        
-            figure; set(gcf, 'Position', get(0, 'Screensize'));
-            plot(1:max_num_moments,num_matches, 'r-^');
-            axis on; grid on;
-            xlabel('Number of invariants');
-            title('Matched regions');
+    for i = 1:num_matches(max_num_moments)
+        matched_pairs(i).first_region = index_o(matched_indicies{max_num_moments}(i,1));
+        matched_pairs(i).second_region = index_a(matched_indicies{max_num_moments}(i,2));
     end
+        
+    T = struct2table(matched_pairs);
+    %% matches
+%     if vis
+%         
+%             figure; set(gcf, 'Position', get(0, 'Screensize'));
+%             plot(1:max_num_moments,num_matches, 'r-^');
+%             axis on; grid on;
+%             xlabel('Number of invariants');
+%             title('Matched regions');
+%     end
     
     if verbose
-        disp('Final MSE: '); disp(err(end));
+        
+        disp('Matches: '); disp(T);
+        disp(['Final MSE: ', num2str(err(end))]);
+    end
     
 end
