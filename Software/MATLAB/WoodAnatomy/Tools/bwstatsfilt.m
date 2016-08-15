@@ -41,7 +41,7 @@ function [bw_filt, regions_idx, threshs] = bwstatsfilt(bw, stats, stats_types,..
                                                
 %% input parameters
 if nargin < 3
-    error('get_test_filenames requires min. 3 input arguments!');
+    error('bwstatsfilt requires min. 3 input arguments!');
 else
    num_conds = length(stats_types);
 end
