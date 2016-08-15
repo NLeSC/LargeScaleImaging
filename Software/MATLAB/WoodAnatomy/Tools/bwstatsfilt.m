@@ -1,6 +1,6 @@
 % bwstatsfilt- filters binary regions on a pre-computed statistic (derived property)
 % **************************************************************************
-% [bw_filt, regions_idx, thresh] = bwstatsfilt(bw, stats, stats_types, logic_ops, conn_comp, range) 
+% [bw_filt, regions_idx, threshs] = bwstatsfilt(bw, stats, stats_types, logic_ops, conn_comp, range) 
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 03 Feb 2016
@@ -11,28 +11,28 @@
 %                       and ranges;  the relationship between types is AND 
 %**************************************************************************
 % INPUTS:
-% bw        - binary image (logical)- can be mask of detected regions
-% stats      - statistics of derived regionproperties
-% stats_types - list of types of statistics to filter on; can be only any of
+% bw           binary image (logical)- can be mask of detected regions
+% stats        statistics of derived regionproperties
+% stats_types  list of types of statistics to filter on; can be only any of
 %              {'RelativeArea', 'Eccentricity', 'Orientation', ...
 %              'RatioAxesLengths'}
-% [logic_ops]- list of logical operations between the possible filter
-%              conditions; default is 'AND';the order
-%              orevaluaitonisstrictly left to right
-% [conn_comp] - connected components pre-computed from bw (e.g. by a detector)
-%               if empty- they are computed from bw using default connectivity
-% [ranges]     - list of vectors of 2 thresholds per stats_types to filter on (in between);
-%               if empty- every range is [0.1 0.9]*max_value(stats_type{i})
+% [logic_ops]  list of logical operations between the possible filter
+%              conditions; default is 'AND'; the order of evaluaiton is 
+%              strictly left to right
+% [conn_comp]  connected components pre-computed from bw (e.g. by a detector)
+%              if empty- they are computed from bw using default connectivity
+% [ranges]     list of vectors of 2 thresholds per stats_types to filter on (in between);
+%              if empty- every range is [0.1 0.9]*max_value(stats_type{i})
 %**************************************************************************
 % OUTPUTS:
-% bw_filet    - binary image (logical) of the filtered regions
-% regions_idx - index of filtered regions
-% threshs     - the threshold values = ranges or ranges*max_value (per statistic)
+% bw_filt      binary image (logical) of the filtered regions
+% regions_idx  index of filtered regions
+% threshs      the threshold values = ranges or ranges*max_value (per statistic)
 %**************************************************************************
 % NOTES: called from testing scripts
 %**************************************************************************
 % EXAMPLES USAGE: 
-% see test_bwtatsfilt.m
+% see test_bwtatsfilt_LMwood.m
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
