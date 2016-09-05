@@ -275,7 +275,7 @@ for h = 2:6
         end
         
         T = struct2table(matched_pairs);
-        clear matched_pairs index_o index_a feature feature_a
+        clear matched_pairs index_o index_a features features_a
         %% matches
         %     if vis
         %
