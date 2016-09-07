@@ -166,7 +166,8 @@ Email: E.Ranguelova@esciencecenter.nl}
 % in the abstract
 \begin{abstract}
 Finding correspondences between two images of the same scene or object, taken from different viewpoints and in different conditions, is a challenging task. Furthermore, in the analysis of scientific imagery, it must be possible in terms of human perception to appreciate detected local features, thus making the task even more complex.
-\begin{comment} One method, used by ecologists in their population studies and conservation efforts, is photo identification. In addition to identifying individual plants or animals or classifying species, precise phenotypic (appearance) measurements are needed. 
+\begin{comment} 
+One method, used by ecologists in their population studies and conservation efforts, is photo identification. In addition to identifying individual plants or animals or classifying species, precise phenotypic (appearance) measurements are needed. 
 \end{comment}
 A renowned generic feature detector, Maximally Stable Extremal Regions (MSER), performs very well on structured images, but has difficulties with blur, lighting and increased resolution. The detected regions do not always correspond to semantically meaningful image structures, and the large number of regions hampers scalability. This paper proposes a Data-driven Morphology Salient Regions (DMSR) detector which overcomes these limitations. We present a new binarization algorithm which uses a threshold derived from the data; the resulting binary image is analyzed for saliency using morphology. DMSR shows transformation invariance and comparable repeatability to MSER on several evaluation benchmarks while obtaining better invariance to lighting, blur and resolution. This is achieved via significantly fewer regions, leading to better scalability. Preliminary results on animal and plant images indicate that DMSR could %indeed 
 be a suitable approach for wild-life biometric applications as the detected regions correspond well to the semantic %salient 
@@ -215,11 +216,11 @@ The first fundamental step in numerous computer vision applications (such as wid
   \centerline{\includegraphics[width=3.8cm]{tnt_dmsr_hires_zoom}}
 \end{minipage}
 \hfill
-\vspace{-0.5cm}
+\vspace{-0.3cm}
 \caption{Region detection on the 'underground' image (detail), TNT dataset.  
 Top row: MSER, bottom row: DMSR (proposed detector). Left: low $1.5$~MPixel, right: high $8$~MPixel resolution}
 \label{fig:tnt_zoom}
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 \end{figure}
 
 A decade ago, a performance evaluation paper by the Visual Geometry Group in Oxford compared existing region detectors \cite{Mikolajczyk:2005}. 
@@ -367,7 +368,7 @@ t_{opt} = \argmax_{t \in \mcT}( w^{\mcA} \Vert \mcA_t \Vert + w^{\mcL} \Vert \mc
 \end{equation}
 where $w^{\cdot}$ are the weights per set of CCs.  
 
-In comparison to the standard Otsu thresholding which does not select a single $CS$ stable across photometric transformations, choosing $t_{opt}$ as defined ensures a transformation-invariant stable number of regions. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} show the Otsu and the data-driven thresholding in respect to lighting. When the lighting decreases, the Otsu thresolding produces fewer regions with often smaller extent (e.~g.~the cars' windows), while the proposed binarisation generates regions with the same spatial extent (Fig.~\ref{fig:leuven_bin}). 
+In comparison to the standard Otsu thresholding which does not select a single $CS$ stable across photometric transformations, choosing $t_{opt}$ as defined ensures a transformation-invariant stable number of regions. Figures \ref{fig:binary_hist} and \ref{fig:leuven_bin} show the Otsu and the data-driven thresholding in respect to lighting. When the lighting decreases, the Otsu thresholding produces fewer regions with often smaller extent (e.~g.~the cars' windows), while the proposed binarization generates regions with the same spatial extent (Fig.~\ref{fig:leuven_bin}). 
 %------------------------------------------------------------------------
 %\vspace{-0.8cm}
 \begin{figure}[htb]
@@ -473,7 +474,7 @@ After the data-driven binarization, the DMSR detector finds the set of affine-co
 \label{sec:perf}
 
 
-We have applied the standard performance evaluation metrics - the {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is set to $40\%$ as in \cite{Mikolajczyk:2005}. The repeatability score between a pair of base and transformed image, $(\I_B,\I_T)$, is the ratio between $N_C$ in the part of the images with common content and the minimum number of regions in the image pair. Since we were intrested in finding correspondencies between salient regions from structured images only, we focused on this subset from each dataset and ignored the textured scenes (e.g. 'Trees', 'Bark' etc. from the Oxford dataset). We considered five region detectors for evaluation: MSER, MSSR(A) and DMSR(A). For MSER we used the original Matas software with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$, $\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$.
+We have applied the standard performance evaluation metrics - the {\em repeatability score} ($R$) and the {\em number of correspondences} ($N_C$) \cite{Mikolajczyk:2005}. The maximum overlap error between matching regions is set to $40\%$ as in \cite{Mikolajczyk:2005}. The repeatability score between a pair of base and transformed image, $(\I_B,\I_T)$, is the ratio between $N_C$ in the part of the images with common content and the minimum number of regions in the image pair. Since we were intrested in finding correspondencies between salient regions from structured images only (motivated by the envisioned scientific application),  we focused on this subset from each dataset and ignored the textured scenes (e.g. 'Trees', 'Bark' etc. from the Oxford dataset). We considered five region detectors for evaluation: MSER, MSSR(A) and DMSR(A). For MSER we used the original Matas software with its default settings and the (D)MSSR(A) parameters are: $r = 0.02*\sqrt{A_{\I} / \pi}$, $\lambda=3r$, $\Lambda_{\mcL}=0.001$, $\Lambda_{\mcV}=0.01$.
 All performance plots and detected regions on all data are available online \cite{elena_ranguelova_2016_45156}.
 
 \subsection{Binarization}
@@ -691,19 +692,19 @@ Another advantage of DMSR is the option to selectively detect only some types of
 \begin{figure}[htb]
 \begin{minipage}[b]{.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=6cm]{mserWood}}
+  \centerline{\includegraphics[width=5cm]{mserWood}}
 \end{minipage}
 \hfill
 \vspace{0.2cm}
 \begin{minipage}[b]{0.99\linewidth}
   \centering
-  \centerline{\includegraphics[width=6cm]{dmsrWood}}
+  \centerline{\includegraphics[width=5cm]{dmsrWood}}
 \end{minipage}
 \vspace{-0.1cm}
 \caption{Salient region detectors on microscopy wood (Argania spinosa) image. Elliptic representation. Top: MSER (every second region is shown), bottom: DMSR}
 \label{fig:wood}
 \end{figure}
-%\vspace{-0.3cm}
+\vspace{-0.3cm}
 
 \begin{figure}[htb]
 \begin{minipage}[b]{.49\linewidth}
