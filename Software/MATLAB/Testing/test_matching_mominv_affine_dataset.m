@@ -22,6 +22,7 @@
 verbose = 0;
 vis = 1;
 regions = true; % true if matching per individual regions
+filtering = true; % true if toperform Area filterring (large regions remain)
 
 % moments parameters
 %order = input('Enter the order (up to 4) of the moments: ');
@@ -30,13 +31,17 @@ order = 4;
 coeff_file = 'afinvs4_19.txt';
 %num_moments =  input('How many invariants to consider (max 66)?: ');
 %max_num_moments = 66;
-max_num_moments = 4;
+max_num_moments = 12;
 dist_type = 'euclidean'; %'hamming';
-match_type = 'sad';
+match_type = 'ssd';
 
 % CC parameters
 list_properties = {'Centroid','Area'};
-area_factor = 0.0005;
+if filtering
+    area_factor = 0.0005;
+else
+    area_factor =  0;
+end
 
 %% load DMSR regions for base image
 if verbose
@@ -44,9 +49,9 @@ if verbose
 end
 
 
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
+load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
-load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
 
 
@@ -62,11 +67,11 @@ saliency_masks_o = imfill(saliency_masks(:,:,ind),'holes');
 
 
 %% load DMSR regions for transformedimage(s)
-for h = 2:6
+for h = 3 %2:6
     load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-  %  load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-  %  load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks')
-  %  load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+   % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+   % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks')
+  % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
     
     
     %for m = 1:num_masks
@@ -217,7 +222,7 @@ for h = 2:6
     for i = 1:num_masks
         for j = 1:max_num_moments
            % err(i,j) = norm(moment_invariants(i,1:j) - moment_invariants_a(i,1:j));
-           %  err(i,j) = immse(moment_invariants(i,1:j), moment_invariants_a(i,1:j));
+             err(i,j) = immse(moment_invariants(i,1:j), moment_invariants_a(i,1:j));
              dist(i,j) = pdist2(moment_invariants(i,1:j), moment_invariants_a(i,1:j),dist_type);
         end
     end
@@ -265,7 +270,7 @@ for h = 2:6
             features = moment_invariants(:,1:m);
             features_a = moment_invariants_a(:,1:m);
             [matched_indicies{m},cost{m}] = matchFeatures(features, ...
-                features_a,'Metric',match_type);
+                features_a,'Metric',match_type, 'Unique', true);
             num_matches(m) = size(matched_indicies{m},1);
         end
         
@@ -274,8 +279,15 @@ for h = 2:6
             matched_pairs(i).second_region = index_a(matched_indicies{max_num_moments}(i,2));
         end
         
-        T = struct2table(matched_pairs);
+        if length(matched_pairs) >=1
+            T = struct2table(matched_pairs);
+        else
+            T =  [];
+        end
+            
         clear matched_pairs index_o index_a features features_a
+       % clear index_o index_a features features_a
+        
         %% matches
         %     if vis
         %
@@ -294,8 +306,12 @@ for h = 2:6
      
     
     if true
-       % disp(['Final MSE: ', num2str(err(end))]);
-        disp(['Final distance: ', num2str(dist(end))]);
+%         disp(['Mean distance: ', num2str(mean(dist))]);
+%         disp(['Final distance: ', num2str(dist(end))]);
+%         disp(['Mean MSE: ', num2str(mean(err))]);
+%         disp(['Final MSE: ', num2str(err(end))]);
+        disp(['Number of matches: ' , num2str(num_matches(end))])
+        disp(['Mean matching cost: ', num2str(mean(cost{max_num_moments}))]);
     end
     
 end
