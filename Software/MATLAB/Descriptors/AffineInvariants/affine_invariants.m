@@ -44,7 +44,7 @@ function [invariants] = affine_invariants(bw, order, coeff)
 % input control    
 %--------------------------------------------------------------------------
 if nargin < 3
-    error('affine_invariants.m requires at least 3 input argument!');
+    error('affine_invariants.m requires at least 3 input arguments!');
     invariants = None;
     return
 end
