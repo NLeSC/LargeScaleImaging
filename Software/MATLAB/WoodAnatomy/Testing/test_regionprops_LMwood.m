@@ -3,6 +3,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 23 October 2015
+% last modification date: 9 Sept 2016
+% modification details: added saving flag
 % last modification date: 27 October 2015
 % modification details: the region properties computation is now in a generic
 % function
@@ -16,11 +18,17 @@ disp('Testing DMSR region properties of LMwood data');
 %% parameters
 verbose = 1;
 visualize = 1;
+sav = 0;
 batch = false;
 conn = 4;
 %% paths and filenames
-data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
-results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
+if isunix
+    data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
+    results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
+else
+    error('The software works only on a Unix system!');
+    return
+end
 detector  = 'DMSR';
 
 if batch
@@ -115,7 +123,9 @@ for test_case = test_cases
         [regions_properties, conn_comp] = compute_region_props(saliency_masks, ...
             conn, types_props);
         %% save the calculated properties
-        save(regions_props_filename, 'regions_properties', 'conn_comp');
+        if sav
+            save(regions_props_filename, 'regions_properties', 'conn_comp');
+        end
         clear saliency_masks regions_properties conn_comp
                 
         if verbose
