@@ -1,8 +1,8 @@
 % contents.m- contents of directory ...\Tools
 %
-% topic: General tools for computing 2D Binary moment invariants 
+% topic: General tools for computing descriptors
 % author: Elena Ranguelova, NLeSc
-% date: August/September 2015
+% date: August/September 2016
 %
 %**************************************************************************
 % functions

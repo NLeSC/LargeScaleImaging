@@ -1,4 +1,4 @@
-% affine_invariants.m- function to computer Flusser's affine invariants
+% affine_invariants.m- function to compute Flusser's affine invariants
 %**************************************************************************
 % [invariants] = affine_invariants(bw, order, coeff)
 %
