@@ -17,3 +17,4 @@
 % filter_regions- filters binary regions on a pre-computed regionprops
 % compute_derived_props.m- computing derived properties of salient regions
 % cc_compute_affine_invariants.m- computing affine invariants from CCs
+% combine_regions_props.m- combining region properties and affine invariants
