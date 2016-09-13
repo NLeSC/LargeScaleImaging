@@ -46,9 +46,9 @@ end
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
-im_size = conn_comps.ImageSize;
+im_size = conn_comps{1}.ImageSize;
 %nrows= im_size(1); ncols = im_size(2);
-num_regions = conn_comps.NumObjects;
+num_regions = conn_comps{1}.NumObjects;
 
 %**************************************************************************
 % initialisations
@@ -60,7 +60,7 @@ num_regions = conn_comps.NumObjects;
 %--------------------------------------------------------------------------
 for i = 1:num_regions
     bw = zeros(im_size);
-    bw(conn_comps.PixelIdxList{i}) = 1;
+    bw(conn_comps{1}.PixelIdxList{i}) = 1;
     aff_inv = affine_invariants(bw, order, coeff);
     affine_regions_props(i,:) = aff_inv(1:num_moments);
 end
