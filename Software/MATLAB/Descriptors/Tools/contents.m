@@ -18,3 +18,4 @@
 % compute_derived_props.m- computing derived properties of salient regions
 % cc_compute_affine_invariants.m- computing affine invariants from CCs
 % combine_regions_props.m- combining region properties and affine invariants
+% struct2array.m- convert structure with numetic values to array
