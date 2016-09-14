@@ -1,6 +1,7 @@
 % SMIdescriptor- Shape and Moment Invariants descriptor for a binary image
 %**************************************************************************
-% [SMIarray, SMIstruct] = SMIdescriptor(bw, conn, num_moments, list_props)
+% [SMIarray, SMIstruct] = SMIdescriptor(bw, conn, list_props, ...
+%                                       order, coeff_file, num_moments)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 14 Sept 2016
@@ -11,12 +12,14 @@
 % bw               binary image for whose regions we want to compute SMI
 % [conn]           neighbourhood connectivity to obtain the regions (CC)
 %                  from bw. Optional, default 4       
-% [num_moments]    number of affine moment invariants. Optional, default 6
 % [list_props]     list of shape properties to be computed. Optional. 
 %                  Can be all or subset of the default list:
 %                  {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
 %                  'Eccentricity','EulerNumber','Solidity'}
 %                  Compulsory subset are the first 4 of the above list.
+% [order]          the moments order. Optional, default is 4.
+% [coeff_file]     the moment coefficients file. Optional, default is 'afinvs4_19.txt'
+% [num_moments]    number of affine moment invariants. Optional, default 6
 %**************************************************************************
 % OUTPUTS:
 % SMIarray         2D array with SMI descriptos for each CC in bw
@@ -30,29 +33,33 @@
 % TO Do: include Carlos's shape descriptors in the future!
 %**************************************************************************
 % EXAMPLES USAGE:
-% %% clear up
 % cl;
-% %% load data, params
 % a = rgb2gray(imread('circlesBrightDark.png'));
 % bw = a < 100;
-%% compute descriptor
 % [SMIarray, SMIstruct] = SMIdescriptor(bw);
 %**************************************************************************
 % REFERENCES: 
 %**************************************************************************
 
-function [SMIarray, SMIstruct] = SMIdescriptor(bw, conn, num_moments, list_props)
+function [SMIarray, SMIstruct] = SMIdescriptor(bw, conn, list_props, ...
+                                       order, coeff_file, num_moments)
 
 %**************************************************************************
 % input control    
 %--------------------------------------------------------------------------
 % compulsory statistics types   
+if nargin < 6
+    num_moments = 6;
+end
+if nargin < 5
+    coeff_file = 'afinvs4_19.txt';
+end
 if nargin < 4
-    list_props =  {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
-                  'Eccentricity','EulerNumber','Solidity'};
+    order = 4;
 end
 if nargin < 3
-    num_moments = 6;
+    list_props =  {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
+                  'Eccentricity','EulerNumber','Solidity'};
 end
 if nargin < 2
     conn = 4;
@@ -67,7 +74,7 @@ end
 %**************************************************************************
 % constants
 %--------------------------------------------------------------------------
-order = 4; coeff_file = 'afinvs4_19.txt';
+%order = 4; coeff_file = 'afinvs4_19.txt';
 
 %**************************************************************************
 % input parameters -> variables
