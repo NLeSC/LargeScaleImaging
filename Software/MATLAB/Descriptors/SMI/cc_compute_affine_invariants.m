@@ -38,7 +38,8 @@ function [affine_regions_props] = cc_compute_affine_invariants(conn_comps,...
 %--------------------------------------------------------------------------
 if nargin < 4
     num_moments = 6;
-elseif nargin < 3
+end
+if nargin < 3
     error('cc_compute_affine_invariants.m requires at least 3 input arguments!');
     affine_regions_props = None;
     return
