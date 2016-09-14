@@ -1,8 +1,8 @@
-% contents.m- contents of directory ...\Tools
+% contents.m- contents of directory ...\SMI
 %
-% topic: General tools for computing descriptors
+% topic: Shape and Moment Invariants (SMI) descriptor
 % author: Elena Ranguelova, NLeSc
-% date: August/September 2016
+% date: September 2016
 %
 %**************************************************************************
 % functions
@@ -10,9 +10,11 @@
 %--------------------------------------------------------------------------
 % main
 %--------------------------------------------------------------------------
-
+% SMIdescriptor- Shape and Moment Invariants descriptor for a binary image
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------
-% filter_regions- filters binary regions on a pre-computed regionprops
-% struct2array.m- convert structure with numetic values to array
+% compute_derived_props.m- computing derived properties of salient regions
+% cc_compute_affine_invariants.m- computing affine invariants from CCs
+% combine_regions_props.m- combining region properties and affine invariants
+
