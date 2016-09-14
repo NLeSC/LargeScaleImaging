@@ -4,8 +4,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 9 Sept 2016
-% last modification date: 
-% modification details: 
+% last modification date: 14 Sept 2014
+% modification details: removing the Centroid from the derived properties
 %**************************************************************************
 % INPUTS:
 % regions_props         structure with all region properties 
@@ -78,6 +78,8 @@ for n = 1: length(regions_props)
     for ts = 1:length(list_derived_types_all)
         type_stat = char(list_derived_types_all{ts});
         switch type_stat
+            case {'Centroid'}
+                continue;
             case {'RelativeArea'}
                 reg_area = regions_props(n).Area;
                 derived_regions_props(n).(type_stat) = reg_area/area;
