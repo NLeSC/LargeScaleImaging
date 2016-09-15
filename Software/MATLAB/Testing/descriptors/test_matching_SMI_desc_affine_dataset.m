@@ -19,7 +19,7 @@
 % execution parameters
 verbose = 1;
 vis = 1;
-filtering = false; % true if to perform Area filterring (large regions remain)
+filtering = true; % true if to perform Area filterring (large regions remain)
 
 % for now test only 1 type
 sal_type = 2;
@@ -60,9 +60,9 @@ if verbose
 end
 
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
-load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
+load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
 
 dim  = ndims(saliency_masks);
 num_masks = 1; %size(saliency_masks,dim);
@@ -75,8 +75,12 @@ bw_o =  logical(bw_o);
 
 % CC
 cc_o = bwconncomp(bw_o,conn);
-if vis
-    stats_cc = regionprops(cc_o, 'Centroid');
+if filtering
+    stats_cc = regionprops(cc_o, list_props_all);
+else
+    if vis
+        stats_cc = regionprops(cc_o, 'Centroid');
+    end
 end
 
 % image area
@@ -154,10 +158,10 @@ end
 for h = 3 %2:6
     
     %% loading and filtering
-   % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-    load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+    % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+    %load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
     % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks')
-    %load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+    load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
     
     % fill the small holes
     bw_a = imfill(saliency_masks(:,:,sal_type),'holes');
@@ -167,8 +171,12 @@ for h = 3 %2:6
     
     % CCs
     cc_a = bwconncomp(bw_a,conn);
-    if vis
-        stats_cc_a = regionprops(cc_a, 'Centroid');
+    if filtering
+        stats_cc_a = regionprops(cc_a, list_props_all);
+    else
+        if vis
+            stats_cc_a = regionprops(cc_a, 'Centroid');
+        end
     end
     
     % image area
