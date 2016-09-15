@@ -60,15 +60,16 @@ if verbose
 end
 
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
-%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
+load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
 %load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
-load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
+%load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
 
 dim  = ndims(saliency_masks);
 num_masks = 1; %size(saliency_masks,dim);
 
 % fill the small holes
 bw_o = imfill(saliency_masks(:,:,sal_type),'holes');
+clear saliency_masks
 
 % make it of class logical
 bw_o =  logical(bw_o);
@@ -103,13 +104,18 @@ if vis
     % original images  (masks)
     if num_masks <= 2
         f = figure; set(gcf, 'Position', get(0, 'Screensize'));
-        subplot(221);imshow(bw_o(:,:,1)); title('Binary mask or. (holes)'); axis on, grid on;
+        subplot(231);imshow(bw_o(:,:,1)); title('Binary mask or. (holes)'); axis on, grid on;
+        figure(f); subplot(232);
         if filtering
-            labeled = labelmatrix(cc_o_f);
+            labeled_o_f = labelmatrix(cc_o_f);
+            labeled = labeled_o_f;
         else
-            labeled = labelmatrix(cc_o);
+            labeled_o = labelmatrix(cc_o);
+            labeled = labeled_o;
         end
-        figure(f); subplot(222);imshow(label2rgb(labeled));
+        clear cc_o cc_o_f
+        
+        imshow(label2rgb(labeled));
         hold on;
         if filtering
             for k = 1:length(index_o)
@@ -154,17 +160,19 @@ if vis
     end
 end
 
+clear bw_o bw_o_f labeled
 %% load DMSR regions for transformed image(s)
-for h = 3 %2:6
+for h = 2:6
     
     %% loading and filtering
     % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-    %load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+    load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
     % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks')
-    load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+    %load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
     
     % fill the small holes
     bw_a = imfill(saliency_masks(:,:,sal_type),'holes');
+    clear saliency_masks
     
     % make it of class logical
     bw_a =  logical(bw_a);
@@ -190,18 +198,22 @@ for h = 3 %2:6
         cc_a_f = bwconncomp(bw_a_f,conn);
     end
     
+    
     %% visualise
     if vis
         % original images  (masks)
         if num_masks <= 2
-            figure(f);  subplot(223);imshow(bw_a(:,:,1)); title('Binary mask transf. (holes)'); axis on, grid on;
+            figure(f);  subplot(234);imshow(bw_a(:,:,1)); title('Binary mask transf. (holes)'); axis on, grid on;
             
             if filtering
-                labeled = labelmatrix(cc_a_f);
+                labeled_a_f = labelmatrix(cc_a_f);
+                labeled = labeled_a_f;
             else
-                labeled = labelmatrix(cc_a);
+                labeled_a = labelmatrix(cc_a);
+                labeled = labeled_a;
             end
-            figure(f); subplot(224);imshow(label2rgb(labeled));
+            clear cc_a cc_a_f
+            figure(f); subplot(235);imshow(label2rgb(labeled));
             hold on;
             if filtering
                 for k = 1:length(index_a)
@@ -246,9 +258,8 @@ for h = 3 %2:6
         
     end
     
+    clear labeled
     
-    
-    %% TO DO: compute descriptors; match descriptors
     
     %% compute SMI descriptors
     if filtering
@@ -259,13 +270,13 @@ for h = 3 %2:6
             order, coeff_file, max_num_moments);
     end
     
+    clear bw_a bw_a_f
     %% matching the descriptos and count the matches
-    features_o = SMI_descr_o;
-    features_a = SMI_descr_a;
-    [matched_indicies,cost] = matchFeatures(features_o, features_a,...
+    [matched_indicies,cost] = matchFeatures(SMI_descr_o, SMI_descr_a,...
         'Metric',match_type, 'Unique', true);
     num_matches = size(matched_indicies,1);
     
+    clear SMI_descr_a 
     % generate the matched pairs
     if filtering
         for i = 1:num_matches
@@ -284,14 +295,90 @@ for h = 3 %2:6
     else
         T =  [];
     end
-    
-    clear matched_pairs index_o index_a features features_a
+   
     
     %% final display of results
+    if vis
+        % make label matricies from the matched pairs
+        if filtering
+            matched_o = zeros(size(labeled_o_f));
+            matched_a = zeros(size(labeled_a_f));
+            for m = 1:num_matches
+                matched_o(labeled_o_f == matched_indicies(m, 1)) = m;
+                matched_a(labeled_a_f == matched_indicies(m, 2)) = m;
+            end
+        else
+            matched_o = zeros(size(labeled_o));
+            matched_a = zeros(size(labeled_a));
+            for m = 1:num_matches
+                matched_o(labeled_o == matched_indicies(m, 1)) = m;
+                matched_a(labeled_a == matched_indicies(m, 2)) = m;
+            end
+        end
+        
+        %f2 =figure; set(gcf, 'Position', get(0, 'Screensize'));
+        figure(f)
+        subplot(233);imshow(label2rgb(matched_o));
+        title('Matched regions on original image'); axis on, grid on;
+        
+        hold on;
+        for k = 1:num_matches
+            if k <= 2
+                col = 'm';
+            else
+                col = 'k';
+            end
+            region_idx = matched_pairs(k).first_region;
+          %  if filtering
+                text(stats_cc(region_idx).Centroid(1), ...
+                    stats_cc(region_idx).Centroid(2), ...
+                    num2str(region_idx), ...
+                    'Color', col, 'HorizontalAlignment', 'center')
+%             else
+%                 text(stats_cc(region_idx).Centroid(1),...
+%                     stats_cc(region_idx).Centroid(2), ...
+%                     num2str(region_idx), ...
+%                     'Color', col, 'HorizontalAlignment', 'center')
+%             end
+        end
+        hold off;
+        
+        subplot(236);imshow(label2rgb(matched_a));
+        title('Matched regions on transf. image'); axis on, grid on;
+        hold on;
+        for k = 1:num_matches
+            if k <= 2
+                col = 'm';
+            else
+                col = 'k';
+            end
+            region_idx = matched_pairs(k).second_region;
+            %if filtering
+                text(stats_cc_a(region_idx).Centroid(1), ...
+                    stats_cc_a(region_idx).Centroid(2), ...
+                    num2str(region_idx), ...
+                    'Color', col, 'HorizontalAlignment', 'center')
+                
+%             else
+%                 text(stats_cc_a(region_idx).Centroid(1),...
+%                     stats_cc_a(region_idx).Centroid(2), ...
+%                     num2str(region_idx), ...
+%                     'Color', col, 'HorizontalAlignment', 'center')
+%             end
+        end
+        
+        hold off;
+                
+    end
+    
+    
     if verbose
         disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
         disp(['Number of matches: ' , num2str(num_matches)])
         disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
+    clear cost matched_pairs matched_a matched_o labeled_a_f labeled_a stats_cc stats_cc_a
     
+    disp('Press a key to continue');
+    pause;
 end
