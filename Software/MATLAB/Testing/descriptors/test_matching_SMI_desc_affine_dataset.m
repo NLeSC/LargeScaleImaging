@@ -34,7 +34,7 @@ coeff_file = 'afinvs4_19.txt';
 max_num_moments = 12;
 
 % CC parameters
-conn = 4;
+conn = 8; %4;
 list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
     'Eccentricity','Solidity'};
 if filtering
@@ -104,48 +104,17 @@ if vis
     % original images  (masks)
     if num_masks <= 2
         f = figure; set(gcf, 'Position', get(0, 'Screensize'));
-        subplot(231);imshow(bw_o(:,:,1)); title('Binary mask or. (holes)'); axis on, grid on;
-        figure(f); subplot(232);
+        show_binary(bw_o, f, subplot(231),'Binary mask or. (holes)');
+        
+        
         if filtering
-            labeled_o_f = labelmatrix(cc_o_f);
+            [labeled_o_f, ~] = show_cc(cc_o_f, true, f, subplot(232), 'Conn. Comp. (after filtering)');
             labeled = labeled_o_f;
         else
-            labeled_o = labelmatrix(cc_o);
+            [labeled_o, ~] = show_cc(cc_o, true, f, subplot(232), 'Conn. Comp. ');
             labeled = labeled_o;
         end
         clear cc_o cc_o_f
-        
-        imshow(label2rgb(labeled));
-        hold on;
-        if filtering
-            for k = 1:length(index_o)
-                if length(index_o) > 3 && k <= 2
-                    col = 'm';
-                else
-                    col = 'k';
-                end
-                text(stats_cc(index_o(k)).Centroid(1), stats_cc(index_o(k)).Centroid(2), ...
-                    num2str(index_o(k)), 'Color', col, 'HorizontalAlignment', 'center')
-            end
-        else
-            for k = 1:length(stats_cc)
-                if k <= 50
-                    col = 'm';
-                else
-                    col = 'k';
-                end
-                text(stats_cc(k).Centroid(1), stats_cc(k).Centroid(2), ...
-                    num2str(k), 'Color', col, 'HorizontalAlignment', 'center')
-            end
-            
-        end
-        hold off;
-        
-        if filtering
-            title('Conn. Comp. (after filtering)'); axis on, grid on;
-        else
-            title('Connected Components'); axis on, grid on;
-        end
         
         if num_masks > 1
             subplot(222);imshow(bw_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
@@ -162,7 +131,7 @@ end
 
 clear bw_o bw_o_f labeled
 %% load DMSR regions for transformed image(s)
-for h = 2:6
+for h = 6 % 4:6
     
     %% loading and filtering
     % load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
@@ -202,47 +171,16 @@ for h = 2:6
     %% visualise
     if vis
         % original images  (masks)
-        if num_masks <= 2
-            figure(f);  subplot(234);imshow(bw_a(:,:,1)); title('Binary mask transf. (holes)'); axis on, grid on;
-            
+        if num_masks <= 2            
+            show_binary(bw_a, f, subplot(234),'Binary mask transf. (holes)');
             if filtering
-                labeled_a_f = labelmatrix(cc_a_f);
+                [labeled_a_f, ~] = show_cc(cc_a_f, true, f, subplot(235), 'Conn. Comp. transf. (after filtering)'); 
                 labeled = labeled_a_f;
             else
-                labeled_a = labelmatrix(cc_a);
+                [labeled_a, ~] = show_cc(cc_a, true, f, subplot(235), 'Conn. Comp. tranf.');
                 labeled = labeled_a;
             end
-            clear cc_a cc_a_f
-            figure(f); subplot(235);imshow(label2rgb(labeled));
-            hold on;
-            if filtering
-                for k = 1:length(index_a)
-                    if length(index_a) > 3 && k <= 2
-                        col = 'm';
-                    else
-                        col = 'k';
-                    end
-                    text(stats_cc_a(index_a(k)).Centroid(1), stats_cc_a(index_a(k)).Centroid(2), ...
-                        num2str(index_a(k)), 'Color', col, 'HorizontalAlignment', 'center')
-                end
-            else
-                for k = 1:length(stats_cc_a)
-                    if k <= 50
-                        col = 'm';
-                    else
-                        col = 'k';
-                    end
-                    text(stats_cc_a(k).Centroid(1), stats_cc_a(k).Centroid(2), ...
-                        num2str(k), 'Color', col, 'HorizontalAlignment', 'center')
-                end
-            end
-            hold off;
-            
-            if filtering
-                title('Conn. Comp. (after filtering)'); axis on, grid on;
-            else
-                title('Connected Components '); axis on, grid on;
-            end
+            clear cc_a cc_a_f                                  
             
             if num_masks > 1
                 subplot(224);imshow(bw_a(:,:,2)); title('Binary mask transf. (islands)'); axis on, grid on;
@@ -316,59 +254,17 @@ for h = 2:6
             end
         end
         
-        %f2 =figure; set(gcf, 'Position', get(0, 'Screensize'));
-        figure(f)
-        subplot(233);imshow(label2rgb(matched_o));
-        title('Matched regions on original image'); axis on, grid on;
         
-        hold on;
         for k = 1:num_matches
-            if k <= 2
-                col = 'm';
-            else
-                col = 'k';
-            end
-            region_idx = matched_pairs(k).first_region;
-          %  if filtering
-                text(stats_cc(region_idx).Centroid(1), ...
-                    stats_cc(region_idx).Centroid(2), ...
-                    num2str(region_idx), ...
-                    'Color', col, 'HorizontalAlignment', 'center')
-%             else
-%                 text(stats_cc(region_idx).Centroid(1),...
-%                     stats_cc(region_idx).Centroid(2), ...
-%                     num2str(region_idx), ...
-%                     'Color', col, 'HorizontalAlignment', 'center')
-%             end
-        end
-        hold off;
-        
-        subplot(236);imshow(label2rgb(matched_a));
-        title('Matched regions on transf. image'); axis on, grid on;
-        hold on;
-        for k = 1:num_matches
-            if k <= 2
-                col = 'm';
-            else
-                col = 'k';
-            end
-            region_idx = matched_pairs(k).second_region;
-            %if filtering
-                text(stats_cc_a(region_idx).Centroid(1), ...
-                    stats_cc_a(region_idx).Centroid(2), ...
-                    num2str(region_idx), ...
-                    'Color', col, 'HorizontalAlignment', 'center')
-                
-%             else
-%                 text(stats_cc_a(region_idx).Centroid(1),...
-%                     stats_cc_a(region_idx).Centroid(2), ...
-%                     num2str(region_idx), ...
-%                     'Color', col, 'HorizontalAlignment', 'center')
-%             end
+            region1_idx(k) = matched_pairs(k).first_region;
+            region2_idx(k) = matched_pairs(k).second_region;
         end
         
-        hold off;
-                
+        show_labelmatrix(matched_o, true, region1_idx, stats_cc, f, ...
+            subplot(233), 'Matched regions on original image');
+        
+        show_labelmatrix(matched_a, true, region2_idx, stats_cc_a, f, ...
+            subplot(236), 'Matched regions on transf. image');
     end
     
     
@@ -377,8 +273,8 @@ for h = 2:6
         disp(['Number of matches: ' , num2str(num_matches)])
         disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
-    clear cost matched_pairs matched_a matched_o labeled_a_f labeled_a stats_cc stats_cc_a
+    clear matched_pairs matched_a matched_o labeled_a_f labeled_a stats_cc_a
     
-    disp('Press a key to continue');
-    pause;
+%     disp('Press a key to continue');
+%     pause;
 end
