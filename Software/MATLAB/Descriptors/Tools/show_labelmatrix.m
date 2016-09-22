@@ -70,7 +70,7 @@ axis on; grid on;
 if show_ind
     hold on;
     for k = 1:num_regions
-        if num_regions > 50 && k <= 20
+        if num_regions > 6 && k <= 3
             col = 'm';
         else
             col = 'k';
