@@ -357,26 +357,22 @@ for h = trans_deg
     %      disp('Press a key to continue');
     %      pause;
     
-    %% check affine consistency
+    %% estimate affine transformation
     [tform,inl1, ~, status] = estimate_affine_tform(matched_pairs, stats_cc,...
         stats_cc_a, max_dist);
     
     num_inliers = length(inl1);
     if verbose
-        disp(['The transformation has been verified with ' num2str(num_inliers) ' matches.']);
+        disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
        % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
     end
         
     switch status
         case 0
-            if num_inliers >=4
-                disp(['Geometric consistency verified!']);            
-            else
-                disp(['Geometric consistency is not sufficiently verified!']);            
-            end
+            disp(['Sucessful transf. estimation!']);          
         case 1
-            disp('Geometric consistency cannot be verified due to low number of matches!');
+            disp('Transformation cannot be estimated due to low number of matches!');
         case 2
-            disp('Geometric consistency is not verified!');
+            disp('Transformation cannot be estimated!');
     end
 end
