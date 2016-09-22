@@ -300,31 +300,11 @@ for h = trans_deg
     end
     
     clear bw_a bw_a_f
-    %% matching the descriptos and count the matches
-    [matched_indicies,cost] = matchFeatures(SMI_descr_o, SMI_descr_a,...
-        'Metric',match_type, 'MatchThreshold', match_thresh, ...
-        'MaxRatio', max_ratio, 'Unique', true);
-    num_matches = size(matched_indicies,1);
-    
-    if num_matches == 0
-        disp('No matches found!');
-        return
-    end
-    
-    clear SMI_descr_a
-    % generate the matched pairs
-    if filtering
-        for i = 1:num_matches
-            matched_pairs(i).first_region = index_o(matched_indicies(i,1));
-            matched_pairs(i).second_region = index_a(matched_indicies(i,2));
-        end
-    else
-        for i = 1:num_matches
-            matched_pairs(i).first_region = matched_indicies(i,1);
-            matched_pairs(i).second_region = matched_indicies(i,2);
-        end
-    end
-    
+    %% matching the descriptos 
+   [matched_pairs, cost, matched_indicies, num_matches] = matching(SMI_descr_o,...
+                                  SMI_descr_a, ...
+                                  match_type, match_thresh, max_ratio, true, ...
+                                  filtering, index_o, index_a);
     if length(matched_pairs) >=1
         T = struct2table(matched_pairs);
     else
@@ -353,8 +333,8 @@ for h = trans_deg
         
         
         for k = 1:num_matches
-            region1_idx(k) = matched_pairs(k).first_region;
-            region2_idx(k) = matched_pairs(k).second_region;
+            region1_idx(k) = matched_pairs(k).first;
+            region2_idx(k) = matched_pairs(k).second;
         end
         
         show_labelmatrix(matched_o, true, region1_idx, stats_cc, f, ...
@@ -370,7 +350,7 @@ for h = trans_deg
         disp(['Number of matches: ' , num2str(num_matches)])
         disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
-    clear matched_pairs matched_a matched_o labeled_a_f labeled_a stats_cc_a
+    clear matched_a matched_o labeled_a_f labeled_a 
     
     %      disp('Press a key to continue');
     %      pause;
