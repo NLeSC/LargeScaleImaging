@@ -18,7 +18,7 @@
 %% define some parameters
 % execution parameters
 verbose = 1;
-vis = 1;
+vis = 0;
 filtering = true; % true if to perform Area filterring (large regions remain)
 binary = true; % true of using therectly dinarization result raher than the detector's output
 inverted = false;
@@ -57,9 +57,9 @@ match_thresh = 1;
 if inverted
     max_ratio = 0.6;
 else
-    max_ratio = 0.75;
+    max_ratio = 0.5;
 end
-
+max_dist = 2;
 
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
@@ -176,7 +176,7 @@ if vis
     end
 end
 
-clear bw_o bw_o_f labeled
+%clear bw_o bw_o_f labeled
 %% load DMSR regions for transformed image(s)
 
 aff_case = input('Enter transformation test case [graffiti|leuven|boat|bikes]: ','s');
@@ -299,7 +299,7 @@ for h = trans_deg
             order, coeff_file, max_num_moments);
     end
     
-    clear bw_a bw_a_f
+    %clear bw_a bw_a_f
     %% matching the descriptos 
    [matched_pairs, cost, matched_indicies, num_matches] = matching(SMI_descr_o,...
                                   SMI_descr_a, ...
@@ -346,7 +346,9 @@ for h = trans_deg
     
     
     if verbose
-        disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
+        if vis
+            disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
+        end
         disp(['Number of matches: ' , num2str(num_matches)])
         disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
@@ -354,4 +356,27 @@ for h = trans_deg
     
     %      disp('Press a key to continue');
     %      pause;
+    
+    %% check affine consistency
+    [tform,inl1, ~, status] = estimate_affine_tform(matched_pairs, stats_cc,...
+        stats_cc_a, max_dist);
+    
+    num_inliers = length(inl1);
+    if verbose
+        disp(['The transformation has been verified with ' num2str(num_inliers) ' matches.']);
+       % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
+    end
+        
+    switch status
+        case 0
+            if num_inliers >=4
+                disp(['Geometric consistency verified!']);            
+            else
+                disp(['Geometric consistency is not sufficiently verified!']);            
+            end
+        case 1
+            disp('Geometric consistency cannot be verified due to low number of matches!');
+        case 2
+            disp('Geometric consistency is not verified!');
+    end
 end

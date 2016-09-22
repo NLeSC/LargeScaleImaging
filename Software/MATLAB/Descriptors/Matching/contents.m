@@ -14,5 +14,5 @@
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------
-% check_affine_consistency- check affine geometric consistency between
+% estimate_affine_tform- estimate affine transformation between
 %                           matched region's centroids
