@@ -18,9 +18,9 @@
 %% define some parameters
 % execution parameters
 verbose = 1;
-vis = 0;
-filtering = true; % true if to perform Area filterring (large regions remain)
-binary = true; % true of using therectly dinarization result raher than the detector's output
+vis = 1;
+filtering = false; % true if to perform Area filterring (large regions remain)
+binary = false; % true of using therectly dinarization result raher than the detector's output
 inverted = false;
 
 % for now test only 1 type
@@ -33,7 +33,7 @@ order = 4;
 coeff_file = 'afinvs4_19.txt';
 %num_moments =  input('How many invariants to consider (max 66)?: ');
 %max_num_moments = 66;
-max_num_moments = 12;
+max_num_moments = 6;
 
 % CC parameters
 conn = 4;
@@ -57,9 +57,9 @@ match_thresh = 1;
 if inverted
     max_ratio = 0.6;
 else
-    max_ratio = 0.5;
+    max_ratio = 0.75;
 end
-max_dist = 2;
+max_dist = 10;
 
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
@@ -110,11 +110,12 @@ end
 % fill the small holes
 if binary
     % bw_o = imfill(bw_o,'holes');
-    if inverted        
+    if inverted
         bw_o = imcomplement(bw_o);
     end
 else
-    bw_o = imfill(saliency_masks(:,:,sal_type),'holes');
+    %bw_o = imfill(saliency_masks(:,:,sal_type),'holes');
+    bw_o = saliency_masks(:,:,sal_type);
     clear saliency_masks
 end
 
@@ -230,7 +231,8 @@ for h = trans_deg
         end
     else
         % fill the small holes
-        bw_a = imfill(saliency_masks(:,:,sal_type),'holes');
+        %bw_a = imfill(saliency_masks(:,:,sal_type),'holes');
+        bw_a = saliency_masks(:,:,sal_type);
         clear saliency_masks
     end
     
@@ -300,11 +302,18 @@ for h = trans_deg
     end
     
     %clear bw_a bw_a_f
-    %% matching the descriptos 
-   [matched_pairs, cost, matched_indicies, num_matches] = matching(SMI_descr_o,...
-                                  SMI_descr_a, ...
-                                  match_type, match_thresh, max_ratio, true, ...
-                                  filtering, index_o, index_a);
+    %% matching the descriptos
+    if filtering
+        [matched_pairs, cost, matched_indicies, num_matches] = matching(SMI_descr_o,...
+            SMI_descr_a, ...
+            match_type, match_thresh, max_ratio, true, ...
+            filtering, index_o, index_a);
+    else
+        [matched_pairs, cost, matched_indicies, num_matches] = matching(SMI_descr_o,...
+            SMI_descr_a, ...
+            match_type, match_thresh, max_ratio, true, ...
+            filtering);
+    end
     if length(matched_pairs) >=1
         T = struct2table(matched_pairs);
     else
@@ -352,7 +361,7 @@ for h = trans_deg
         disp(['Number of matches: ' , num2str(num_matches)])
         disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
-    clear matched_a matched_o labeled_a_f labeled_a 
+    clear matched_a matched_o labeled_a_f labeled_a
     
     %      disp('Press a key to continue');
     %      pause;
@@ -364,15 +373,43 @@ for h = trans_deg
     num_inliers = length(inl1);
     if verbose
         disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
-       % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
-    end
+        % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
         
-    switch status
-        case 0
-            disp(['Sucessful transf. estimation!']);          
-        case 1
-            disp('Transformation cannot be estimated due to low number of matches!');
-        case 2
-            disp('Transformation cannot be estimated!');
+        
+        switch status
+            case 0
+                disp(['Sucessful transf. estimation!']);
+            case 1
+                disp('Transformation cannot be estimated due to low number of matches!');
+            case 2
+                disp('Transformation cannot be estimated!');
+        end
     end
+    
+    pause;
+    disp('Press any key...');
+    %% compute difference between original and transformed images
+    if filtering
+        [diff, dist, bw_a_trans] = transformation_distance(bw_o_f, bw_a_f, tform);
+    else
+        [diff, dist, bw_a_trans] = transformation_distance(bw_o, bw_a, tform);
+    end
+    
+    if verbose
+        disp(['Transformation distance is: ' num2str(dist) '%.']);
+    end
+    
+    % if vis
+    ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
+    if filtering
+        show_binary(bw_o_f, ff, subplot(221),'Original binary image (filt.)');
+        show_binary(bw_a_f, ff, subplot(223),'Transfomed binary image (filt.)');
+    else
+        show_binary(bw_o, ff, subplot(221),'Original binary image ');
+        show_binary(bw_a, ff, subplot(223),'Transfomed binary image');
+        
+    end
+    show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
+    show_binary(bw_a_trans, ff, subplot(224),'Reconstructed binary image');
+    % end
 end
