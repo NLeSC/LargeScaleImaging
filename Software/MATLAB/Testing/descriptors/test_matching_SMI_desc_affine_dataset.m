@@ -18,8 +18,10 @@
 %% define some parameters
 % execution parameters
 verbose = 1;
-vis = 0;
+vis = 1;
 filtering = true; % true if to perform Area filterring (large regions remain)
+binary = true; % true of using therectly dinarization result raher than the detector's output
+inverted = false;
 
 % for now test only 1 type
 sal_type = 2;
@@ -34,7 +36,7 @@ coeff_file = 'afinvs4_19.txt';
 max_num_moments = 12;
 
 % CC parameters
-conn = 8; %4;
+conn = 4;
 list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
     'Eccentricity','Solidity'};
 if filtering
@@ -43,46 +45,81 @@ if filtering
     if sal_type == 2
         area_factor = 0.0005;
     elseif sal_type == 1
-        area_factor = 0.00005;
+        area_factor = 0.00001;
     end
 else
     area_factor =  0;
 end
 
 % matching parameters
-dist_type = 'euclidean';
 match_type = 'ssd';
+match_thresh = 1;
+if inverted
+    max_ratio = 0.6;
+else
+    max_ratio = 0.75;
+end
 
 
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
+%base_case = 'graffiti';
 
 if verbose
-    disp('Loading a binary DMSR regions files...');
+    if binary
+        disp('Loading a binarized image...');
+    else
+        disp('Loading a binary DMSR regions files...');
+    end
 end
 
-switch base_case
-    case 'graffiti'
-        load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
-    case 'leuven'
-        load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks')
-    case 'boat'
-        load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks')
-    case 'bikes'
-        load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
-    otherwise
-        error('Unknown base case!');
+if binary
+    switch base_case
+        case 'graffiti'
+            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_bin.png');
+        case 'leuven'
+            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_bin.png');
+        case 'boat'
+            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_bin.png');
+        case 'bikes'
+            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_bin.png');
+        otherwise
+            error('Unknown base case!');
+    end
+else
+    switch base_case
+        case 'graffiti'
+            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
+        case 'leuven'
+            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks');
+        case 'boat'
+            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks');
+        case 'bikes'
+            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
+        otherwise
+            error('Unknown base case!');
+    end
 end
 
-dim  = ndims(saliency_masks);
-num_masks = 1; %size(saliency_masks,dim);
-
+if binary
+    num_masks = 1;
+else
+    dim = ndims(saliency_masks);
+    num_masks = 1; %size(saliency_masks,dim);
+end
 % fill the small holes
-bw_o = imfill(saliency_masks(:,:,sal_type),'holes');
-clear saliency_masks
+if binary
+    % bw_o = imfill(bw_o,'holes');
+    if inverted        
+        bw_o = imcomplement(bw_o);
+    end
+else
+    bw_o = imfill(saliency_masks(:,:,sal_type),'holes');
+    clear saliency_masks
+end
 
 % make it of class logical
-bw_o =  logical(bw_o);
+bw_o =  logical((bw_o));
 
 % CC
 cc_o = bwconncomp(bw_o,conn);
@@ -143,30 +180,62 @@ clear bw_o bw_o_f labeled
 %% load DMSR regions for transformed image(s)
 
 aff_case = input('Enter transformation test case [graffiti|leuven|boat|bikes]: ','s');
+%aff_case = 'graffiti';
 trans_deg = input('Enter the transformation degree [2|3|4|5|6]: ');
+%trans_deg = 2;
+
+if verbose
+    if binary
+        disp('Loading a binarized transformed image...');
+    else
+        disp('Loading a binary DMSR regions files for the transformed image...');
+    end
+end
 
 for h = trans_deg
     
     %% loading and filtering
-    
-    switch aff_case 
-        case 'graffiti'
-            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-        case 'leuven'
-            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-        case 'boat'
-            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks');
-        case 'bikes'
-            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-        otherwise
-            error('Unknown transf. case!');
+    if binary
+        switch aff_case
+            case 'graffiti'
+                bw_a = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_bin.png']);
+            case 'leuven'
+                bw_a = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_bin.png']);
+            case 'boat'
+                bw_a = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_bin.png']);
+            case 'bikes'
+                bw_a = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_bin.png']);
+            otherwise
+                error('Unknown transf. case!');
+        end
+    else
+        switch aff_case
+            case 'graffiti'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+            case 'leuven'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+            case 'boat'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks');
+            case 'bikes'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+            otherwise
+                error('Unknown transf. case!');
+        end
     end
-    % fill the small holes
-    bw_a = imfill(saliency_masks(:,:,sal_type),'holes');
-    clear saliency_masks
+    
+    if binary
+        % bw_a = imfill(bw_a,'holes');
+        if inverted
+            bw_a = imcomplement(bw_a);
+        end
+    else
+        % fill the small holes
+        bw_a = imfill(saliency_masks(:,:,sal_type),'holes');
+        clear saliency_masks
+    end
     
     % make it of class logical
-    bw_a =  logical(bw_a);
+    bw_a =  logical((bw_a));
     
     % CCs
     cc_a = bwconncomp(bw_a,conn);
@@ -193,16 +262,16 @@ for h = trans_deg
     %% visualise
     if vis
         % original images  (masks)
-        if num_masks <= 2            
+        if num_masks <= 2
             show_binary(bw_a, f, subplot(234),'Binary mask transf. (holes)');
             if filtering
-                [labeled_a_f, ~] = show_cc(cc_a_f, true, index_a, f, subplot(235), 'Conn. Comp. transf. (after filtering)'); 
+                [labeled_a_f, ~] = show_cc(cc_a_f, true, index_a, f, subplot(235), 'Conn. Comp. transf. (after filtering)');
                 labeled = labeled_a_f;
             else
                 [labeled_a, ~] = show_cc(cc_a, true, [], f, subplot(235), 'Conn. Comp. tranf.');
                 labeled = labeled_a;
             end
-            clear cc_a cc_a_f                                  
+            clear cc_a cc_a_f
             
             if num_masks > 1
                 subplot(224);imshow(bw_a(:,:,2)); title('Binary mask transf. (islands)'); axis on, grid on;
@@ -233,7 +302,8 @@ for h = trans_deg
     clear bw_a bw_a_f
     %% matching the descriptos and count the matches
     [matched_indicies,cost] = matchFeatures(SMI_descr_o, SMI_descr_a,...
-        'Metric',match_type, 'Unique', true);
+        'Metric',match_type, 'MatchThreshold', match_thresh, ...
+        'MaxRatio', max_ratio, 'Unique', true);
     num_matches = size(matched_indicies,1);
     
     if num_matches == 0
@@ -241,7 +311,7 @@ for h = trans_deg
         return
     end
     
-    clear SMI_descr_a 
+    clear SMI_descr_a
     % generate the matched pairs
     if filtering
         for i = 1:num_matches
@@ -260,7 +330,7 @@ for h = trans_deg
     else
         T =  [];
     end
-   
+    
     
     %% final display of results
     if vis
@@ -302,6 +372,6 @@ for h = trans_deg
     end
     clear matched_pairs matched_a matched_o labeled_a_f labeled_a stats_cc_a
     
-%      disp('Press a key to continue');
-%      pause;
+    %      disp('Press a key to continue');
+    %      pause;
 end
