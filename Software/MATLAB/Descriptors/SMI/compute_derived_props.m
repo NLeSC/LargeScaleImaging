@@ -82,7 +82,7 @@ for n = 1: length(regions_props)
 %                 continue;
             case {'RelativeArea'}
                 reg_area = regions_props(n).Area;
-                derived_regions_props(n).(type_stat) = reg_area/area;
+                derived_regions_props(n).(type_stat) = reg_area/area * 100;
             case {'RatioAxesLengths'}
                 minor_axis_length = regions_props(n).MinorAxisLength;
                 major_axis_length = regions_props(n).MajorAxisLength;

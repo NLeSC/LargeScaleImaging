@@ -19,8 +19,8 @@
 % execution parameters
 verbose = 1;
 vis = 1;
-filtering = false; % true if to perform Area filterring (large regions remain)
-binary = false; % true of using therectly dinarization result raher than the detector's output
+filtering = true; % true if to perform Area filterring (large regions remain)
+binary = true; % true of using the directly binarization result raher than the detector's output
 inverted = false;
 
 % for now test only 1 type
@@ -31,12 +31,12 @@ sal_type = 2;
 order = 4;
 
 coeff_file = 'afinvs4_19.txt';
-%num_moments =  input('How many invariants to consider (max 66)?: ');
+%max_num_moments =  input('How many invariants to consider (max 66)?: ');
 %max_num_moments = 66;
-max_num_moments = 6;
+max_num_moments = 16;
 
 % CC parameters
-conn = 4;
+conn = 8;
 list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
     'Eccentricity','Solidity'};
 if filtering
@@ -53,17 +53,20 @@ end
 
 % matching parameters
 match_type = 'ssd';
-match_thresh = 1;
+%match_thresh =  input('Matching threshold (0, 100]?: ');
+match_thresh = 1.5;
 if inverted
     max_ratio = 0.6;
 else
-    max_ratio = 0.75;
+    max_ratio = 0.6;
 end
-max_dist = 10;
+
+%max_ratio = input('Max ratio (0, 1]?: ');
+max_dist = 20;
 
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
-%base_case = 'graffiti';
+%base_case = 'boat';
 
 if verbose
     if binary
@@ -127,9 +130,9 @@ cc_o = bwconncomp(bw_o,conn);
 if filtering
     stats_cc = regionprops(cc_o, list_props_all);
 else
-    if vis
+    %if vis
         stats_cc = regionprops(cc_o, 'Centroid');
-    end
+    %end
 end
 
 % image area
@@ -140,50 +143,20 @@ if filtering
     range = {[area_factor*imageArea imageArea]};
     [bw_o_f, index_o, ~] = filter_regions(bw_o, stats_cc, prop_types_filter, {}, range, cc_o);
     cc_o_f = bwconncomp(bw_o_f,conn);
-    [SMI_descr_o,~] = SMIdescriptor(bw_o_f, conn, list_props, ...
+    [SMI_descr_o,SMI_descr_o_struct] = SMIdescriptor(bw_o_f, conn, list_props, ...
         order, coeff_file, max_num_moments);
 else
-    [SMI_descr_o,~] = SMIdescriptor(bw_o, conn, list_props, ...
+    [SMI_descr_o,SMI_descr_o_struct] = SMIdescriptor(bw_o, conn, list_props, ...
         order, coeff_file, max_num_moments);
 end
 
-%% visualise
-if vis
-    % original images  (masks)
-    if num_masks <= 2
-        f = figure; set(gcf, 'Position', get(0, 'Screensize'));
-        show_binary(bw_o, f, subplot(231),'Binary mask or. (holes)');
-        
-        
-        if filtering
-            [labeled_o_f, ~] = show_cc(cc_o_f, true, index_o, f, subplot(232), 'Conn. Comp. (after filtering)');
-            labeled = labeled_o_f;
-        else
-            [labeled_o, ~] = show_cc(cc_o, true, [], f, subplot(232), 'Conn. Comp. ');
-            labeled = labeled_o;
-        end
-        clear cc_o cc_o_f
-        
-        if num_masks > 1
-            subplot(222);imshow(bw_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
-        end
-    else if num_masks <= 4
-            f1 =  figure; set(gcf, 'Position', get(0, 'Screensize'));
-            subplot(221);imshow(bw_o(:,:,3)); title('Binary mask or. (indent.)'); axis on, grid on;
-            if num_masks > 3
-                subplot(222);imshow(bw_o(:,:,4)); title('Binary mask or. (protr.)'); axis on, grid on;
-            end
-        end
-    end
-end
 
-%clear bw_o bw_o_f labeled
 %% load DMSR regions for transformed image(s)
 
 aff_case = input('Enter transformation test case [graffiti|leuven|boat|bikes]: ','s');
 %aff_case = 'graffiti';
 trans_deg = input('Enter the transformation degree [2|3|4|5|6]: ');
-%trans_deg = 2;
+%trans_deg = 3;
 
 if verbose
     if binary
@@ -244,9 +217,9 @@ for h = trans_deg
     if filtering
         stats_cc_a = regionprops(cc_a, list_props_all);
     else
-        if vis
+       % if vis
             stats_cc_a = regionprops(cc_a, 'Centroid');
-        end
+       % end
     end
     
     % image area
@@ -261,6 +234,37 @@ for h = trans_deg
     end
     
     
+    %% visualise
+if vis
+    % original images  (masks)
+    if num_masks <= 2
+        f = figure; set(gcf, 'Position', get(0, 'Screensize'));
+        show_binary(bw_o, f, subplot(231),'Binary mask or. (holes)');
+        
+        
+        if filtering
+            [labeled_o_f, ~] = show_cc(cc_o_f, true, index_o, f, subplot(232), 'Conn. Comp. (after filtering)');
+            labeled = labeled_o_f;
+        else
+            [labeled_o, ~] = show_cc(cc_o, true, [], f, subplot(232), 'Conn. Comp. ');
+            labeled = labeled_o;
+        end
+        clear cc_o cc_o_f
+        
+        if num_masks > 1
+            subplot(222);imshow(bw_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
+        end
+    else if num_masks <= 4
+            f1 =  figure; set(gcf, 'Position', get(0, 'Screensize'));
+            subplot(221);imshow(bw_o(:,:,3)); title('Binary mask or. (indent.)'); axis on, grid on;
+            if num_masks > 3
+                subplot(222);imshow(bw_o(:,:,4)); title('Binary mask or. (protr.)'); axis on, grid on;
+            end
+        end
+    end
+end
+
+%clear bw_o bw_o_f labeled
     %% visualise
     if vis
         % original images  (masks)
@@ -294,10 +298,10 @@ for h = trans_deg
     
     %% compute SMI descriptors
     if filtering
-        [SMI_descr_a,~] = SMIdescriptor(bw_a_f, conn, list_props, ...
+        [SMI_descr_a,SMI_descr_a_struct] = SMIdescriptor(bw_a_f, conn, list_props, ...
             order, coeff_file, max_num_moments);
     else
-        [SMI_descr_a,~] = SMIdescriptor(bw_a, conn, list_props, ...
+        [SMI_descr_a,SMI_descr_a_struct] = SMIdescriptor(bw_a, conn, list_props, ...
             order, coeff_file, max_num_moments);
     end
     
@@ -355,9 +359,9 @@ for h = trans_deg
     
     
     if verbose
-        if vis
+        %if vis
             disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
-        end
+        %end
         disp(['Number of matches: ' , num2str(num_matches)])
         disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
@@ -386,8 +390,8 @@ for h = trans_deg
         end
     end
     
-    pause;
-    disp('Press any key...');
+%     pause;
+%     disp('Press any key...');
     %% compute difference between original and transformed images
     if filtering
         [diff, dist, bw_a_trans] = transformation_distance(bw_o_f, bw_a_f, tform);
@@ -399,17 +403,17 @@ for h = trans_deg
         disp(['Transformation distance is: ' num2str(dist) '%.']);
     end
     
-    % if vis
-    ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
-    if filtering
-        show_binary(bw_o_f, ff, subplot(221),'Original binary image (filt.)');
-        show_binary(bw_a_f, ff, subplot(223),'Transfomed binary image (filt.)');
-    else
-        show_binary(bw_o, ff, subplot(221),'Original binary image ');
-        show_binary(bw_a, ff, subplot(223),'Transfomed binary image');
-        
+    if vis
+        ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
+        if filtering
+            show_binary(bw_o_f, ff, subplot(221),'Original binary image (filt.)');
+            show_binary(bw_a_f, ff, subplot(223),'Transfomed binary image (filt.)');
+        else
+            show_binary(bw_o, ff, subplot(221),'Original binary image ');
+            show_binary(bw_a, ff, subplot(223),'Transfomed binary image');
+            
+        end
+        show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
+        show_binary(bw_a_trans, ff, subplot(224),'Reconstructed binary image');
     end
-    show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
-    show_binary(bw_a_trans, ff, subplot(224),'Reconstructed binary image');
-    % end
 end
