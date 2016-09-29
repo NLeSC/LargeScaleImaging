@@ -76,7 +76,9 @@ if show_ind
             col = 'k';
         end
         ind = idxs(k);
-        text(centr_cc(ind).Centroid(1), centr_cc(ind).Centroid(2), ...
+        coord1 = centr_cc(ind).Centroid(1);
+        coord2 = centr_cc(ind).Centroid(2);
+        text(coord1, coord2, ...
             num2str(ind), 'Color', col, 'HorizontalAlignment', 'center');
     end
     hold off;
