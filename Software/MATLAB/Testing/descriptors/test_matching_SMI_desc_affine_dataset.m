@@ -54,15 +54,15 @@ end
 % matching parameters
 match_type = 'ssd';
 %match_thresh =  input('Matching threshold (0, 100]?: ');
-match_thresh = 1.5;
+match_thresh = 1;
 if inverted
     max_ratio = 0.6;
 else
-    max_ratio = 0.6;
+    max_ratio = 0.75;
 end
 
 %max_ratio = input('Max ratio (0, 1]?: ');
-max_dist = 20;
+max_dist = 10;
 
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
@@ -371,7 +371,7 @@ end
     %      pause;
     
     %% estimate affine transformation
-    [tform,inl1, ~, status] = estimate_affine_tform(matched_pairs, stats_cc,...
+    [tform,inl1, inl2, status] = estimate_affine_tform(matched_pairs, stats_cc,...
         stats_cc_a, max_dist);
     
     num_inliers = length(inl1);
@@ -390,6 +390,25 @@ end
         end
     end
     
+    % show the inliers
+    if vis
+        figure(f); subplot(233);
+        for i = 1:length(inl1)
+            hold on;
+            plot(inl1(i,1)+5, inl1(i,2)+5, 'b*');
+            text(inl1(i,1)+8, inl1(i,2)+8, ...
+            num2str(i), 'Color', 'b', 'HorizontalAlignment', 'center');
+        end
+        hold off;
+        figure(f); subplot(236);
+        for i = 1:length(inl2)
+            hold on;
+            plot(inl2(i,1)+5, inl2(i,2)+5, 'b*');
+            text(inl2(i,1)+8, inl2(i,2)+8, ...
+            num2str(i), 'Color', 'b', 'HorizontalAlignment', 'center');
+        end
+        hold off;
+    end
 %     pause;
 %     disp('Press any key...');
     %% compute difference between original and transformed images
