@@ -446,12 +446,16 @@ end
 
 
 clear matched_a matched_o labeled_a_f labeled_a
-return
-
 
 %% estimate affine transformation
-[tform,inl1, inl2, status] = estimate_affine_tform(matched_pairs, stats_cc,...
-    stats_cc_a, max_dist);
+if matches_filtering
+    [tform,inl1, inl2, status] = estimate_affine_tform(filt_matched_pairs, stats_cc,...
+        stats_cc_a, max_dist);
+    
+else
+    [tform,inl1, inl2, status] = estimate_affine_tform(matched_pairs, stats_cc,...
+        stats_cc_a, max_dist);
+end
 
 num_inliers = length(inl1);
 if verbose
