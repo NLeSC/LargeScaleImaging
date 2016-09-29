@@ -20,7 +20,9 @@
 verbose = 1;
 vis = 1;
 filtering = true; % true if to perform Area filterring (large regions remain)
+matches_filtering = true; % if true, perform filterring on the matches
 binary = true; % true of using the directly binarization result raher than the detector's output
+
 inverted = false;
 
 % for now test only 1 type
@@ -63,6 +65,29 @@ end
 
 %max_ratio = input('Max ratio (0, 1]?: ');
 max_dist = 10;
+
+cost_thresh = 0.015;
+
+% visualization parameters
+if vis
+    if matches_filtering
+        sbp_or = (241);
+        sbp_or_l = (242);
+        sbp_or_m = (243);
+        sbp_or_fm = (244);
+        sbp_a = (245);
+        sbp_a_l = (246);
+        sbp_a_m = (247);
+        sbp_a_fm = (248);
+    else
+        sbp_or = (231);
+        sbp_or_l = (232);
+        sbp_or_m = (233);
+        sbp_a = (234);
+        sbp_a_l = (235);
+        sbp_a_m = (236);
+    end
+end
 
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
@@ -131,7 +156,7 @@ if filtering
     stats_cc = regionprops(cc_o, list_props_all);
 else
     %if vis
-        stats_cc = regionprops(cc_o, 'Centroid');
+    stats_cc = regionprops(cc_o, 'Centroid');
     %end
 end
 
@@ -217,9 +242,9 @@ for h = trans_deg
     if filtering
         stats_cc_a = regionprops(cc_a, list_props_all);
     else
-       % if vis
-            stats_cc_a = regionprops(cc_a, 'Centroid');
-       % end
+        % if vis
+        stats_cc_a = regionprops(cc_a, 'Centroid');
+        % end
     end
     
     % image area
@@ -235,46 +260,45 @@ for h = trans_deg
     
     
     %% visualise
-if vis
-    % original images  (masks)
-    if num_masks <= 2
-        f = figure; set(gcf, 'Position', get(0, 'Screensize'));
-        show_binary(bw_o, f, subplot(231),'Binary mask or. (holes)');
-        
-        
-        if filtering
-            [labeled_o_f, ~] = show_cc(cc_o_f, true, index_o, f, subplot(232), 'Conn. Comp. (after filtering)');
-            labeled = labeled_o_f;
-        else
-            [labeled_o, ~] = show_cc(cc_o, true, [], f, subplot(232), 'Conn. Comp. ');
-            labeled = labeled_o;
-        end
-        clear cc_o cc_o_f
-        
-        if num_masks > 1
-            subplot(222);imshow(bw_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
-        end
-    else if num_masks <= 4
-            f1 =  figure; set(gcf, 'Position', get(0, 'Screensize'));
-            subplot(221);imshow(bw_o(:,:,3)); title('Binary mask or. (indent.)'); axis on, grid on;
-            if num_masks > 3
-                subplot(222);imshow(bw_o(:,:,4)); title('Binary mask or. (protr.)'); axis on, grid on;
+    if vis
+        % original images  (masks)
+        if num_masks <= 2
+            f = figure; set(gcf, 'Position', get(0, 'Screensize'));
+            show_binary(bw_o, f, subplot(sbp_or),'Binary mask or. (holes)');
+            
+            if filtering
+                [labeled_o_f, ~] = show_cc(cc_o_f, true, index_o, f, subplot(sbp_or_l), 'Conn. Comp. (after filtering)');
+                labeled = labeled_o_f;
+            else
+                [labeled_o, ~] = show_cc(cc_o, true, [], f, subplot(sbp_or_l), 'Conn. Comp. ');
+                labeled = labeled_o;
+            end
+            clear cc_o cc_o_f
+            
+            if num_masks > 1
+                subplot(222);imshow(bw_o(:,:,2)); title('Binary mask or. (islands)'); axis on, grid on;
+            end
+        else if num_masks <= 4
+                f1 =  figure; set(gcf, 'Position', get(0, 'Screensize'));
+                subplot(221);imshow(bw_o(:,:,3)); title('Binary mask or. (indent.)'); axis on, grid on;
+                if num_masks > 3
+                    subplot(222);imshow(bw_o(:,:,4)); title('Binary mask or. (protr.)'); axis on, grid on;
+                end
             end
         end
     end
-end
-
-%clear bw_o bw_o_f labeled
+    
+    %clear bw_o bw_o_f labeled
     %% visualise
     if vis
         % original images  (masks)
         if num_masks <= 2
-            show_binary(bw_a, f, subplot(234),'Binary mask transf. (holes)');
+            show_binary(bw_a, f, subplot(sbp_a),'Binary mask transf. (holes)');
             if filtering
-                [labeled_a_f, ~] = show_cc(cc_a_f, true, index_a, f, subplot(235), 'Conn. Comp. transf. (after filtering)');
+                [labeled_a_f, ~] = show_cc(cc_a_f, true, index_a, f, subplot(sbp_a_l), 'Conn. Comp. transf. (after filtering)');
                 labeled = labeled_a_f;
             else
-                [labeled_a, ~] = show_cc(cc_a, true, [], f, subplot(235), 'Conn. Comp. tranf.');
+                [labeled_a, ~] = show_cc(cc_a, true, [], f, subplot(sbp_a_l), 'Conn. Comp. tranf.');
                 labeled = labeled_a;
             end
             clear cc_a cc_a_f
@@ -323,116 +347,180 @@ end
     else
         T =  [];
     end
-    
-    
-    %% final display of results
-    if vis
-        % make label matricies from the matched pairs
-        if filtering
-            matched_o = zeros(size(labeled_o_f));
-            matched_a = zeros(size(labeled_a_f));
-            for m = 1:num_matches
-                matched_o(labeled_o_f == matched_indicies(m, 1)) = m;
-                matched_a(labeled_a_f == matched_indicies(m, 2)) = m;
-            end
-        else
-            matched_o = zeros(size(labeled_o));
-            matched_a = zeros(size(labeled_a));
-            for m = 1:num_matches
-                matched_o(labeled_o == matched_indicies(m, 1)) = m;
-                matched_a(labeled_a == matched_indicies(m, 2)) = m;
-            end
-        end
-        
-        
-        for k = 1:num_matches
-            region1_idx(k) = matched_pairs(k).first;
-            region2_idx(k) = matched_pairs(k).second;
-        end
-        
-        show_labelmatrix(matched_o, true, region1_idx, stats_cc, f, ...
-            subplot(233), 'Matched regions on original image');
-        
-        show_labelmatrix(matched_a, true, region2_idx, stats_cc_a, f, ...
-            subplot(236), 'Matched regions on transf. image');
-    end
-    
-    
+    %% text display
     if verbose
         %if vis
-            disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
+        disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
         %end
         disp(['Number of matches: ' , num2str(num_matches)])
         disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
-    clear matched_a matched_o labeled_a_f labeled_a
-    
-    %      disp('Press a key to continue');
-    %      pause;
-    
-    %% estimate affine transformation
-    [tform,inl1, inl2, status] = estimate_affine_tform(matched_pairs, stats_cc,...
-        stats_cc_a, max_dist);
-    
-    num_inliers = length(inl1);
-    if verbose
-        disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
-        % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
+    %% filtering of the matches
+    if matches_filtering
+        [filt_matched_pairs, filt_matched_ind, filt_cost, filt_num_matches] = filter_matches(matched_pairs, ...
+            matched_indicies, cost, cost_thresh);
         
-        
-        switch status
-            case 0
-                disp(['Sucessful transf. estimation!']);
-            case 1
-                disp('Transformation cannot be estimated due to low number of matches!');
-            case 2
-                disp('Transformation cannot be estimated!');
-        end
-    end
-    
-    % show the inliers
-    if vis
-        figure(f); subplot(233);
-        for i = 1:length(inl1)
-            hold on;
-            plot(inl1(i,1)+5, inl1(i,2)+5, 'b*');
-            text(inl1(i,1)+8, inl1(i,2)+8, ...
-            num2str(i), 'Color', 'b', 'HorizontalAlignment', 'center');
-        end
-        hold off;
-        figure(f); subplot(236);
-        for i = 1:length(inl2)
-            hold on;
-            plot(inl2(i,1)+5, inl2(i,2)+5, 'b*');
-            text(inl2(i,1)+8, inl2(i,2)+8, ...
-            num2str(i), 'Color', 'b', 'HorizontalAlignment', 'center');
-        end
-        hold off;
-    end
-%     pause;
-%     disp('Press any key...');
-    %% compute difference between original and transformed images
-    if filtering
-        [diff, dist, bw_a_trans] = transformation_distance(bw_o_f, bw_a_f, tform);
-    else
-        [diff, dist, bw_a_trans] = transformation_distance(bw_o, bw_a, tform);
-    end
-    
-    if verbose
-        disp(['Transformation distance is: ' num2str(dist) '%.']);
-    end
-    
-    if vis
-        ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
-        if filtering
-            show_binary(bw_o_f, ff, subplot(221),'Original binary image (filt.)');
-            show_binary(bw_a_f, ff, subplot(223),'Transfomed binary image (filt.)');
+        if length(filt_matched_pairs) >=1
+            filtT = struct2table(filt_matched_pairs);
         else
-            show_binary(bw_o, ff, subplot(221),'Original binary image ');
-            show_binary(bw_a, ff, subplot(223),'Transfomed binary image');
+            filtT =  [];
+        end
+        %% text display
+        if verbose
+            %if vis
+            disp(['Filtered matches for 1 and ' num2str(h),': ']); disp(filtT);
+            %end
+            disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
+            disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
+        end
+    end
+    
+    %     pause;
+    %     disp('Press any key to continue...');
+    %% final display of results
+    if vis
+        if filtering
+            matched_o = zeros(size(labeled_o_f));
+            matched_a = zeros(size(labeled_a_f));
+            
+            for m = 1:num_matches
+                matched_o(labeled_o_f == matched_indicies(m, 1)) = m;
+                matched_a(labeled_a_f == matched_indicies(m, 2)) = m;
+            end
+            
+            if matches_filtering
+                filt_matched_o = zeros(size(labeled_o_f));
+                filt_matched_a = zeros(size(labeled_a_f));
+                for m = 1:filt_num_matches
+                    filt_matched_o(labeled_o_f == filt_matched_ind(m, 1)) = m;
+                    filt_matched_a(labeled_a_f == filt_matched_ind(m, 2)) = m;
+                end
+            end
+            
+        else
+            matched_o = zeros(size(labeled_o));
+            matched_a = zeros(size(labeled_a));
+            
+            if matches_filtering
+                filt_matched_o = zeros(size(labeled_o));
+                filt_matched_a = zeros(size(labeled_a));
+                for m = 1:filt_num_matches
+                    filt_matched_o(labeled_o == filt_matched_ind(m, 1)) = m;
+                    filt_matched_a(labeled_a == filt_matched_ind(m, 2)) = m;
+                end
+            end
+            for m = 1:num_matches
+                matched_o(labeled_o == matched_indicies(m, 1)) = m;
+                matched_a(labeled_a == matched_indicies(m, 2)) = m;
+            end
             
         end
-        show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
-        show_binary(bw_a_trans, ff, subplot(224),'Reconstructed binary image');
+        % make label matricies from the matched pairs
+        if matches_filtering
+            for m = 1:filt_num_matches
+                filt_region1_idx(m) = filt_matched_pairs(m).first;
+                filt_region2_idx(m) = filt_matched_pairs(m).second;
+            end
+        end
+        for m =1:num_matches
+            region1_idx(m) = matched_pairs(m).first;
+            region2_idx(m) = matched_pairs(m).second;
+        end
     end
+    
+    % display
+    show_labelmatrix(matched_o, true, region1_idx, stats_cc, f, ...
+        subplot(sbp_or_m), 'Matched regions on original image');
+    
+    show_labelmatrix(matched_a, true, region2_idx, stats_cc_a, f, ...
+        subplot(sbp_a_m), 'Matched regions on transf. image');
+    
+    if matches_filtering
+        show_labelmatrix(filt_matched_o, true, filt_region1_idx, stats_cc, f, ...
+            subplot(sbp_or_fm), 'Filtered matched regions on or. image');
+        
+        show_labelmatrix(filt_matched_a, true, filt_region2_idx, stats_cc_a, f, ...
+            subplot(sbp_a_fm), 'Filtered matched regions on transf. image');
+    end
+end
+
+
+clear matched_a matched_o labeled_a_f labeled_a
+return
+
+
+%% estimate affine transformation
+[tform,inl1, inl2, status] = estimate_affine_tform(matched_pairs, stats_cc,...
+    stats_cc_a, max_dist);
+
+num_inliers = length(inl1);
+if verbose
+    disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
+    % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
+    
+    
+    switch status
+        case 0
+            disp(['Sucessful transf. estimation!']);
+        case 1
+            disp('Transformation cannot be estimated due to low number of matches!');
+        case 2
+            disp('Transformation cannot be estimated!');
+    end
+end
+
+% show the inliers
+if vis
+    figure(f);
+    if matches_filtering
+        subplot(sbp_or_fm);
+    else
+        subplot(sbp_or_m);
+    end
+    for i = 1:length(inl1)
+        hold on;
+        plot(inl1(i,1)+5, inl1(i,2)+5, 'b*');
+        text(inl1(i,1)+8, inl1(i,2)+8, ...
+            num2str(i), 'Color', 'b', 'HorizontalAlignment', 'center');
+    end
+    hold off;
+    figure(f);
+    if matches_filtering
+        subplot(sbp_a_fm);
+    else
+        subplot(sbp_a_m);
+    end
+    for i = 1:length(inl2)
+        hold on;
+        plot(inl2(i,1)+5, inl2(i,2)+5, 'b*');
+        text(inl2(i,1)+8, inl2(i,2)+8, ...
+            num2str(i), 'Color', 'b', 'HorizontalAlignment', 'center');
+    end
+    hold off;
+end
+%     pause;
+%     disp('Press any key...');
+%% compute difference between original and transformed images
+if filtering
+    [diff, dist, bw_a_trans] = transformation_distance(bw_o_f, bw_a_f, tform);
+else
+    [diff, dist, bw_a_trans] = transformation_distance(bw_o, bw_a, tform);
+end
+
+if verbose
+    disp(['Transformation distance is: ' num2str(dist) '%.']);
+end
+
+if vis
+    ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
+    if filtering
+        show_binary(bw_o_f, ff, subplot(221),'Original binary image (filt.)');
+        show_binary(bw_a_f, ff, subplot(223),'Transfomed binary image (filt.)');
+    else
+        show_binary(bw_o, ff, subplot(221),'Original binary image ');
+        show_binary(bw_a, ff, subplot(223),'Transfomed binary image');
+        
+    end
+    show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
+    show_binary(bw_a_trans, ff, subplot(224),'Reconstructed binary image');
 end
