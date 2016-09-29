@@ -20,3 +20,4 @@
 % show_cc - visualize CCs in a given figure/subplot with title w or w/o label
 % show_labelmatrix - visualize a label matrix in a given figure/subplot
 %                    with title w or w/o labels
+% regions_subset2binary- makes a binary image from a subset binary regions
