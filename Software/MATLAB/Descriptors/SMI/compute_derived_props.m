@@ -4,8 +4,8 @@
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 9 Sept 2016
-% last modification date: 
-% modification details: 
+% last modification date: 27 Sept 2016
+% modification details: RelativeArea gets a weight of 100
 %**************************************************************************
 % INPUTS:
 % regions_props         structure with all region properties 
