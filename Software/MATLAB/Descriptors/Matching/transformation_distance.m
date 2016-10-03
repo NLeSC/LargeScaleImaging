@@ -3,8 +3,8 @@
 % [diff, dist, bw2_trans] = transformation_distance(bw1, bw2, tform)
 % author: Elena Ranguelova, NLeSc
 % date created: 22 Sep 2016
-% last modification date: 
-% modification details: 
+% last modification date: 30 Sept 2016
+% modification details: distance is now in respect to bw1
 %**************************************************************************
 % INPUTS:
 % bw1/2         binary images to have the diaytance between them
@@ -42,5 +42,8 @@ outputView = imref2d(size(bw1));
 bw2_trans = imwarp(bw2,tform,'OutputView',outputView);
 
 diff = xor(bw1, bw2_trans);
-dist = ((sum(nonzeros(diff)))/(nrows*ncols)) * 100;
+%dist = ((sum(nonzeros(diff)))/(nrows*ncols)) * 100;
+bw1_nonzeo = sum(nonzeros(bw1));
+diff_sum = sum(nonzeros(diff));
+dist = diff_sum/bw1_nonzeo;
 end
