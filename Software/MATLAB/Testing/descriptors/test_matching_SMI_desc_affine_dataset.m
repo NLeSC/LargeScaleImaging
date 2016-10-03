@@ -5,6 +5,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 14-09-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 30-09-2016
+% modification details: using regions_subset2binary
 % last modification date: 15-09-2016
 % modification details: fixing bug when filtering is false; adding visual.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -17,8 +19,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% define some parameters
 % execution parameters
-verbose = 1;
-vis = 1;
+verbose = 0;
+vis = 0;
 filtering = true; % true if to perform Area filterring (large regions remain)
 matches_filtering = true; % if true, perform filterring on the matches
 binary = true; % true of using the directly binarization result raher than the detector's output
@@ -68,6 +70,7 @@ max_dist = 10;
 
 cost_thresh = 0.015;
 
+dist_thresh = 2;
 % visualization parameters
 if vis
     if matches_filtering
@@ -92,6 +95,7 @@ end
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
 %base_case = 'boat';
+trans_deg = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
 
 if verbose
     if binary
@@ -101,33 +105,34 @@ if verbose
     end
 end
 
-if binary
-    switch base_case
-        case 'graffiti'
-            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_bin.png');
-        case 'leuven'
-            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_bin.png');
-        case 'boat'
-            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_bin.png');
-        case 'bikes'
-            bw_o = imread('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_bin.png');
-        otherwise
-            error('Unknown base case!');
+h = trans_deg;
+ if binary
+        switch base_case
+            case 'graffiti'
+                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_bin.png']);
+            case 'leuven'
+                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_bin.png']);
+            case 'boat'
+                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_bin.png']);
+            case 'bikes'
+                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_bin.png']);
+            otherwise
+                error('Unknown transf. case!');
+        end
+    else
+        switch base_case
+            case 'graffiti'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+            case 'leuven'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+            case 'boat'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks');
+            case 'bikes'
+                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+            otherwise
+                error('Unknown transf. case!');
+        end
     end
-else
-    switch base_case
-        case 'graffiti'
-            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti1_dmsrregions.mat','saliency_masks');
-        case 'leuven'
-            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven1_dmsrregions.mat','saliency_masks');
-        case 'boat'
-            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat1_dmsrregions.mat', 'saliency_masks');
-        case 'bikes'
-            load('C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes1_dmsrregions.mat','saliency_masks');
-        otherwise
-            error('Unknown base case!');
-    end
-end
 
 if binary
     num_masks = 1;
@@ -178,9 +183,9 @@ end
 
 %% load DMSR regions for transformed image(s)
 
-aff_case = input('Enter transformation test case [graffiti|leuven|boat|bikes]: ','s');
+aff_case = input('Enter second test case [graffiti|leuven|boat|bikes]: ','s');
 %aff_case = 'graffiti';
-trans_deg = input('Enter the transformation degree [2|3|4|5|6]: ');
+trans_deg = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
 %trans_deg = 3;
 
 if verbose
@@ -342,37 +347,48 @@ for h = trans_deg
             match_type, match_thresh, max_ratio, true, ...
             filtering);
     end
-    if length(matched_pairs) >=1
-        T = struct2table(matched_pairs);
-    else
-        T =  [];
-    end
     %% text display
     if verbose
         %if vis
         disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
         %end
-        disp(['Number of matches: ' , num2str(num_matches)])
-        disp(['Mean matching cost: ', num2str(mean(cost))]);
     end
+    disp(['Number of matches: ' , num2str(num_matches)])
+    disp(['Mean matching cost: ', num2str(mean(cost))]);
+    
+    if length(matched_pairs) > 3
+        T = struct2table(matched_pairs);
+    else
+        T =  [];
+        disp('Not enough matches found!');
+        disp('NOT THE SAME SCENE!');
+        return;
+    end
+    
+    
     %% filtering of the matches
     if matches_filtering
         [filt_matched_pairs, filt_matched_ind, filt_cost, filt_num_matches] = filter_matches(matched_pairs, ...
             matched_indicies, cost, cost_thresh);
         
-        if length(filt_matched_pairs) >=1
-            filtT = struct2table(filt_matched_pairs);
-        else
-            filtT =  [];
-        end
         %% text display
         if verbose
             %if vis
             disp(['Filtered matches for 1 and ' num2str(h),': ']); disp(filtT);
             %end
-            disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
-            disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
         end
+        disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
+        disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
+        
+        if length(filt_matched_pairs) > 3
+            filtT = struct2table(filt_matched_pairs);
+        else
+            filtT =  [];
+            disp('Not enough strong matches found!');
+            disp('NOT THE SAME SCENE!');
+            return;
+        end        
+        
     end
     
     %     pause;
@@ -426,21 +442,22 @@ for h = trans_deg
             region1_idx(m) = matched_pairs(m).first;
             region2_idx(m) = matched_pairs(m).second;
         end
-    end
-    
-    % display
-    show_labelmatrix(matched_o, true, region1_idx, stats_cc, f, ...
-        subplot(sbp_or_m), 'Matched regions on original image');
-    
-    show_labelmatrix(matched_a, true, region2_idx, stats_cc_a, f, ...
-        subplot(sbp_a_m), 'Matched regions on transf. image');
-    
-    if matches_filtering
-        show_labelmatrix(filt_matched_o, true, filt_region1_idx, stats_cc, f, ...
-            subplot(sbp_or_fm), 'Filtered matched regions on or. image');
         
-        show_labelmatrix(filt_matched_a, true, filt_region2_idx, stats_cc_a, f, ...
-            subplot(sbp_a_fm), 'Filtered matched regions on transf. image');
+        
+        % display
+        show_labelmatrix(matched_o, true, region1_idx, stats_cc, f, ...
+            subplot(sbp_or_m), 'Matched regions on original image');
+        
+        show_labelmatrix(matched_a, true, region2_idx, stats_cc_a, f, ...
+            subplot(sbp_a_m), 'Matched regions on transf. image');
+        
+        if matches_filtering
+            show_labelmatrix(filt_matched_o, true, filt_region1_idx, stats_cc, f, ...
+                subplot(sbp_or_fm), 'Filtered matched regions on or. image');
+            
+            show_labelmatrix(filt_matched_a, true, filt_region2_idx, stats_cc_a, f, ...
+                subplot(sbp_a_fm), 'Filtered matched regions on transf. image');
+        end
     end
 end
 
@@ -504,27 +521,44 @@ if vis
 end
 %     pause;
 %     disp('Press any key...');
-%% compute difference between original and transformed images
-if filtering
-    [diff, dist, bw_a_trans] = transformation_distance(bw_o_f, bw_a_f, tform);
-else
-    [diff, dist, bw_a_trans] = transformation_distance(bw_o, bw_a, tform);
-end
-
-if verbose
-    disp(['Transformation distance is: ' num2str(dist) '%.']);
-end
-
-if vis
-    ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
-    if filtering
-        show_binary(bw_o_f, ff, subplot(221),'Original binary image (filt.)');
-        show_binary(bw_a_f, ff, subplot(223),'Transfomed binary image (filt.)');
+if status == 0
+    %% compute difference between original and transformed images
+    
+    % get the region indicies
+    if matches_filtering
+        for i = 1:filt_num_matches
+            indicies_o(i) = filt_matched_pairs(i).first;
+            indicies_a(i) =  filt_matched_pairs(i).second;
+        end
     else
-        show_binary(bw_o, ff, subplot(221),'Original binary image ');
-        show_binary(bw_a, ff, subplot(223),'Transfomed binary image');
-        
+        for i = 1:num_matches
+            indicies_o(i) =  matched_pairs(i).first;
+            indicies_a(i) = matched_pairs(i).second;
+        end
     end
-    show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
-    show_binary(bw_a_trans, ff, subplot(224),'Reconstructed binary image');
+    % generate binary images only from the matched regions
+    bw1 = regions_subset2binary(bw_o, indicies_o, conn);
+    bw2 = regions_subset2binary(bw_a, indicies_a, conn);
+    
+    % compute the transformaition distance between the matched regions
+    [diff, dist, bw_a_trans] = transformation_distance(bw1, bw2, tform);
+    
+    
+    disp(['Transformation distance is: ' num2str(dist) ]);
+    if dist < dist_thresh
+        disp('THE SAME SCENE!');
+    else
+        disp('PROBABLY NOT THE SAME SCENE!');
+    end
+    
+    
+    if vis
+        ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
+        
+        show_binary(bw1, ff, subplot(221),'Original image (filt.) matched regions');
+        show_binary(bw2, ff, subplot(223),'Transfomed image (filt.) matched regions');
+        
+        show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
+        show_binary(bw_a_trans, ff, subplot(224),'Reconstructed ');
+    end
 end
