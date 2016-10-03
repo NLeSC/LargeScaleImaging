@@ -1,6 +1,6 @@
 % regions_subset2binary- makes a binary image from a subset binary regions
 % **************************************************************************
-% [bw_out] = regions_subset2binary(bw_in, regions_ind, conn_comp) 
+% [bw_out] = regions_subset2binary(bw_in, regions_ind, conn) 
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 29 Sept 2016
