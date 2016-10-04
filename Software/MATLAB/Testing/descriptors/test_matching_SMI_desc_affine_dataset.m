@@ -20,7 +20,7 @@
 %% define some parameters
 % execution parameters
 verbose = 0;
-vis = 0;
+vis = 1;
 filtering = true; % true if to perform Area filterring (large regions remain)
 matches_filtering = true; % if true, perform filterring on the matches
 binary = true; % true of using the directly binarization result raher than the detector's output
@@ -68,8 +68,9 @@ end
 %max_ratio = input('Max ratio (0, 1]?: ');
 max_dist = 10;
 
-cost_thresh = 0.015;
+cost_thresh = 0.025;
 
+match_ratio_thresh = 0.5;
 dist_thresh = 2;
 % visualization parameters
 if vis
@@ -380,6 +381,9 @@ for h = trans_deg
         disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
         disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
         
+        disp(['====> Ratio filtered/all number of matches : ', num2str(filt_num_matches/num_matches)]);
+        
+        
         if length(filt_matched_pairs) > 3
             filtT = struct2table(filt_matched_pairs);
         else
@@ -519,8 +523,7 @@ if vis
     end
     hold off;
 end
-%     pause;
-%     disp('Press any key...');
+     
 if status == 0
     %% compute difference between original and transformed images
     
@@ -537,15 +540,21 @@ if status == 0
         end
     end
     % generate binary images only from the matched regions
-    bw1 = regions_subset2binary(bw_o, indicies_o, conn);
-    bw2 = regions_subset2binary(bw_a, indicies_a, conn);
+        bw1 = regions_subset2binary(bw_o, indicies_o, conn);
+        bw2 = regions_subset2binary(bw_a, indicies_a, conn);
+%     bw1 = bw_o;
+%     bw2 = bw_a;
     
     % compute the transformaition distance between the matched regions
-    [diff, dist, bw_a_trans] = transformation_distance(bw1, bw2, tform);
+    [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance(bw1, bw2, tform);
+    av_dist = (dist1 + dist2)/2;
+    
+    disp(['Transformation distance1 is: ' num2str(dist1) ]);
+    disp(['Transformation distance2 is: ' num2str(dist2) ]);
+    disp(['====> Final (average) transformation distance is: ' num2str(av_dist) ]);
     
     
-    disp(['Transformation distance is: ' num2str(dist) ]);
-    if dist < dist_thresh
+    if (av_dist < dist_thresh) && (av_dist > match_ratio_thresh)
         disp('THE SAME SCENE!');
     else
         disp('PROBABLY NOT THE SAME SCENE!');
@@ -555,10 +564,13 @@ if status == 0
     if vis
         ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
         
-        show_binary(bw1, ff, subplot(221),'Original image (filt.) matched regions');
-        show_binary(bw2, ff, subplot(223),'Transfomed image (filt.) matched regions');
+        show_binary(bw1, ff, subplot(231),'Image1 (filt.) matched regions');
+        show_binary(bw2, ff, subplot(234),'Image2 (filt.) matched regions');
+                
+        show_binary(bw2_trans, ff, subplot(232),'Reconstructed 1');
+        show_binary(bw1_trans, ff, subplot(235),'Reconstructed 2');
         
-        show_binary(diff, ff, subplot(222),'XOR(Original, Reconstructed)');
-        show_binary(bw_a_trans, ff, subplot(224),'Reconstructed ');
+        show_binary(diff1, ff, subplot(233),'XOR(1, Reconstructed1)');
+        show_binary(diff2, ff, subplot(236),'XOR(2, Reconstructed2)');
     end
 end
