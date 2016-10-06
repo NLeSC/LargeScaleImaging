@@ -156,6 +156,7 @@ end
 % make it of class logical
 bw_o =  logical((bw_o));
 
+disp('Computations for image 1...');
 % CC
 cc_o = bwconncomp(bw_o,conn);
 if filtering
@@ -196,6 +197,8 @@ if verbose
         disp('Loading a binary DMSR regions files for the transformed image...');
     end
 end
+
+disp('Computations for image 2...');
 
 for h = trans_deg
     
@@ -381,7 +384,8 @@ for h = trans_deg
         disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
         disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
         
-        disp(['====> Ratio filtered/all number of matches : ', num2str(filt_num_matches/num_matches)]);
+        match_ratio = filt_num_matches/num_matches;
+        disp(['====> Ratio filtered/all number of matches : ', num2str(match_ratio)]);
         
         
         if length(filt_matched_pairs) > 3
@@ -554,7 +558,7 @@ if status == 0
     disp(['====> Final (average) transformation distance is: ' num2str(av_dist) ]);
     
     
-    if (av_dist < dist_thresh) && (av_dist > match_ratio_thresh)
+    if (av_dist < dist_thresh) && ( match_ratio > match_ratio_thresh)
         disp('THE SAME SCENE!');
     else
         disp('PROBABLY NOT THE SAME SCENE!');
