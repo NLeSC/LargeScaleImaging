@@ -20,7 +20,7 @@
 %% define some parameters
 % execution parameters
 verbose = 1;
-vis = 1;
+vis = 0;
 filtering = true; % true if to perform Area filterring (large regions remain)
 matches_filtering = true; % if true, perform filterring on the matches
 binary = true; % true of using the directly binarization result raher than the detector's output
@@ -361,9 +361,9 @@ for h = trans_deg
         return;
     end
     if verbose
-        %if vis
-        disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
-        %end
+        if vis
+            disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
+        end
     end
     disp(['Number of matches: ' , num2str(num_matches)])
     disp(['Mean matching cost: ', num2str(mean(cost))]);    
@@ -385,9 +385,9 @@ for h = trans_deg
             return;
         end     
         if verbose
-            %if vis
-            disp(['Filtered matches for 1 and ' num2str(h),': ']); disp(filtT);
-            %end
+            if vis
+                disp(['Filtered matches for 1 and ' num2str(h),': ']); disp(filtT);
+            end
         end
         disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
         disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
