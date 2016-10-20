@@ -1,5 +1,5 @@
 % display_oxford_dataset_structured.m - function to display the affine dataset
-%                                       (sctructured images subset)
+%                                       (structured images subset)
 %**************************************************************************
 % [] = display_oxford_dataset_structured(path)
 %
