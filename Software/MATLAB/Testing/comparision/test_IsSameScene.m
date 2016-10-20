@@ -21,6 +21,8 @@ matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
 
+binarized = true;
+
 % moments parameters
 order = 4;
 coeff_file = 'afinvs4_19.txt';
@@ -71,7 +73,13 @@ if visualize
 end
 
 % paths
-data_path = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
+if binarized
+    data_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
+    ext = '_bin.png';
+else
+    data_path = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
+    ext = '.png';
+end
 
 
 if verbose
@@ -108,8 +116,8 @@ end
 test_path1 = fullfile(data_path,test_case1);
 test_path2 = fullfile(data_path,test_case2);
 
-test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) '.png']); 
-test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) '.png']); 
+test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]); 
+test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]); 
 
 im1 = imread(test_image1); im2 = imread(test_image2);
 
