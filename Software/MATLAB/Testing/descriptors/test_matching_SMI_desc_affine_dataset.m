@@ -19,7 +19,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% define some parameters
 % execution parameters
-verbose = 0;
+verbose = 1;
 vis = 1;
 filtering = true; % true if to perform Area filterring (large regions remain)
 matches_filtering = true; % if true, perform filterring on the matches
@@ -352,14 +352,6 @@ for h = trans_deg
             filtering);
     end
     %% text display
-    if verbose
-        %if vis
-        disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
-        %end
-    end
-    disp(['Number of matches: ' , num2str(num_matches)])
-    disp(['Mean matching cost: ', num2str(mean(cost))]);
-    
     if length(matched_pairs) > 3
         T = struct2table(matched_pairs);
     else
@@ -368,6 +360,14 @@ for h = trans_deg
         disp('NOT THE SAME SCENE!');
         return;
     end
+    if verbose
+        %if vis
+        disp(['Matches for 1 and ' num2str(h),': ']); disp(T);
+        %end
+    end
+    disp(['Number of matches: ' , num2str(num_matches)])
+    disp(['Mean matching cost: ', num2str(mean(cost))]);    
+ 
     
     
     %% filtering of the matches
@@ -376,6 +376,14 @@ for h = trans_deg
             matched_indicies, cost, cost_thresh);
         
         %% text display
+        if length(filt_matched_pairs) > 3
+            filtT = struct2table(filt_matched_pairs);
+        else
+            filtT =  [];
+            disp('Not enough strong matches found!');
+            disp('NOT THE SAME SCENE!');
+            return;
+        end     
         if verbose
             %if vis
             disp(['Filtered matches for 1 and ' num2str(h),': ']); disp(filtT);
@@ -385,17 +393,7 @@ for h = trans_deg
         disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
         
         match_ratio = filt_num_matches/num_matches;
-        disp(['====> Ratio filtered/all number of matches : ', num2str(match_ratio)]);
-        
-        
-        if length(filt_matched_pairs) > 3
-            filtT = struct2table(filt_matched_pairs);
-        else
-            filtT =  [];
-            disp('Not enough strong matches found!');
-            disp('NOT THE SAME SCENE!');
-            return;
-        end        
+        disp(['====> Ratio filtered/all number of matches : ', num2str(match_ratio)]);                          
         
     end
     
@@ -482,8 +480,8 @@ else
         stats_cc_a, max_dist);
 end
 
-num_inliers = length(inl1);
 if verbose
+    num_inliers = length(inl1);
     disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
     % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
     
@@ -527,9 +525,9 @@ if vis
     end
     hold off;
 end
-     
-if status == 0
-    %% compute difference between original and transformed images
+    
+%% compute difference between original and transformed images
+if status == 0    
     
     % get the region indicies
     if matches_filtering
