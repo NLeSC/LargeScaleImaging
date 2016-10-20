@@ -15,6 +15,8 @@
 % transform_test_image.m- script to affinely transformation a test image
 % test_filter_regions.m- script to test filter_regions function
 % test_regions_subset2binary.m- tetsing script for regions_subset2binary
+% display_oxford_dataset_structured.m - function to display the affine dataset
+%                                      (structured images subset)
 %**************************************************************************
 % External (say from MATLAB file exchange)
 %**************************************************************************
