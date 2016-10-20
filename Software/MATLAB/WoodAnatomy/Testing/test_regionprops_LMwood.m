@@ -26,7 +26,7 @@ if isunix
     data_path = '/home/elena/eStep/LargeScaleImaging/Data/Scientific/WoodAnatomy/LM pictures wood/PNG';
     results_path ='/home/elena/eStep/LargeScaleImaging/Results/Scientific/WoodAnatomy/LM pictures wood';
 else
-    error('The software works only on a Unix system!');
+    error('Missing data!');
     return
 end
 detector  = 'DMSR';
