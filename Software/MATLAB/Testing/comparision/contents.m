@@ -10,6 +10,5 @@
 %**************************************************************************
 % Scripts
 %**************************************************************************
-% test_matching_SMI_descr_affine_dataset- testing matching with 
-%                       shape and moment invariants (SMI) as descriptors 
-%                       of the salient regions for the Oxford dataset
+% test_IsSameScene- testing IsSameScene function for comparision if 2
+%                   images are of the same scene
