@@ -1,4 +1,4 @@
-% contents.m- contents of directory ..\Testing
+% contents.m- contents of directory ..\Testing\general
 %
 % topic: Salient regions detection and description testing
 % author: Elena Ranguelova, NLeSc
