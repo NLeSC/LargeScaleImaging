@@ -118,7 +118,7 @@ end
 
 %**************** Processing *******************************
 if verbose
-    disp('Comparing wether 2 images depict (partially) the same scene...');
+    disp('Comparing whether 2 images depict (partially) the same scene...');
     t0 = clock;
 end
 
