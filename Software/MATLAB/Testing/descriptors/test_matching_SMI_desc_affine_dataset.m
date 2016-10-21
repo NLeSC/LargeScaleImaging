@@ -20,7 +20,7 @@
 %% define some parameters
 % execution parameters
 verbose = 1;
-vis = 0;
+vis = 1;
 filtering = true; % true if to perform Area filterring (large regions remain)
 matches_filtering = true; % if true, perform filterring on the matches
 binary = true; % true of using the directly binarization result raher than the detector's output
@@ -36,7 +36,6 @@ order = 4;
 
 coeff_file = 'afinvs4_19.txt';
 %max_num_moments =  input('How many invariants to consider (max 66)?: ');
-%max_num_moments = 66;
 max_num_moments = 16;
 
 % CC parameters
@@ -67,11 +66,10 @@ end
 
 %max_ratio = input('Max ratio (0, 1]?: ');
 max_dist = 10;
-
 cost_thresh = 0.025;
-
 match_ratio_thresh = 0.5;
 dist_thresh = 2;
+
 % visualization parameters
 if vis
     if matches_filtering
@@ -95,7 +93,6 @@ end
 
 %% load DMSR regions for base image and possibly filter out small ones
 base_case = input('Enter base test case [graffiti|leuven|boat|bikes]: ','s');
-%base_case = 'boat';
 trans_deg = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
 
 if verbose
@@ -107,48 +104,46 @@ if verbose
 end
 
 h = trans_deg;
- if binary
-        switch base_case
-            case 'graffiti'
-                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_bin.png']);
-            case 'leuven'
-                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_bin.png']);
-            case 'boat'
-                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_bin.png']);
-            case 'bikes'
-                bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_bin.png']);
-            otherwise
-                error('Unknown transf. case!');
-        end
-    else
-        switch base_case
-            case 'graffiti'
-                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-            case 'leuven'
-                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-            case 'boat'
-                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks');
-            case 'bikes'
-                load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
-            otherwise
-                error('Unknown transf. case!');
-        end
+if binary
+    switch base_case
+        case 'graffiti'
+            bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_bin.png']);
+        case 'leuven'
+            bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_bin.png']);
+        case 'boat'
+            bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_bin.png']);
+        case 'bikes'
+            bw_o = imread(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_bin.png']);
+        otherwise
+            error('Unknown transf. case!');
     end
+else
+    switch base_case
+        case 'graffiti'
+            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\graffiti\graffiti' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+        case 'leuven'
+            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\leuven\leuven' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+        case 'boat'
+            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\boat\boat' num2str(h) '_dmsrregions.mat'], 'saliency_masks');
+        case 'bikes'
+            load(['C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\bikes\bikes' num2str(h) '_dmsrregions.mat'],'saliency_masks');
+        otherwise
+            error('Unknown transf. case!');
+    end
+end
 
 if binary
     num_masks = 1;
 else
     dim = ndims(saliency_masks);
-    num_masks = 1; %size(saliency_masks,dim);
+    num_masks = 1;
 end
-% fill the small holes
+
 if binary
-    % bw_o = imfill(bw_o,'holes');
     if inverted
         bw_o = imcomplement(bw_o);
     end
 else
-    %bw_o = imfill(saliency_masks(:,:,sal_type),'holes');
     bw_o = saliency_masks(:,:,sal_type);
     clear saliency_masks
 end
@@ -162,9 +157,7 @@ cc_o = bwconncomp(bw_o,conn);
 if filtering
     stats_cc = regionprops(cc_o, list_props_all);
 else
-    %if vis
     stats_cc = regionprops(cc_o, 'Centroid');
-    %end
 end
 
 % image area
@@ -186,9 +179,7 @@ end
 %% load DMSR regions for transformed image(s)
 
 aff_case = input('Enter second test case [graffiti|leuven|boat|bikes]: ','s');
-%aff_case = 'graffiti';
 trans_deg = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
-%trans_deg = 3;
 
 if verbose
     if binary
@@ -232,13 +223,11 @@ for h = trans_deg
     end
     
     if binary
-        % bw_a = imfill(bw_a,'holes');
         if inverted
             bw_a = imcomplement(bw_a);
         end
     else
-        % fill the small holes
-        %bw_a = imfill(saliency_masks(:,:,sal_type),'holes');
+        
         bw_a = saliency_masks(:,:,sal_type);
         clear saliency_masks
     end
@@ -277,10 +266,8 @@ for h = trans_deg
             
             if filtering
                 [labeled_o_f, ~] = show_cc(cc_o_f, true, index_o, f, subplot(sbp_or_f), 'Conn. Comp. (after filtering)');
-                labeled = labeled_o_f;
             else
                 [labeled_o, ~] = show_cc(cc_o, true, [], f, subplot(sbp_or_f), 'Conn. Comp. ');
-                labeled = labeled_o;
             end
             clear cc_o cc_o_f
             
@@ -297,7 +284,6 @@ for h = trans_deg
         end
     end
     
-    %clear bw_o bw_o_f labeled
     %% visualise
     if vis
         % original images  (masks)
@@ -305,10 +291,8 @@ for h = trans_deg
             show_binary(bw_a, f, subplot(sbp_a),'Binary mask transf. (holes)');
             if filtering
                 [labeled_a_f, ~] = show_cc(cc_a_f, true, index_a, f, subplot(sbp_a_f), 'Conn. Comp. transf. (after filtering)');
-                labeled = labeled_a_f;
             else
                 [labeled_a, ~] = show_cc(cc_a, true, [], f, subplot(sbp_a_f), 'Conn. Comp. tranf.');
-                labeled = labeled_a;
             end
             clear cc_a cc_a_f
             
@@ -338,7 +322,6 @@ for h = trans_deg
             order, coeff_file, max_num_moments);
     end
     
-    %clear bw_a bw_a_f
     %% matching the descriptos
     if filtering
         [matched_pairs, cost, matched_indicies, num_matches] = matching(SMI_descr_o,...
@@ -366,8 +349,8 @@ for h = trans_deg
         end
     end
     disp(['Number of matches: ' , num2str(num_matches)])
-    disp(['Mean matching cost: ', num2str(mean(cost))]);    
- 
+    disp(['Mean matching cost: ', num2str(mean(cost))]);
+    
     
     
     %% filtering of the matches
@@ -383,7 +366,7 @@ for h = trans_deg
             disp('Not enough strong matches found!');
             disp('NOT THE SAME SCENE!');
             return;
-        end     
+        end
         if verbose
             if vis
                 disp(['Filtered matches for 1 and ' num2str(h),': ']); disp(filtT);
@@ -393,12 +376,10 @@ for h = trans_deg
         disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
         
         match_ratio = filt_num_matches/num_matches;
-        disp(['====> Ratio filtered/all number of matches : ', num2str(match_ratio)]);                          
+        disp(['====> Ratio filtered/all number of matches : ', num2str(match_ratio)]);
         
     end
     
-    %     pause;
-    %     disp('Press any key to continue...');
     %% final display of results
     if vis
         if filtering
@@ -483,7 +464,6 @@ end
 if verbose
     num_inliers = length(inl1);
     disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
-    % disp(['The ratio inliers/all matches is ' num2str(num_inliers/num_matches*100) ' %.']);
     
     
     switch status
@@ -525,9 +505,9 @@ if vis
     end
     hold off;
 end
-    
+
 %% compute difference between original and transformed images
-if status == 0    
+if status == 0
     
     % get the region indicies
     if matches_filtering
@@ -542,10 +522,8 @@ if status == 0
         end
     end
     % generate binary images only from the matched regions
-        bw1 = regions_subset2binary(bw_o, indicies_o, conn);
-        bw2 = regions_subset2binary(bw_a, indicies_a, conn);
-%     bw1 = bw_o;
-%     bw2 = bw_a;
+    bw1 = regions_subset2binary(bw_o, indicies_o, conn);
+    bw2 = regions_subset2binary(bw_a, indicies_a, conn);
     
     % compute the transformaition distance between the matched regions
     [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance(bw1, bw2, tform);
@@ -568,7 +546,7 @@ if status == 0
         
         show_binary(bw1, ff, subplot(231),'Image1 (filt.) matched regions');
         show_binary(bw2, ff, subplot(234),'Image2 (filt.) matched regions');
-                
+        
         show_binary(bw2_trans, ff, subplot(232),'Reconstructed 1');
         show_binary(bw1_trans, ff, subplot(235),'Reconstructed 2');
         
