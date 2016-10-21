@@ -376,12 +376,12 @@ if visualize
                 filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
                 filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
             end
+        else
+            for m = 1:num_matches
+                matched1(labeled1 == matched_ind(m, 1)) = m;
+                matched2(labeled2 == matched_ind(m, 2)) = m;
+            end
         end
-        for m = 1:num_matches
-            matched1(labeled1 == matched_ind(m, 1)) = m;
-            matched2(labeled2 == matched_ind(m, 2)) = m;
-        end
-        
     end
     % make label matricies from the matched pairs
     if matches_filtering
@@ -484,14 +484,14 @@ if (transf_dist < transf_dist_thresh) && (matches_ratio > matches_ratio_thresh)
     if verbose
         disp('Total elapsed time: ');
         etime(clock,t0)
-    end    
+    end
 else
     disp('PROBABLY NOT THE SAME SCENE!');
     is_same = false;
     if verbose
         disp('Total elapsed time: ');
         etime(clock,t0)
-    end    
+    end
 end
 %% visualization of the transformation distance
 if visualize
