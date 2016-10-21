@@ -41,7 +41,11 @@ end
 test_cases = {'graffiti', 'boat','leuven','bikes'};
 
 %% make the figure
-f = figure; set(gcf, 'Position', get(0, 'Screensize'));
+fig_scrnsz = get(0, 'Screensize');
+offset = 0.25 * fig_scrnsz(4);
+fig_scrnsz(2) = fig_scrnsz(2) + offset;
+fig_scrnsz(4) = fig_scrnsz(4) - offset;
+f = figure; set(gcf, 'Position', fig_scrnsz);
 
 %% load and display
 for i = 1: numel(test_cases)
