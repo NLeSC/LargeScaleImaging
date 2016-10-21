@@ -13,9 +13,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
 
+publish = false;
 % execution parameters
-verbose = true;
-visualize = true;
+verbose = false;
+visualize = false;
+visualize_dataset = false;
+visualize_test = true;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
@@ -96,7 +99,7 @@ disp('*****************************************************************');
 
 
 %% visualize the test dataset
-if visualize
+if visualize_dataset
     if verbose
         disp('Displaying the test dataset...');
     end
@@ -105,13 +108,42 @@ if visualize
 end
 
 %% load test data
-% image one
-test_case1 = input('Enter base test case [graffiti|leuven|boat|bikes] for the first image: ','s');
-trans_deg1 = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
 
-% image two
-test_case2 = input('Enter base test case [graffiti|leuven|boat|bikes] for the second image: ','s');
-trans_deg2 = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
+if publish
+    disp('Enter base test case [graffiti|leuven|boat|bikes] for the first image: ');
+    disp('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
+    test_case1 = 'leuven'; trans_deg1 = 1;
+    test_case1 = 'graffiti'; trans_deg1 = 1;
+    test_case1 = 'boat'; trans_deg1 = 3;
+    test_case1 = 'bikes'; trans_deg1 = 1;
+    test_case1 = 'bikes'; trans_deg1 = 2;
+    test_case1 = 'boat'; trans_deg1 = 2;
+    test_case1 = 'graffiti'; trans_deg1 = 4;
+    test_case1 = 'leuven'; trans_deg1 = 2;
+    
+    disp([test_case1 num2str(trans_deg1)]);
+    
+    disp('Enter base test case [graffiti|leuven|boat|bikes] for the second image: ');
+    disp('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
+    test_case2 = 'leuven'; trans_deg2 = 4;
+    test_case2 = 'graffiti'; trans_deg2 = 3;
+    test_case2 = 'boat'; trans_deg2 = 5;    
+    test_case2 = 'bikes'; trans_deg2 = 6;
+    test_case2 = 'boat'; trans_deg2 = 1;
+    test_case2 = 'leuven'; trans_deg2 = 3;
+    test_case2 = 'boat'; trans_deg2 = 4;
+    est_case2 = 'bikes'; trans_deg2 = 2;
+    disp([test_case2 num2str(trans_deg2)]);
+    
+else
+    % image one
+    test_case1 = input('Enter base test case [graffiti|leuven|boat|bikes] for the first image: ','s');
+    trans_deg1 = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
+    % image two
+    test_case2 = input('Enter base test case [graffiti|leuven|boat|bikes] for the second image: ','s');
+    trans_deg2 = input('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
+    
+end
 
 if verbose
    disp('Loading the 2 test images...');
@@ -134,9 +166,9 @@ test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]);
 im1 = imread(test_image1); im2 = imread(test_image2);
 
 % visualize the choice
-if visualize
+if visualize_test
     if verbose
-        disp('Displaying the test dataset');
+        disp('Displaying the test images');
     end;
     fig_scrnsz = get(0, 'Screensize');
     offset = 0.25 * fig_scrnsz(4);
