@@ -283,7 +283,7 @@ if verbose
     disp(['Mean matching cost: ', num2str(mean(cost))]);
 end
 % check if enough matches
-if length(matched_pairs) > 3
+if num_matches > 3
     if visualize
         T = struct2table(matched_pairs);
         if verbose
@@ -323,7 +323,7 @@ if matches_filtering
         disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
     end
     % check if enough filtered matches
-    if length(filt_matched_pairs) > 3
+    if filt_num_matches > 3
         if visualize
             filtT = struct2table(filt_matched_pairs);
             if verbose
