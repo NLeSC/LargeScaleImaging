@@ -14,9 +14,9 @@
 %% parameters
 
 % execution parameters
-verbose = 1;
-visualize = 1;
-area_filtering = true; 
+verbose = true;
+visualize = true;
+area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
@@ -45,7 +45,7 @@ max_ratio = 0.75;
 max_dist = 10;
 cost_thresh = 0.025;
 matches_ratio_thresh = 0.5;
-transf_dist_thresh = 2;
+transf_dist_thresh = 1.45;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
     cost_thresh, matches_ratio_thresh, transf_dist_thresh);
@@ -72,9 +72,10 @@ if visualize
         sbp2_m = (236);
         sbp2_fm = [];
     end
+    offset_factor = 0.25;
     % pack to a structure
     vis_params = v2struct(sbp1, sbp1_f, sbp1_m, sbp1_fm,...
-        sbp2, sbp2_f, sbp2_m, sbp2_fm);
+        sbp2, sbp2_f, sbp2_m, sbp2_fm, offset_factor);
 else
     vis_params = [];
 end
@@ -84,24 +85,23 @@ data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
 if binarized
     data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
     ext = '_bin.png';
+else
+    ext  ='.png';
 end
 
-if verbose
-    disp('*****************************************************************');
-    disp('  Demo script for determining if 2 images are of the same scene. ');
-    disp('*****************************************************************');
-end
+
+disp('*****************************************************************');
+disp('  Demo script for determining if 2 images are of the same scene. ');
+disp('*****************************************************************');
+
 
 %% visualize the test dataset
 if visualize
     if verbose
-        disp('Displaying the test dataset');
+        disp('Displaying the test dataset...');
     end
     display_oxford_dataset_structured(data_path_or);
-    if verbose
-        disp('Paused: Press any key to continue...');
-    end
-    pause;    
+    pause(5);    
 end
 
 %% load test data
@@ -115,6 +115,9 @@ trans_deg2 = input('Enter the transformation degree [1(no transformation)|2|3|4|
 
 if verbose
    disp('Loading the 2 test images...');
+   if binarized
+       disp('Already binarized images are used.');
+   end
 end
 
 if binarized
@@ -130,18 +133,20 @@ test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]);
 
 im1 = imread(test_image1); im2 = imread(test_image2);
 
-%% visualize the choice
+% visualize the choice
 if visualize
     if verbose
         disp('Displaying the test dataset');
-    end
-    ff = figure; set(gcf, 'Position', get(0, 'Screensize'));
+    end;
+    fig_scrnsz = get(0, 'Screensize');
+    offset = 0.25 * fig_scrnsz(4);
+    fig_scrnsz(2) = fig_scrnsz(2) + offset;
+    fig_scrnsz(4) = fig_scrnsz(4) - offset;
+    ff = figure; set(gcf, 'Position', fig_scrnsz);
     subplot(121);imshow(im1); title(['First image: ' test_case1 num2str(trans_deg1)]);
     subplot(122);imshow(im2); title(['Second image: ' test_case2 num2str(trans_deg2)]);
-    if verbose
-        disp('Paused: Press any key to continue...');
-    end
-    pause; 
+    
+    pause(0.5);
 end
 
 %% compare if the 2 images show the same scene
