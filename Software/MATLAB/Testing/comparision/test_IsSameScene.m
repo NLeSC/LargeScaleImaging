@@ -4,8 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 20-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 
-% modification details: 
+% last modification date: 21-10-2016
+% modification details: visualizations added
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: generalization of test_matching_SMI_desc_affine_dataset
 %**************************************************************************
@@ -15,7 +15,7 @@
 
 % execution parameters
 verbose = 1;
-visualize = 0;
+visualize = 1;
 area_filtering = true; 
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
@@ -54,33 +54,37 @@ match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
 % visualization parameters
 if visualize
     if matches_filtering
-        sbp_or = (241);
-        sbp_or_l = (242);
-        sbp_or_m = (243);
-        sbp_or_fm = (244);
-        sbp_a = (245);
-        sbp_a_l = (246);
-        sbp_a_m = (247);
-        sbp_a_fm = (248);
+        sbp1 = (241);
+        sbp1_f = (242);
+        sbp1_m = (243);
+        sbp1_fm = (244);
+        sbp2 = (245);
+        sbp2_f = (246);
+        sbp2_m = (247);
+        sbp2_fm = (248);
     else
-        sbp_or = (231);
-        sbp_or_l = (232);
-        sbp_or_m = (233);
-        sbp_a = (234);
-        sbp_a_l = (235);
-        sbp_a_m = (236);
+        sbp1 = (231);
+        sbp1_f = (232);
+        sbp1_m = (233);
+        sbp1_fm = [];
+        sbp2 = (234);
+        sbp2_f = (235);
+        sbp2_m = (236);
+        sbp2_fm = [];
     end
+    % pack to a structure
+    vis_params = v2struct(sbp1, sbp1_f, sbp1_m, sbp1_fm,...
+        sbp2, sbp2_f, sbp2_m, sbp2_fm);
+else
+    vis_params = [];
 end
 
 % paths
+data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
 if binarized
-    data_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
+    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
     ext = '_bin.png';
-else
-    data_path = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
-    ext = '.png';
 end
-
 
 if verbose
     disp('*****************************************************************');
@@ -93,7 +97,7 @@ if visualize
     if verbose
         disp('Displaying the test dataset');
     end
-    display_oxford_dataset_structured(data_path);
+    display_oxford_dataset_structured(data_path_or);
     if verbose
         disp('Paused: Press any key to continue...');
     end
@@ -113,8 +117,13 @@ if verbose
    disp('Loading the 2 test images...');
 end
 
-test_path1 = fullfile(data_path,test_case1);
-test_path2 = fullfile(data_path,test_case2);
+if binarized
+    test_path1 = fullfile(data_path_bin,test_case1);
+    test_path2 = fullfile(data_path_bin,test_case2);
+else
+    test_path1 = fullfile(data_path_or,test_case1);
+    test_path2 = fullfile(data_path_or,test_case2);
+end
 
 test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]); 
 test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]); 
@@ -135,13 +144,14 @@ if visualize
     pause; 
 end
 
-%% compare if the 2 images dhow the same scene
+%% compare if the 2 images show the same scene
 if verbose
    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
 [is_same, matches_ratio, transf_dist] = IsSameScene(im1, im2,...
-                        exec_params,moments_params, cc_params,match_params);
+                       moments_params, cc_params, match_params,...
+                       vis_params, exec_params);
 
 if verbose
    disp('*****************************************************************');
