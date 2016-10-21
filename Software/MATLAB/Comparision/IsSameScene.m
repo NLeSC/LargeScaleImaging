@@ -1,22 +1,16 @@
 % IsSameScene-  comparing if 2 images are of the same scene
 % **************************************************************************
 % [is_same, matches_ratio, transf_dist] = IsSameScene(im1, im2, ...
-%                      exec_params, moments_params, cc_params, match_params)
+%                      moments_params, cc_params, match_params, ...
+%                      vis_params, exec_params)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 October 2016
-% last modification date:
-% modification details:
+% last modification date: 21 October 2016
+% modification details: added visualizations, swaped parameter order
 %**************************************************************************
 % INPUTS:
 % im1/2          the input gray/color or binary images to be compared
-% [exec_params]  the execution parameters structure [optional] with fields:
-%                verbose- flag for verbose mode, default value {false}
-%                visualize- flag for vizualizing the matching, {false}
-%                area_filering - flag for performing region (cc) area
-%                   filtering, {true}
-%                matches_filering - flag for performing matches filtering,
-%                {true}
 % [moments_params] optional struct with the moment invariants parameters:
 %                  order- moments order, {4}
 %                  coeff_file- coefficients file filename, {'afinvs4_19.txt'}
@@ -48,6 +42,18 @@
 %                   For a good match between images the distance between
 %                   an image and transformed with estimated transformation
 %                   image should be small. Default is {2}.
+% [vis_params]    optional struct with the visualization parameters:
+%                 sbp1/2 - subplot location for CC visualization
+%                 sbp1/2_f - subplot location for filtered CC visualization
+%                 sbp1/2_m - subplot location for matches visualization
+%                 sbp1/2_fm - subplot location for filtered matches visual.
+% [exec_params]  the execution parameters structure [optional] with fields:
+%                verbose- flag for verbose mode, default value {false}
+%                visualize- flag for vizualizing the matching, {false}
+%                area_filering - flag for performing region (cc) area
+%                   filtering, {true}
+%                matches_filering - flag for performing matches filtering,
+%                {true}
 %**************************************************************************
 % OUTPUTS:
 % is_same           binary flag, true if images are showing (partially)
@@ -64,10 +70,37 @@
 % REFERENCES:
 %**************************************************************************
 function [is_same, matches_ratio, transf_dist] = IsSameScene(im1, im2,...
-    exec_params,moments_params, cc_params,match_params)
+    moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
-if nargin < 6 || isempty(match_params)
+if nargin < 7 || isempty(exec_params)
+    exec_params.verbose = false;
+    exec_params.visualize = false;
+    exec_params.area_filtering = true;
+    exec_params.matches_filtering = true;
+end
+if (nargin < 6 || isempty(vis_params)) && (exec_params.visualize)
+    if exec_params.matches_filtering
+        vis_params.sbp1 = (241);
+        vis_params.sbp1_f = (242);
+        vis_params.sbp1_m = (243);
+        vis_params.sbp1_fm = (244);
+        vis_params.sbp2 = (245);
+        vis_params.sbp_f = (246);
+        vis_params.sbp2_m = (247);
+        vis_params.sbp2_fm = (248);
+    else
+        vis_params.sbp1 = (231);
+        vis_params.sbp1_f = (232);
+        vis_params.sbp1_m = (233);
+        vis_params.sbp1_fm = [];
+        vis_params.sbp2 = (234);
+        vis_params.sbp2_f = (235);
+        vis_params.sbp2_m = (236);
+        vis_params.sbp2_fm = [];
+    end
+end
+if nargin < 5 || isempty(match_params)
     match_params.match_metric = 'ssd';
     match_params.match_thrseh = 1;
     match_params.max_ratio = 0.75;
@@ -76,22 +109,16 @@ if nargin < 6 || isempty(match_params)
     match_params.matches_ratio_thresh = 0.5;
     match_params.transf_dist_thresh = 2;
 end
-if nargin < 5 || isempty(cc_params)
+if nargin < 4 || isempty(cc_params)
     cc_params.conn = 8;
     cc_params.list_props = {'Area','Centroid','MinorAxisLength',...
         'MajorAxisLength', 'Eccentricity','Solidity'};
     cc_params.area_factor = 0.0005;
 end
-if nargin < 4 || isempty(moments_params)
+if nargin < 3 || isempty(moments_params)
     moments_params.order = 4;
     moments_params.coeff_file = 'afinvs4_19.txt';
     moments_params.max_num_moments = 16;
-end
-if nargin < 3 || isempty(exec_params)
-    exec_params.verbose = false;
-    exec_params.visualize = false;
-    exec_params.area_filtering = true;
-    exec_params.matches_filtering = true;
 end
 if nargin < 2
     error('IsSameScene: the function expects minimum 2 input arguments- the images to be compared!');
@@ -102,11 +129,13 @@ v2struct(exec_params);
 v2struct(moments_params);
 v2struct(cc_params);
 v2struct(match_params);
-
+if visualize
+    v2struct(vis_params);
+end
 
 %% dependant parameters
+list_props_all = {'Area','Centroid'};
 if area_filtering
-    list_props_all = {'Area','Centroid'};
     prop_types_filter = {'Area'};
     image_area1 = size(im1, 1) * size(im1,2);
     image_area2 = size(im2, 1) * size(im2,2);
@@ -114,9 +143,9 @@ if area_filtering
     range2 = {[area_factor*image_area2 image_area2]};
 end
 
-%% initializations
-
+%% processing
 %**************** Processing *******************************
+disp('Processing...');
 if verbose
     disp('Comparing whether 2 images depict (partially) the same scene...');
     t0 = clock;
@@ -133,17 +162,17 @@ if not( islogical(im1) && islogical(im2) )
     end
     tic
     
-    if ndims(im1) == 2
+    if ismatrix(im1)
         if verbose
             disp('Data-driven binarization 1...');
         end
-        [bw1,thresh1] = data_driven_binarizer(im1);
+        [bw1,~] = data_driven_binarizer(im1);
     end
-    if ndims(im2) == 2
+    if ismatrix(im2)
         if verbose
             disp('Data-driven binarization 2...');
         end
-        [bw2,thresh2] = data_driven_binarizer(im2);
+        [bw2,~] = data_driven_binarizer(im2);
     end
     if verbose
         toc
@@ -151,21 +180,18 @@ if not( islogical(im1) && islogical(im2) )
 else
     bw1 = logical(im1); bw2 = logical(im2);
 end
-
-
-%% visualization
+%% visualization of the binarization result
 if visualize
-    figure('Position',get(0, 'Screensize'));
-    
-    subplot(121); imshow(im1); title('Gray-scale image1'); axis on, grid on;
-    subplot(122); imshow(double(bw1)); axis on;grid on;
-    title(['Binarized image at level ' num2str(thresh1)]);
-    figure('Position',get(0, 'Screensize'));
-    
-    subplot(121); imshow(im2); title('Gray-scale image2'); axis on, grid on;
-    subplot(122); imshow(double(bw2)); axis on;grid on;
-    title(['Binarized image at level ' num2str(thresh2)]);
+    fig_scrnsz = get(0, 'Screensize');
+    offset = offset_factor * fig_scrnsz(4);
+    fig_scrnsz(2) = fig_scrnsz(2) + offset;
+    fig_scrnsz(4) = fig_scrnsz(4) - offset;
+    f = figure; set(gcf, 'Position', fig_scrnsz);
+    show_binary(bw1, f, subplot(sbp1),'Binarized image1');
+    show_binary(bw2, f, subplot(sbp2),'Binarized image2');
+    pause(0.5);
 end
+
 %% CC computation and possibly filtering
 if verbose
     disp('Computing the connected components...');
@@ -173,6 +199,10 @@ end
 tic
 cc1 = bwconncomp(bw1,conn);
 cc2 = bwconncomp(bw2,conn);
+
+stats_cc1 = regionprops(cc1, list_props_all);
+stats_cc2 = regionprops(cc2, list_props_all);
+
 if verbose
     toc
 end
@@ -181,9 +211,6 @@ if area_filtering
         disp('Area filering of the connected components...');
     end
     tic
-    stats_cc1 = regionprops(cc1, list_props_all);
-    stats_cc2 = regionprops(cc2, list_props_all);
-    
     [bw1_f, index1, ~] = filter_regions(bw1, stats_cc1, prop_types_filter,...
         {}, range1, cc1);
     [bw2_f, index2, ~] = filter_regions(bw2, stats_cc2, prop_types_filter,...
@@ -197,6 +224,16 @@ if area_filtering
         end
         cc1_f = bwconncomp(bw1_f,conn);
         cc2_f = bwconncomp(bw2_f,conn);
+    end
+end
+%% visualization of the CCs
+if visualize
+    if area_filtering
+        [labeled1_f,~] = show_cc(cc1_f, true, index1, f, subplot(sbp1_f),'Filtered connected components1');
+        [labeled2_f,~] = show_cc(cc2_f, true, index2, f, subplot(sbp2_f),'Filtered connected components2');
+    else
+        [labeled1,~] = show_cc(cc1, true, [], f, subplot(sbp1_f),'Connected components1');
+        [labeled2,~] = show_cc(cc2, true, [], f, subplot(sbp2_f),'Connected components2');
     end
 end
 
@@ -220,6 +257,7 @@ tic
 if verbose
     toc
 end
+
 %% Matching the SMI descriptors
 if verbose
     disp('SMI descriptors matching...');
@@ -239,24 +277,30 @@ tic
 if verbose
     toc
 end
+
 if verbose
-    if length(matched_pairs) > 3
-        T = struct2table(matched_pairs);
-    else
-        disp('Not enough matches found!');
-        disp('NOT THE SAME SCENE!');
-        is_same = false; matches_ratio = NaN; transf_dist = NaN;
-        if verbose
-            disp('Total elapsed time: ');
-            etime(clock,t0)
-        end
-        return;
-    end
-    if visualize
-        disp('Matches: '); disp(T);
-    end
     disp(['Number of matches: ' , num2str(num_matches)])
     disp(['Mean matching cost: ', num2str(mean(cost))]);
+end
+% check if enough matches
+if length(matched_pairs) > 3
+    if visualize
+        T = struct2table(matched_pairs);
+        if verbose
+            disp('Matches: '); disp(T);
+        end
+    end
+else
+    if verbose
+        disp('Not enough matches found!');
+    end
+    disp('NOT THE SAME SCENE!');
+    is_same = false; matches_ratio = NaN; transf_dist = NaN;
+    if verbose
+        disp('Total elapsed time: ');
+        etime(clock,t0)
+    end
+    return;
 end
 
 %% Filtering of the matches
@@ -265,7 +309,7 @@ if matches_filtering
         disp('Filtering of the matches...');
     end
     tic
-    [filt_matched_pairs, ~, ...
+    [filt_matched_pairs, filt_matched_ind, ...
         filt_cost, filt_num_matches] = filter_matches(matched_pairs, ...
         matched_ind, cost, cost_thresh);
     if verbose
@@ -274,26 +318,99 @@ if matches_filtering
     matches_ratio = filt_num_matches/num_matches;
     
     if verbose
-        if length(filt_matched_pairs) > 3
+        disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
+        disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
+        disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
+    end
+    % check if enough filtered matches
+    if length(filt_matched_pairs) > 3
+        if visualize
             filtT = struct2table(filt_matched_pairs);
-        else
-            disp('Not enough strong matches found!');
-            disp('NOT THE SAME SCENE!');
-            is_same = false; transf_dist = NaN;
             if verbose
-                disp('Total elapsed time: ');
-                etime(clock,t0)
+                disp('Filtered matches:' ); disp(filtT);
             end
-            return;
+        end
+    else
+        if verbose
+            disp('Not enough strong matches found!');
+        end
+        disp('NOT THE SAME SCENE!');
+        is_same = false; transf_dist = NaN;
+        if verbose
+            disp('Total elapsed time: ');
+            etime(clock,t0)
+        end
+        return;
+    end
+else
+    matches_ratio = 1;
+end
+%% visualization of matches
+if visualize
+    if area_filtering
+        matched1 = zeros(size(labeled1_f));
+        matched2 = zeros(size(labeled2_f));
+        
+        for m = 1:num_matches
+            matched1(labeled1_f == matched_ind(m, 1)) = m;
+            matched2(labeled2_f == matched_ind(m, 2)) = m;
+        end
+        
+        if matches_filtering
+            filt_matched1 = zeros(size(labeled1_f));
+            filt_matched2 = zeros(size(labeled2_f));
+            for m = 1:filt_num_matches
+                filt_matched1(labeled1_f == filt_matched_ind(m, 1)) = m;
+                filt_matched2(labeled2_f == filt_matched_ind(m, 2)) = m;
+            end
+        end
+        
+    else
+        matched1 = zeros(size(labeled1));
+        matched2 = zeros(size(labeled2));
+        
+        if matches_filtering
+            filt_matched1 = zeros(size(labeled1));
+            filt_matched2 = zeros(size(labeled2));
+            for m = 1:filt_num_matches
+                filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
+                filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
+            end
+        end
+        for m = 1:num_matches
+            matched1(labeled1 == matched_ind(m, 1)) = m;
+            matched2(labeled2 == matched_ind(m, 2)) = m;
+        end
+        
+    end
+    % make label matricies from the matched pairs
+    if matches_filtering
+        for m = 1:filt_num_matches
+            filt_region1_idx(m) = filt_matched_pairs(m).first;
+            filt_region2_idx(m) = filt_matched_pairs(m).second;
         end
     end
-    
-    if visualize
-        disp('Filtered matches:' ); disp(filtT);
+    for m =1:num_matches
+        region1_idx(m) = matched_pairs(m).first;
+        region2_idx(m) = matched_pairs(m).second;
     end
-    disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
-    disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
-    disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
+    
+    
+    % display
+    show_labelmatrix(matched1, true, region1_idx, stats_cc1, f, ...
+        subplot(sbp1_m), 'Matched regions on image1');
+    
+    show_labelmatrix(matched2, true, region2_idx, stats_cc2, f, ...
+        subplot(sbp2_m), 'Matched regions image2');
+    
+    if matches_filtering
+        show_labelmatrix(filt_matched1, true, filt_region1_idx, stats_cc1, f, ...
+            subplot(sbp1_fm), 'Filtered matched regions on image1');
+        
+        show_labelmatrix(filt_matched2, true, filt_region2_idx, stats_cc2, f, ...
+            subplot(sbp2_fm), 'Filtered matched regions on image2');
+    end
+    pause(0.5);
 end
 
 %% Estimation of affine transformation between the 2 images from the matches
@@ -331,7 +448,7 @@ if verbose
     disp('Computing the distances between the pairs <image, transformed_image>');
 end
 
-% get the matched region indicies 
+% get the matched region indicies
 if matches_filtering
     for i = 1:filt_num_matches
         indicies1(i) = filt_matched_pairs(i).first;
@@ -360,32 +477,38 @@ if verbose
     disp(['Transformation distance1 is: ' num2str(dist1) ]);
     disp(['Transformation distance2 is: ' num2str(dist2) ]);
     disp(['====> Final (average) transformation distance is: ' num2str(transf_dist) ]);
-    
-    if (transf_dist < transf_dist_thresh) && ...
-            ( matches_ratio > matches_ratio_thresh)
-        disp('THE SAME SCENE!');
-        is_same = true;
-        if verbose
-            disp('Total elapsed time: ');
-            etime(clock,t0)
-        end
-        return;
-    end
-    
+end
+if (transf_dist < transf_dist_thresh) && (matches_ratio > matches_ratio_thresh)
+    disp('THE SAME SCENE!');
+    is_same = true;
+    if verbose
+        disp('Total elapsed time: ');
+        etime(clock,t0)
+    end    
 else
     disp('PROBABLY NOT THE SAME SCENE!');
     is_same = false;
     if verbose
         disp('Total elapsed time: ');
         etime(clock,t0)
-    end
-    return;
+    end    
+end
+%% visualization of the transformation distance
+if visualize
+    ff = figure; set(gcf, 'Position', fig_scrnsz);
     
+    show_binary(bwm1, ff, subplot(231),'Image1 (filt.) matched regions');
+    show_binary(bwm2, ff, subplot(234),'Image2 (filt.) matched regions');
+    
+    show_binary(bwm2_trans, ff, subplot(232),'Reconstructed 1');
+    show_binary(bwm1_trans, ff, subplot(235),'Reconstructed 2');
+    
+    show_binary(diff1, ff, subplot(233),'XOR(1, Reconstructed1)');
+    show_binary(diff2, ff, subplot(236),'XOR(2, Reconstructed2)');
+    
+    pause(0.5);
 end
 
-if verbose
-    disp('Total elapsed time: ');
-    etime(clock,t0)
 end
 
 
