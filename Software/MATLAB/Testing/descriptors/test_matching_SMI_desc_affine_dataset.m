@@ -76,19 +76,19 @@ dist_thresh = 2;
 if vis
     if matches_filtering
         sbp_or = (241);
-        sbp_or_l = (242);
+        sbp_or_f = (242);
         sbp_or_m = (243);
         sbp_or_fm = (244);
         sbp_a = (245);
-        sbp_a_l = (246);
+        sbp_a_f = (246);
         sbp_a_m = (247);
         sbp_a_fm = (248);
     else
         sbp_or = (231);
-        sbp_or_l = (232);
+        sbp_or_f = (232);
         sbp_or_m = (233);
         sbp_a = (234);
-        sbp_a_l = (235);
+        sbp_a_f = (235);
         sbp_a_m = (236);
     end
 end
@@ -276,10 +276,10 @@ for h = trans_deg
             show_binary(bw_o, f, subplot(sbp_or),'Binary mask or. (holes)');
             
             if filtering
-                [labeled_o_f, ~] = show_cc(cc_o_f, true, index_o, f, subplot(sbp_or_l), 'Conn. Comp. (after filtering)');
+                [labeled_o_f, ~] = show_cc(cc_o_f, true, index_o, f, subplot(sbp_or_f), 'Conn. Comp. (after filtering)');
                 labeled = labeled_o_f;
             else
-                [labeled_o, ~] = show_cc(cc_o, true, [], f, subplot(sbp_or_l), 'Conn. Comp. ');
+                [labeled_o, ~] = show_cc(cc_o, true, [], f, subplot(sbp_or_f), 'Conn. Comp. ');
                 labeled = labeled_o;
             end
             clear cc_o cc_o_f
@@ -304,10 +304,10 @@ for h = trans_deg
         if num_masks <= 2
             show_binary(bw_a, f, subplot(sbp_a),'Binary mask transf. (holes)');
             if filtering
-                [labeled_a_f, ~] = show_cc(cc_a_f, true, index_a, f, subplot(sbp_a_l), 'Conn. Comp. transf. (after filtering)');
+                [labeled_a_f, ~] = show_cc(cc_a_f, true, index_a, f, subplot(sbp_a_f), 'Conn. Comp. transf. (after filtering)');
                 labeled = labeled_a_f;
             else
-                [labeled_a, ~] = show_cc(cc_a, true, [], f, subplot(sbp_a_l), 'Conn. Comp. tranf.');
+                [labeled_a, ~] = show_cc(cc_a, true, [], f, subplot(sbp_a_f), 'Conn. Comp. tranf.');
                 labeled = labeled_a;
             end
             clear cc_a cc_a_f
