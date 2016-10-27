@@ -12,3 +12,5 @@
 %**************************************************************************
 % test_IsSameScene- testing IsSameScene function for comparision if 2
 %                   images are of the same scene
+% test_IsSameScene_Oxford- testing IsSameScene function for comparision if 2
+%                   images are of the same scene for the Oxford dataset
