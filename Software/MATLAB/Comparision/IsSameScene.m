@@ -1,11 +1,14 @@
 % IsSameScene-  comparing if 2 images are of the same scene
 % **************************************************************************
-% [is_same, matches_ratio, transf_dist] = IsSameScene(im1, im2, ...
+% [is_same, num_matches, mean_cost, ...
+%                      matches_ratio, transf_dist] = IsSameScene(im1, im2, ...
 %                      moments_params, cc_params, match_params, ...
 %                      vis_params, exec_params)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 October 2016
+% last modification date: 29 October 2016
+% modification details: added more output parameters
 % last modification date: 21 October 2016
 % modification details: added visualizations, swaped parameter order
 %**************************************************************************
@@ -58,6 +61,8 @@
 % OUTPUTS:
 % is_same           binary flag, true if images are showing (partially)
 %                   the same scene and false otherwise
+% num_matches       number of matches
+% mean_cost         mean cost of matching
 % matches_ratio     ratio of good matches and all matches
 % transf_dist       transformation distance between the 2 images
 %**************************************************************************
@@ -69,7 +74,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, matches_ratio, transf_dist] = IsSameScene(im1, im2,...
+function [is_same, num_matches, mean_cost, matches_ratio, transf_dist] = IsSameScene(im1, im2,...
     moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
@@ -278,9 +283,10 @@ if verbose
     toc
 end
 
+mean_cost = mean(cost);
 if verbose
     disp(['Number of matches: ' , num2str(num_matches)])
-    disp(['Mean matching cost: ', num2str(mean(cost))]);
+    disp(['Mean matching cost: ', num2str(mean_cost)]);
 end
 % check if enough matches
 if num_matches > 3
