@@ -4,6 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 20-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 4 November 2016
+% modification details: transformation distance replaced with similarity
 % last modification date: 21-10-2016
 % modification details: visualizations added
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,10 +50,10 @@ max_ratio = 0.75;
 max_dist = 10;
 cost_thresh = 0.025;
 matches_ratio_thresh = 0.5;
-transf_dist_thresh = 1.45;
+transf_sim_thresh = -0.5;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, matches_ratio_thresh, transf_dist_thresh);
+    cost_thresh, matches_ratio_thresh, transf_sim_thresh);
 
 
 % visualization parameters
@@ -186,7 +188,8 @@ if verbose
    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
-[is_same, matches_ratio, transf_dist] = IsSameScene(im1, im2,...
+[is_same, num_matches, mean_cost, ...
+       matches_ratio, transf_sim] = IsSameScene(im1, im2,...
                        moments_params, cc_params, match_params,...
                        vis_params, exec_params);
 

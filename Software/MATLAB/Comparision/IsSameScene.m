@@ -1,12 +1,14 @@
 % IsSameScene-  comparing if 2 images are of the same scene
 % **************************************************************************
 % [is_same, num_matches, mean_cost, ...
-%                      matches_ratio, transf_dist] = IsSameScene(im1, im2, ...
+%                      matches_ratio, transf_sim] = IsSameScene(im1, im2, ...
 %                      moments_params, cc_params, match_params, ...
 %                      vis_params, exec_params)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 October 2016
+% last modification date: 4 November 2016
+% modification details: transformation distance replaced with similarity
 % last modification date: 29 October 2016
 % modification details: added more output parameters
 % last modification date: 21 October 2016
@@ -41,10 +43,10 @@
 %                 matches_ratio_thresh- Threhsold for the ration of good to
 %                   all matches. Should be as high as possible for a good
 %                   image match. Default is {0.5}.
-%                 transf_dist_thesh- Transformation distance threshold.
+%                 transf_sim_thresh- Transformation similarity (1-distance) threshold.
 %                   For a good match between images the distance between
 %                   an image and transformed with estimated transformation
-%                   image should be small. Default is {2}.
+%                   image should be small (similarity should be positive). Default is {-.5}.
 % [vis_params]    optional struct with the visualization parameters:
 %                 sbp1/2 - subplot location for CC visualization
 %                 sbp1/2_f - subplot location for filtered CC visualization
@@ -64,7 +66,7 @@
 % num_matches       number of matches
 % mean_cost         mean cost of matching
 % matches_ratio     ratio of good matches and all matches
-% transf_dist       transformation distance between the 2 images
+% transf_sim       transformation similarity (1-distance) between the 2 images
 %**************************************************************************
 % NOTES: The data-driven binarization is performed with default parameters.
 %**************************************************************************
@@ -74,7 +76,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, matches_ratio, transf_dist] = IsSameScene(im1, im2,...
+function [is_same, num_matches, mean_cost, matches_ratio, transf_sim] = IsSameScene(im1, im2,...
     moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
@@ -112,7 +114,7 @@ if nargin < 5 || isempty(match_params)
     match_params.max_dist = 10;
     match_params.cost_thresh = 0.025;
     match_params.matches_ratio_thresh = 0.5;
-    match_params.transf_dist_thresh = 2;
+    match_params.transf_sim_thresh = -0.5;
 end
 if nargin < 4 || isempty(cc_params)
     cc_params.conn = 8;
@@ -301,7 +303,7 @@ else
         disp('Not enough matches found!');
     end
     disp('NOT THE SAME SCENE!');
-    is_same = false; matches_ratio = NaN; transf_dist = NaN;
+    is_same = false; matches_ratio = NaN; transf_sim = NaN;
     if verbose
         disp('Total elapsed time: ');
         etime(clock,t0)
@@ -341,7 +343,7 @@ if matches_filtering
             disp('Not enough strong matches found!');
         end
         disp('NOT THE SAME SCENE!');
-        is_same = false; transf_dist = NaN;
+        is_same = false; transf_sim = NaN;
         if verbose
             disp('Total elapsed time: ');
             etime(clock,t0)
@@ -475,16 +477,16 @@ bwm2 = regions_subset2binary(bw2, indicies2, conn);
 % compute the transformaition distance between the matched regions
 [diff1, diff2, dist1, dist2, ...
     bwm1_trans, bwm2_trans] = transformation_distance(bwm1, bwm2, tform);
-transf_dist = (dist1 + dist2)/2;
+transf_sim = 1 - ((dist1 + dist2)/2);
 if verbose
     toc
 end
 if verbose
     disp(['Transformation distance1 is: ' num2str(dist1) ]);
     disp(['Transformation distance2 is: ' num2str(dist2) ]);
-    disp(['====> Final (average) transformation distance is: ' num2str(transf_dist) ]);
+    disp(['====> Final (average) transformation distance is: ' num2str(transf_sim) ]);
 end
-if (transf_dist < transf_dist_thresh) && (matches_ratio > matches_ratio_thresh)
+if (transf_sim > transf_sim_thresh) && (matches_ratio > matches_ratio_thresh)
     disp('THE SAME SCENE!');
     is_same = true;
     if verbose

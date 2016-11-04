@@ -4,8 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 27-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date:
-% modification details:
+% last modification date: 4 November 2016
+% modification details: transformation distance replaced with similarity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE:
 %**************************************************************************
@@ -22,7 +22,7 @@ area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
-    sav_fname = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\IsSameScene_Oxford.mat';
+    sav_fname = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\IsSameScene_Oxford_2016114_1145.mat';
 end
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
@@ -49,12 +49,12 @@ match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 0.75;
 max_dist = 10;
-cost_thresh = 0.025;
+cost_thresh = 0.021;
 matches_ratio_thresh = 0.5;
-transf_dist_thresh = 1.45;
+transf_sim_thresh = -0.5;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, matches_ratio_thresh, transf_dist_thresh);
+    cost_thresh, matches_ratio_thresh, transf_sim_thresh);
 
 % visualization parameters
 vis_params = [];
@@ -77,7 +77,7 @@ is_same_all = zeros(data_size, data_size);
 num_matches_all = zeros(data_size, data_size);
 mean_costs = zeros(data_size, data_size);
 matches_ratios = zeros(data_size, data_size);
-transf_dists = zeros(data_size, data_size);
+transf_sims = zeros(data_size, data_size);
 %% header
 disp('*********************************************************************');
 disp('  Demo: are all pairs of images of the same scene (Oxford dataset). ');
@@ -130,14 +130,14 @@ for i = 1: numel(test_cases)
                 %% compare if the 2 images show the same scene
                 
                 [is_same, num_matches, mean_cost, ...
-                    matches_ratio, transf_dist] = IsSameScene(im1, im2,...
+                    matches_ratio, transf_sim] = IsSameScene(im1, im2,...
                     moments_params, cc_params, match_params,...
                     vis_params, exec_params);
                 is_same_all(r,c) = is_same;
                 matches_ratios(r,c) = matches_ratio;
                 num_matches_all(r,c) = num_matches;
                 mean_costs(r,c) = mean_cost;
-                transf_dists(r,c) = transf_dist;
+                transf_sims(r,c) = transf_sim;
                 
             end
         end
@@ -147,7 +147,7 @@ end
 %% visualize
 if visualize_final
     gcmap = colormap(gray(256));
-    %hcmap = colormap(hot);
+    hcmap = colormap(hot);
     jcmap = colormap(jet);
     f1 = format_figure(is_same_all, 6, gcmap, ...
         [0 1], {'False','True'}, ...
@@ -165,9 +165,9 @@ if visualize_final
         [], [], ...
         'Ratio good/all matches. All (structured) pairs of Oxford dataset.',...
         YLabels);
-    f5 = format_figure(transf_dists, 6, jcmap, ...
+    f5 = format_figure(transf_sims, 6, hcmap, ...
         [], [], ...
-        'Transformation between matches distance. All (structured) pairs of Oxford dataset.',...
+        'Transformation between matches similarity (1- distance). All (structured) pairs of Oxford dataset.',...
         YLabels);
 end
 
@@ -176,7 +176,8 @@ toc
 %% save
 if sav
    save(sav_fname, 'is_same_all', 'num_matches_all', 'mean_costs', ...
-       'matches_ratios','transf_dists','YLabels'); 
+       'matches_ratios','transf_sims','YLabels', 'moments_params', ...
+       'cc_params', 'match_params', 'exec_params'); 
 end
 %% footer
 if verbose
