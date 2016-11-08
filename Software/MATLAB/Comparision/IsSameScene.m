@@ -484,7 +484,7 @@ end
 if verbose
     disp(['Transformation distance1 is: ' num2str(dist1) ]);
     disp(['Transformation distance2 is: ' num2str(dist2) ]);
-    disp(['====> Final (average) transformation distance is: ' num2str(transf_sim) ]);
+    disp(['====> Final (average) transformation similarity (1-distance) is: ' num2str(transf_sim) ]);
 end
 if (transf_sim > transf_sim_thresh) && (matches_ratio > matches_ratio_thresh)
     disp('THE SAME SCENE!');
