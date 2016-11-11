@@ -8,3 +8,6 @@ The original data are available at the [Oxford's VGG group's page](http://www.ro
 ## OxFrei dataset
 Compbining the Oxford and [Freiburg](http://lmb.informatik.uni-freiburg.de/resources/datasets/genmatch.en.html) datasets.
 
+## MS COCO 
+Common Objects in COntext 2014 test dataset [COCO](http://mscoco.org/).
+NOTE: The folder contais another git repo [coco](https://github.com/pdollar/coco)

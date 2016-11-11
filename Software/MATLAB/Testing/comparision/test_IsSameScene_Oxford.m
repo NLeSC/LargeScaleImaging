@@ -4,6 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 27-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 11 November 2016
+% modification details: max ratio is now 1 to perform symmetric matching                       
 % last modification date: 4 November 2016
 % modification details: transformation distance replaced with similarity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,7 +24,7 @@ area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
-    sav_fname = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\IsSameScene_Oxford_2016114_1145.mat';
+    sav_fname = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\IsSameScene_Oxford_20161111_1610.mat';
 end
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
@@ -47,7 +49,7 @@ cc_params = v2struct(conn, list_props, area_factor);
 % matching parameters
 match_metric = 'ssd';
 match_thresh = 1;
-max_ratio = 0.75;
+max_ratio = 1;
 max_dist = 10;
 cost_thresh = 0.021;
 matches_ratio_thresh = 0.5;

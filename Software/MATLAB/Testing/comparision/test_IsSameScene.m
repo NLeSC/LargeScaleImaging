@@ -4,6 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 20-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 11 November 2016
+% modification details: max ratio is now 1 to perform symmetric matching
 % last modification date: 4 November 2016
 % modification details: transformation distance replaced with similarity
 % last modification date: 21-10-2016
@@ -17,10 +19,10 @@
 
 publish = false;
 % execution parameters
-verbose = false;
+verbose = true;
 visualize = false;
 visualize_dataset = false;
-visualize_test = true;
+visualize_test = false;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
@@ -46,7 +48,7 @@ cc_params = v2struct(conn, list_props, area_factor);
 % matching parameters
 match_metric = 'ssd';
 match_thresh = 1;
-max_ratio = 0.75;
+max_ratio = 1;
 max_dist = 10;
 cost_thresh = 0.025;
 matches_ratio_thresh = 0.5;
