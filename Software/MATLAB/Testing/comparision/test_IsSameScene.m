@@ -4,6 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 20-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 14 November 2016
+% modification details: removed matches_ratio_thresh parameter
 % last modification date: 11 November 2016
 % modification details: max ratio is now 1 to perform symmetric matching
 % last modification date: 4 November 2016
@@ -51,11 +53,11 @@ match_thresh = 1;
 max_ratio = 1;
 max_dist = 10;
 cost_thresh = 0.025;
-matches_ratio_thresh = 0.5;
+%matches_ratio_thresh = 0.5;
 transf_sim_thresh = -0.5;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, matches_ratio_thresh, transf_sim_thresh);
+    cost_thresh, transf_sim_thresh);
 
 
 % visualization parameters
@@ -190,8 +192,7 @@ if verbose
    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
-[is_same, num_matches, mean_cost, ...
-       matches_ratio, transf_sim] = IsSameScene(im1, im2,...
+[is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2,...
                        moments_params, cc_params, match_params,...
                        vis_params, exec_params);
 

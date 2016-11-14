@@ -1,12 +1,15 @@
 % IsSameScene-  comparing if 2 images are of the same scene
 % **************************************************************************
-% [is_same, num_matches, mean_cost, ...
-%                      matches_ratio, transf_sim] = IsSameScene(im1, im2, ...
+% [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2, ...
 %                      moments_params, cc_params, match_params, ...
 %                      vis_params, exec_params)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 19 October 2016
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 14 November 2016
+% modification details: outcome depends on the transformaiton distance only
+%                       removed matches_ratio_thresh in/out parameter
 % last modification date: 4 November 2016
 % modification details: transformation distance replaced with similarity
 % last modification date: 29 October 2016
@@ -17,41 +20,38 @@
 % INPUTS:
 % im1/2          the input gray/color or binary images to be compared
 % [moments_params] optional struct with the moment invariants parameters:
-%                  order- moments order, {4}
-%                  coeff_file- coefficients file filename, {'afinvs4_19.txt'}
-%                  max_num_moments- maximun number of moments, {16}
-% [cc_params]     optional struct with the connected components parameters:
-%                 conn - CC computaiton connectivity, {8}
-%                 list_props list of CC properties to be computed:
+%                order- moments order, {4}
+%                coeff_file- coefficients file filename, {'afinvs4_19.txt'}
+%                max_num_moments- maximun number of moments, {16}
+% [cc_params]    optional struct with the connected components parameters:
+%                conn - CC computaiton connectivity, {8}
+%                list_props list of CC properties to be computed:
 %                   {'Area','Centroid','MinorAxisLength','MajorAxisLength',
 %                                               'Eccentricity','Solidity'};
-%                 area_factor - factor what is considered large CC in an
+%                area_factor - factor what is considered large CC in an
 %                   image, {0.0005}
-% [match_params]  the matching parameters struct [optional] with fields:
-%                 match_metric- feature matching metric, see 'Metric' of
+% [match_params]   the matching parameters struct [optional] with fields:
+%                match_metric- feature matching metric, see 'Metric' of
 %                   matchFeatures. {'ssd'} = Sum of Sqared Differences
-%                 match_thresh - matching threshold, see 'MatchThreshold'
+%                match_thresh - matching threshold, see 'MatchThreshold'
 %                   of matchFeatures. {1}
-%                 max_ratio - ratio threshold, see 'MaxRatio' of
+%                max_ratio - ratio threshold, see 'MaxRatio' of
 %                   matchFeatures. {0.75}
-%                 max_dist - max distance from point to projection for
+%                max_dist - max distance from point to projection for
 %                   estimating the geometric trandorm between matches. See
 %                   "help estimateGeometricTransfrom". Default is {10}.
-%                 cost_thresh - matching cost threshold. The match is
+%                cost_thresh - matching cost threshold. The match is
 %                   considered good it its matching cost is above this
 %                   threhsold. Default value is {0.025}
-%                 matches_ratio_thresh- Threhsold for the ration of good to
-%                   all matches. Should be as high as possible for a good
-%                   image match. Default is {0.5}.
-%                 transf_sim_thresh- Transformation similarity (1-distance) threshold.
+%                transf_sim_thresh- Transformation similarity (1-distance) threshold.
 %                   For a good match between images the distance between
 %                   an image and transformed with estimated transformation
 %                   image should be small (similarity should be positive). Default is {-.5}.
-% [vis_params]    optional struct with the visualization parameters:
-%                 sbp1/2 - subplot location for CC visualization
-%                 sbp1/2_f - subplot location for filtered CC visualization
-%                 sbp1/2_m - subplot location for matches visualization
-%                 sbp1/2_fm - subplot location for filtered matches visual.
+% [vis_params]   optional struct with the visualization parameters:
+%                sbp1/2 - subplot location for CC visualization
+%                sbp1/2_f - subplot location for filtered CC visualization
+%                sbp1/2_m - subplot location for matches visualization
+%                sbp1/2_fm - subplot location for filtered matches visual.
 % [exec_params]  the execution parameters structure [optional] with fields:
 %                verbose- flag for verbose mode, default value {false}
 %                visualize- flag for vizualizing the matching, {false}
@@ -61,12 +61,11 @@
 %                {true}
 %**************************************************************************
 % OUTPUTS:
-% is_same           binary flag, true if images are showing (partially)
-%                   the same scene and false otherwise
-% num_matches       number of matches
-% mean_cost         mean cost of matching
-% matches_ratio     ratio of good matches and all matches
-% transf_sim       transformation similarity (1-distance) between the 2 images
+% is_same        binary flag, true if images are showing (partially)
+%                the same scene and false otherwise
+% num_matches    number of matches
+% mean_cost      mean cost of matching
+% transf_sim     transformation similarity (1-distance) between the 2 images
 %**************************************************************************
 % NOTES: The data-driven binarization is performed with default parameters.
 %**************************************************************************
@@ -76,7 +75,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, matches_ratio, transf_sim] = IsSameScene(im1, im2,...
+function [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2,...
     moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
@@ -110,10 +109,10 @@ end
 if nargin < 5 || isempty(match_params)
     match_params.match_metric = 'ssd';
     match_params.match_thrseh = 1;
-    match_params.max_ratio = 0.75;
+    match_params.max_ratio = 1;
     match_params.max_dist = 10;
     match_params.cost_thresh = 0.025;
-    match_params.matches_ratio_thresh = 0.5;
+   % match_params.matches_ratio_thresh = 0.5;
     match_params.transf_sim_thresh = -0.5;
 end
 if nargin < 4 || isempty(cc_params)
@@ -303,7 +302,7 @@ else
         disp('Not enough matches found!');
     end
     disp('NOT THE SAME SCENE!');
-    is_same = false; matches_ratio = NaN; transf_sim = NaN;
+    is_same = false; transf_sim = NaN;
     if verbose
         disp('Total elapsed time: ');
         etime(clock,t0)
@@ -323,12 +322,12 @@ if matches_filtering
     if verbose
         toc
     end
-    matches_ratio = filt_num_matches/num_matches;
+    %matches_ratio = filt_num_matches/num_matches;
     
     if verbose
         disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
         disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
-        disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
+       % disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
     end
     % check if enough filtered matches
     if filt_num_matches > 3
@@ -350,8 +349,8 @@ if matches_filtering
         end
         return;
     end
-else
-    matches_ratio = 1;
+% else
+%     matches_ratio = 1;
 end
 %% visualization of matches
 if visualize
@@ -486,7 +485,8 @@ if verbose
     disp(['Transformation distance2 is: ' num2str(dist2) ]);
     disp(['====> Final (average) transformation similarity (1-distance) is: ' num2str(transf_sim) ]);
 end
-if (transf_sim > transf_sim_thresh) && (matches_ratio > matches_ratio_thresh)
+%if (transf_sim > transf_sim_thresh) && (matches_ratio > matches_ratio_thresh)
+if (transf_sim > transf_sim_thresh)
     disp('THE SAME SCENE!');
     is_same = true;
     if verbose
@@ -494,7 +494,8 @@ if (transf_sim > transf_sim_thresh) && (matches_ratio > matches_ratio_thresh)
         etime(clock,t0)
     end
 else
-    disp('PROBABLY NOT THE SAME SCENE!');
+    % disp('PROBABLY NOT THE SAME SCENE!');
+    disp('NOT THE SAME SCENE!');
     is_same = false;
     if verbose
         disp('Total elapsed time: ');

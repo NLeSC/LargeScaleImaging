@@ -4,6 +4,9 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 27-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 14 November 2016
+% modification details: symmetric compuation of matricies
+%                       removed matches_ratio_thresh parameter
 % last modification date: 11 November 2016
 % modification details: max ratio is now 1 to perform symmetric matching                       
 % last modification date: 4 November 2016
@@ -24,7 +27,8 @@ area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
-    sav_fname = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\IsSameScene_Oxford_20161111_1610.mat';
+    sav_patch = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
+    sav_fname = [sav_patch 'IsSameScene_Oxford_20161114_1752.mat'];
 end
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
@@ -52,11 +56,10 @@ match_thresh = 1;
 max_ratio = 1;
 max_dist = 10;
 cost_thresh = 0.021;
-matches_ratio_thresh = 0.5;
-transf_sim_thresh = -0.5;
+transf_sim_thresh = 0;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, matches_ratio_thresh, transf_sim_thresh);
+    cost_thresh, transf_sim_thresh);
 
 % visualization parameters
 vis_params = [];
@@ -76,9 +79,7 @@ data_size = 24;
 tic
 %% initializations
 is_same_all = zeros(data_size, data_size);
-num_matches_all = zeros(data_size, data_size);
 mean_costs = zeros(data_size, data_size);
-matches_ratios = zeros(data_size, data_size);
 transf_sims = zeros(data_size, data_size);
 %% header
 disp('*********************************************************************');
@@ -130,22 +131,30 @@ for i = 1: numel(test_cases)
                 im2 = imread(test_image2);
                 
                 %% compare if the 2 images show the same scene
-                
-                [is_same, num_matches, mean_cost, ...
-                    matches_ratio, transf_sim] = IsSameScene(im1, im2,...
-                    moments_params, cc_params, match_params,...
-                    vis_params, exec_params);
-                is_same_all(r,c) = is_same;
-                matches_ratios(r,c) = matches_ratio;
-                num_matches_all(r,c) = num_matches;
-                mean_costs(r,c) = mean_cost;
-                transf_sims(r,c) = transf_sim;
+                if r >= c
+                    [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2,...
+                        moments_params, cc_params, match_params,...
+                        vis_params, exec_params);
+                    is_same_all(r,c) = is_same;
+                    mean_costs(r,c) = mean_cost;
+                    transf_sims(r,c) = transf_sim;                
+                end
                 
             end
         end
     end
 end
 
+%% fill up the remaning elements of the matricies
+for r = 1: data_size
+    for c =1: data_size
+        if r < c            
+            is_same_all(r,c) = is_same_all(c,r);
+            mean_costs(r,c) = mean_costs(c,r);
+            transf_sims(r,c) = transf_sims(c,r);
+        end
+    end
+end
 %% visualize
 if visualize_final
     gcmap = colormap(gray(256));
@@ -155,19 +164,11 @@ if visualize_final
         [0 1], {'False','True'}, ...
         'Is the same scene? All (structured) pairs of Oxford dataset.',...
         YLabels);
-    f2 = format_figure(num_matches_all, 6,jcmap , ...
-        [], [], ...
-        'Number of all matches. All (structured) pairs of Oxford dataset.',...
-        YLabels);
-    f3 = format_figure(mean_costs, 6,jcmap , ...
+    f2 = format_figure(mean_costs, 6,jcmap , ...
         [], [], ...
         'Mean matching cost of all matches. All (structured) pairs of Oxford dataset.',...
         YLabels);
-    f4 = format_figure(matches_ratios, 6,jcmap , ...
-        [], [], ...
-        'Ratio good/all matches. All (structured) pairs of Oxford dataset.',...
-        YLabels);
-    f5 = format_figure(transf_sims, 6, hcmap, ...
+    f3 = format_figure(transf_sims, 6, hcmap, ...
         [], [], ...
         'Transformation between matches similarity (1- distance). All (structured) pairs of Oxford dataset.',...
         YLabels);
@@ -177,8 +178,8 @@ toc
 
 %% save
 if sav
-   save(sav_fname, 'is_same_all', 'num_matches_all', 'mean_costs', ...
-       'matches_ratios','transf_sims','YLabels', 'moments_params', ...
+   save(sav_fname, 'is_same_all', 'mean_costs', ...
+       'transf_sims','YLabels', 'moments_params', ...
        'cc_params', 'match_params', 'exec_params'); 
 end
 %% footer
