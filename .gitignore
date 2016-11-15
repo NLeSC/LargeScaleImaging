@@ -6,6 +6,7 @@ Data/Scientific/
 Data/Test/
 Data/AffineRegions/
 Data/Oxfrei/
+Data/COCO/
 Software/MATLAB/AfineRegions/ImageThresholdingFuzzyEntropy/
 Results/
 TestResults/
