@@ -7,6 +7,7 @@
 %**************************************************************************
 % Functions
 %**************************************************************************
+% perf_eval - evaluates the performance of a classification model
 %**************************************************************************
 % Scripts
 %**************************************************************************
@@ -16,3 +17,5 @@
 %                   images are of the same scene for the Oxford dataset
 % load_saved_IsSameScene_Oxford- loading the results from testing if every
 %               pair of images are of the same scene for the Oxford dataset
+% perfEval_IsSameScene_Oxford- performance evaluation of the same  scene
+%                   tests for the Oxford dataset
