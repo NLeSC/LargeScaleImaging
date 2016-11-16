@@ -19,3 +19,6 @@
 %               pair of images are of the same scene for the Oxford dataset
 % perfEval_IsSameScene_Oxford- performance evaluation of the same  scene
 %                   tests for the Oxford dataset
+%
+% test_IsSameScene_imagePair_OxFrei- testing IsSameScene function for comparision if 2
+%                   images are of the same scene (OxFrei dataset)
