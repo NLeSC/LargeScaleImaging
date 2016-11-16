@@ -1,9 +1,11 @@
-% test_IsSameScene- testing IsSameScene function for comparision if 2
-%                   images are of the same scene
+% test_IsSameScene_imagePair_Ocford- testing IsSameScene function for comparision if 2
+%                   images are of the same scene (Oxford dataset)
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 20-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 16 November 2016
+% modification details: renamed the script
 % last modification date: 14 November 2016
 % modification details: removed matches_ratio_thresh parameter
 % last modification date: 11 November 2016
