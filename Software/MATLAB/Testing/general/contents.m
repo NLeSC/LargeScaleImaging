@@ -17,6 +17,7 @@
 % test_regions_subset2binary.m- tetsing script for regions_subset2binary
 % display_oxford_dataset_structured.m - function to display the affine dataset
 %                                      (structured images subset)
+% display_oxfrei_dataset.m - function to display the OxFrei Dataset
 %**************************************************************************
 % External (say from MATLAB file exchange)
 %**************************************************************************
