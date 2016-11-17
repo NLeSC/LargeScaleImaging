@@ -15,7 +15,7 @@
 
 % execution parameters
 verbose = true;
-visualize = false;
+visualize = true;
 visualize_dataset = false;
 visualize_test = true;
 area_filtering = true;  % if true, perform area filterring on regions
@@ -36,7 +36,7 @@ moments_params = v2struct(order,coeff_file, max_num_moments);
 conn = 8;
 list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
     'Eccentricity','Solidity'};
-area_factor = 0.0005;
+area_factor = 0.0002;
 % pack to a structure
 cc_params = v2struct(conn, list_props, area_factor);
 
@@ -44,8 +44,8 @@ cc_params = v2struct(conn, list_props, area_factor);
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
-max_dist = 10;
-cost_thresh = 0.021;
+max_dist = 2;
+cost_thresh = 0.02;
 transf_sim_thresh = 0;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
