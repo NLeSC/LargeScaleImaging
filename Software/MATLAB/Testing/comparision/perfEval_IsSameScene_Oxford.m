@@ -33,9 +33,11 @@ actual = actual';
 
 %% load the predicted matrix
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1752.mat'];
 
-% load the saved results
+sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1435.mat'];
+sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1605.mat'];
+sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1752.mat'];
+%% load the saved results
 load(sav_fname,'is_same_all','YLabels');
 predicted = is_same_all;
 
@@ -56,6 +58,8 @@ end
 [eval_metrics] = perf_eval(actual, predicted);
 
 if verbose
+
+    disp(['Performance evaluation for results saved in: ' sav_fname]);
     v2struct(eval_metrics);
     disp(['True positives: ' num2str(tp)]);
     disp(['True negatives: ' num2str(tn)]);
