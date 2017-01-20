@@ -65,7 +65,7 @@ match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
 vis_params = [];
 
 % paths
-data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
+data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions';
 if binarized
     data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
     ext = '_bin.png';
