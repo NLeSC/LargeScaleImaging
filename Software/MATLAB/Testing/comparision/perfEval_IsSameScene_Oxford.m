@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% parameters
-vis = false;
+vis = true;
 verbose = true;
 %% compose the actual IsSame matrix
 
