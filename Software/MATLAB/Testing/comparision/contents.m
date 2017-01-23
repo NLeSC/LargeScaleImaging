@@ -2,7 +2,7 @@
 %
 % topic: Salient regions descriptors and matching testing
 % author: Elena Ranguelova, NLeSc
-% date: October 2016
+% date: October 2016, January 2017
 %
 %**************************************************************************
 % Functions
@@ -22,3 +22,5 @@
 %
 % test_IsSameScene_imagePair_OxFrei- testing IsSameScene function for comparision if 2
 %                   images are of the same scene (OxFrei dataset)
+% test_IsSameScene_OxFrei - testing IsSameScene function for comparision if 2
+%                   images are of the same scene for the OxFrei dataset
