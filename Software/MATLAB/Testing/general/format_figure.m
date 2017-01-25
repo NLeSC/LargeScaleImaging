@@ -1,5 +1,9 @@
 function fh = format_figure(square_data, batch_size, cmap, ...
-    colorbar_ticks, colorbar_labels, title_str, full_axis_labels)
+    colorbar_ticks, colorbar_labels, title_str, full_axis_labels, tick_step)
+
+if isempty(tick_step)
+    tick_step = 1;
+end
 
 fh = figure('units','normalized','outerposition',[0 0 1 1]);
 
@@ -9,13 +13,13 @@ imagesc(square_data);
 data_size = size(square_data,1);
 
 ax = gca;
-ax.XTick = 1:data_size;
-ax.XTickLabels = 1:data_size;
+ax.XTick = 1:tick_step:data_size;
+ax.XTickLabels = 1:tick_step:data_size;
 ax.XTickLabelRotation = 45;
-ax.YTick = 1:data_size;
-ax.YTickLabel = full_axis_labels;
+ax.YTick = 1:tick_step:data_size;
+ax.YTickLabel = full_axis_labels(1:tick_step:end);
 % ax.YTickLabelRotation = 30;
-
+ax.TickLabelInterpreter = 'None';
 axis square; axis on, grid on
 %load MyColormaps; colormap(mycmap);
 colormap(cmap);

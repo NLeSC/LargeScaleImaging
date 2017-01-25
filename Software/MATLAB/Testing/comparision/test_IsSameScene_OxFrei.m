@@ -22,7 +22,7 @@ matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\Comparision\';
-    sav_fname = [sav_path 'IsSameScene_OxFrei_20170123_1410.mat'];
+    sav_fname = [sav_path 'IsSameScene_OxFrei_20170124.mat'];
 end
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
@@ -57,7 +57,7 @@ match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
 
 % visualization parameters
 vis_params = [];
-
+tick_step = 5;
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\OxFrei\';
 data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\';    
@@ -159,15 +159,15 @@ if visualize_final
     f1 = format_figure(is_same_all, 21, gcmap, ...
         [0 1], {'False','True'}, ...
         'Is the same scene? All (structured) pairs of OxFrei dataset.',...
-        YLabels);
+        YLabels, tick_step);
     f2 = format_figure(mean_costs, 21,jcmap, ...
         [], [], ...
         'Mean matching cost of all matches. All (structured) pairs of OxFrei dataset.',...
-        YLabels);
+        YLabels, tick_step);
     f3 = format_figure(transf_sims, 21, hcmap, ...
         [], [], ...
         'Transformation between matches similarity (1- distance). All (structured) pairs of OxFrei dataset.',...
-        YLabels);
+        YLabels, tick_step );
 end
 
 toc
