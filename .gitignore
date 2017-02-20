@@ -5,6 +5,7 @@ Data/TNT/
 Data/Scientific/
 Data/Test/
 Data/AffineRegions/
+Data/HPatches/
 Data/COCO/
 Software/MATLAB/AfineRegions/ImageThresholdingFuzzyEntropy/
 Software/MATLAB/DeepLearningForComputerVision/
@@ -25,6 +26,10 @@ Software/Python/build
 Software/Python/docs/_build
 Software/Python/docs/_static
 Software/Python/docs/_templates
+Software/MATLAB/Testing/HPatchesAndBench/
+Software/MATLAB/Testing/doc/
+Software/MATLAB/Testing/pax_global_header
+Software/MATLAB/Testing/vlbenchmakrs-1.0-beta/
 *.aux
 *.toc
 *.*~
