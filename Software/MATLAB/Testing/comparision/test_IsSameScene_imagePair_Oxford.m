@@ -1,4 +1,4 @@
-% test_IsSameScene_imagePair_Ocford- testing IsSameScene function for comparision if 2
+% test_IsSameScene_imagePair_Oxford- testing IsSameScene function for comparision if 2
 %                   images are of the same scene (Oxford dataset)
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
@@ -24,9 +24,9 @@
 publish = false;
 % execution parameters
 verbose = true;
-visualize = false;
-visualize_dataset = false;
-visualize_test = false;
+visualize = true;
+visualize_dataset = true;
+visualize_test = true;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
