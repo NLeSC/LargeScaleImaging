@@ -10,7 +10,10 @@
 %--------------------------------------------------------------------------
 % main
 %--------------------------------------------------------------------------
-% IsSameScene-  comparing if 2 images are of the same scene
+% IsSameScene-  comparing if 2 images are of the same scene (with smart 
+%               binarization + SMI descriptor)
+% IsSameSceneStandard-  comparing if 2 images are of the same scene 
+%               (with MSER detector + SURF descriptor)
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------

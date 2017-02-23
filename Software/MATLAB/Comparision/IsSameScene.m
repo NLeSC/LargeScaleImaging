@@ -1,4 +1,5 @@
-% IsSameScene-  comparing if 2 images are of the same scene
+% IsSameScene-  comparing if 2 images are of the same scene (with smart 
+%               binarization + SMI descriptor)
 % **************************************************************************
 % [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2, ...
 %                      moments_params, cc_params, match_params, ...
