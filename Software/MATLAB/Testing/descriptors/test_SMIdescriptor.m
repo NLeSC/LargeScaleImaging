@@ -167,7 +167,7 @@ figure(f); subplot(224);
 plot(1:20, SMI_descr', '*-');
 legend(num2str(index),'Location','bestoutside');
 axis on, grid on;
-title('SMI descriptorsfor filtered regions');
+title('SMI descriptors for filtered regions');
 xlabel('Descriptor dimension');
 %%
 if verbose
