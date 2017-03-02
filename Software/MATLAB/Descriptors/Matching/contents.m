@@ -17,5 +17,6 @@
 % estimate_affine_tform- estimate affine transformation between
 %                           matched region's centroids
 % transformation_distance_binary- 'transformation distance' between 2 binary images
+% transformation_distance- 'transformation distance' between 2 images
 % filter_matches-  filtering the matches obtained after matching
 
