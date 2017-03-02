@@ -58,7 +58,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1, im2,...
+function [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1o, im2o,...
     match_params, vis_params, exec_params)
 
 %% input control
@@ -122,11 +122,15 @@ end
 %% MSER region detection
 
 % convert to gray if needed
-if ndims(im1) == 3
-    im1 = rgb2gray(im1);
+if ndims(im1o) == 3
+    im1 = rgb2gray(im1o);
+else 
+    im1 =im1o;
 end
-if ndims(im2) == 3
-    im2 = rgb2gray(im2);
+if ndims(im2o) == 3
+    im2 = rgb2gray(im2o);
+else
+    im2 = im2o;
 end
 tic
 
@@ -363,15 +367,10 @@ else
     end
 end
 
-% generate binary images only from the matched regions
-tic
-bwm1 = regions_subset2binary(bw1, indicies1, 8);
-bwm2 = regions_subset2binary(bw2, indicies2, 8);
-
-% compute the transformaition distance between the matched regions
-[diff1, diff2, dist1, dist2, ...
-    bwm1_trans, bwm2_trans] = transformation_distance(bwm1, bwm2, tform);
-transf_sim = 1 - ((dist1 + dist2)/2);
+% compute the transformaition distance between the matched images
+[dist1, dist2, ...
+    im1_trans, im2_trans] = transformation_distance(im1, im2, tform);
+transf_sim = ((dist1 + dist2)/2);
 if verbose
     toc
 end
@@ -401,15 +400,15 @@ end
 if visualize
     ff = figure; set(gcf, 'Position', fig_scrnsz);
     
-    show_binary(bwm1, ff, subplot(231),'Image1 (filt.) matched regions');
-    show_binary(bwm2, ff, subplot(234),'Image2 (filt.) matched regions');
+    figure(ff); subplot(231); imshow(im1o); axis on, grid on, title('Image1');
+    figure(ff); subplot(234); imshow(im2o); axis on, grid on, title('Image2');
     
-    show_binary(bwm2_trans, ff, subplot(232),'Reconstructed 1');
-    show_binary(bwm1_trans, ff, subplot(235),'Reconstructed 2');
-    
-    show_binary(diff1, ff, subplot(233),'XOR(1, Reconstructed1)');
-    show_binary(diff2, ff, subplot(236),'XOR(2, Reconstructed2)');
-    
+    figure(ff); subplot(232); imshow(im1_trans); axis on, grid on, title('Transformed Image1');
+    figure(ff); subplot(235); imshow(im2_trans); axis on, grid on, title('Transformed Image2');
+          
+    figure(ff); subplot(233); imshowpair(im1, im2_trans, 'diff'); axis on, grid on, title('Difference between Image1 and transformed Image2');
+    figure(ff); subplot(236); imshowpair(im2, im1_trans, 'diff'); axis on, grid on, title('Difference between Image2 and transformed Image1');
+        
     pause(0.5);
 end
 
