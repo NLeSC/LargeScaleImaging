@@ -526,7 +526,7 @@ if status == 0
     bw2 = regions_subset2binary(bw_a, indicies_a, conn);
     
     % compute the transformaition distance between the matched regions
-    [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance(bw1, bw2, tform);
+    [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance_binary(bw1, bw2, tform);
     av_dist = (dist1 + dist2)/2;
     
     disp(['Transformation distance1 is: ' num2str(dist1) ]);

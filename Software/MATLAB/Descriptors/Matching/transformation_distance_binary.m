@@ -1,8 +1,10 @@
-% transformation_distance- 'transformation distance' between 2 binary images
+% transformation_distance_binary- 'transformation distance' between 2 binary images
 % **************************************************************************
-% [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance(bw1, bw2, tform)
+% [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance_binary(bw1, bw2, tform)
 % author: Elena Ranguelova, NLeSc
 % date created: 22 Sep 2016
+% last modification date: 2 Mar 2017
+% modification details: renamed to transformation_distance_binary
 % last modification date: 4 Oct 2016
 % modification details: returns 2 distances in respect to the 2  addimages
 % last modification date: 30 Sept 2016
@@ -26,7 +28,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance(bw1, bw2, tform)
+function [diff1, diff2, dist1, dist2, bw1_trans, bw2_trans] = transformation_distance_binary(bw1, bw2, tform)
 
 %% input parameters
 if nargin < 3

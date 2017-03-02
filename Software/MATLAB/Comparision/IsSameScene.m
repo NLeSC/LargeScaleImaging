@@ -476,7 +476,7 @@ bwm2 = regions_subset2binary(bw2, indicies2, conn);
 
 % compute the transformaition distance between the matched regions
 [diff1, diff2, dist1, dist2, ...
-    bwm1_trans, bwm2_trans] = transformation_distance(bwm1, bwm2, tform);
+    bwm1_trans, bwm2_trans] = transformation_distance_binary(bwm1, bwm2, tform);
 transf_sim = 1 - ((dist1 + dist2)/2);
 if verbose
     toc
