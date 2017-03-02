@@ -14,12 +14,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
 
-publish = true;
+publish = false;
 % execution parameters
-verbose = false;
+verbose = true;
 visualize = true;
 visualize_dataset = false;
-visualize_test = false;
+visualize_test = true;
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, matches_filtering);
@@ -89,7 +89,7 @@ end
 if publish
     disp('Enter base test case [graffiti|leuven|boat|bikes] for the first image: ');
     disp('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
-    test_case1 = 'leuven'; trans_deg1 = 1;
+    %test_case1 = 'leuven'; trans_deg1 = 1;
     test_case1 = 'graffiti'; trans_deg1 = 1;
     test_case1 = 'boat'; trans_deg1 = 3;
     test_case1 = 'bikes'; trans_deg1 = 1;
