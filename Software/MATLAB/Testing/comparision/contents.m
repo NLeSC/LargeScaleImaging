@@ -13,8 +13,14 @@
 %**************************************************************************
 % test_IsSameScene_imagePair_Oxford- testing IsSameScene function for comparision if 2
 %                   images are of the same scene (Oxford dataset)
+% test_IsSameSceneStandard_imagePair_Oxford- testing IsSameScene function for comparision if 2
+%                   images are of the same scene (Oxford dataset) using
+%                   IsSameSceneStandard
 % test_IsSameScene_Oxford- testing IsSameScene function for comparision if 2
 %                   images are of the same scene for the Oxford dataset
+% test_IsSameSceneStandard_Oxford- testing IsSameScene function for comparision if 2
+%                   images are of the same scene for the Oxford dataset
+%                   using IsSameSceneStandard
 % load_saved_IsSameScene_Oxford- loading the results from testing if every
 %               pair of images are of the same scene for the Oxford dataset
 % perfEval_IsSameScene_Oxford- performance evaluation of the same  scene
