@@ -14,13 +14,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
 
-publish = false;
+publish = true;
 % execution parameters
-verbose = true;
+verbose = false;
 visualize = true;
 visualize_dataset = false;
-visualize_test = true;
-matches_filtering = false; % if true, perform filterring on the matches
+visualize_test = false;
+matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, matches_filtering);
 
@@ -108,8 +108,8 @@ if publish
     test_case2 = 'bikes'; trans_deg2 = 6;
     test_case2 = 'boat'; trans_deg2 = 1;
     test_case2 = 'leuven'; trans_deg2 = 3;
-    test_case2 = 'boat'; trans_deg2 = 4;
-    est_case2 = 'bikes'; trans_deg2 = 2;
+%     test_case2 = 'boat'; trans_deg2 = 4;
+%     test_case2 = 'bikes'; trans_deg2 = 2;
     disp([test_case2 num2str(trans_deg2)]);
     
 else

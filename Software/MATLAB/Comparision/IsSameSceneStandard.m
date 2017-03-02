@@ -243,23 +243,20 @@ else
     return;
 end
 
-%% visualize
+% visualize
 matchedPoints1 = valid_points1(matched_ind(:,1));
 matchedPoints2 = valid_points2(matched_ind(:,2));
 
 figure(f); subplot(sbp1_m);
 showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2);
-legend('matched points 1','matched points 2');
+legend('points 1','points 2', ...
+    'Location', 'best');
 title('Matching 1->2');
 figure(f); subplot(sbp2_m);
 showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1);
-legend('matched points 2','matched points 1');
-title('Matching 2->1');
-
-return
-
-
-
+legend('points 2',' points 1', ...
+    'Location', 'best');
+title('Matches 2->1');
 
 
 %% Filtering of the matches
@@ -305,57 +302,71 @@ if matches_filtering
     %     matches_ratio = 1;
 end
 %% visualization of matches
-if visualize
-    labeled1 = labelmatrix(cc1);
-    labeled2 = labelmatrix(cc2);
-    
-    matched1 = zeros(size(labeled1));
-    matched2 = zeros(size(labeled2));
-    
-    if matches_filtering
-        filt_matched1 = zeros(size(labeled1));
-        filt_matched2 = zeros(size(labeled2));
-        for m = 1:filt_num_matches
-            filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
-            filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
-        end
-    else
-        for m = 1:num_matches
-            matched1(labeled1 == matched_ind(m, 1)) = m;
-            matched2(labeled2 == matched_ind(m, 2)) = m;
-        end
-    end
-    
-    % make label matricies from the matched pairs
-    if matches_filtering
-        for m = 1:filt_num_matches
-            filt_region1_idx(m) = filt_matched_pairs(m).first;
-            filt_region2_idx(m) = filt_matched_pairs(m).second;
-        end
-    end
-    for m =1:num_matches
-        region1_idx(m) = matched_pairs(m).first;
-        region2_idx(m) = matched_pairs(m).second;
-    end
-    
-    
-    % display
-    show_labelmatrix(matched1, true, region1_idx, stats_cc1, f, ...
-        subplot(sbp1_m), 'Matched regions on image1');
-    
-    show_labelmatrix(matched2, true, region2_idx, stats_cc2, f, ...
-        subplot(sbp2_m), 'Matched regions image2');
-    
-    if matches_filtering
-        show_labelmatrix(filt_matched1, true, filt_region1_idx, stats_cc1, f, ...
-            subplot(sbp1_fm), 'Filtered matched regions on image1');
-        
-        show_labelmatrix(filt_matched2, true, filt_region2_idx, stats_cc2, f, ...
-            subplot(sbp2_fm), 'Filtered matched regions on image2');
-    end
-    pause(0.5);
-end
+filtMatchedPoints1 = valid_points1(filt_matched_ind(:,1));
+filtMatchedPoints2 = valid_points2(filt_matched_ind(:,2));
 
+figure(f); subplot(sbp1_fm);
+showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
+legend('points 1','points 2', ...
+    'Location', 'best');
+title('Filtered matches 1->2');
+figure(f); subplot(sbp2_fm);
+showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
+legend('points 2','points 1', ...
+    'Location', 'best');
+title('Filtered matches 2->1');
+% if visualize
+%     labeled1 = labelmatrix(cc1);
+%     labeled2 = labelmatrix(cc2);
+%     
+%     matched1 = zeros(size(labeled1));
+%     matched2 = zeros(size(labeled2));
+%     
+%     if matches_filtering
+%         filt_matched1 = zeros(size(labeled1));
+%         filt_matched2 = zeros(size(labeled2));
+%         for m = 1:filt_num_matches
+%             filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
+%             filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
+%         end
+%     else
+%         for m = 1:num_matches
+%             matched1(labeled1 == matched_ind(m, 1)) = m;
+%             matched2(labeled2 == matched_ind(m, 2)) = m;
+%         end
+%     end
+%     
+%     % make label matricies from the matched pairs
+%     if matches_filtering
+%         for m = 1:filt_num_matches
+%             filt_region1_idx(m) = filt_matched_pairs(m).first;
+%             filt_region2_idx(m) = filt_matched_pairs(m).second;
+%         end
+%     end
+%     for m =1:num_matches
+%         region1_idx(m) = matched_pairs(m).first;
+%         region2_idx(m) = matched_pairs(m).second;
+%     end
+%     
+%     
+%     % display
+%     show_labelmatrix(matched1, true, region1_idx, stats_cc1, f, ...
+%         subplot(sbp1_m), 'Matched regions on image1');
+%     
+%     show_labelmatrix(matched2, true, region2_idx, stats_cc2, f, ...
+%         subplot(sbp2_m), 'Matched regions image2');
+%     
+%     if matches_filtering
+%         show_labelmatrix(filt_matched1, true, filt_region1_idx, stats_cc1, f, ...
+%             subplot(sbp1_fm), 'Filtered matched regions on image1');
+%         
+%         show_labelmatrix(filt_matched2, true, filt_region2_idx, stats_cc2, f, ...
+%             subplot(sbp2_fm), 'Filtered matched regions on image2');
+%     end
+%     pause(0.5);
+% end
+
+return
 %% Estimation of affine transformation between the 2 images from the matches
 if verbose
     disp('Estimating affine transformation from the matches...');
