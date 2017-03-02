@@ -29,8 +29,7 @@ matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-    sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1605.mat'];
-    %sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1752.mat'];
+    sav_fname = [sav_path 'IsSameSceneStandard_Oxford_20170302_1700.mat'];
 end
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
