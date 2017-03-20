@@ -1,17 +1,11 @@
-% test_IsSameSceneStandard_Oxford- testing IsSameScene function for comparision if 2
+% test_IsSameSceneStandard_Oxford- testing IsSameSceneStandard for comparision if 2
 %                   images are of the same scene for the Oxford dataset
-%                   using IsSameSceneStandard
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
-% date created: 27-10-2016
+% date created: 03-03-2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 14 November 2016
-% modification details: symmetric compuation of matricies
-%                       removed matches_ratio_thresh parameter
-% last modification date: 11 November 2016
-% modification details: max ratio is now 1 to perform symmetric matching                       
-% last modification date: 4 November 2016
-% modification details: transformation distance replaced with similarity
+% last modification date: 
+% modification details: 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE:
 %**************************************************************************
@@ -24,15 +18,14 @@ visualize = false;
 visualize_dataset = false;
 visualize_test = false;
 visualize_final = true;
-area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-    sav_fname = [sav_path 'IsSameSceneStandard_Oxford_20170302_1700.mat'];
+    sav_fname = [sav_path 'IsSameSceneStandard_Oxford_20170303_1330.mat'];
 end
 % pack to a structure
-exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
+exec_params = v2struct(verbose,visualize, matches_filtering);
 
 binarized = true;
 
@@ -114,6 +107,7 @@ for i = 1: numel(test_cases)
         end
         test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]);
         im1 = imread(test_image1);
+       
         c = 0;
         for j = 1: numel(test_cases)
             test_case2 = char(test_cases{j});
@@ -133,9 +127,8 @@ for i = 1: numel(test_cases)
                 
                 %% compare if the 2 images show the same scene
                 if r >= c
-                    [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2,...
-                        moments_params, cc_params, match_params,...
-                        vis_params, exec_params);
+                    [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1, im2,...
+                        match_params, vis_params, exec_params);
                     is_same_all(r,c) = is_same;
                     mean_costs(r,c) = mean_cost;
                     transf_sims(r,c) = transf_sim;                
