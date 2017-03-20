@@ -16,10 +16,10 @@
 
 publish = false;
 % execution parameters
-verbose = true;
+verbose = false;
 visualize = true;
 visualize_dataset = false;
-visualize_test = true;
+visualize_test = false;
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, matches_filtering);

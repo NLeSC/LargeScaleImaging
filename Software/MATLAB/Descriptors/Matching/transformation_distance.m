@@ -47,14 +47,29 @@ im2_trans = zeros(nrows1, ncols1);
 im1_trans = zeros(nrows2, ncols2);
 
 %% computations
+c = 10;
 outputView = imref2d(size(im1));
-im2_trans = imwarp(im2,tform,'OutputView',outputView);
+im2_trans = imwarp(im2+c,tform,'OutputView',outputView,'FillValues', 0);
 
 invtform = invert(tform);
 outputView = imref2d(size(im2));
-im1_trans = imwarp(im1,invtform,'OutputView',outputView);
+im1_trans = imwarp(im1+c,invtform,'OutputView',outputView,'FillValues', 0);
 
-dist1 = 1 - corr2(im1, im2_trans);
-dist2 = 1 - corr2(im2, im1_trans);
+% mask out the NaN values
+mask1 = not(im1_trans == 0);
+mask2 = not(im2_trans == 0);
+im1_masked2 = im1.*uint8(mask2);
+im2_masked1 = im2.*uint8(mask1);
+figure;subplot(221); imshow(im1_masked2);
+subplot(222); imshow(mask2);
+subplot(223); imshow(im2_trans.*uint8(mask2));
+figure;subplot(221); imshow(im2_masked1);
+subplot(222); imshow(mask1);
+subplot(223); imshow(im1_trans.*uint8(mask1));
+
+im1_trans = im1_trans - c;
+im2_trans = im2_trans - c;
+dist1 = 1 - corr2(im1(mask2), im2_trans(mask2));
+dist2 = 1 - corr2(im2(mask1), im1_trans(mask1));
 
 end

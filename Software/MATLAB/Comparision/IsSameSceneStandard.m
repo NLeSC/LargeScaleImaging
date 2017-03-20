@@ -90,7 +90,7 @@ if (nargin < 4 || isempty(vis_params)) && (exec_params.visualize)
 end
 if nargin < 3 || isempty(match_params)
     match_params.match_metric = 'ssd';
-    match_params.match_thrseh = 1;
+    match_params.match_thresh = 1;
     match_params.max_ratio = 1;
     match_params.max_dist = 10;
     match_params.cost_thresh = 0.025;
@@ -222,10 +222,10 @@ if verbose
 end
 
 mean_cost = mean(cost);
-if verbose
+%if verbose
     disp(['Number of matches: ' , num2str(num_matches)])
     disp(['Mean matching cost: ', num2str(mean_cost)]);
-end
+%end
 % check if enough matches
 if num_matches > 3
     if visualize
@@ -370,15 +370,15 @@ end
 % compute the transformaition distance between the matched images
 [dist1, dist2, ...
     im1_trans, im2_trans] = transformation_distance(im1, im2, tform);
-transf_sim = ((dist1 + dist2)/2);
+transf_sim = 1-((dist1 + dist2)/2);
 if verbose
     toc
 end
-if verbose
+%if verbose
     disp(['Transformation distance1 is: ' num2str(dist1) ]);
     disp(['Transformation distance2 is: ' num2str(dist2) ]);
     disp(['====> Final (average) transformation similarity (1-distance) is: ' num2str(transf_sim) ]);
-end
+%end
 %if (transf_sim > transf_sim_thresh) && (matches_ratio > matches_ratio_thresh)
 if (transf_sim > transf_sim_thresh)
     disp('THE SAME SCENE!');
