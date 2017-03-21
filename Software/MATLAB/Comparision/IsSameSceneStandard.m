@@ -1,7 +1,7 @@
 % IsSameSceneStandard-  comparing if 2 images are of the same scene
 %               (with MSER detector + SURF descriptor)
 % **************************************************************************
-% [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1, im2, ...
+% [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1o, im2o, ...
 %                       match_params, vis_params, exec_params)
 %
 % author: Elena Ranguelova, NLeSc
@@ -12,7 +12,7 @@
 %                       is now 'blend', not 'diff'
 %**************************************************************************
 % INPUTS:
-% im1/2          the input gray/color or binary images to be compared
+% im1/2o          the input gray/color or binary images to be compared
 
 % [match_params]   the matching parameters struct [optional] with fields:
 %                match_metric- feature matching metric, see 'Metric' of
@@ -31,7 +31,7 @@
 %                   For a good match between images the distance between
 %                   an image and transformed with estimated transformation
 %                   image should be small (similarity should be large). 
-%                   Default is {+.5}.
+%                   Default is {+.3}.
 % [vis_params]   optional struct with the visualization parameters:
 %                sbp1/2 - subplot location for CC visualization
 %                sbp1/2_d - subplot location for descriptor points visualization
@@ -40,9 +40,9 @@
 % [exec_params]  the execution parameters structure [optional] with fields:
 %                verbose- flag for verbose mode, default value {false}
 %                visualize- flag for vizualizing the matching, {false}
-%                area_filering - flag for performing region (cc) area
+%                area_filtering - flag for performing region (cc) area
 %                   filtering, {true}- NOT USED for now!
-%                matches_filering - flag for performing matches filtering,
+%                matches_filtering - flag for performing matches filtering,
 %                {true}
 %**************************************************************************
 % OUTPUTS:
@@ -243,14 +243,14 @@ else
     end
     disp('NOT THE SAME SCENE!');
     is_same = false; transf_sim = NaN;
-    if verbose
-        disp('Total elapsed time: ');
-        etime(clock,t0)
+    if verbose        
+        et = etime(clock,t0);
+        disp(['Total elapsed time: ' num2str(et)]);
     end
     return;
 end
 
-% visualize
+%% visualize
 matchedPoints1 = valid_points1(matched_ind(:,1));
 matchedPoints2 = valid_points2(matched_ind(:,2));
 
@@ -286,12 +286,12 @@ if matches_filtering
     end
     % check if enough filtered matches
     if filt_num_matches > 3
-        if visualize
-            filtT = struct2table(filt_matched_pairs);
+%        if visualize
+%            filtT = struct2table(filt_matched_pairs);
 %             if verbose
 %                 disp('Filtered matches:' ); disp(filtT);
 %             end
-        end
+ %       end
     else
         if verbose
             disp('Not enough strong matches found!');
@@ -299,8 +299,8 @@ if matches_filtering
         disp('NOT THE SAME SCENE!');
         is_same = false; transf_sim = NaN;
         if verbose
-            disp('Total elapsed time: ');
-            etime(clock,t0)
+            et = etime(clock,t0);
+            disp(['Total elapsed time: ' num2str(et)]);
         end
         return;
     end
