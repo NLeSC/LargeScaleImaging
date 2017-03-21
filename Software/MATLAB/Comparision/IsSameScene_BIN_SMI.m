@@ -172,6 +172,7 @@ if area_filtering
     range2 = {[area_factor*image_area2 image_area2]};
 end
 transf_sim = zeros(1, num_sim_runs);
+mn_transf_sim = 0;
 %% processing
 %**************** Processing *******************************
 disp('Processing...');
