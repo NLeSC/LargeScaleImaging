@@ -4,6 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 20-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 21 March 2017
+% modification details: default preliminary binarization is not alowed
 % last modification date: 16 November 2016
 % modification details: renamed the script
 % last modification date: 14 November 2016
@@ -25,14 +27,14 @@ publish = false;
 % execution parameters
 verbose = true;
 visualize = true;
-visualize_dataset = true;
-visualize_test = true;
+visualize_dataset = false;
+visualize_test = false;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
 
-binarized = true;
+%binarized = true;
 
 % moments parameters
 order = 4;
@@ -56,7 +58,7 @@ max_ratio = 1;
 max_dist = 10;
 cost_thresh = 0.025;
 %matches_ratio_thresh = 0.5;
-transf_sim_thresh = -0.5;
+transf_sim_thresh = 0.3;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
     cost_thresh, transf_sim_thresh);
@@ -93,17 +95,17 @@ end
 
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
-if binarized
-    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
-    ext = '_bin.png';
-else
+% if binarized
+%     data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
+%     ext = '_bin.png';
+% else
     ext  ='.png';
-end
+%end
 
 
-disp('*****************************************************************');
-disp('  Demo script for determining if 2 images are of the same scene. ');
-disp('*****************************************************************');
+disp('******************************************************************************************************');
+disp('  Demo script for determining if 2 images are of the same scene (smart binarization + SMI descriptor). ');
+disp('******************************************************************************************************');
 
 
 %% visualize the test dataset
@@ -155,18 +157,18 @@ end
 
 if verbose
    disp('Loading the 2 test images...');
-   if binarized
-       disp('Already binarized images are used.');
-   end
+%    if binarized
+%        disp('Already binarized images are used.');
+%    end
 end
 
-if binarized
-    test_path1 = fullfile(data_path_bin,test_case1);
-    test_path2 = fullfile(data_path_bin,test_case2);
-else
+% if binarized
+%     test_path1 = fullfile(data_path_bin,test_case1);
+%     test_path2 = fullfile(data_path_bin,test_case2);
+% else
     test_path1 = fullfile(data_path_or,test_case1);
     test_path2 = fullfile(data_path_or,test_case2);
-end
+%end
 
 test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]); 
 test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]); 
@@ -194,12 +196,12 @@ if verbose
    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
-[is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2,...
-                       moments_params, cc_params, match_params,...
-                       vis_params, exec_params);
+[is_same, num_matches, mean_cost, transf_sim] = ...
+                                 IsSameScene(im1, im2,...
+                                             moments_params, cc_params, ...
+                                             match_params,...
+                                             vis_params, exec_params);
 
 if verbose
-   disp('*****************************************************************');
-   disp('                                     DONE.                       ');
-   disp('*****************************************************************');
+   disp('***********************   DONE   ************************');
 end
