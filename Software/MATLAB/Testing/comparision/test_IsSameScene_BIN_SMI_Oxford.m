@@ -4,6 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 27-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 21 March 2017
+% modification details: new parameters; multipleruns
 % last modification date: 14 November 2016
 % modification details: symmetric compuation of matricies
 %                       removed matches_ratio_thresh parameter
@@ -28,7 +30,7 @@ matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-    sav_fname = [sav_path 'IsSameScene_BIN_SMI_Oxford_20170321_1255.mat'];
+    sav_fname = [sav_path 'IsSameScene_BIN_SMI_Oxford_20170321_1735.mat'];
     
 end
 % pack to a structure
@@ -53,19 +55,28 @@ cc_params = v2struct(conn, list_props, area_factor);
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
-max_dist = 10;
+max_dist = 8;
+conf=95;
+max_num_trials = 1000;
 cost_thresh = 0.025;
-transf_sim_thresh = 0.3;
+transf_sim_thresh = 0.25;
+num_sim_runs = 30;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, transf_sim_thresh);
+    conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
 
 % visualization parameters
 vis_params = [];
 
+binarized = true;
+
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions';
-ext = '.png';
+ext_or = '.png';
+if binarized
+    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
+    ext_bin = '_bin.png';
+end
 
 % data size
 data_size = 24;
@@ -101,8 +112,13 @@ for i = 1: numel(test_cases)
         YLabels{r} = strcat(test_case1, num2str(trans_deg1), ': ', num2str(r));
         disp(YLabels{r});
         test_path1 = fullfile(data_path_or,test_case1);
-        test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]);
-        im1 = imread(test_image1);
+        test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext_or]);
+        im1 = imread(test_image1); bw1 = [];
+        if binarized
+            test_bin_path1 = fullfile(data_path_bin,test_case1);
+            test_bin_image1 = fullfile(test_bin_path1,[test_case1 num2str(trans_deg1) ext_bin]);
+            bw1 = imread(test_bin_image1); 
+        end
         c = 0;
         for j = 1: numel(test_cases)
             test_case2 = char(test_cases{j});
@@ -111,13 +127,18 @@ for i = 1: numel(test_cases)
                 disp('----------------------------------------------------------------');
                 disp([test_case2 num2str(trans_deg2)]);               
                 test_path2 = fullfile(data_path_or,test_case2);               
-                test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]);
-                im2 = imread(test_image2);
+                test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext_or]);
+                im2 = imread(test_image2); bw2 = [];
+                if binarized
+                    test_bin_path2 = fullfile(data_path_bin,test_case2);
+                    test_bin_image2 = fullfile(test_bin_path2,[test_case2 num2str(trans_deg2) ext_bin]);
+                    bw2 = imread(test_bin_image2);
+                end
                 
                 %% compare if the 2 images show the same scene
                 if r >= c
                     [is_same, num_matches, mean_cost, transf_sim] = ...
-                        IsSameScene_BIN_SMI(im1, im2,...
+                        IsSameScene_BIN_SMI(im1, im2, bw1, bw2, ...
                                             moments_params, cc_params, match_params,...
                                             vis_params, exec_params);
                     is_same_all(r,c) = is_same;
@@ -169,10 +190,9 @@ if sav
 end
 %% footer
 if verbose
-    disp('*****************************************************************');
-    disp('                                     DONE.                       ');
-    disp('*****************************************************************');
+    disp('***********************   DONE   ************************');
 end
+
 
 
 

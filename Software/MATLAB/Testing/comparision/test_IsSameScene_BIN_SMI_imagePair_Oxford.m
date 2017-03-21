@@ -1,4 +1,4 @@
-% test_IsSameScene_imagePair_Oxford- testing IsSameScene_BIN_SMI 
+% test_IsSameScene_imagePair_Oxford- testing IsSameScene_BIN_SMI
 %                   function for comparision if 2
 %                   images are of the same scene (Oxford dataset)
 %**************************************************************************
@@ -27,7 +27,7 @@
 publish = false;
 % execution parameters
 verbose = true;
-visualize = true;
+visualize = false;
 visualize_dataset = false;
 visualize_test = false;
 area_filtering = true;  % if true, perform area filterring on regions
@@ -35,7 +35,7 @@ matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
 
-%binarized = true;
+binarized = true;
 
 % moments parameters
 order = 4;
@@ -56,13 +56,15 @@ cc_params = v2struct(conn, list_props, area_factor);
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
-max_dist = 10;
+max_dist = 8;
+conf=95;
+max_num_trials = 1000;
 cost_thresh = 0.025;
-%matches_ratio_thresh = 0.5;
-transf_sim_thresh = 0.3;
+transf_sim_thresh = 0.25;
+num_sim_runs = 100;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, transf_sim_thresh);
+    conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
 
 
 % visualization parameters
@@ -96,13 +98,11 @@ end
 
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
-% if binarized
-%     data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
-%     ext = '_bin.png';
-% else
-    ext  ='.png';
-%end
-
+ext_or  ='.png';
+if binarized
+    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
+    ext_bin = '_bin.png';
+end
 
 disp('******************************************************************************************************');
 disp('  Demo script for determining if 2 images are of the same scene (smart binarization + SMI descriptor). ');
@@ -115,7 +115,7 @@ if visualize_dataset
         disp('Displaying the test dataset...');
     end
     display_oxford_dataset_structured(data_path_or);
-    pause(5);    
+    pause(5);
 end
 
 %% load test data
@@ -138,7 +138,7 @@ if publish
     disp('Enter the transformation degree [1(no transformation)|2|3|4|5|6]: ');
     test_case2 = 'leuven'; trans_deg2 = 4;
     test_case2 = 'graffiti'; trans_deg2 = 3;
-    test_case2 = 'boat'; trans_deg2 = 5;    
+    test_case2 = 'boat'; trans_deg2 = 5;
     test_case2 = 'bikes'; trans_deg2 = 6;
     test_case2 = 'boat'; trans_deg2 = 1;
     test_case2 = 'leuven'; trans_deg2 = 3;
@@ -157,24 +157,28 @@ else
 end
 
 if verbose
-   disp('Loading the 2 test images...');
-%    if binarized
-%        disp('Already binarized images are used.');
-%    end
+    disp('Loading the 2 test images...');
+    if binarized
+        disp('Already binarized images are used.');
+    end
 end
 
-% if binarized
-%     test_path1 = fullfile(data_path_bin,test_case1);
-%     test_path2 = fullfile(data_path_bin,test_case2);
-% else
-    test_path1 = fullfile(data_path_or,test_case1);
-    test_path2 = fullfile(data_path_or,test_case2);
-%end
+test_path1 = fullfile(data_path_or,test_case1);
+test_path2 = fullfile(data_path_or,test_case2);
 
-test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]); 
-test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]); 
+test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext_or]);
+test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext_or]);
 
 im1 = imread(test_image1); im2 = imread(test_image2);
+bw1 = []; bw2 = [];
+
+if binarized
+    test_bin_path1 = fullfile(data_path_bin,test_case1);
+    test_bin_path2 = fullfile(data_path_bin,test_case2);
+    test_bin_image1 = fullfile(test_bin_path1,[test_case1 num2str(trans_deg1) ext_bin]);
+    test_bin_image2 = fullfile(test_bin_path2,[test_case2 num2str(trans_deg2) ext_bin]);
+    bw1 = imread(test_bin_image1); bw2 = imread(test_bin_image2);
+end
 
 % visualize the choice
 if visualize_test
@@ -194,15 +198,27 @@ end
 
 %% compare if the 2 images show the same scene
 if verbose
-   disp('Comparing the 2 test images...');
+    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
+if not(binarized)
+    if verbose
+        disp('Data-driven binarization 1 (before comparision)...');
+    end
+    [bw1,~] = data_driven_binarizer(im1);
+    if verbose
+        disp('Data-driven binarization 2 (before comparision)...');
+    end
+    [bw2,~] = data_driven_binarizer(im2);
+end
+
 [is_same, num_matches, mean_cost, transf_sim] = ...
-                                 IsSameScene_BIN_SMI(im1, im2,...
-                                             moments_params, cc_params, ...
-                                             match_params,...
-                                             vis_params, exec_params);
+    IsSameScene_BIN_SMI(im1, im2,...
+    bw1,bw2, ...
+    moments_params, cc_params, ...
+    match_params,...
+    vis_params, exec_params);
 
 if verbose
-   disp('***********************   DONE   ************************');
+    disp('***********************   DONE   ************************');
 end

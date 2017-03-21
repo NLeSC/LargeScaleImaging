@@ -1,7 +1,8 @@
-% IsSameScene_BIN_SMI-  comparing if 2 images are of the same scene 
+% IsSameScene_BIN_SMI-  comparing if 2 images are of the same scene
 %               (with smart binarization + SMI descriptor)
 % **************************************************************************
-% [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_BIN_SMI(im1o, im2o, ...
+% [is_same, num_matches, mean_cost, mean_transf_sim] = IsSameScene_BIN_SMI(im1o, im2o, ...
+%                      bw1, bw2, ...
 %                      moments_params, cc_params, match_params, ...
 %                      vis_params, exec_params)
 %
@@ -9,7 +10,7 @@
 % date created: 19 October 2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % last modification date: 21 March 2017
-% modification details: similarity distance using corr2 (same as the 
+% modification details: similarity distance using corr2 (same as the
 %                       standard method; different visualization transformation)
 % last modification date: 14 November 2016
 % modification details: outcome depends on the transformaiton distance only
@@ -23,6 +24,8 @@
 %**************************************************************************
 % INPUTS:
 % im1/2o          the input gray/color images to be compared
+% [bw1/bw2]       binarized images. [Optional]. If missing, images are
+%                 binarized inside the function.
 % [moments_params] optional struct with the moment invariants parameters:
 %                order- moments order, {4}
 %                coeff_file- coefficients file filename, {'afinvs4_19.txt'}
@@ -44,6 +47,10 @@
 %                max_dist - max distance from point to projection for
 %                   estimating the geometric trandorm between matches. See
 %                   "help estimateGeometricTransfrom". Default is {10}.
+%                conf - confidence of finding maximum number ofinliers. See
+%                   "help estimateGeometricTransfrom". Default is {90}.
+%                max_num_trials - maximum random trials. See
+%                   "help estimateGeometricTransfrom". Default is {100}.
 %                cost_thresh - matching cost threshold. The match is
 %                   considered good it its matching cost is above this
 %                   threhsold. Default value is {0.025}
@@ -52,6 +59,8 @@
 %                   an image and transformed with estimated transformation
 %                   image should be small (similarity should be positive).
 %                   Default is {+.3}.
+%                num_sim_runs - number of similarity runs, the final
+%                transf_sim is the average of number of runs. Default is 20.
 % [vis_params]   optional struct with the visualization parameters:
 %                sbp1/2 - subplot location for CC visualization
 %                sbp1/2_f - subplot location for filtered CC visualization
@@ -70,7 +79,7 @@
 %                the same scene and false otherwise
 % num_matches    number of matches
 % mean_cost      mean cost of matching
-% transf_sim     transformation similarity (1-distance) between the 2 images
+% mean_transf_sim  mean transformation similarity between the 2 images
 %**************************************************************************
 % NOTES: The data-driven binarization is performed with default parameters.
 %**************************************************************************
@@ -80,17 +89,17 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_BIN_SMI(im1o,...
-    im2o, moments_params, cc_params, match_params, vis_params, exec_params)
+function [is_same, num_matches, mean_cost, mn_transf_sim] = IsSameScene_BIN_SMI(im1o,...
+    im2o, bw1, bw2, moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
-if nargin < 7 || isempty(exec_params)
+if nargin < 9 || isempty(exec_params)
     exec_params.verbose = false;
     exec_params.visualize = false;
     exec_params.area_filtering = true;
     exec_params.matches_filtering = true;
 end
-if (nargin < 6 || isempty(vis_params)) && (exec_params.visualize)
+if (nargin < 8 || isempty(vis_params)) && (exec_params.visualize)
     if exec_params.matches_filtering
         vis_params.sbp1 = (241);
         vis_params.sbp1_f = (242);
@@ -111,25 +120,34 @@ if (nargin < 6 || isempty(vis_params)) && (exec_params.visualize)
         vis_params.sbp2_fm = [];
     end
 end
-if nargin < 5 || isempty(match_params)
+if nargin < 7 || isempty(match_params)
     match_params.match_metric = 'ssd';
     match_params.match_thrseh = 1;
     match_params.max_ratio = 1;
     match_params.max_dist = 10;
+    match_params.conf=90;
+    match_params.max_num_trials = 100;
     match_params.cost_thresh = 0.025;
-   % match_params.matches_ratio_thresh = 0.5;
+    % match_params.matches_ratio_thresh = 0.5;
     match_params.transf_sim_thresh = 0.3;
+    match_params.num_sim_runs = 20;
 end
-if nargin < 4 || isempty(cc_params)
+if nargin < 6 || isempty(cc_params)
     cc_params.conn = 8;
     cc_params.list_props = {'Area','Centroid','MinorAxisLength',...
         'MajorAxisLength', 'Eccentricity','Solidity'};
     cc_params.area_factor = 0.0005;
 end
-if nargin < 3 || isempty(moments_params)
+if nargin < 4 || isempty(moments_params)
     moments_params.order = 4;
     moments_params.coeff_file = 'afinvs4_19.txt';
     moments_params.max_num_moments = 16;
+end
+if nargin < 4
+    bw1 = [];
+end
+if nargin < 3
+    bw2 = [];
 end
 if nargin < 2
     error('IsSameScene_BIN_SMI: the function expects minimum 2 input arguments- the images to be compared!');
@@ -153,7 +171,7 @@ if area_filtering
     range1 = {[area_factor*image_area1 image_area1]};
     range2 = {[area_factor*image_area2 image_area2]};
 end
-
+transf_sim = zeros(1, num_sim_runs);
 %% processing
 %**************** Processing *******************************
 disp('Processing...');
@@ -166,21 +184,25 @@ end
 % find out the dimensionality
 if ndims(im1o) == 3
     im1 = rgb2gray(im1o);
+else
+    im1= im1o;
 end
 if ndims(im2o) == 3
     im2 = rgb2gray(im2o);
+else
+    im2 = im2o;
 end
 tic
 
-if ismatrix(im1)
+if isempty(bw1)
     if verbose
-        disp('Data-driven binarization 1...');
+        disp('Data-driven binarization 1 (inside comparision)...');
     end
     [bw1,~] = data_driven_binarizer(im1);
 end
-if ismatrix(im2)
+if isempty(bw2)
     if verbose
-        disp('Data-driven binarization 2...');
+        disp('Data-driven binarization 2 (inside comparision)...');
     end
     [bw2,~] = data_driven_binarizer(im2);
 end
@@ -278,26 +300,26 @@ end
 tic
 [matched_pairs, cost, matched_ind, num_matches] =...
     matching( SMI_descr1, SMI_descr2, ...
-              match_metric, match_thresh, ...
-              max_ratio, true, ...
-              area_filtering, ind1, ind2);
+    match_metric, match_thresh, ...
+    max_ratio, true, ...
+    area_filtering, ind1, ind2);
 if verbose
     toc
 end
 
 mean_cost = mean(cost);
 %if verbose
-    disp(['Number of matches: ' , num2str(num_matches)])
-    disp(['Mean matching cost: ', num2str(mean_cost)]);
+disp(['Number of matches: ' , num2str(num_matches)])
+disp(['Mean matching cost: ', num2str(mean_cost)]);
 %end
 % check if enough matches
 if num_matches > 3
-    if visualize
-        T = struct2table(matched_pairs);
-%         if verbose
-%             disp('Matches: '); disp(T);
-%         end
-    end
+    %     if visualize
+    %         T = struct2table(matched_pairs);
+    %                 if verbose
+    %                     disp('Matches: '); disp(T);
+    %                 end
+    %     end
 else
     if verbose
         disp('Not enough matches found!');
@@ -328,16 +350,16 @@ if matches_filtering
     if verbose
         disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
         disp(['Filtered mean matching cost: ', num2str(mean(filt_cost))]);
-       % disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
+        % disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
     end
     % check if enough filtered matches
     if filt_num_matches > 3
-%        if visualize
-%            filtT = struct2table(filt_matched_pairs);
-%             if verbose
-%                 disp('Filtered matches:' ); disp(filtT);
-%             end
-%        end
+        %                if visualize
+        %                    filtT = struct2table(filt_matched_pairs);
+        %                     if verbose
+        %                         disp('Filtered matches:' ); disp(filtT);
+        %                     end
+        %                end
     else
         if verbose
             disp('Not enough strong matches found!');
@@ -350,8 +372,6 @@ if matches_filtering
         end
         return;
     end
-% else
-%     matches_ratio = 1;
 end
 % visualization of matches
 if visualize
@@ -422,74 +442,58 @@ if visualize
 end
 
 %% Estimation of affine transformation between the 2 images from the matches
-if verbose
-    disp('Estimating affine transformation from the matches...');
-end
 
-if matches_filtering
-    matched_pairs_d = filt_matched_pairs;
-else
-    matched_pairs_d = matched_pairs;
-end
-tic
-[tform,inl1, ~, status] = estimate_affine_tform(matched_pairs_d, ...
-                                                stats_cc1, stats_cc2,...
-                                                max_dist);
-if verbose
-    toc
-end
-if verbose
-    num_inliers = length(inl1);
-    disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
+for nsr = 1: num_sim_runs
     
-    switch status
-        case 0
-            disp(['Sucessful transf. estimation!']);
-        case 1
-            disp('Transformation cannot be estimated due to low number of matches!');
-        case 2
-            disp('Transformation cannot be estimated!');
+    if verbose
+        disp('Estimating affine transformation from the matches...');
     end
-end
+    
+    if matches_filtering
+        matched_pairs_d = filt_matched_pairs;
+    else
+        matched_pairs_d = matched_pairs;
+    end
+    tic
+    [tform{nsr},inl1, ~, status] = estimate_affine_tform(matched_pairs_d, ...
+        stats_cc1, stats_cc2, max_dist, conf, max_num_trials);
+    %tform =  estimate_affine_tform(matched_pairs_d, stats_cc1, stats_cc2);
+    if verbose
+        toc
+    end
+    if verbose
+        num_inliers = length(inl1);
+        disp(['The transformation has been estimated from ' num2str(num_inliers) ' matches.']);
+        
+        switch status
+            case 0
+                disp(['Sucessful transf. estimation!']);
+            case 1
+                disp('Transformation cannot be estimated due to low number of matches!');
+            case 2
+                disp('Transformation cannot be estimated!');
+        end
+    end
+    
+    %% Compute differences between image and transformed image
+    if verbose
+        disp('Computing the transformation correlation between the pairs <image, transformed_image>');
+    end
+    
+    % compute the transformaition correlation between the matched regions
+    tic
+    [correl1, correl2, im1_trans, im2_trans] = transformation_correlation(im1, im2, tform{nsr});
+    transf_sim(nsr) = ((correl1 + correl2)/2);
+    disp(['Transformation similarity for this run is: ' num2str(transf_sim(nsr))]);
+    if verbose
+        toc
+    end
 
-%% Compute differences between image and transformed image
-if verbose
-    disp('Computing the transformation distances between the pairs <image, transformed_image>');
 end
+mn_transf_sim = mean(transf_sim);
+disp(['====> Final (mean) transformation similarity  is: ' num2str(mn_transf_sim) ]);
 
-% %get the matched region indicies
-% if matches_filtering
-%     for i = 1:filt_num_matches
-%         indicies1(i) = filt_matched_pairs(i).first;
-%         indicies2(i) =  filt_matched_pairs(i).second;
-%     end
-% else
-%     for i = 1:num_matches
-%         indicies1(i) =  matched_pairs(i).first;
-%         indicies2(i) = matched_pairs(i).second;
-%     end
-% end
-
-% % generate binary images only from the matched regions
-% tic
-% bwm1 = regions_subset2binary(bw1, indicies1, conn);
-% bwm2 = regions_subset2binary(bw2, indicies2, conn);
-% 
-% % compute the transformaition distance between the matched regions
-% [diff1, diff2, dist1, dist2, ...
-%     bwm1_trans, bwm2_trans] = transformation_distance_binary(bwm1, bwm2, tform);
-[dist1, dist2, im1_trans, im2_trans] = transformation_distance(im1, im2, tform);
-transf_sim = 1 - ((dist1 + dist2)/2);
-if verbose
-    toc
-end
-%if verbose
-    disp(['Transformation distance1 is: ' num2str(dist1) ]);
-    disp(['Transformation distance2 is: ' num2str(dist2) ]);
-    disp(['====> Final (average) transformation similarity (1-distance) is: ' num2str(transf_sim) ]);
-%end
-%if (transf_sim > transf_sim_thresh) && (matches_ratio > matches_ratio_thresh)
-if (transf_sim > transf_sim_thresh)
+if (mn_transf_sim > transf_sim_thresh)
     disp('THE SAME SCENE!');
     is_same = true;
     if verbose
@@ -497,7 +501,6 @@ if (transf_sim > transf_sim_thresh)
         disp(['Total elapsed time: ' num2str(et)]);
     end
 else
-    % disp('PROBABLY NOT THE SAME SCENE!');
     disp('NOT THE SAME SCENE!');
     is_same = false;
     if verbose
@@ -508,27 +511,16 @@ end
 %% visualization of the transformation distance
 if visualize
     ff = figure; set(gcf, 'Position', fig_scrnsz);
-
     
-%     show_binary(bwm1, ff, subplot(231),'Image1 (filt.) matched regions');
-%     show_binary(bwm2, ff, subplot(234),'Image2 (filt.) matched regions');
-%     
-%     show_binary(bwm2_trans, ff, subplot(232),'Reconstructed 1');
-%     show_binary(bwm1_trans, ff, subplot(235),'Reconstructed 2');
-%     
-%     show_binary(diff1, ff, subplot(233),'XOR(1, Reconstructed1)');
-%     show_binary(diff2, ff, subplot(236),'XOR(2, Reconstructed2)');
-
     figure(ff); subplot(231); imshow(im1o); axis on, grid on, title('Image1');
     figure(ff); subplot(234); imshow(im2o); axis on, grid on, title('Image2');
     
-    figure(ff); subplot(232); imshow(im1_trans); axis on, grid on, title('Transformed Image1');
-    figure(ff); subplot(235); imshow(im2_trans); axis on, grid on, title('Transformed Image2');
-          
+    figure(ff); subplot(232); imshow(im1_trans); axis on, grid on, title('Last Transformed Image1');
+    figure(ff); subplot(235); imshow(im2_trans); axis on, grid on, title('Last Transformed Image2');
+    
     figure(ff); subplot(233); imshowpair(im1, im2_trans, 'blend'); axis on, grid on, title('Overlay of Image1 and transformed Image2');
     figure(ff); subplot(236); imshowpair(im2, im1_trans, 'blend'); axis on, grid on, title('Overlay of Image2 and transformed Image1');
-
-    
+        
     pause(0.5);
 end
 
