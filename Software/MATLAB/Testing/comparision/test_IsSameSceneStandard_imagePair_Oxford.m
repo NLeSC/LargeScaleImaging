@@ -16,7 +16,7 @@
 
 publish = false;
 % execution parameters
-verbose = false;
+verbose = true;
 visualize = true;
 visualize_dataset = false;
 visualize_test = false;
@@ -31,7 +31,7 @@ max_ratio = 1;
 max_dist = 10;
 cost_thresh = 0.025;
 %matches_ratio_thresh = 0.5;
-transf_sim_thresh = -0.5;
+transf_sim_thresh = 0.3;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
     cost_thresh, transf_sim_thresh);
@@ -160,7 +160,5 @@ disp('*****************************************************************');
                        vis_params, exec_params);
 
 if verbose
-   disp('*****************************************************************');
-   disp('                                     DONE.                       ');
-   disp('*****************************************************************');
+   disp('***********************   DONE   ************************');
 end

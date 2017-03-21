@@ -60,12 +60,12 @@ mask1 = not(im1_trans == 0);
 mask2 = not(im2_trans == 0);
 im1_masked2 = im1.*uint8(mask2);
 im2_masked1 = im2.*uint8(mask1);
-figure;subplot(221); imshow(im1_masked2);
-subplot(222); imshow(mask2);
-subplot(223); imshow(im2_trans.*uint8(mask2));
-figure;subplot(221); imshow(im2_masked1);
-subplot(222); imshow(mask1);
-subplot(223); imshow(im1_trans.*uint8(mask1));
+% figure;subplot(221); imshow(im1_masked2);
+% subplot(222); imshow(mask2);
+% subplot(223); imshow(im2_trans.*uint8(mask2));
+% figure;subplot(221); imshow(im2_masked1);
+% subplot(222); imshow(mask1);
+% subplot(223); imshow(im1_trans.*uint8(mask1));
 
 im1_trans = im1_trans - c;
 im2_trans = im2_trans - c;

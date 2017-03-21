@@ -7,8 +7,9 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 23 February 2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date:
-% modification details:
+% last modification date: 21 March 2017
+% modification details: similarity threshold is made higher; visualization
+%                       is now 'blend', not 'diff'
 %**************************************************************************
 % INPUTS:
 % im1/2          the input gray/color or binary images to be compared
@@ -29,7 +30,8 @@
 %                transf_sim_thresh- Transformation similarity (1-distance) threshold.
 %                   For a good match between images the distance between
 %                   an image and transformed with estimated transformation
-%                   image should be small (similarity should be positive). Default is {-.5}.
+%                   image should be small (similarity should be large). 
+%                   Default is {+.5}.
 % [vis_params]   optional struct with the visualization parameters:
 %                sbp1/2 - subplot location for CC visualization
 %                sbp1/2_d - subplot location for descriptor points visualization
@@ -95,7 +97,7 @@ if nargin < 3 || isempty(match_params)
     match_params.max_dist = 10;
     match_params.cost_thresh = 0.025;
     % match_params.matches_ratio_thresh = 0.5;
-    match_params.transf_sim_thresh = -0.5;
+    match_params.transf_sim_thresh = 0.3;
 end
 if nargin < 2
     error('IsSameSceneStandard: the function expects minimum 2 input arguments- the images to be compared!');
@@ -171,6 +173,8 @@ end
 if visualize
     fig_scrnsz = get(0, 'Screensize');
     offset = offset_factor * fig_scrnsz(4);
+    fig_scrnsz(1) = fig_scrnsz(1) + 10;
+    fig_scrnsz(3) = fig_scrnsz(3) + 10;
     fig_scrnsz(2) = fig_scrnsz(2) + offset;
     fig_scrnsz(4) = fig_scrnsz(4) - offset;
     f = figure; set(gcf, 'Position', fig_scrnsz);
@@ -211,12 +215,11 @@ end
 ind1 = []; ind2 = [];
 
 tic
-[matched_pairs, cost, matched_ind, num_matches] = matching(...
-    SURF_descr1, SURF_descr2, ...
-    match_metric, ...
-    match_thresh, ...
-    max_ratio, true, ...
-    false, ind1, ind2);
+[matched_pairs, cost, matched_ind, num_matches] = ...
+    matching(SURF_descr1, SURF_descr2, ...
+             match_metric, match_thresh, ...
+             max_ratio, true, ...
+             false, ind1, ind2);
 if verbose
     toc
 end
@@ -230,9 +233,9 @@ mean_cost = mean(cost);
 if num_matches > 3
     if visualize
         T = struct2table(matched_pairs);
-        if verbose
-            disp('Matches: '); disp(T);
-        end
+%         if verbose
+%             disp('Matches: '); disp(T);
+%         end
     end
 else
     if verbose
@@ -269,8 +272,8 @@ if matches_filtering
     end
     tic
     [filt_matched_pairs, filt_matched_ind, ...
-        filt_cost, filt_num_matches] = filter_matches(matched_pairs, ...
-        matched_ind, cost, cost_thresh);
+        filt_cost, filt_num_matches] = ...
+            filter_matches(matched_pairs, matched_ind, cost, cost_thresh);
     if verbose
         toc
     end
@@ -285,9 +288,9 @@ if matches_filtering
     if filt_num_matches > 3
         if visualize
             filtT = struct2table(filt_matched_pairs);
-            if verbose
-                disp('Filtered matches:' ); disp(filtT);
-            end
+%             if verbose
+%                 disp('Filtered matches:' ); disp(filtT);
+%             end
         end
     else
         if verbose
@@ -331,7 +334,8 @@ else
 end
 tic
 [tform,inl1, ~, status] = estimate_affine_tform(matched_pairs_d, ...
-    stats_cc1, stats_cc2, max_dist);
+                                               stats_cc1, stats_cc2,...
+                                               max_dist);
 if verbose
     toc
 end
@@ -351,25 +355,24 @@ end
 
 %% Compute differences between image and transformed image
 if verbose
-    disp('Computing the distances between the pairs <image, transformed_image>');
+    disp('Computing the transformation distances between the pairs <image, transformed_image>');
 end
 
-% get the matched region indicies
-if matches_filtering
-    for i = 1:filt_num_matches
-        indicies1(i) = filt_matched_pairs(i).first;
-        indicies2(i) =  filt_matched_pairs(i).second;
-    end
-else
-    for i = 1:num_matches
-        indicies1(i) =  matched_pairs(i).first;
-        indicies2(i) = matched_pairs(i).second;
-    end
-end
+% % get the matched region indicies
+% if matches_filtering
+%     for i = 1:filt_num_matches
+%         indicies1(i) = filt_matched_pairs(i).first;
+%         indicies2(i) =  filt_matched_pairs(i).second;
+%     end
+% else
+%     for i = 1:num_matches
+%         indicies1(i) =  matched_pairs(i).first;
+%         indicies2(i) = matched_pairs(i).second;
+%     end
+% end
 
 % compute the transformaition distance between the matched images
-[dist1, dist2, ...
-    im1_trans, im2_trans] = transformation_distance(im1, im2, tform);
+[dist1, dist2, im1_trans, im2_trans] = transformation_distance(im1, im2, tform);
 transf_sim = 1-((dist1 + dist2)/2);
 if verbose
     toc
@@ -383,17 +386,17 @@ end
 if (transf_sim > transf_sim_thresh)
     disp('THE SAME SCENE!');
     is_same = true;
-    if verbose
-        disp('Total elapsed time: ');
-        etime(clock,t0)
+    if verbose        
+        et = etime(clock,t0);
+        disp(['Total elapsed time: ' num2str(et)]);
     end
 else
     % disp('PROBABLY NOT THE SAME SCENE!');
     disp('NOT THE SAME SCENE!');
     is_same = false;
-    if verbose
-        disp('Total elapsed time: ');
-        etime(clock,t0)
+    if verbose        
+        et = etime(clock,t0);
+        disp(['Total elapsed time: ' num2str(et)]);
     end
 end
 %% visualization of the transformation distance
@@ -406,8 +409,8 @@ if visualize
     figure(ff); subplot(232); imshow(im1_trans); axis on, grid on, title('Transformed Image1');
     figure(ff); subplot(235); imshow(im2_trans); axis on, grid on, title('Transformed Image2');
           
-    figure(ff); subplot(233); imshowpair(im1, im2_trans, 'diff'); axis on, grid on, title('Difference between Image1 and transformed Image2');
-    figure(ff); subplot(236); imshowpair(im2, im1_trans, 'diff'); axis on, grid on, title('Difference between Image2 and transformed Image1');
+    figure(ff); subplot(233); imshowpair(im1, im2_trans, 'blend'); axis on, grid on, title('Overlay of Image1 and transformed Image2');
+    figure(ff); subplot(236); imshowpair(im2, im1_trans, 'blend'); axis on, grid on, title('Overlay of Image2 and transformed Image1');
         
     pause(0.5);
 end
