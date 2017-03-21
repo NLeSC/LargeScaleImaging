@@ -251,20 +251,22 @@ else
 end
 
 %% visualize
-matchedPoints1 = valid_points1(matched_ind(:,1));
-matchedPoints2 = valid_points2(matched_ind(:,2));
-
-figure(f); subplot(sbp1_m);
-showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2);
-legend('points 1','points 2', ...
-    'Location', 'best');
-title('Matching 1->2');
-figure(f); subplot(sbp2_m);
-showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1);
-legend('points 2',' points 1', ...
-    'Location', 'best');
-title('Matches 2->1');
-
+if visualize
+    matchedPoints1 = valid_points1(matched_ind(:,1));
+    matchedPoints2 = valid_points2(matched_ind(:,2));
+    
+    
+    figure(f); subplot(sbp1_m);
+    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2);
+    legend('points 1','points 2', ...
+        'Location', 'best');
+    title('Matching 1->2');
+    figure(f); subplot(sbp2_m);
+    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1);
+    legend('points 2',' points 1', ...
+        'Location', 'best');
+    title('Matches 2->1');
+end
 %% Filtering of the matches
 if matches_filtering
     if verbose
@@ -308,20 +310,21 @@ if matches_filtering
     %     matches_ratio = 1;
 end
 %% visualization of matches
-filtMatchedPoints1 = valid_points1(filt_matched_ind(:,1));
-filtMatchedPoints2 = valid_points2(filt_matched_ind(:,2));
-
-figure(f); subplot(sbp1_fm);
-showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
-legend('points 1','points 2', ...
-    'Location', 'best');
-title('Filtered matches 1->2');
-figure(f); subplot(sbp2_fm);
-showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
-legend('points 2','points 1', ...
-    'Location', 'best');
-title('Filtered matches 2->1');
-
+if visualize
+    filtMatchedPoints1 = valid_points1(filt_matched_ind(:,1));
+    filtMatchedPoints2 = valid_points2(filt_matched_ind(:,2));
+    
+    figure(f); subplot(sbp1_fm);
+    showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
+    legend('points 1','points 2', ...
+        'Location', 'best');
+    title('Filtered matches 1->2');
+    figure(f); subplot(sbp2_fm);
+    showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
+    legend('points 2','points 1', ...
+        'Location', 'best');
+    title('Filtered matches 2->1');
+end
 %% Estimation of affine transformation between the 2 images from the matches
 if verbose
     disp('Estimating affine transformation from the matches...');
