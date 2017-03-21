@@ -15,6 +15,10 @@
 %                first/second region set
 % max_dist       max distance from point to projection. For more info type
 %                "help estimateGeometricTransfrom". Optional, default is 8.
+%                conf - confidence offinding maximum number ofinliers. See
+%                   "help estimateGeometricTransfrom". Default is {90}.
+%                max_num_trials - maximum random trials. See 
+%                   "help estimateGeometricTransfrom". Default is {500}.
 %**************************************************************************
 % OUTPUTS:
 % tform         geometric transformation. Affine is assumed. For more info 
@@ -34,9 +38,16 @@
 % REFERENCES:
 %**************************************************************************
 function [tform, inl_points1, inl_points2, status] = estimate_affine_tform(matched_pairs, ...
-                                   stats_cc1, stats_cc2, max_dist)
-
-%% input parameters
+                                   stats_cc1, stats_cc2, max_dist, conf, max_num_trials)
+% function [tform] = estimate_affine_tform(matched_pairs, ...
+%                                    stats_cc1, stats_cc2)
+% input parameters
+if nargin < 6
+    max_num_trials =  500;
+end
+if nargin < 5
+    conf =  95;
+end
 if nargin < 4
     max_dist =  8;
 end
@@ -53,8 +64,10 @@ indicies2 = cat(1,matched_pairs.second);
 matched_points1 = centroids1(indicies1,:);
 matched_points2 = centroids2(indicies2,:);
 
-%% computations
+% computations
 [tform, inl_points2, inl_points1, status]= estimateGeometricTransform(matched_points2,...
-    matched_points1, 'affine','MaxDistance',max_dist);
+    matched_points1, 'affine','MaxDistance',max_dist,'Confidence', conf, ...
+    'MaxNumTrials', max_num_trials);
+%[tform]= fitgeotrans(matched_points2, matched_points1, 'affine');
 
 end
