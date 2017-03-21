@@ -71,7 +71,7 @@ ext  ='.png';
 
 
 disp('******************************************************************************************************');
-disp('  Demo script for determining if 2 images are of the same scene using MSER detector + SURF descriptor. ');
+disp(' Demo: are 2 images from the Oxford dataset of the same scene (using MSER detector + SURF descriptor)?');
 disp('******************************************************************************************************');
 
 
