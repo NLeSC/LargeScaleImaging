@@ -18,7 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
 % execution parameters
-verbose = false;
+verbose = true;
 visualize = false;
 visualize_dataset = false;
 visualize_test = false;
@@ -28,13 +28,11 @@ matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-    sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1605.mat'];
-    %sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1752.mat'];
+    sav_fname = [sav_path 'IsSameScene_BIN_SMI_Oxford_20170321_1255.mat'];
+    
 end
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
-
-binarized = true;
 
 % moments parameters
 order = 4;
@@ -56,8 +54,8 @@ match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
 max_dist = 10;
-cost_thresh = 0.021;
-transf_sim_thresh = 0;
+cost_thresh = 0.025;
+transf_sim_thresh = 0.3;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
     cost_thresh, transf_sim_thresh);
@@ -67,12 +65,7 @@ vis_params = [];
 
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions';
-if binarized
-    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
-    ext = '_bin.png';
-else
-    ext = '.png';
-end
+ext = '.png';
 
 % data size
 data_size = 24;
@@ -83,9 +76,9 @@ is_same_all = zeros(data_size, data_size);
 mean_costs = zeros(data_size, data_size);
 transf_sims = zeros(data_size, data_size);
 %% header
-disp('*********************************************************************');
-disp('  Demo: are all pairs of images of the same scene (Oxford dataset). ');
-disp('*********************************************************************');
+disp('***************************************************************************************************************');
+disp('  Demo: are all pairs of images in the Oxford dataset of the same scene (using Smart BINarization + SMI descriptor)? ');
+disp('***************************************************************************************************************');
 
 
 %% visualize the test dataset
@@ -107,11 +100,7 @@ for i = 1: numel(test_cases)
         disp('*****************************************************************');
         YLabels{r} = strcat(test_case1, num2str(trans_deg1), ': ', num2str(r));
         disp(YLabels{r});
-        if binarized
-            test_path1 = fullfile(data_path_bin,test_case1);
-        else
-            test_path1 = fullfile(data_path_or,test_case1);
-        end
+        test_path1 = fullfile(data_path_or,test_case1);
         test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]);
         im1 = imread(test_image1);
         c = 0;
@@ -120,14 +109,8 @@ for i = 1: numel(test_cases)
             for trans_deg2 = 1:6
                 c  = c+1;
                 disp('----------------------------------------------------------------');
-                disp([test_case2 num2str(trans_deg2)]);
-                
-                if binarized
-                    test_path2 = fullfile(data_path_bin,test_case2);
-                else
-                    test_path2 = fullfile(data_path_or,test_case2);
-                end
-                
+                disp([test_case2 num2str(trans_deg2)]);               
+                test_path2 = fullfile(data_path_or,test_case2);               
                 test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]);
                 im2 = imread(test_image2);
                 
@@ -172,7 +155,7 @@ if visualize_final
         YLabels, []);
     f3 = format_figure(transf_sims, 6, hcmap, ...
         [], [], ...
-        'Transformation between matches similarity (1- distance). All (structured) pairs of Oxford dataset.',...
+        'Similarity between transformed images based om matches. All (structured) pairs of Oxford dataset.',...
         YLabels, []);
 end
 
