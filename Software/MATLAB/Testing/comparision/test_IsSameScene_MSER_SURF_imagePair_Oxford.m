@@ -1,6 +1,6 @@
-% test_IsSameSceneStandard_imagePair_Oxford- testing IsSameScene function for comparision if 2
+% test_IsSameScene_MSER_SURF_imagePair_Oxford- testing IsSameScene_MSER_SURF
+%                   function for comparision if 2
 %                   images are of the same scene (Oxford dataset) using
-%                   IsSameSceneStandard
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 23-02-2017
@@ -155,7 +155,7 @@ if verbose
    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
-[is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1, im2,...
+[is_same, num_matches, mean_cost, transf_sim] = IsSameScene_MSER_SURF(im1, im2,...
                        match_params,...
                        vis_params, exec_params);
 

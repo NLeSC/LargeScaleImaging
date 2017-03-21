@@ -7,7 +7,7 @@
 % last modification date: 
 % modification details: 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% NOTE: see also test_IsSameScene_imagePair_Oxford and IsSameScene
+% NOTE: see also test_IsSameScene_BIN_SMI_imagePair_Oxford and IsSameScene_BIN_SMI
 %**************************************************************************
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

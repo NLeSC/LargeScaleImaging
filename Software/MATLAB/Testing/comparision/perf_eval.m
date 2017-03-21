@@ -22,7 +22,7 @@
 %**************************************************************************
 % EXAMPLES USAGE:
 %
-% see perfEval_IsSameScene_Oxford.m
+% see perfEval_IsSameScene_BIN_SMI_Oxford.m
 %**************************************************************************
 % REFERENCES:
 % see https://en.wikipedia.org/wiki/Sensitivity_and_specificity

@@ -1,4 +1,5 @@
-% test_IsSameScene_OxFrei- testing IsSameScene function for comparision if 2
+% test_IsSameScene_BIN_SMI_OxFrei- testing IsSameScene_BIN_SMI function 
+%                   for comparision if 2
 %                   images are of the same scene for the OxFrei dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
@@ -128,9 +129,10 @@ for i = 1: numel(test_cases)
                 
                 %% compare if the 2 images show the same scene
                 if r >= c
-                    [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2,...
-                        moments_params, cc_params, match_params,...
-                        vis_params, exec_params);
+                    [is_same, num_matches, mean_cost, transf_sim] = ...
+                        IsSameScene_BIN_SMI(im1, im2,...
+                                            moments_params, cc_params, match_params,...
+                                            vis_params, exec_params);
                     is_same_all(r,c) = is_same;
                     mean_costs(r,c) = mean_cost;
                     transf_sims(r,c) = transf_sim;

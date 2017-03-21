@@ -1,4 +1,4 @@
-% test_IsSameSceneStandard_Oxford- testing IsSameSceneStandard for comparision if 2
+% test_IsSameScene_MSER_SURF_Oxford- testing IsSameScene_MSER_SURF for comparision if 2
 %                   images are of the same scene for the Oxford dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
@@ -127,7 +127,7 @@ for i = 1: numel(test_cases)
                 
                 %% compare if the 2 images show the same scene
                 if r >= c
-                    [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1, im2,...
+                    [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_MSER_SURF(im1, im2,...
                         match_params, vis_params, exec_params);
                     is_same_all(r,c) = is_same;
                     mean_costs(r,c) = mean_cost;

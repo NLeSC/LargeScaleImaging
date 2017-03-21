@@ -1,4 +1,4 @@
-% load_saved_IsSameScene_Oxford- loading the results from testing if every
+% load_saved_IsSameScene_BIN_SMI_Oxford- loading the results from testing if every
 %               pair of images are of the same scene for the Oxford dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc

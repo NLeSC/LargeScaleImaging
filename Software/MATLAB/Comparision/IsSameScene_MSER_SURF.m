@@ -1,7 +1,7 @@
-% IsSameSceneStandard-  comparing if 2 images are of the same scene
+% IsSameScene_MSER_SURF-  comparing if 2 images are of the same scene
 %               (with MSER detector + SURF descriptor)
 % **************************************************************************
-% [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1o, im2o, ...
+% [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_MSER_SURF(im1o, im2o, ...
 %                       match_params, vis_params, exec_params)
 %
 % author: Elena Ranguelova, NLeSc
@@ -56,11 +56,11 @@
 %**************************************************************************
 % EXAMPLES USAGE:
 %
-% see test_IsSameSceneStandard.m
+% see test_IsSameScene_MSER_SURF.m
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, transf_sim] = IsSameSceneStandard(im1o, im2o,...
+function [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_MSER_SURF(im1o, im2o,...
     match_params, vis_params, exec_params)
 
 %% input control
@@ -100,7 +100,7 @@ if nargin < 3 || isempty(match_params)
     match_params.transf_sim_thresh = 0.3;
 end
 if nargin < 2
-    error('IsSameSceneStandard: the function expects minimum 2 input arguments- the images to be compared!');
+    error('IsSameScene_MSER_SURF: the function expects minimum 2 input arguments- the images to be compared!');
 end
 
 %% unpack parameter structures into variables

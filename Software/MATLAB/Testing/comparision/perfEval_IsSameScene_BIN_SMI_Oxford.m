@@ -1,4 +1,4 @@
-% perfEval_IsSameScene_Oxford- performance evaluation of the same  scene
+% perfEval_IsSameScene_BIN_SMI_Oxford- performance evaluation of the same  scene
 %                   tests for the Oxford dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc

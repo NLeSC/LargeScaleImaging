@@ -1,4 +1,4 @@
-% perfEval_IsSameSceneStandard_Oxford- performance evaluation of the standard
+% perfEval_IsSameScene_MSER_SURF_Oxford- performance evaluation of the standard
 %                   same scene tests for the Oxford dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc

@@ -1,7 +1,7 @@
-% IsSameScene-  comparing if 2 images are of the same scene (with smart 
-%               binarization + SMI descriptor)
+% IsSameScene_BIN_SMI-  comparing if 2 images are of the same scene 
+%               (with smart binarization + SMI descriptor)
 % **************************************************************************
-% [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1o, im2o, ...
+% [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_BIN_SMI(im1o, im2o, ...
 %                      moments_params, cc_params, match_params, ...
 %                      vis_params, exec_params)
 %
@@ -80,7 +80,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1o,...
+function [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_BIN_SMI(im1o,...
     im2o, moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
@@ -132,7 +132,7 @@ if nargin < 3 || isempty(moments_params)
     moments_params.max_num_moments = 16;
 end
 if nargin < 2
-    error('IsSameScene: the function expects minimum 2 input arguments- the images to be compared!');
+    error('IsSameScene_BIN_SMI: the function expects minimum 2 input arguments- the images to be compared!');
 end
 
 %% unpack parameter structures into variables

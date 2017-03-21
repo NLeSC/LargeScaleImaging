@@ -1,4 +1,5 @@
-% test_IsSameScene_imagePair_OxFrei- testing IsSameScene function for comparision if 2
+% test_IsSameScene_BIN_SMI_imagePair_OxFrei- testing IsSameScene_BIN_SMI 
+%                   function for comparision if 2
 %                   images are of the same scene (OxFrei dataset)
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
@@ -188,7 +189,7 @@ if verbose
    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
-[is_same, num_matches, mean_cost, transf_sim] = IsSameScene(im1, im2,...
+[is_same, num_matches, mean_cost, transf_sim] = IsSameScene_BIN_SMI(im1, im2,...
                        moments_params, cc_params, match_params,...
                        vis_params, exec_params);
 
