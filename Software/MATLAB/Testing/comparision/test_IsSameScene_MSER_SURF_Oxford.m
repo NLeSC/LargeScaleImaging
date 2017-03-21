@@ -4,16 +4,17 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 03-03-2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 
-% modification details: 
+% last modification date: 21 March 2017
+% modification details: fixed the logic and parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE:
 %**************************************************************************
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
+
 % execution parameters
-verbose = false;
+verbose = true;
 visualize = false;
 visualize_dataset = false;
 visualize_test = false;
@@ -22,35 +23,18 @@ matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-    sav_fname = [sav_path 'IsSameSceneStandard_Oxford_20170303_1330.mat'];
+    sav_fname = [sav_path 'IsSameScene_MSER_SURF_Oxford_20172103_1145.mat'];
 end
 % pack to a structure
 exec_params = v2struct(verbose,visualize, matches_filtering);
-
-binarized = true;
-
-% moments parameters
-order = 4;
-coeff_file = 'afinvs4_19.txt';
-max_num_moments = 16;
-% pack to a structure
-moments_params = v2struct(order,coeff_file, max_num_moments);
-
-% CC parameters
-conn = 8;
-list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
-    'Eccentricity','Solidity'};
-area_factor = 0.0005;
-% pack to a structure
-cc_params = v2struct(conn, list_props, area_factor);
 
 % matching parameters
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
 max_dist = 10;
-cost_thresh = 0.021;
-transf_sim_thresh = 0;
+cost_thresh = 0.025;
+transf_sim_thresh = 0.3;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
     cost_thresh, transf_sim_thresh);
@@ -60,12 +44,7 @@ vis_params = [];
 
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions';
-if binarized
-    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
-    ext = '_bin.png';
-else
-    ext = '.png';
-end
+ext = '.png';
 
 % data size
 data_size = 24;
@@ -76,9 +55,9 @@ is_same_all = zeros(data_size, data_size);
 mean_costs = zeros(data_size, data_size);
 transf_sims = zeros(data_size, data_size);
 %% header
-disp('*********************************************************************');
-disp('  Demo: are all pairs of images of the same scene (Oxford dataset). ');
-disp('*********************************************************************');
+disp('***************************************************************************************************************');
+disp('  Demo: are all pairs of images in the Oxford dataset of the same scene (using MSER detector + SURF descriptor)? ');
+disp('***************************************************************************************************************');
 
 
 %% visualize the test dataset
@@ -100,11 +79,7 @@ for i = 1: numel(test_cases)
         disp('*****************************************************************');
         YLabels{r} = strcat(test_case1, num2str(trans_deg1), ': ', num2str(r));
         disp(YLabels{r});
-        if binarized
-            test_path1 = fullfile(data_path_bin,test_case1);
-        else
-            test_path1 = fullfile(data_path_or,test_case1);
-        end
+        test_path1 = fullfile(data_path_or,test_case1);
         test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]);
         im1 = imread(test_image1);
        
@@ -115,12 +90,8 @@ for i = 1: numel(test_cases)
                 c  = c+1;
                 disp('----------------------------------------------------------------');
                 disp([test_case2 num2str(trans_deg2)]);
-                
-                if binarized
-                    test_path2 = fullfile(data_path_bin,test_case2);
-                else
-                    test_path2 = fullfile(data_path_or,test_case2);
-                end
+               
+                test_path2 = fullfile(data_path_or,test_case2);
                 
                 test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]);
                 im2 = imread(test_image2);
@@ -164,7 +135,7 @@ if visualize_final
         YLabels, []);
     f3 = format_figure(transf_sims, 6, hcmap, ...
         [], [], ...
-        'Transformation between matches similarity (1- distance). All (structured) pairs of Oxford dataset.',...
+        'Similarity between transformed images based om matches. All (structured) pairs of Oxford dataset.',...
         YLabels, []);
 end
 
@@ -173,14 +144,11 @@ toc
 %% save
 if sav
    save(sav_fname, 'is_same_all', 'mean_costs', ...
-       'transf_sims','YLabels', 'moments_params', ...
-       'cc_params', 'match_params', 'exec_params'); 
+       'transf_sims','YLabels', 'match_params', 'exec_params'); 
 end
 %% footer
 if verbose
-    disp('*****************************************************************');
-    disp('                                     DONE.                       ');
-    disp('*****************************************************************');
+    disp('************************   DONE.  ********************************');
 end
 
 
