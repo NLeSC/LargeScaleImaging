@@ -18,5 +18,6 @@
 %                           matched region's centroids
 % transformation_distance_binary- 'transformation distance' between 2 binary images
 % transformation_distance- 'transformation distance' between 2 images
+% transformation_correlation- 'transformation correlation' between 2 images
 % filter_matches-  filtering the matches obtained after matching
 
