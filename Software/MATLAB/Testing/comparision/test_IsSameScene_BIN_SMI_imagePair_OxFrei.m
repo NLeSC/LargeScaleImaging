@@ -5,6 +5,10 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 16-11-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 21 March 2017
+% modification details: default preliminary binarization is not alowed;
+%                       binarization happens inside the script; added new
+%                       parameters
 % last modification date: 
 % modification details: 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,7 +28,7 @@ matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
 
-binarized = true;
+binarized = false;
 
 % moments parameters
 order = 4;
@@ -45,12 +49,16 @@ cc_params = v2struct(conn, list_props, area_factor);
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
-max_dist = 2;
-cost_thresh = 0.02;
-transf_sim_thresh = 0;
+max_dist = 8;
+conf = 95;
+max_num_trials = 1000;
+cost_thresh = 0.025;
+transf_sim_thresh = 0.25;
+num_sim_runs = 100;
+
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, transf_sim_thresh);
+    conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
 
 
 % visualization parameters
@@ -84,17 +92,15 @@ end
 
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\OxFrei\';
+ext_or  ='.png';
 if binarized
     data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\';
-    ext = '_bin.png';
-else
-    ext  ='.png';
+    ext_bin = '_bin.png';
 end
 
-
-disp('**********************************************************************************');
-disp('  Demo script for determining if 2 images are of the same scene. (OxFrei dataset) ');
-disp('**********************************************************************************');
+disp('********************************************************************************************************************************');
+disp('  Demo script for determining if 2 images from the OxFrei dataset are of the same scene (smart binarization + SMI descriptor).  ');
+disp('********************************************************************************************************************************');
 
 
 %% visualize the test dataset
@@ -150,6 +156,10 @@ else
     test_path2 = fullfile(data_path_or,test_case2,'PNG');
 end
 
+% test_path1 = fullfile(data_path_or,test_case1);
+% test_path2 = fullfile(data_path_or,test_case2);
+
+
 if trans_deg1 > 0
     trans_str1 = [num2str(test_transf1) num2str(trans_deg1)];
 else
@@ -161,10 +171,19 @@ else
     trans_str2 = num2str(test_transf2);
 end
 
-test_image1 = fullfile(test_path1,[trans_str1 ext]); 
-test_image2 = fullfile(test_path2,[trans_str2 ext]); 
+test_image1 = fullfile(test_path1,[trans_str1 ext_or]); 
+test_image2 = fullfile(test_path2,[trans_str2 ext_or]); 
 
 im1 = imread(test_image1); im2 = imread(test_image2);
+bw1 = []; bw2 = [];
+
+if binarized
+    test_bin_path1 = fullfile(data_path_bin,test_case1);
+    test_bin_path2 = fullfile(data_path_bin,test_case2);
+    test_bin_image1 = fullfile(test_bin_path1,[test_case1 num2str(trans_deg1) ext_bin]);
+    test_bin_image2 = fullfile(test_bin_path2,[test_case2 num2str(trans_deg2) ext_bin]);
+    bw1 = imread(test_bin_image1); bw2 = imread(test_bin_image2);
+end
 
 % visualize the choice
 if visualize_test
@@ -189,9 +208,22 @@ if verbose
    disp('Comparing the 2 test images...');
 end
 disp('*****************************************************************');
-[is_same, num_matches, mean_cost, transf_sim] = IsSameScene_BIN_SMI(im1, im2,...
-                       moments_params, cc_params, match_params,...
-                       vis_params, exec_params);
+if not(binarized)
+    if verbose
+        disp('Data-driven binarization 1 (before comparision)...');
+    end
+    [bw1,~] = data_driven_binarizer(im1);
+    if verbose
+        disp('Data-driven binarization 2 (before comparision)...');
+    end
+    [bw2,~] = data_driven_binarizer(im2);
+end
+[is_same, num_matches, mean_cost, transf_sim] = ...
+    IsSameScene_BIN_SMI(im1, im2,...
+    bw1,bw2, ...
+    moments_params, cc_params, ...
+    match_params,...
+    vis_params, exec_params);
 
 if verbose
    disp('*****************************************************************');
