@@ -5,7 +5,7 @@
 % date created: 27-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % last modification date: 21 March 2017
-% modification details: new parameters; multipleruns
+% modification details: new parameters; multiple runs
 % last modification date: 14 November 2016
 % modification details: symmetric compuation of matricies
 %                       removed matches_ratio_thresh parameter

@@ -1,12 +1,12 @@
-% test_IsSameScene_BIN_SMI_OxFrei- testing IsSameScene_BIN_SMI function 
+% test_IsSameScene_BIN_SMI_OxFrei- testing IsSameScene_BIN_SMI function
 %                   for comparision if 2
 %                   images are of the same scene for the OxFrei dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 23-01-2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date:
-% modification details:
+% last modification date: 31 March 2017
+% modification details: new parameters; multiple runs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE:
 %**************************************************************************
@@ -20,7 +20,7 @@ visualize_dataset = false;
 visualize_final = true;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
-sav = true;
+sav = false;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\Comparision\';
     sav_fname = [sav_path 'IsSameScene_OxFrei_20170124.mat'];
@@ -49,19 +49,26 @@ cc_params = v2struct(conn, list_props, area_factor);
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
-max_dist = 10;
-cost_thresh = 0.021;
-transf_sim_thresh = 0;
+max_dist = 8;
+conf=95;
+max_num_trials = 1000;
+cost_thresh = 0.025;
+transf_sim_thresh = 0.25;
+num_sim_runs = 30;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, transf_sim_thresh);
+    conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
 
 % visualization parameters
 vis_params = [];
 tick_step = 5;
 % paths
 data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\OxFrei\';
-data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\';    
+ext_or  ='.png';
+if binarized
+    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\';
+    ext_bin = '_bin.png';
+end
 
 % data size
 data_size = 189;
@@ -86,51 +93,60 @@ if visualize_dataset
     pause(5);
 end
 
-% loop over all test data
+%% loop over all test data
 test_cases = {'01_graffiti','02_freiburg_center', '03_freiburg_from_munster_crop',...
     '04_freiburg_innenstadt','05_cool_car', '06_freiburg_munster',...
     '07_graffiti','08_hall', '09_small_palace'};
-%test_cases = {'01_graffiti'};
+test_cases = {'01_graffiti'};
 r = 0;
 for i = 1: numel(test_cases)
     test_case1 = char(test_cases{i});
-    data_path1 = fullfile(data_path_or, test_case1, 'PNG');
-    bin_path1 = fullfile(data_path_bin, test_case1);   
-    [image_fnames1, bin_fnames1] = get_bin_filenames(data_path1, bin_path1);    
-    if binarized
-        image_fnames1 = bin_fnames1;        
-    end    
+    test_path1 = fullfile(data_path_or, test_case1, 'PNG');
+    
+    bin_path1 = fullfile(data_path_bin, test_case1);
+    [image_fnames1, bin_fnames1] = get_bin_filenames(test_path1, bin_path1);
+    %     if binarized
+    %         image_fnames1 = bin_fnames1;
+    %     end
     
     for ind1 = 1: numel(image_fnames1)
         r  = r + 1;
-        disp('*****************************************************************');        
+        disp('*****************************************************************');
         
-        test_image1 = char(image_fnames1{ind1}); 
-        [~,name1,~] = fileparts(test_image1); 
+        test_image1 = char(image_fnames1{ind1});
+        [~,name1,~] = fileparts(test_image1);
         YLabels{r} = strcat(test_case1, num2str(ind1), ': ', name1, ': ', num2str(r));
         disp(YLabels{r});
         
-        im1 = imread(test_image1);
+        im1 = imread(test_image1); bw1=[];
+        if binarized            
+            test_bin_image1 = char(bin_fnames1{ind1});
+            bw1 = imread(test_bin_image1);
+        end
+        
         c = 0;
         for j = 1: numel(test_cases)
             test_case2 = char(test_cases{j});
             data_path2 = fullfile(data_path_or, test_case2, 'PNG');
             bin_path2 = fullfile(data_path_bin, test_case2);
             [image_fnames2, bin_fnames2] = get_bin_filenames(data_path2, bin_path2);
-            if binarized
-                image_fnames2 = bin_fnames2;
-            end            
+            %             if binarized
+            %                 image_fnames2 = bin_fnames2;
+            %             end
             
             for ind2 = 1:numel(image_fnames2)
                 c  = c+1;
                 %disp('----------------------------------------------------------------');
                 test_image2 = char(image_fnames2{ind2});
-                im2 = imread(test_image2);
-                
+                im2 = imread(test_image2); bw2 = [];
+                if binarized                    
+                    test_bin_image2 = char(bin_fnames2{ind2});
+                    bw2 = imread(test_bin_image2);
+                end
                 %% compare if the 2 images show the same scene
                 if r >= c
                     [is_same, num_matches, mean_cost, transf_sim] = ...
-                        IsSameScene_BIN_SMI(im1, im2,...
+                        IsSameScene_BIN_SMI(im1, im2, bw1, bw2, ...
                                             moments_params, cc_params, match_params,...
                                             vis_params, exec_params);
                     is_same_all(r,c) = is_same;
