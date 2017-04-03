@@ -28,13 +28,13 @@ exec_params = v2struct(verbose,visualize, matches_filtering);
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
-max_dist = 10;
+max_dist = 8;
 cost_thresh = 0.025;
-%matches_ratio_thresh = 0.5;
-transf_sim_thresh = 0.3;
+transf_sim_thresh = 0.25;
+num_sim_runs = 100;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, transf_sim_thresh);
+    cost_thresh, transf_sim_thresh, num_sim_runs);
 
 % visualization parameters
 if visualize

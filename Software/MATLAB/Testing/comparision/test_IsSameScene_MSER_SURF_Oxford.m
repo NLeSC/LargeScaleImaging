@@ -20,7 +20,7 @@ visualize_dataset = false;
 visualize_test = false;
 visualize_final = true;
 matches_filtering = true; % if true, perform filterring on the matches
-sav = true;
+sav = false;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
     sav_fname = [sav_path 'IsSameScene_MSER_SURF_Oxford_20172103_1145.mat'];
@@ -32,12 +32,13 @@ exec_params = v2struct(verbose,visualize, matches_filtering);
 match_metric = 'ssd';
 match_thresh = 1;
 max_ratio = 1;
-max_dist = 10;
+max_dist = 8;
 cost_thresh = 0.025;
-transf_sim_thresh = 0.3;
+transf_sim_thresh = 0.25;
+num_sim_runs = 30;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    cost_thresh, transf_sim_thresh);
+    cost_thresh, transf_sim_thresh, num_sim_runs);
 
 % visualization parameters
 vis_params = [];

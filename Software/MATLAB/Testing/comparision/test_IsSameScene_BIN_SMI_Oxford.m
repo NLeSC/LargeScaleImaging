@@ -27,7 +27,7 @@ visualize_test = false;
 visualize_final = true;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
-sav = true;
+sav = false;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
     sav_fname = [sav_path 'IsSameScene_BIN_SMI_Oxford_20170321_1735.mat'];

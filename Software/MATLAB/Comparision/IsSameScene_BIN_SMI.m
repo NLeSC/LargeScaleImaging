@@ -59,8 +59,8 @@
 %                   an image and transformed with estimated transformation
 %                   image should be small (similarity should be positive).
 %                   Default is {+.3}.
-%                num_sim_runs - number of similarity runs, the final
-%                transf_sim is the average of number of runs. Default is 20.
+%                num_sim_runs - number of similarity runs, the final transf_sim 
+%                   is the average of number of runs. Default is 20.
 % [vis_params]   optional struct with the visualization parameters:
 %                sbp1/2 - subplot location for CC visualization
 %                sbp1/2_f - subplot location for filtered CC visualization
@@ -89,7 +89,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, mn_transf_sim] = IsSameScene_BIN_SMI(im1o,...
+function [is_same, num_matches, mean_cost, mean_transf_sim] = IsSameScene_BIN_SMI(im1o,...
     im2o, bw1, bw2, moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
@@ -125,7 +125,7 @@ if nargin < 7 || isempty(match_params)
     match_params.match_thrseh = 1;
     match_params.max_ratio = 1;
     match_params.max_dist = 10;
-    match_params.conf=90;
+    match_params.conf = 90;
     match_params.max_num_trials = 100;
     match_params.cost_thresh = 0.025;
     % match_params.matches_ratio_thresh = 0.5;
@@ -172,7 +172,7 @@ if area_filtering
     range2 = {[area_factor*image_area2 image_area2]};
 end
 transf_sim = zeros(1, num_sim_runs);
-mn_transf_sim = 0;
+mean_transf_sim = 0;
 %% processing
 %**************** Processing *******************************
 disp('Processing...');
@@ -443,12 +443,12 @@ if visualize
 end
 
 %% Estimation of affine transformation between the 2 images from the matches
+if verbose
+    disp('Estimating affine transformation from the matches...');
+end
 
 for nsr = 1: num_sim_runs
     
-    if verbose
-        disp('Estimating affine transformation from the matches...');
-    end
     
     if matches_filtering
         matched_pairs_d = filt_matched_pairs;
@@ -491,10 +491,12 @@ for nsr = 1: num_sim_runs
     end
 
 end
-mn_transf_sim = mean(transf_sim);
-disp(['====> Final (mean) transformation similarity  is: ' num2str(mn_transf_sim) ]);
 
-if (mn_transf_sim > transf_sim_thresh)
+%% final similarity and decision
+mean_transf_sim = mean(transf_sim);
+disp(['====> Final (mean) transformation similarity  is: ' num2str(mean_transf_sim) ]);
+
+if (mean_transf_sim > transf_sim_thresh)
     disp('THE SAME SCENE!');
     is_same = true;
     if verbose
