@@ -32,10 +32,11 @@ sav = true;
 if sav
     sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
     scripts_name = mfilename;
-    format_dt = 'dd-mm-yyyy_HH:MM';
+    format_dt = 'dd-mm-yyyy_HH-MM';
     sav_fname = generate_results_fname(sav_path, scripts_name, format_dt);
     %disp(sav_fname);
 end
+
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
 
