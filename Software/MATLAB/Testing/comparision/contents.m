@@ -14,8 +14,9 @@
 % test_IsSameScene_BIN_SMI_imagePair_Oxford- testing IsSameScene_BIN_SMI function for comparision if 2
 %                   images are of the same scene (Oxford dataset)
 % test_IsSameScene_MSER_SURF_imagePair_Oxford- testing IsSameScene_MSER_SURF function for comparision if 2
-%                   images are of the same scene (Oxford dataset) using
-%                   IsSameScene_MSER_SURF
+%                   images are of the same scene (Oxford dataset)
+% test_IsSameScene_MSER_SURF_imagePair_Oxfrei- testing IsSameScene_MSER_SURF function for comparision if 2
+%                   images are of the same scene (Oxfrei dataset)
 % test_IsSameScene_BIN_SMI_Oxford- testing IsSameScene_BIN_SMI function for comparision if 2
 %                   images are of the same scene for the Oxford dataset
 % test_IsSameScene_MSER_SURF_Oxford- testing IsSameScene_MSER_SURF function for comparision if 2
