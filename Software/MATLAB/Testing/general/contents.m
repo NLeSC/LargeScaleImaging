@@ -2,13 +2,14 @@
 %
 % topic: Salient regions detection and description testing
 % author: Elena Ranguelova, NLeSc
-% date: 2016
+% date: 2016, 2017
 %
 %**************************************************************************
 % Functions
 %**************************************************************************
 % get_test_filenames- obtain test filenames from test_case and detector
 % get_filenames_path- obtain filenames from path and detector
+% generate_results_fname- generates unique results filename for an experiment
 %**************************************************************************
 % Scripts
 %**************************************************************************
