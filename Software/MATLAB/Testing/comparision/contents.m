@@ -8,6 +8,7 @@
 % Functions
 %**************************************************************************
 % perf_eval - evaluates the performance of a classification model
+% perfEval_IsSameScene- performance evaluation of the same scene experiemnts
 %**************************************************************************
 % Scripts
 %**************************************************************************
@@ -32,7 +33,8 @@
 % load_saved_IsSameScene_BIN_SMI_Oxford- loading the results from testing if every
 %               pair of images are of the same scene for the Oxford dataset
 
-% perfEval_IsSameScene_BIN_SMI_Oxford- performance evaluation of the same  scene
+% perfEval_IsSameScene_Oxford- performance evaluation of the same  scene
 %                   tests for the Oxford dataset
-% perfEval_IsSameScene_MSER_SURF_Oxford- performance evaluation of the standard
-%                   same scene tests for the Oxford dataset
+% perfEval_IsSameScene_OxFrei- performance evaluation of the same  scene
+%                   tests for the OxFrei dataset
+
