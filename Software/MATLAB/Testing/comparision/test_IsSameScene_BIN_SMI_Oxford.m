@@ -29,13 +29,32 @@ visualize_final = true;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
+binarized = true;
+
+
+% paths
+if ispc
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
+data_path_or = fullfile(project_path , 'Data', 'AffineRegions');
+ext_or = '.png';
+if binarized
+    data_path_bin = fullfile(project_path , 'Results', 'AffineRegions');
+    ext_bin = '_bin.png';
+end
+
 if sav
-    sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
+    sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
     scripts_name = mfilename;
     format_dt = 'dd-mm-yyyy_HH-MM';
     sav_fname = generate_results_fname(sav_path, scripts_name, format_dt);
-    %disp(sav_fname);
 end
+
+% data size
+data_size = 24;
 
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
@@ -72,18 +91,8 @@ match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
 % visualization parameters
 vis_params = [];
 
-binarized = true;
 
-% paths
-data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions';
-ext_or = '.png';
-if binarized
-    data_path_bin = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\';
-    ext_bin = '_bin.png';
-end
 
-% data size
-data_size = 24;
 
 tic
 %% initializations

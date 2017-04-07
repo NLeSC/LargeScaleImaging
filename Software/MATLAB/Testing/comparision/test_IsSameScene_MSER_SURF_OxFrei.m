@@ -20,11 +20,28 @@ visualize_dataset = false;
 visualize_test = false;
 visualize_final = true;
 matches_filtering = true; % if true, perform filterring on the matches
-sav = false;
-if sav
-    sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-    sav_fname = [sav_path 'IsSameScene_MSER_SURF_Oxford_20172103_1145.mat'];
+sav = true;
+
+% paths
+if ispc
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
 end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
+data_path_or = fullfile(project_path , 'Data', 'OxFrei');
+ext_or = '.png';
+
+if sav
+    sav_path = fullfile(project_path, 'Results', 'OxFrei','Comparision');
+    scripts_name = mfilename;
+    format_dt = 'dd-mm-yyyy_HH-MM';
+    sav_fname = generate_results_fname(sav_path, scripts_name, format_dt);
+end
+
+% data size
+data_size = 189;
+
 % pack to a structure
 exec_params = v2struct(verbose,visualize, matches_filtering);
 
@@ -44,12 +61,6 @@ match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
 vis_params = [];
 tick_step = 5;
 
-% paths
-data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\OxFrei\';
-ext_or = '.png';
-
-% data size
-data_size = 189;
 
 tic
 %% initializations
