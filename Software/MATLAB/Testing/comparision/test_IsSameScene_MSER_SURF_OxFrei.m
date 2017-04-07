@@ -86,7 +86,7 @@ end
 test_cases = {'01_graffiti','02_freiburg_center', '03_freiburg_from_munster_crop',...
     '04_freiburg_innenstadt','05_cool_car', '06_freiburg_munster',...
     '07_graffiti','08_hall', '09_small_palace'};
-test_cases = {'01_graffiti'};
+%test_cases = {'01_graffiti'};
 r = 0;
 for i = 1: numel(test_cases)
     test_case1 = char(test_cases{i});
