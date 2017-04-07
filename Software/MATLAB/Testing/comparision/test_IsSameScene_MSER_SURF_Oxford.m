@@ -94,7 +94,7 @@ for i = 1: numel(test_cases)
         YLabels{r} = strcat(test_case1, num2str(trans_deg1), ': ', num2str(r));
         disp(YLabels{r});
         test_path1 = fullfile(data_path_or,test_case1);
-        test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext]);
+        test_image1 = fullfile(test_path1,[test_case1 num2str(trans_deg1) ext_or]);
         im1 = imread(test_image1);
        
         c = 0;
@@ -107,7 +107,7 @@ for i = 1: numel(test_cases)
                
                 test_path2 = fullfile(data_path_or,test_case2);
                 
-                test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext]);
+                test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext_or]);
                 im2 = imread(test_image2);
                 
                 %% compare if the 2 images show the same scene
