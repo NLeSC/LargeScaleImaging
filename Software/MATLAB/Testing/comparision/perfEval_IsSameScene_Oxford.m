@@ -15,7 +15,7 @@ scene_size = 6;
 
 %% load the predicted matrix
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-sav_fname('Enter the Oxford is same scene experiment results filename: ', 's');
+sav_fname = input('Enter the Oxford is same scene experiment results filename: ', 's');
 sav_fullname = [sav_path sav_fname];
 %% load the saved results
 load(sav_fullname,'is_same_all','YLabels');
