@@ -21,6 +21,7 @@ visualize_final = true;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 sav = true;
+binarized = true;
 
 % paths
 if ispc
@@ -49,7 +50,6 @@ data_size = 189;
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
 
-binarized = true;
 
 % moments parameters
 order = 4;
