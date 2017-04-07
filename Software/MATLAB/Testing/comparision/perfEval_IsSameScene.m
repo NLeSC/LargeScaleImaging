@@ -73,7 +73,7 @@ end
 
 if verbose
 
-    disp(['Performance evaluation for results saved in: ' sav_fname]);
+    disp(['Performance evaluation results: ']);
     v2struct(eval_metrics);
     disp(['True positives: ' num2str(tp)]);
     disp(['True negatives: ' num2str(tn)]);
