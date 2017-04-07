@@ -17,7 +17,8 @@ publish = true;
 %% load the predicted matrix
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
 if publish
-    sav_fname = 'test_IsSameScene_BIN_SMI_Oxford_06-04-2017_17-58.mat';
+   % sav_fname = 'test_IsSameScene_BIN_SMI_Oxford_06-04-2017_17-58.mat';
+   sav_fname = 'test_IsSameScene_MSER_SURF_Oxford_07-04-2017_16-19.mat';
 else
     sav_fname = input('Enter the Oxford is same scene experiment results filename: ', 's');
 end
