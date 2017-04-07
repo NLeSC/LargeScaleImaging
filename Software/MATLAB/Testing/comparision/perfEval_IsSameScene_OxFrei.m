@@ -12,10 +12,15 @@
 vis_eval = false;
 verbose = true;
 scene_size = 21;
+publish = true;
 
 %% load the predicted matrix
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\Comparision\';
-sav_fname = input('Enter the OxFrei is same scene experiment results filename: ', 's');
+if publish
+    sav_fname = '...';
+else
+    sav_fname = input('Enter the OxFrei is same scene experiment results filename: ', 's');
+end
 sav_fullname = [sav_path sav_fname];
 %% load the saved results
 load(sav_fullname,'is_same_all','YLabels');
@@ -23,5 +28,5 @@ predicted = is_same_all;
 
 
 %% compute performance measures
-[eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis_eval, verbose);
+[eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis_eval, YLabels, verbose);
 

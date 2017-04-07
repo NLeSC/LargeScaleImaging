@@ -1,6 +1,6 @@
 % perfEval_IsSameScene- performance evaluation of the same scene experiemnts
 % **************************************************************************
-% [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, verbose)
+% [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, labels, verbose)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 7 April 2016
@@ -13,6 +13,7 @@
 % scene_size    number of images per scene (dataset assumed made of
 %               different scenes and equal number of trasnfornations per scene
 % vis           visualization flag, default is [false]
+% labels        figure labels
 % verbose       verbose flag, default is [true]
 %**************************************************************************
 % OUTPUTS:
@@ -27,7 +28,7 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, verbose)
+function [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, labels, verbose)
 
 %% input control
 if nargin < 3
@@ -61,11 +62,11 @@ if vis
   f1 = format_figure(actual, scene_size, gcmap, ...
         [0 1], {'False','True'}, ...
         'Ground truth for the same scenes. All (structured) pairs of Oxford dataset.',...
-        YLabels, []);  
+        labels, []);  
   f2 = format_figure(predicted, scene_size, gcmap, ...
         [0 1], {'False','True'}, ...
         'Predicted results for the same scenes. All (structured) pairs of Oxford dataset.',...
-        YLabels, []);
+        labels, []);
 end
 
 %% compute performance measures
