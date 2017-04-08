@@ -10,9 +10,10 @@
 
 %% parameters
 vis_eval = true;
+lab_step = 1;
 verbose = true;
 scene_size = 6;
-publish = true;
+publish = false;
 
 %% load the predicted matrix
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
@@ -29,5 +30,5 @@ predicted = is_same_all;
 
 
 %% compute performance measures
-[eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis_eval, YLabels, verbose);
+[eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis_eval, YLabels, lab_step, verbose);
 

@@ -1,6 +1,6 @@
 % perfEval_IsSameScene- performance evaluation of the same scene experiemnts
 % **************************************************************************
-% [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, labels, verbose)
+% [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, labels, lab_step, verbose)
 %
 % author: Elena Ranguelova, NLeSc
 % date created: 7 April 2016
@@ -14,6 +14,7 @@
 %               different scenes and equal number of trasnfornations per scene
 % vis           visualization flag, default is [false]
 % labels        figure labels
+% lab_step      tick labels step
 % verbose       verbose flag, default is [true]
 %**************************************************************************
 % OUTPUTS:
@@ -28,11 +29,14 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, labels, verbose)
+function [eval_metrics] = perfEval_IsSameScene(predicted, scene_size, vis, labels, lab_step, verbose)
 
 %% input control
-if nargin < 3
+if nargin < 6
     verbose = true;
+end
+if nargin < 5
+    lab_step = 5;
 end
 if nargin < 3
     vis = false;
@@ -62,11 +66,11 @@ if vis
   f1 = format_figure(actual, scene_size, gcmap, ...
         [0 1], {'False','True'}, ...
         'Ground truth for the same scenes. All (structured) pairs of Oxford dataset.',...
-        labels, []);  
+        labels, lab_step);  
   f2 = format_figure(predicted, scene_size, gcmap, ...
         [0 1], {'False','True'}, ...
         'Predicted results for the same scenes. All (structured) pairs of Oxford dataset.',...
-        labels, []);
+        labels, lab_step);
 end
 
 %% compute performance measures
