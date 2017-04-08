@@ -18,7 +18,8 @@ publish = true;
 %% load the predicted matrix
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\Comparision\';
 if publish
-    sav_fname = 'test_IsSameScene_MSER_SURF_OxFrei_07-04-2017_17-19.mat';
+    %sav_fname = 'test_IsSameScene_MSER_SURF_OxFrei_07-04-2017_17-19.mat';
+    sav_fname = 'test_IsSameScene_BIN_SMI_OxFrei_07-04-2017_17-18.mat';
 else
     sav_fname = input('Enter the OxFrei is same scene experiment results filename: ', 's');
 end
