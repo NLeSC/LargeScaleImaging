@@ -9,6 +9,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 19 October 2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 10 April 2017
+% modification details: the CC version of SMIdescriptor is used now 
 % last modification date: 21 March 2017
 % modification details: similarity distance using corr2 (same as the
 %                       standard method; different visualization transformation)
@@ -163,11 +165,11 @@ if visualize
 end
 
 %% dependant parameters
+image_area1 = size(im1o, 1) * size(im1o,2);
+image_area2 = size(im2o, 1) * size(im2o,2);
 list_props_all = {'Area','Centroid'};
 if area_filtering
     prop_types_filter = {'Area'};
-    image_area1 = size(im1o, 1) * size(im1o,2);
-    image_area2 = size(im2o, 1) * size(im2o,2);
     range1 = {[area_factor*image_area1 image_area1]};
     range2 = {[area_factor*image_area2 image_area2]};
 end
@@ -277,11 +279,13 @@ if area_filtering
 else
     bw1_d = bw1; bw2_d = bw2;
 end
+cc1_d = bwconncomp(bw1_d, conn); cc2_d = bwconncomp(bw2_d, conn);
+
 tic
-[SMI_descr1,SMI_descr1_struct] = bwSMIdescriptor(bw1_d, conn, ...
+[SMI_descr1,SMI_descr1_struct] = ccSMIdescriptor(cc1_d, image_area1, ...
     list_props, order, ...
     coeff_file, max_num_moments);
-[SMI_descr2,SMI_descr2_struct] = bwSMIdescriptor(bw2_d, conn, ...
+[SMI_descr2,SMI_descr2_struct] = ccSMIdescriptor(cc2_d, image_area2, ...
     list_props, order, ...
     coeff_file, max_num_moments);
 

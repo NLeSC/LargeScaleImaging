@@ -1,6 +1,6 @@
-% SMIdescriptor- Shape and Moment Invariants descriptor for a set of CCs
+% ccSMIdescriptor- Shape and Moment Invariants descriptor for a set of CCs
 %**************************************************************************
-% [SMIarray, SMIstruct] = SMIdescriptor(cc, image_area, list_props, ...
+% [SMIarray, SMIstruct] = ccSMIdescriptor(cc, image_area, list_props, ...
 %                                       order, coeff_file, num_moments)
 %
 % author: Elena Ranguelova, NLeSc
@@ -37,12 +37,12 @@
 % bw = a < 100;
 % im_area = size(bw,1)*size(bw,2);
 % cc = bwconncomp(bw);
-% [SMIarray, SMIstruct] = SMIdescriptor(bw);
+% [ccSMIarray, ccSMIstruct] = ccSMIdescriptor(cc, im_area);
 %**************************************************************************
 % REFERENCES: 
 %**************************************************************************
 
-function [SMIarray, SMIstruct] = SMIdescriptor(bw, conn, list_props, ...
+function [SMIarray, SMIstruct] = ccSMIdescriptor(cc, image_area, list_props, ...
                                        order, coeff_file, num_moments)
 
 %**************************************************************************
@@ -63,25 +63,13 @@ if nargin < 3
                   'Eccentricity','EulerNumber','Solidity'};
 end
 if nargin < 2
-    conn = 4;
+    error('ccSMIdescriptor.m requires at least 2 input arguments!');             
 end
-if nargin < 1
-    error('SMIdescriptor.m requires at least 2 input arguments!');             
-end
-
-if not(islogical(bw))
-    error('SMIdescriptor: bw should be of class "logical"!');
-end
-%**************************************************************************
-% constants
-%--------------------------------------------------------------------------
-%order = 4; coeff_file = 'afinvs4_19.txt';
 
 %**************************************************************************
 % input parameters -> variables
 %--------------------------------------------------------------------------
 coeff = readinv(coeff_file);
-image_area = size(bw,1)*size(bw,2);
 %**************************************************************************
 % initialisations
 %--------------------------------------------------------------------------
@@ -91,11 +79,11 @@ SMIarray = [];
 % computations
 %--------------------------------------------------------------------------
 % region properities
-[regions_props, conn_comps] = compute_region_props(bw, conn, list_props);
+[regions_props] = regionprops(cc, list_props);
 % derived properties
 [derived_props] = compute_derived_props(regions_props, image_area);
 % affine invariants
-[affine_props] = cc_compute_affine_invariants(conn_comps, order, coeff, num_moments);
+[affine_props] = cc_compute_affine_invariants(cc, order, coeff, num_moments);
 % combine
 [SMIstruct] = combine_regions_props(derived_props, affine_props);
 

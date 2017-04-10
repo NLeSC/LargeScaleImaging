@@ -5,6 +5,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 20-10-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 10 April 2017
+% modification details: the CC version of SMIdescriptor is used now 
 % last modification date: 21 March 2017
 % modification details: default preliminary binarization is not alowed
 % last modification date: 16 November 2016
@@ -27,7 +29,7 @@
 publish = false;
 % execution parameters
 verbose = true;
-visualize = false;
+visualize = true;
 visualize_dataset = false;
 visualize_test = false;
 area_filtering = true;  % if true, perform area filterring on regions
@@ -48,7 +50,7 @@ moments_params = v2struct(order,coeff_file, max_num_moments);
 conn = 8;
 list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
     'Eccentricity','Solidity'};
-area_factor = 0.0005;
+area_factor = 0.0002; %0.0005;
 % pack to a structure
 cc_params = v2struct(conn, list_props, area_factor);
 

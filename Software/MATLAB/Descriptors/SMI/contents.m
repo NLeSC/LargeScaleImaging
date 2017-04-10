@@ -10,7 +10,8 @@
 %--------------------------------------------------------------------------
 % main
 %--------------------------------------------------------------------------
-% SMIdescriptor- Shape and Moment Invariants descriptor for a binary image
+% ccSMIdescriptor- Shape and Moment Invariants descriptor for a set of CCs
+% bwSMIdescriptor- Shape and Moment Invariants descriptor for a binary image
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------

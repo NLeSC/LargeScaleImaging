@@ -36,7 +36,7 @@
 % cl;
 % a = rgb2gray(imread('circlesBrightDark.png'));
 % bw = a < 100;
-% [SMIarray, SMIstruct] = bwSMIdescriptor(bw);
+% [bwSMIarray, bwSMIstruct] = bwSMIdescriptor(bw);
 %**************************************************************************
 % REFERENCES: 
 %**************************************************************************
@@ -65,11 +65,11 @@ if nargin < 2
     conn = 4;
 end
 if nargin < 1
-    error('SMIdescriptor.m requires at least 2 input arguments!');             
+    error('bwSMIdescriptor.m requires at least 1 input argument!');             
 end
 
 if not(islogical(bw))
-    error('SMIdescriptor: bw should be of class "logical"!');
+    error('bwSMIdescriptor: bw should be of class "logical"!');
 end
 %**************************************************************************
 % constants
