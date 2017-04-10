@@ -28,7 +28,7 @@ matches_filtering = true; % if true, perform filterring on the matches
 % pack to a structure
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
 
-binarized = false;
+binarized = true;
 
 % moments parameters
 order = 4;
