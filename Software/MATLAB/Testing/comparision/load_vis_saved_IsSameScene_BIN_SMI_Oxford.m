@@ -1,5 +1,5 @@
-% load_saved_IsSameScene_BIN_SMI_Oxford- loading the results from testing if every
-%               pair of images are of the same scene for the Oxford dataset
+% load_vis_saved_IsSameScene_BIN_SMI_Oxford- loading and visualizing the results 
+%               from the same scene testing for the Oxford dataset, BIN+SMI
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 15-11-2016
@@ -16,10 +16,10 @@
 verbose = true;
 visualize = true;
 visualize_matching_cost =  false;
-visualize_transf_similarity = false;
+visualize_transf_similarity = true;
 visualize_dataset = false;
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
-sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1752.mat'];
+sav_fname = [sav_path 'test_IsSameScene_BIN_SMI_Oxford_06-04-2017_17-58.mat'];
 
 % load the saved results
 load(sav_fname);
