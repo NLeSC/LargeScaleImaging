@@ -314,16 +314,9 @@ disp(['Number of matches: ' , num2str(num_matches)])
 disp(['Mean matching cost: ', num2str(mean_cost)]);
 %end
 % check if enough matches
-if num_matches > 3
-    %     if visualize
-    %         T = struct2table(matched_pairs);
-    %                 if verbose
-    %                     disp('Matches: '); disp(T);
-    %                 end
-    %     end
-else
+if num_matches < 1
     if verbose
-        disp('Not enough matches found!');
+        disp('Zero matches found!');
     end
     disp('NOT THE SAME SCENE!');
     is_same = false; transf_sim = NaN;
@@ -354,16 +347,9 @@ if matches_filtering
         % disp(['====> Ratio filtered/all number of matches : ', num2str(matches_ratio)]);
     end
     % check if enough filtered matches
-    if filt_num_matches > 3
-        %                if visualize
-        %                    filtT = struct2table(filt_matched_pairs);
-        %                     if verbose
-        %                         disp('Filtered matches:' ); disp(filtT);
-        %                     end
-        %                end
-    else
+    if filt_num_matches < 1
         if verbose
-            disp('Not enough strong matches found!');
+            disp('Zero strong matches found!');
         end
         disp('NOT THE SAME SCENE!');
         is_same = false; transf_sim = NaN;
