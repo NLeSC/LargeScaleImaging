@@ -54,7 +54,7 @@ conf = 95;
 max_num_trials = 1000;
 cost_thresh = 0.025;
 transf_sim_thresh = 0.25;
-num_sim_runs = 100;
+num_sim_runs = 30;
 
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
@@ -148,17 +148,8 @@ if verbose
    end
 end
 
-if binarized
-    test_path1 = fullfile(data_path_bin,test_case1);
-    test_path2 = fullfile(data_path_bin,test_case2);
-else
-    test_path1 = fullfile(data_path_or,test_case1,'PNG');
-    test_path2 = fullfile(data_path_or,test_case2,'PNG');
-end
-
-% test_path1 = fullfile(data_path_or,test_case1);
-% test_path2 = fullfile(data_path_or,test_case2);
-
+test_path1_or = fullfile(data_path_or,test_case1,'PNG');
+test_path2_or = fullfile(data_path_or,test_case2,'PNG');
 
 if trans_deg1 > 0
     trans_str1 = [num2str(test_transf1) num2str(trans_deg1)];
@@ -171,8 +162,8 @@ else
     trans_str2 = num2str(test_transf2);
 end
 
-test_image1 = fullfile(test_path1,[trans_str1 ext_or]); 
-test_image2 = fullfile(test_path2,[trans_str2 ext_or]); 
+test_image1 = fullfile(test_path1_or,[trans_str1 ext_or]); 
+test_image2 = fullfile(test_path2_or,[trans_str2 ext_or]); 
 
 im1 = imread(test_image1); im2 = imread(test_image2);
 bw1 = []; bw2 = [];
@@ -180,8 +171,8 @@ bw1 = []; bw2 = [];
 if binarized
     test_bin_path1 = fullfile(data_path_bin,test_case1);
     test_bin_path2 = fullfile(data_path_bin,test_case2);
-    test_bin_image1 = fullfile(test_bin_path1,[test_case1 num2str(trans_deg1) ext_bin]);
-    test_bin_image2 = fullfile(test_bin_path2,[test_case2 num2str(trans_deg2) ext_bin]);
+    test_bin_image1 = fullfile(test_bin_path1,[test_transf1 num2str(trans_deg1) ext_bin]);
+    test_bin_image2 = fullfile(test_bin_path2,[test_transf2 num2str(trans_deg2) ext_bin]);
     bw1 = imread(test_bin_image1); bw2 = imread(test_bin_image2);
 end
 
