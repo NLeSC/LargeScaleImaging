@@ -17,7 +17,7 @@
 % execution parameters
 verbose = true;
 visualize = true;
-visualize_matching_cost =  false;
+visualize_matching_cost =  true;
 visualize_transf_similarity = true;
 visualize_dataset = false;
 %det_desr = 'BIN_SMI';
@@ -26,9 +26,9 @@ det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF]
 sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
 switch upper(det_descr)
     case 'BIN_SMI'
-        sav_fname = [sav_path 'test_IsSameScene_BIN_SMI_Oxford_06-04-2017_17-58.mat'];
+        sav_fname = [sav_path 'test_IsSameScene_BIN_SMI_Oxford_10-04-2017_14-03.mat'];
     case 'MSER_SURF'
-        sav_fname = [sav_path 'test_IsSameScene_MSER_SURF_Oxford_07-04-2017_16-19.mat'];
+        sav_fname = [sav_path 'test_IsSameScene_MSER_SURF_Oxford_10-04-2017_14-02.mat'];
     otherwise
         error('Unknown detector + descriptor combination!');
 end

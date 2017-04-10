@@ -1,4 +1,4 @@
-% test_SMIdescriptor- testing the SMI descriptor computation for 
+% test_bwSMIdescriptor- testing the binary image SMI descriptor computation for 
 %                   an image (Oxford dataset)
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
@@ -155,7 +155,7 @@ else
     bw_d = bw;
 end
 tic
-[SMI_descr,SMI_descr_struct] = SMIdescriptor(bw_d, conn, ...
+[SMI_descr,SMI_descr_struct] = bwSMIdescriptor(bw_d, conn, ...
     list_props, order, ...
     coeff_file, max_num_moments);
 if verbose

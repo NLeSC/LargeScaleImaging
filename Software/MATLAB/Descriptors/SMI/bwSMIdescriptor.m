@@ -1,6 +1,6 @@
-% SMIdescriptor- Shape and Moment Invariants descriptor for a binary image
+% bwSMIdescriptor- Shape and Moment Invariants descriptor for a binary image
 %**************************************************************************
-% [SMIarray, SMIstruct] = SMIdescriptor(bw, conn, list_props, ...
+% [SMIarray, SMIstruct] = bwSMIdescriptor(bw, conn, list_props, ...
 %                                       order, coeff_file, num_moments)
 %
 % author: Elena Ranguelova, NLeSc
@@ -36,12 +36,12 @@
 % cl;
 % a = rgb2gray(imread('circlesBrightDark.png'));
 % bw = a < 100;
-% [SMIarray, SMIstruct] = SMIdescriptor(bw);
+% [SMIarray, SMIstruct] = bwSMIdescriptor(bw);
 %**************************************************************************
 % REFERENCES: 
 %**************************************************************************
 
-function [SMIarray, SMIstruct] = SMIdescriptor(bw, conn, list_props, ...
+function [SMIarray, SMIstruct] = bwSMIdescriptor(bw, conn, list_props, ...
                                        order, coeff_file, num_moments)
 
 %**************************************************************************
