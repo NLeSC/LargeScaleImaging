@@ -1,5 +1,5 @@
-% load_vis_saved_IsSameScene_BIN_SMI_Oxford- loading and visualizing the results 
-%               from the same scene testing for the Oxford dataset, BIN+SMI
+% load_vis_saved_IsSameScene_Oxford- loading and visualizing the results 
+%               from the same scene testing for the Oxford dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 15-11-2016
