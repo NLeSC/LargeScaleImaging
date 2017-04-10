@@ -41,7 +41,7 @@ moments_params = v2struct(order,coeff_file, max_num_moments);
 conn = 8;
 list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
     'Eccentricity','Solidity'};
-area_factor = 0.0002;
+area_factor = 0.0005;
 % pack to a structure
 cc_params = v2struct(conn, list_props, area_factor);
 
