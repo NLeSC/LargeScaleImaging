@@ -16,7 +16,7 @@
 % execution parameters
 verbose = true;
 visualize = true;
-visualize_matching_cost =  false;
+visualize_matching_cost =  true;
 visualize_transf_similarity = true;
 visualize_dataset = false;
 %det_desr = 'BIN_SMI';
@@ -43,6 +43,7 @@ data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\OxFrei\';
 ext = '.png';
 % data size
 data_size = 189;
+lab_step = 1;
 
 %% visualize the test dataset
 if visualize_dataset
@@ -61,18 +62,18 @@ if visualize
     f1 = format_figure(is_same_all, 6, gcmap, ...
         [0 1], {'False','True'}, ...
         'Is the same scene? All pairs of OxFrei dataset.',...
-        YLabels, []);
+        YLabels, lab_step);
     if visualize_matching_cost 
         f2 = format_figure(mean_costs, 6,jcmap, ...
             [], [], ...
             'Mean matching cost of all matches. All pairs of OxFrei dataset.',...
-            YLabels, []);
+            YLabels, lab_step);
     end
     if visualize_transf_similarity
         f3 = format_figure(transf_sims, 6, hcmap, ...
             [], [], ...
             'Correlation between matches. All pairs of OxFrei dataset.',...
-            YLabels, []);
+            YLabels, lab_step);
     end
 end
 
