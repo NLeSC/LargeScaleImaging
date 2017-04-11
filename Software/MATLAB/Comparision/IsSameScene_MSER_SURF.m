@@ -26,10 +26,14 @@
 %                max_dist - max distance from point to projection for
 %                   estimating the geometric trandorm between matches. See
 %                   "help estimateGeometricTransfrom". Default is {10}.
+%                conf - confidence of finding maximum number ofinliers. See
+%                   "help estimateGeometricTransfrom". Default is {90}.
+%                max_num_trials - maximum random trials. See
+%                   "help estimateGeometricTransfrom". Default is {100}.
 %                cost_thresh - matching cost threshold. The match is
 %                   considered good it its matching cost is above this
 %                   threhsold. Default value is {0.025}
-%                transf_sim_thresh- Transformation similarity (1-distance) threshold.
+%                transf_sim_thresh- Transformation similarity threshold.
 %                   For a good match between images the distance between
 %                   an image and transformed with estimated transformation
 %                   image should be small (similarity should be large).
@@ -99,8 +103,9 @@ if nargin < 3 || isempty(match_params)
     match_params.match_thresh = 1;
     match_params.max_ratio = 1;
     match_params.max_dist = 10;
+    match_params.conf = 90;
+    match_params.max_num_trials = 100;
     match_params.cost_thresh = 0.025;
-    % match_params.matches_ratio_thresh = 0.5;
     match_params.transf_sim_thresh = 0.3;
     match_params.num_sim_runs = 20;
 end
@@ -331,8 +336,7 @@ for nsr = 1: num_sim_runs
     end
     tic
     [tform{nsr},inl1, ~, status] = estimate_affine_tform(matched_pairs_d, ...
-        stats_cc1, stats_cc2,...
-        max_dist);
+        stats_cc1, stats_cc2, max_dist, conf, max_num_trials);
     if verbose
         toc
     end
