@@ -130,7 +130,6 @@ if nargin < 7 || isempty(match_params)
     match_params.conf = 90;
     match_params.max_num_trials = 100;
     match_params.cost_thresh = 0.025;
-    % match_params.matches_ratio_thresh = 0.5;
     match_params.transf_sim_thresh = 0.3;
     match_params.num_sim_runs = 20;
 end
