@@ -168,14 +168,14 @@ if ismatrix(im1)
     if verbose
         disp('MSER detection 1...');
     end
-    [~,cc1] = detectMSERFeatures(im1);
+    [regions1,cc1] = detectMSERFeatures(im1);
     stats_cc1 = regionprops(cc1, list_props_all);
 end
 if ismatrix(im2)
     if verbose
         disp('MSER detection 2...');
     end
-    [~,cc2] = detectMSERFeatures(im2);
+    [regions2,cc2] = detectMSERFeatures(im2);
     stats_cc2 = regionprops(cc2, list_props_all);
 
 end
@@ -194,7 +194,16 @@ if visualize
     f = figure; set(gcf, 'Position', fig_scrnsz);
     [~,~] = show_cc(cc1, false, [], f, subplot(sbp1),'MSER Connected components1');
     [~,~] = show_cc(cc2, false, [], f, subplot(sbp2),'MSER Connected components2');
-    pause(0.5);
+   
+    figure(f); subplot(sbp1_d);
+    imshow(im1); hold on; plot(regions1); hold off;
+    title('MSER elliptic regions 1');
+    subplot(sbp2_d);
+    imshow(im2); hold on; plot(regions2); hold off;
+    title('MSER elliptic regions 2');
+    
+     pause(0.5);
+    
 end
 
 %% SMI descriptor computaiton
@@ -203,10 +212,10 @@ if verbose
 end
 
 tic
-[SMI_descr1,SMI_descr1_struct] = ccSMIdescriptor(cc1_d, image_area1, ...
+[SMI_descr1,SMI_descr1_struct] = ccSMIdescriptor(cc1, image_area1, ...
     list_props, order, ...
     coeff_file, max_num_moments);
-[SMI_descr2,SMI_descr2_struct] = ccSMIdescriptor(cc2_d, image_area2, ...
+[SMI_descr2,SMI_descr2_struct] = ccSMIdescriptor(cc2, image_area2, ...
     list_props, order, ...
     coeff_file, max_num_moments);
 
@@ -218,17 +227,14 @@ end
 if verbose
     disp('SMI descriptors matching...');
 end
-if area_filtering
-    ind1 = index1; ind2 = index2;
-else
-    ind1 = []; ind2 = [];
-end
+ind1 = []; ind2 = [];
+
 tic
 [matched_pairs, cost, matched_ind, num_matches] =...
     matching( SMI_descr1, SMI_descr2, ...
     match_metric, match_thresh, ...
     max_ratio, true, ...
-    area_filtering, ind1, ind2);
+    false, ind1, ind2);
 if verbose
     toc
 end
@@ -252,6 +258,23 @@ if num_matches < 1
     return;
 end
 
+%% visualize
+if visualize
+    matchedPoints1 = regions1(matched_ind(:,1));
+    matchedPoints2 = regions2(matched_ind(:,2));
+    
+    
+    figure(f); subplot(sbp1_m);
+    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2);
+    legend('points 1','points 2', ...
+        'Location', 'best');
+    title('Matching 1->2');
+    figure(f); subplot(sbp2_m);
+    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1);
+    legend('points 2',' points 1', ...
+        'Location', 'best');
+    title('Matches 2->1');
+end
 %% Filtering of the matches
 if matches_filtering
     if verbose
@@ -285,53 +308,20 @@ if matches_filtering
 end
 %% visualization of matches
 if visualize
-
-    matched1 = zeros(size(labeled1));
-    matched2 = zeros(size(labeled2));
+    filtMatchedPoints1 = regions1(filt_matched_ind(:,1));
+    filtMatchedPoints2 = regions2(filt_matched_ind(:,2));
     
-    if matches_filtering
-        filt_matched1 = zeros(size(labeled1));
-        filt_matched2 = zeros(size(labeled2));
-        for m = 1:filt_num_matches
-            filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
-            filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
-        end
-    else
-        for m = 1:num_matches
-            matched1(labeled1 == matched_ind(m, 1)) = m;
-            matched2(labeled2 == matched_ind(m, 2)) = m;
-        end
-    end
-    % make label matricies from the matched pairs
-    if matches_filtering
-        for m = 1:filt_num_matches
-            filt_region1_idx(m) = filt_matched_pairs(m).first;
-            filt_region2_idx(m) = filt_matched_pairs(m).second;
-        end
-    end
-    for m =1:num_matches
-        region1_idx(m) = matched_pairs(m).first;
-        region2_idx(m) = matched_pairs(m).second;
-    end
-    
-    
-    % display
-    show_labelmatrix(matched1, true, region1_idx, stats_cc1, f, ...
-        subplot(sbp1_m), 'Matched regions on image1');
-    
-    show_labelmatrix(matched2, true, region2_idx, stats_cc2, f, ...
-        subplot(sbp2_m), 'Matched regions image2');
-    
-    if matches_filtering
-        show_labelmatrix(filt_matched1, true, filt_region1_idx, stats_cc1, f, ...
-            subplot(sbp1_fm), 'Filtered matched regions on image1');
-        
-        show_labelmatrix(filt_matched2, true, filt_region2_idx, stats_cc2, f, ...
-            subplot(sbp2_fm), 'Filtered matched regions on image2');
-    end
-    pause(0.5);
+    figure(f); subplot(sbp1_fm);
+    showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
+    legend('points 1','points 2', ...
+        'Location', 'best');
+    title('Filtered matches 1->2');
+    figure(f); subplot(sbp2_fm);
+    showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
+    legend('points 2','points 1', ...
+        'Location', 'best');
+    title('Filtered matches 2->1');
 end
-
 %% Estimation of affine transformation between the 2 images from the matches
 if verbose
     disp('Estimating affine transformation from the matches...');
