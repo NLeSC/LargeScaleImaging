@@ -14,6 +14,8 @@
 %               binarization + SMI descriptor)
 % IsSameScene_MSER_SURF-  comparing if 2 images are of the same scene 
 %               (with MSER detector + SURF descriptor)
+% IsSameScene_MSER_SMI-  comparing if 2 images are of the same scene
+%               (with MSER detector + SMI descriptor)
 %--------------------------------------------------------------------------
 % secondary
 %--------------------------------------------------------------------------

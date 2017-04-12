@@ -153,14 +153,6 @@ if ismatrix(im1)
     end
     [regions1,cc1] = detectMSERFeatures(im1);
     stats_cc1 = regionprops(cc1, list_props_all);
-    %     % convert the cc to binary image- not exactly precise as they overlap!
-    %     bw1 = zeros(size(im1)); bw1_cc = bw1;
-    %     for i = 1:length(cc1(1).PixelIdxList)
-    %         pxlist = cc1(1).PixelIdxList{i};
-    %         bw1_cc(pxlist) = 1;
-    %         bw1 = or(bw1, bw1_cc);
-    %         bw1_cc = zeros(size(im1));
-    %     end
 end
 if ismatrix(im2)
     if verbose
@@ -168,18 +160,11 @@ if ismatrix(im2)
     end
     [regions2,cc2] = detectMSERFeatures(im2);
     stats_cc2 = regionprops(cc2, list_props_all);
-    %     % convert the cc to binary image- not exactly precise as they overlap!
-    %     bw2 = zeros(size(im2)); bw2_cc = bw2;
-    %     for i = 1:length(cc2(1).PixelIdxList)
-    %         pxlist = cc2(1).PixelIdxList{i};
-    %         bw2_cc(pxlist) = 1;
-    %         bw2 = or(bw2, bw2_cc);
-    %         bw2_cc = zeros(size(im2));
-    %     end
 end
 if verbose
     toc
 end
+
 %% visualization of the MSER regions
 if visualize
     fig_scrnsz = get(0, 'Screensize');
@@ -189,8 +174,6 @@ if visualize
     fig_scrnsz(2) = fig_scrnsz(2) + offset;
     fig_scrnsz(4) = fig_scrnsz(4) - offset;
     f = figure; set(gcf, 'Position', fig_scrnsz);
-    %     show_binary(bw1, f, subplot(sbp1),'Binary MSER image1');
-    %     show_binary(bw2, f, subplot(sbp2),'Binary MSER image2');
     [~,~] = show_cc(cc1, false, [], f, subplot(sbp1),'MSER Connected components1');
     [~,~] = show_cc(cc2, false, [], f, subplot(sbp2),'MSER Connected components2');
     pause(0.5);
@@ -283,7 +266,6 @@ if matches_filtering
     if verbose
         toc
     end
-    %matches_ratio = filt_num_matches/num_matches;
     
     if verbose
         disp(['Filtered number of matches: ' , num2str(filt_num_matches)])
