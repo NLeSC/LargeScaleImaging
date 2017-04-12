@@ -1,4 +1,4 @@
-% test_IsSameScene_imagePair_Oxford- testing IsSameScene_BIN_SMI
+% test_IsSameScene_BIN_SMI_imagePair_Oxford- testing IsSameScene_BIN_SMI
 %                   function for comparision if 2
 %                   images are of the same scene (Oxford dataset)
 %**************************************************************************
