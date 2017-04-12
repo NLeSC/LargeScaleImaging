@@ -125,7 +125,7 @@ test_case1 = char(test_cases{str2num(test_case_ind1)});
 test_transf1 = input('Enter transformation [_original(no transf)|blur|lighting|scale|viewpoint]: ','s');
 
 if strcmp(test_transf1,'_original')
-    trans_deg1 = 0;
+    trans_deg1 = '';
 else
     trans_deg1 = input('Enter the transformation degree [1|2|3|4|5]: ');
 end
@@ -153,13 +153,13 @@ test_path2_or = fullfile(data_path_or,test_case2,'PNG');
 
 if trans_deg1 > 0
     trans_str1 = [num2str(test_transf1) num2str(trans_deg1)];
-else
-    trans_str1 = num2str(test_transf1);
+% else
+%     trans_str1 = num2str(test_transf1);
 end
 if trans_deg2 > 0
     trans_str2 = [num2str(test_transf2) num2str(trans_deg2)];
-else
-    trans_str2 = num2str(test_transf2);
+% else
+%     trans_str2 = num2str(test_transf2);
 end
 
 test_image1 = fullfile(test_path1_or,[trans_str1 ext_or]); 

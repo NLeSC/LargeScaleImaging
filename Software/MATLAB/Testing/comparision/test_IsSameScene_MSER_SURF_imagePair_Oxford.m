@@ -32,7 +32,7 @@ conf=95;
 max_num_trials = 1000;
 cost_thresh = 0.025;
 transf_sim_thresh = 0.25;
-num_sim_runs = 100;
+num_sim_runs = 30;
 % pack to a structure
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
      conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
