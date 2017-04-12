@@ -1,44 +1,26 @@
-% IsSameScene_BIN_SMI-  comparing if 2 images are of the same scene
-%               (with smart binarization + SMI descriptor)
+% IsSameScene_MSER_SMI-  comparing if 2 images are of the same scene
+%               (with MSER detector + SMI descriptor)
 % **************************************************************************
-% [is_same, num_matches, mean_cost, mean_transf_sim] = IsSameScene_BIN_SMI(im1o, im2o, ...
-%                      bw1, bw2, ...
+% [is_same, num_matches, mean_cost, mean_transf_sim] = IsSameScene_MSER_SMI(im1o, im2o, ...
 %                      moments_params, cc_params, match_params, ...
 %                      vis_params, exec_params)
 %
 % author: Elena Ranguelova, NLeSc
-% date created: 19 October 2016
+% date created: 11 April 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 10 April 2017
-% modification details: the CC version of SMIdescriptor is used now 
-% last modification date: 21 March 2017
-% modification details: similarity distance using corr2 (same as the
-%                       standard method; different visualization transformation)
-% last modification date: 14 November 2016
-% modification details: outcome depends on the transformaiton distance only
-%                       removed matches_ratio_thresh in/out parameter
-% last modification date: 4 November 2016
-% modification details: transformation distance replaced with similarity
-% last modification date: 29 October 2016
-% modification details: added more output parameters
-% last modification date: 21 October 2016
-% modification details: added visualizations, swaped parameter order
+% last modification date: 
+% modification details:
 %**************************************************************************
 % INPUTS:
 % im1/2o          the input gray/color images to be compared
-% [bw1/bw2]       binarized images. [Optional]. If missing, images are
-%                 binarized inside the function.
 % [moments_params] optional struct with the moment invariants parameters:
 %                order- moments order, {4}
 %                coeff_file- coefficients file filename, {'afinvs4_19.txt'}
 %                max_num_moments- maximun number of moments, {16}
 % [cc_params]    optional struct with the connected components parameters:
-%                conn - CC computaiton connectivity, {8}
 %                list_props list of CC properties to be computed:
 %                   {'Area','Centroid','MinorAxisLength','MajorAxisLength',
 %                                               'Eccentricity','Solidity'};
-%                area_factor - factor what is considered large CC in an
-%                   image, {0.0005}
 % [match_params]   the matching parameters struct [optional] with fields:
 %                match_metric- feature matching metric, see 'Metric' of
 %                   matchFeatures. {'ssd'} = Sum of Sqared Differences
@@ -71,8 +53,6 @@
 % [exec_params]  the execution parameters structure [optional] with fields:
 %                verbose- flag for verbose mode, default value {false}
 %                visualize- flag for vizualizing the matching, {false}
-%                area_filtering - flag for performing region (cc) area
-%                   filtering, {true}
 %                matches_filtering - flag for performing matches filtering,
 %                {true}
 %**************************************************************************
@@ -83,7 +63,7 @@
 % mean_cost      mean cost of matching
 % mean_transf_sim  mean transformation similarity between the 2 images
 %**************************************************************************
-% NOTES: The data-driven binarization is performed with default parameters.
+% NOTES: 
 %**************************************************************************
 % EXAMPLES USAGE:
 %
@@ -91,20 +71,19 @@
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
-function [is_same, num_matches, mean_cost, mean_transf_sim] = IsSameScene_BIN_SMI(im1o,...
-    im2o, bw1, bw2, moments_params, cc_params, match_params, vis_params, exec_params)
+function [is_same, num_matches, mean_cost, mean_transf_sim] = IsSameScene_MSER_SMI(im1o,...
+    im2o, moments_params, cc_params, match_params, vis_params, exec_params)
 
 %% input control
-if nargin < 9 || isempty(exec_params)
+if nargin < 7 || isempty(exec_params)
     exec_params.verbose = false;
     exec_params.visualize = false;
-    exec_params.area_filtering = true;
     exec_params.matches_filtering = true;
 end
-if (nargin < 8 || isempty(vis_params)) && (exec_params.visualize)
+if (nargin < 6 || isempty(vis_params)) && (exec_params.visualize)
     if exec_params.matches_filtering
         vis_params.sbp1 = (241);
-        vis_params.sbp1_f = (242);
+        vis_params.sbp1_d = (242);
         vis_params.sbp1_m = (243);
         vis_params.sbp1_fm = (244);
         vis_params.sbp2 = (245);
@@ -113,16 +92,16 @@ if (nargin < 8 || isempty(vis_params)) && (exec_params.visualize)
         vis_params.sbp2_fm = (248);
     else
         vis_params.sbp1 = (231);
-        vis_params.sbp1_f = (232);
+        vis_params.sbp1_d = (232);
         vis_params.sbp1_m = (233);
         vis_params.sbp1_fm = [];
         vis_params.sbp2 = (234);
-        vis_params.sbp2_f = (235);
+        vis_params.sbp2_d = (235);
         vis_params.sbp2_m = (236);
         vis_params.sbp2_fm = [];
     end
 end
-if nargin < 7 || isempty(match_params)
+if nargin < 5 || isempty(match_params)
     match_params.match_metric = 'ssd';
     match_params.match_thrseh = 1;
     match_params.max_ratio = 1;
@@ -133,25 +112,17 @@ if nargin < 7 || isempty(match_params)
     match_params.transf_sim_thresh = 0.3;
     match_params.num_sim_runs = 20;
 end
-if nargin < 6 || isempty(cc_params)
-    cc_params.conn = 8;
+if nargin < 4 || isempty(cc_params)
     cc_params.list_props = {'Area','Centroid','MinorAxisLength',...
         'MajorAxisLength', 'Eccentricity','Solidity'};
-    cc_params.area_factor = 0.0005;
 end
-if nargin < 4 || isempty(moments_params)
+if nargin < 3 || isempty(moments_params)
     moments_params.order = 4;
     moments_params.coeff_file = 'afinvs4_19.txt';
     moments_params.max_num_moments = 16;
 end
-if nargin < 4
-    bw1 = [];
-end
-if nargin < 3
-    bw2 = [];
-end
 if nargin < 2
-    error('IsSameScene_BIN_SMI: the function expects minimum 2 input arguments- the images to be compared!');
+    error('IsSameScene_SURF_SMI: the function expects minimum 2 input arguments- the images to be compared!');
 end
 
 %% unpack parameter structures into variables
@@ -167,13 +138,9 @@ end
 image_area1 = size(im1o, 1) * size(im1o,2);
 image_area2 = size(im2o, 1) * size(im2o,2);
 list_props_all = {'Area','Centroid'};
-if area_filtering
-    prop_types_filter = {'Area'};
-    range1 = {[area_factor*image_area1 image_area1]};
-    range2 = {[area_factor*image_area2 image_area2]};
-end
 transf_sim = zeros(1, num_sim_runs);
 mean_transf_sim = 0;
+
 %% processing
 %**************** Processing *******************************
 disp('Processing...');
@@ -182,12 +149,13 @@ if verbose
     t0 = clock;
 end
 
-%% binarization
-% find out the dimensionality
+%% MSER region detection
+
+% convert to gray if needed
 if ndims(im1o) == 3
     im1 = rgb2gray(im1o);
 else
-    im1= im1o;
+    im1 =im1o;
 end
 if ndims(im2o) == 3
     im2 = rgb2gray(im2o);
@@ -196,89 +164,43 @@ else
 end
 tic
 
-if isempty(bw1)
+if ismatrix(im1)
     if verbose
-        disp('Data-driven binarization 1 (inside comparision)...');
+        disp('MSER detection 1...');
     end
-    [bw1,~] = data_driven_binarizer(im1);
+    [~,cc1] = detectMSERFeatures(im1);
+    stats_cc1 = regionprops(cc1, list_props_all);
 end
-if isempty(bw2)
+if ismatrix(im2)
     if verbose
-        disp('Data-driven binarization 2 (inside comparision)...');
+        disp('MSER detection 2...');
     end
-    [bw2,~] = data_driven_binarizer(im2);
+    [~,cc2] = detectMSERFeatures(im2);
+    stats_cc2 = regionprops(cc2, list_props_all);
+
 end
 if verbose
     toc
 end
 
-%% visualization of the binarization result
+%% visualization of the MSER regions
 if visualize
     fig_scrnsz = get(0, 'Screensize');
     offset = offset_factor * fig_scrnsz(4);
+    fig_scrnsz(1) = fig_scrnsz(1) + 10;
+    fig_scrnsz(3) = fig_scrnsz(3) + 10;
     fig_scrnsz(2) = fig_scrnsz(2) + offset;
     fig_scrnsz(4) = fig_scrnsz(4) - offset;
     f = figure; set(gcf, 'Position', fig_scrnsz);
-    show_binary(bw1, f, subplot(sbp1),'Binarized image1');
-    show_binary(bw2, f, subplot(sbp2),'Binarized image2');
+    [~,~] = show_cc(cc1, false, [], f, subplot(sbp1),'MSER Connected components1');
+    [~,~] = show_cc(cc2, false, [], f, subplot(sbp2),'MSER Connected components2');
     pause(0.5);
-end
-
-%% CC computation and possibly filtering
-if verbose
-    disp('Computing the connected components...');
-end
-tic
-cc1 = bwconncomp(bw1,conn);
-cc2 = bwconncomp(bw2,conn);
-
-stats_cc1 = regionprops(cc1, list_props_all);
-stats_cc2 = regionprops(cc2, list_props_all);
-
-if verbose
-    toc
-end
-if area_filtering
-    if verbose
-        disp('Area filering of the connected components...');
-    end
-    tic
-    [bw1_f, index1, ~] = filter_regions(bw1, stats_cc1, prop_types_filter,...
-        {}, range1, cc1);
-    [bw2_f, index2, ~] = filter_regions(bw2, stats_cc2, prop_types_filter,...
-        {}, range2, cc2);
-    if verbose
-        toc
-    end
-    if visualize
-        if verbose
-            disp('Computing the filtered connected components...');
-        end
-        cc1_f = bwconncomp(bw1_f,conn);
-        cc2_f = bwconncomp(bw2_f,conn);
-    end
-end
-%% visualization of the CCs
-if visualize
-    if area_filtering
-        [labeled1_f,~] = show_cc(cc1_f, true, index1, f, subplot(sbp1_f),'Filtered connected components1');
-        [labeled2_f,~] = show_cc(cc2_f, true, index2, f, subplot(sbp2_f),'Filtered connected components2');
-    else
-        [labeled1,~] = show_cc(cc1, true, [], f, subplot(sbp1_f),'Connected components1');
-        [labeled2,~] = show_cc(cc2, true, [], f, subplot(sbp2_f),'Connected components2');
-    end
 end
 
 %% SMI descriptor computaiton
 if verbose
     disp('Shape and Moment Invariants (SMI) descriptors computation...');
 end
-if area_filtering
-    bw1_d = bw1_f; bw2_d = bw2_f;
-else
-    bw1_d = bw1; bw2_d = bw2;
-end
-cc1_d = bwconncomp(bw1_d, conn); cc2_d = bwconncomp(bw2_d, conn);
 
 tic
 [SMI_descr1,SMI_descr1_struct] = ccSMIdescriptor(cc1_d, image_area1, ...
@@ -363,40 +285,21 @@ if matches_filtering
 end
 %% visualization of matches
 if visualize
-    if area_filtering
-        matched1 = zeros(size(labeled1_f));
-        matched2 = zeros(size(labeled2_f));
-        
-        for m = 1:num_matches
-            matched1(labeled1_f == matched_ind(m, 1)) = m;
-            matched2(labeled2_f == matched_ind(m, 2)) = m;
+
+    matched1 = zeros(size(labeled1));
+    matched2 = zeros(size(labeled2));
+    
+    if matches_filtering
+        filt_matched1 = zeros(size(labeled1));
+        filt_matched2 = zeros(size(labeled2));
+        for m = 1:filt_num_matches
+            filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
+            filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
         end
-        
-        if matches_filtering
-            filt_matched1 = zeros(size(labeled1_f));
-            filt_matched2 = zeros(size(labeled2_f));
-            for m = 1:filt_num_matches
-                filt_matched1(labeled1_f == filt_matched_ind(m, 1)) = m;
-                filt_matched2(labeled2_f == filt_matched_ind(m, 2)) = m;
-            end
-        end
-        
     else
-        matched1 = zeros(size(labeled1));
-        matched2 = zeros(size(labeled2));
-        
-        if matches_filtering
-            filt_matched1 = zeros(size(labeled1));
-            filt_matched2 = zeros(size(labeled2));
-            for m = 1:filt_num_matches
-                filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
-                filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
-            end
-        else
-            for m = 1:num_matches
-                matched1(labeled1 == matched_ind(m, 1)) = m;
-                matched2(labeled2 == matched_ind(m, 2)) = m;
-            end
+        for m = 1:num_matches
+            matched1(labeled1 == matched_ind(m, 1)) = m;
+            matched2(labeled2 == matched_ind(m, 2)) = m;
         end
     end
     % make label matricies from the matched pairs
@@ -515,5 +418,4 @@ if visualize
 end
 
 end
-
 
