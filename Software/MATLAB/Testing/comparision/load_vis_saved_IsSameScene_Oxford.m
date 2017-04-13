@@ -22,8 +22,14 @@ visualize_transf_similarity = true;
 visualize_dataset = false;
 %det_desr = 'BIN_SMI';
 det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF]): ','s');
+if ispc
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 
-sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
+sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
 switch upper(det_descr)
     case 'BIN_SMI'
         sav_fname = [sav_path 'test_IsSameScene_BIN_SMI_Oxford_10-04-2017_14-03.mat'];
@@ -40,7 +46,7 @@ load(sav_fname);
 v2struct(match_params);
 
 % paths
-data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
+data_path_or = fullfile(project_path , 'Data', 'AffineRegions');
 ext = '.png';
 % data size
 data_size = 24;

@@ -32,7 +32,13 @@ end
 actual = actual';
 
 %% load the predicted matrix
-sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
+if ispc
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
+sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
 
 sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1435.mat'];
 sav_fname = [sav_path 'IsSameScene_Oxford_20161114_1605.mat'];

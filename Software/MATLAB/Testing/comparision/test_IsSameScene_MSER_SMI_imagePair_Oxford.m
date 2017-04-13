@@ -80,7 +80,14 @@ else
 end
 
 % paths
-data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\AffineRegions\';
+if ispc
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
+data_path_or = fullfile(project_path , 'Data', 'AffineRegions');
+
 ext  ='.png';
 
 

@@ -16,7 +16,14 @@ scene_size = 6;
 publish = false;
 
 %% load the predicted matrix
-sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\AffineRegions\Comparision\';
+if ispc
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
+sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
+
 if publish
    % sav_fname = 'test_IsSameScene_BIN_SMI_Oxford_06-04-2017_17-58.mat';
    sav_fname = 'test_IsSameScene_MSER_SURF_Oxford_07-04-2017_16-19.mat';

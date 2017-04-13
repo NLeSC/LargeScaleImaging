@@ -16,7 +16,14 @@ scene_size = 21;
 publish = true;
 
 %% load the predicted matrix
-sav_path = 'C:\Projects\eStep\LargeScaleImaging\Results\OxFrei\Comparision\';
+if ispc
+    starting_path = fullfile('C:','Projects');
+else
+    starting_path = fullfile(filesep,'home','elena');
+end
+project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
+sav_path = fullfile(project_path , 'Results', 'OxFrei','Comparision');
+
 if publish
     %sav_fname = 'test_IsSameScene_MSER_SURF_OxFrei_07-04-2017_17-19.mat';
     sav_fname = 'test_IsSameScene_BIN_SMI_OxFrei_07-04-2017_17-18.mat';
