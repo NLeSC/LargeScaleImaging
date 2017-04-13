@@ -78,25 +78,30 @@ if nargin < 5 || isempty(exec_params)
     exec_params.matches_filtering = true;
 end
 if (nargin < 4 || isempty(vis_params)) && (exec_params.visualize)
-    if exec_params.matches_filtering
-        vis_params.sbp1 = (241);
-        vis_params.sbp1_d = (242);
-        vis_params.sbp1_m = (243);
-        vis_params.sbp1_fm = (244);
-        vis_params.sbp2 = (245);
-        vis_params.sbp_f = (246);
-        vis_params.sbp2_m = (247);
-        vis_params.sbp2_fm = (248);
-    else
-        vis_params.sbp1 = (231);
-        vis_params.sbp1_d = (232);
-        vis_params.sbp1_m = (233);
-        vis_params.sbp1_fm = [];
-        vis_params.sbp2 = (234);
-        vis_params.sbp2_d = (235);
-        vis_params.sbp2_m = (236);
-        vis_params.sbp2_fm = [];
-    end
+%     if exec_params.matches_filtering
+%         vis_params.sbp1 = (241);
+%         vis_params.sbp1_d = (242);
+%         vis_params.sbp1_m = (243);
+%         vis_params.sbp1_fm = (244);
+%         vis_params.sbp2 = (245);
+%         vis_params.sbp_f = (246);
+%         vis_params.sbp2_m = (247);
+%         vis_params.sbp2_fm = (248);
+%     else
+%         vis_params.sbp1 = (231);
+%         vis_params.sbp1_d = (232);
+%         vis_params.sbp1_m = (233);
+%         vis_params.sbp1_fm = [];
+%         vis_params.sbp2 = (234);
+%         vis_params.sbp2_d = (235);
+%         vis_params.sbp2_m = (236);
+%         vis_params.sbp2_fm = [];
+%     end
+    vis_params.sbp1 = (221);
+    vis_params.sbp1_m = (222);
+    vis_params.sbp2 = (223);
+    vis_params.sbp2_m = (224);
+
 end
 if nargin < 3 || isempty(match_params)
     match_params.match_metric = 'ssd';
@@ -174,8 +179,8 @@ if visualize
     fig_scrnsz(2) = fig_scrnsz(2) + offset;
     fig_scrnsz(4) = fig_scrnsz(4) - offset;
     f = figure; set(gcf, 'Position', fig_scrnsz);
-    [~,~] = show_cc(cc1, false, [], f, subplot(sbp1),'MSER Connected components1');
-    [~,~] = show_cc(cc2, false, [], f, subplot(sbp2),'MSER Connected components2');
+    [~,~] = show_cc(cc1, false, [], f, subplot(sbp1),'MSER CCs + SURF points1');
+    [~,~] = show_cc(cc2, false, [], f, subplot(sbp2),'MSER CCs + SURF points2');
     pause(0.5);
 end
 
@@ -194,12 +199,14 @@ end
 
 %% visualization of the SURF points
 if visualize
-    figure(f); subplot(sbp1_d);
-    imshow(im1); hold on; plot(valid_points1,'showOrientation',true); hold off;
-    title('SURF points 1'); axis on, grid on;
-    subplot(sbp2_d);
-    imshow(im2); hold on; plot(valid_points2,'showOrientation',true); hold off;
-    title('SURF points 2'); axis on, grid on;
+    figure(f); subplot(sbp1); %subplot(sbp1_d);
+    %imshow(im1); 
+    hold on; plot(valid_points1,'showOrientation',true); hold off;
+    %title('SURF points 1'); axis on, grid on;
+    subplot(sbp2); %subplot(sbp2_d);
+    %imshow(im2); 
+    hold on; plot(valid_points2,'showOrientation',true); hold off;
+    %title('SURF points 2'); axis on, grid on;
 end
 %% Matching the SURF descriptors
 if verbose
@@ -239,17 +246,20 @@ end
 
 %% visualize
 if visualize
+    
     matchedPoints1 = valid_points1(matched_ind(:,1));
     matchedPoints2 = valid_points2(matched_ind(:,2));
-    
+   
     
     figure(f); subplot(sbp1_m);
-    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2);
+    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2,...
+        'PlotOptions', {'ro','go','y--'});
     legend('points 1','points 2', ...
         'Location', 'best');
     title('Matching 1->2');
     figure(f); subplot(sbp2_m);
-    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1);
+    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1,...
+        'PlotOptions', {'ro','go','y--'});
     legend('points 2',' points 1', ...
         'Location', 'best');
     title('Matches 2->1');
@@ -290,21 +300,32 @@ if matches_filtering
 end
 %% visualization of matches
 if visualize
-    filtMatchedPoints1 = valid_points1(filt_matched_ind(:,1));
-    filtMatchedPoints2 = valid_points2(filt_matched_ind(:,2));
     
-    figure(f); subplot(sbp1_fm);
-    showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
+    if matches_filtering
+        MatchedPoints1 = valid_points1(filt_matched_ind(:,1));
+        MatchedPoints2 = valid_points2(filt_matched_ind(:,2));
+    else
+        matchedPoints1 = valid_points1(matched_ind(:,1));
+        matchedPoints2 = valid_points2(matched_ind(:,2));
+    end
+    
+    
+    %figure(f); subplot(sbp1_m);
+    figure;
+    showMatchedFeatures(im1,im2,MatchedPoints1,MatchedPoints2, 'montage',...
+        'PlotOptions', {'ro','go','y--'});
     axis on, grid on;
     legend('points 1','points 2', ...
         'Location', 'best');
-    title('Filtered matches 1->2');
-    figure(f); subplot(sbp2_fm);
-    showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
+    title('Matches 1->2');
+   % figure(f); subplot(sbp2_fm);
+    figure;
+    showMatchedFeatures(im2,im1,MatchedPoints2,MatchedPoints1,'montage',...
+        'PlotOptions', {'ro','go','y--'});
     axis on, grid on;
     legend('points 2','points 1', ...
         'Location', 'best');
-    title('Filtered matches 2->1');
+    title('Matches 2->1');
 end
 %% Estimation of affine transformation between the 2 images from the matches
 if verbose

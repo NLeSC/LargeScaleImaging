@@ -81,25 +81,29 @@ if nargin < 7 || isempty(exec_params)
     exec_params.matches_filtering = true;
 end
 if (nargin < 6 || isempty(vis_params)) && (exec_params.visualize)
-    if exec_params.matches_filtering
-        vis_params.sbp1 = (241);
-        vis_params.sbp1_d = (242);
-        vis_params.sbp1_m = (243);
-        vis_params.sbp1_fm = (244);
-        vis_params.sbp2 = (245);
-        vis_params.sbp_f = (246);
-        vis_params.sbp2_m = (247);
-        vis_params.sbp2_fm = (248);
-    else
-        vis_params.sbp1 = (231);
-        vis_params.sbp1_d = (232);
-        vis_params.sbp1_m = (233);
-        vis_params.sbp1_fm = [];
-        vis_params.sbp2 = (234);
-        vis_params.sbp2_d = (235);
-        vis_params.sbp2_m = (236);
-        vis_params.sbp2_fm = [];
-    end
+%         if exec_params.matches_filtering
+%             vis_params.sbp1 = (241);
+%             vis_params.sbp1_d = (242);
+%             vis_params.sbp1_m = (243);
+%             vis_params.sbp1_fm = (244);
+%             vis_params.sbp2 = (245);
+%             vis_params.sbp_f = (246);
+%             vis_params.sbp2_m = (247);
+%             vis_params.sbp2_fm = (248);
+%         else
+%             vis_params.sbp1 = (231);
+%             vis_params.sbp1_d = (232);
+%             vis_params.sbp1_m = (233);
+%             vis_params.sbp1_fm = [];
+%             vis_params.sbp2 = (234);
+%             vis_params.sbp2_d = (235);
+%             vis_params.sbp2_m = (236);
+%             vis_params.sbp2_fm = [];
+%         end
+    vis_params.sbp1 = (221);
+    vis_params.sbp1_m = (222);
+    vis_params.sbp2 = (223);
+    vis_params.sbp2_m = (224);
 end
 if nargin < 5 || isempty(match_params)
     match_params.match_metric = 'ssd';
@@ -195,12 +199,12 @@ if visualize
     [~,~] = show_cc(cc1, false, [], f, subplot(sbp1),'MSER Connected components1');
     [~,~] = show_cc(cc2, false, [], f, subplot(sbp2),'MSER Connected components2');
    
-    figure(f); subplot(sbp1_d);
-    imshow(im1); hold on; plot(regions1); hold off;
-    title('MSER elliptic regions 1'); axis on, grid on;
-    subplot(sbp2_d);
-    imshow(im2); hold on; plot(regions2); hold off;
-    title('MSER elliptic regions 2'); axis on, grid on;
+%     figure(f); subplot(sbp1_d);
+%     imshow(im1); hold on; plot(regions1); hold off;
+%     title('MSER elliptic regions 1'); axis on, grid on;
+%     subplot(sbp2_d);
+%     imshow(im2); hold on; plot(regions2); hold off;
+%     title('MSER elliptic regions 2'); axis on, grid on;
     
      pause(0.5);
     
@@ -260,20 +264,22 @@ end
 
 %% visualize
 if visualize
-    matchedPoints1 = regions1(matched_ind(:,1));
-    matchedPoints2 = regions2(matched_ind(:,2));
+    matchedPoints1 = regions1(matched_ind(1:3:end,1));
+    matchedPoints2 = regions2(matched_ind(1:3:end,2));
     
     
     figure(f); subplot(sbp1_m);
-    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2);
+    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2,...
+        'PlotOptions', {'ro','go','y--'});
     legend('points 1','points 2', ...
         'Location', 'best');
-    title('Matching 1->2');
+    title('Matching 1->2 (every third point)');
     figure(f); subplot(sbp2_m);
-    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1);
+    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1,...
+        'PlotOptions', {'ro','go','y--'});
     legend('points 2',' points 1', ...
         'Location', 'best');
-    title('Matches 2->1');
+    title('Matches 2->1 (every third point)');
 end
 %% Filtering of the matches
 if matches_filtering
@@ -308,19 +314,28 @@ if matches_filtering
 end
 %% visualization of matches
 if visualize
-    filtMatchedPoints1 = regions1(filt_matched_ind(:,1));
-    filtMatchedPoints2 = regions2(filt_matched_ind(:,2));
+    if matches_filtering        
+        MatchedPoints1 = regions1(filt_matched_ind(1:3:end,1));
+        MatchedPoints2 = regions2(filt_matched_ind(1:3:end,2));
+    else
+        matchedPoints1 = regions1(matched_ind(1:3:end,1));
+        matchedPoints2 = regions2(matched_ind(1:3:end,2));
+    end
     
-    figure(f); subplot(sbp1_fm);
-    showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
+    %figure(f); subplot(sbp1_fm);
+    figure;
+    showMatchedFeatures(im1,im2,MatchedPoints1,MatchedPoints2, 'montage',...
+        'PlotOptions', {'ro','go','y--'});
     legend('points 1','points 2', ...
         'Location', 'best');
-    title('Filtered matches 1->2');axis on, grid on;
-    figure(f); subplot(sbp2_fm);
-    showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
+    title('Matches 1->2 (every third point)');axis on, grid on;
+    %figure(f); subplot(sbp2_fm);
+    figure;
+    showMatchedFeatures(im2,im1,MatchedPoints2,MatchedPoints1, 'montage',...
+        'PlotOptions', {'ro','go','y--'});
     legend('points 2','points 1', ...
         'Location', 'best');
-    title('Filtered matches 2->1');axis on, grid on;
+    title('Matches 2->1 (every third point)');axis on, grid on;
 end
 %% Estimation of affine transformation between the 2 images from the matches
 if verbose
