@@ -52,29 +52,34 @@ match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
 
 % visualization parameters
 if visualize
-    if matches_filtering
-        sbp1 = (241);
-        sbp1_d = (242);
-        sbp1_m = (243);
-        sbp1_fm = (244);
-        sbp2 = (245);
-        sbp2_d = (246);
-        sbp2_m = (247);
-        sbp2_fm = (248);
-    else
-        sbp1 = (231);
-        sbp1_d = (232);
-        sbp1_m = (233);
-        sbp1_fm = [];
-        sbp2 = (234);
-        sbp2_d = (235);
-        sbp2_m = (236);
-        sbp2_fm = [];
-    end
+%     if matches_filtering
+%         sbp1 = (241);
+%         sbp1_d = (242);
+%         sbp1_m = (243);
+%         sbp1_fm = (244);
+%         sbp2 = (245);
+%         sbp2_d = (246);
+%         sbp2_m = (247);
+%         sbp2_fm = (248);
+%     else
+%         sbp1 = (231);
+%         sbp1_d = (232);
+%         sbp1_m = (233);
+%         sbp1_fm = [];
+%         sbp2 = (234);
+%         sbp2_d = (235);
+%         sbp2_m = (236);
+%         sbp2_fm = [];
+%     end
+    sbp1 = (221);
+    sbp1_m = (222);
+    sbp2 = (223);
+    sbp2_m = (224);
+    
     offset_factor = 0.25;
     % pack to a structure
-    vis_params = v2struct(sbp1, sbp1_d, sbp1_m, sbp1_fm,...
-        sbp2, sbp2_d, sbp2_m, sbp2_fm, offset_factor);
+    vis_params = v2struct(sbp1, sbp1_m,...
+        sbp2, sbp2_m, offset_factor);
 else
     vis_params = [];
 end
