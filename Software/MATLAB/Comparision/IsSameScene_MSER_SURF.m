@@ -196,10 +196,10 @@ end
 if visualize
     figure(f); subplot(sbp1_d);
     imshow(im1); hold on; plot(valid_points1,'showOrientation',true); hold off;
-    title('SURF points 1');
+    title('SURF points 1'); axis on, grid on;
     subplot(sbp2_d);
     imshow(im2); hold on; plot(valid_points2,'showOrientation',true); hold off;
-    title('SURF points 2');
+    title('SURF points 2'); axis on, grid on;
 end
 %% Matching the SURF descriptors
 if verbose
@@ -295,11 +295,13 @@ if visualize
     
     figure(f); subplot(sbp1_fm);
     showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
+    axis on, grid on;
     legend('points 1','points 2', ...
         'Location', 'best');
     title('Filtered matches 1->2');
     figure(f); subplot(sbp2_fm);
     showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
+    axis on, grid on;
     legend('points 2','points 1', ...
         'Location', 'best');
     title('Filtered matches 2->1');

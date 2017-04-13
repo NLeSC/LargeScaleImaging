@@ -197,10 +197,10 @@ if visualize
    
     figure(f); subplot(sbp1_d);
     imshow(im1); hold on; plot(regions1); hold off;
-    title('MSER elliptic regions 1');
+    title('MSER elliptic regions 1'); axis on, grid on;
     subplot(sbp2_d);
     imshow(im2); hold on; plot(regions2); hold off;
-    title('MSER elliptic regions 2');
+    title('MSER elliptic regions 2'); axis on, grid on;
     
      pause(0.5);
     
@@ -315,12 +315,12 @@ if visualize
     showMatchedFeatures(im1,im2,filtMatchedPoints1,filtMatchedPoints2);
     legend('points 1','points 2', ...
         'Location', 'best');
-    title('Filtered matches 1->2');
+    title('Filtered matches 1->2');axis on, grid on;
     figure(f); subplot(sbp2_fm);
     showMatchedFeatures(im2,im1,filtMatchedPoints2,filtMatchedPoints1);
     legend('points 2','points 1', ...
         'Location', 'best');
-    title('Filtered matches 2->1');
+    title('Filtered matches 2->1');axis on, grid on;
 end
 %% Estimation of affine transformation between the 2 images from the matches
 if verbose

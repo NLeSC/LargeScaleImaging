@@ -219,7 +219,7 @@ if visualize
     fig_scrnsz(2) = fig_scrnsz(2) + offset;
     fig_scrnsz(4) = fig_scrnsz(4) - offset;
     f = figure; set(gcf, 'Position', fig_scrnsz);
-    show_binary(bw1, f, subplot(sbp1),'Binarized image1');
+    show_binary(bw1, f, subplot(sbp1),'Binarized image1'); 
     show_binary(bw2, f, subplot(sbp2),'Binarized image2');
     pause(0.5);
 end
