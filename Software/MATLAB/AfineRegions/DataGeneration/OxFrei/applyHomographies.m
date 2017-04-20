@@ -1,7 +1,7 @@
 %applyHomographies- apply homographies to test images -> test sequences
 
 batch = true;
-transforms = {'viewpoint' , 'scale', 'blur', 'ligthing'};
+transforms = {'viewpoint' , 'scale', 'blur', 'lighting'};
 %transforms ={'blur'};
 lighting_params = [0.95 0.9 0.8 0.7 0.6];
 blur_params = [2 3 5 8 10];
