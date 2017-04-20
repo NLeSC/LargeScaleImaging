@@ -63,29 +63,33 @@ match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
 
 % visualization parameters
 if visualize
-    if matches_filtering
-        sbp1 = (241);
-        sbp1_f = (242);
-        sbp1_m = (243);
-        sbp1_fm = (244);
-        sbp2 = (245);
-        sbp2_f = (246);
-        sbp2_m = (247);
-        sbp2_fm = (248);
-    else
-        sbp1 = (231);
-        sbp1_f = (232);
-        sbp1_m = (233);
-        sbp1_fm = [];
-        sbp2 = (234);
-        sbp2_f = (235);
-        sbp2_m = (236);
-        sbp2_fm = [];
-    end
+%     if matches_filtering
+%         sbp1 = (241);
+%         sbp1_f = (242);
+%         sbp1_m = (243);
+%         sbp1_fm = (244);
+%         sbp2 = (245);
+%         sbp2_f = (246);
+%         sbp2_m = (247);
+%         sbp2_fm = (248);
+%     else
+%         sbp1 = (231);
+%         sbp1_f = (232);
+%         sbp1_m = (233);
+%         sbp1_fm = [];
+%         sbp2 = (234);
+%         sbp2_f = (235);
+%         sbp2_m = (236);
+%         sbp2_fm = [];
+%     end
+    sbp1 = (221);
+    sbp1_m = (222);
+    sbp2 = (223);
+    sbp2_m = (224);
     offset_factor = 0.25;
     % pack to a structure
-    vis_params = v2struct(sbp1, sbp1_f, sbp1_m, sbp1_fm,...
-        sbp2, sbp2_f, sbp2_m, sbp2_fm, offset_factor);
+    vis_params = v2struct(sbp1, sbp1_m,...
+        sbp2, sbp2_m, offset_factor);
 else
     vis_params = [];
 end
@@ -100,7 +104,7 @@ project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 data_path_or = fullfile(project_path , 'Data', 'OxFrei');
 ext_or  ='.png';
 if binarized
-    data_path_bin = fullfile(project_path , 'Results, 'OxFrei');
+    data_path_bin = fullfile(project_path , 'Results', 'OxFrei');
     ext_bin = '_bin.png';
 end
 
@@ -141,7 +145,7 @@ test_case2 = char(test_cases{str2num(test_case_ind2)});
 test_transf2 = input('Enter transformation [_original(no transf)|blur|lighting|scale|viewpoint]: ','s');
 
 if strcmp(test_transf2,'_original')
-    trans_deg2 = 0;
+    trans_deg2 = '';
 else
     trans_deg2 = input('Enter the transformation degree [1|2|3|4|5]: ');
 end
@@ -159,13 +163,13 @@ test_path2_or = fullfile(data_path_or,test_case2,'PNG');
 
 if trans_deg1 > 0
     trans_str1 = [num2str(test_transf1) num2str(trans_deg1)];
-% else
-%     trans_str1 = num2str(test_transf1);
+ else
+     trans_str1 = '_original';
 end
 if trans_deg2 > 0
     trans_str2 = [num2str(test_transf2) num2str(trans_deg2)];
-% else
-%     trans_str2 = num2str(test_transf2);
+ else
+     trans_str2 = '_original';
 end
 
 test_image1 = fullfile(test_path1_or,[trans_str1 ext_or]); 

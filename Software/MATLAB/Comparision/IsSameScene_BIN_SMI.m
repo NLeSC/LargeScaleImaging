@@ -102,25 +102,29 @@ if nargin < 9 || isempty(exec_params)
     exec_params.matches_filtering = true;
 end
 if (nargin < 8 || isempty(vis_params)) && (exec_params.visualize)
-    if exec_params.matches_filtering
-        vis_params.sbp1 = (241);
-        vis_params.sbp1_f = (242);
-        vis_params.sbp1_m = (243);
-        vis_params.sbp1_fm = (244);
-        vis_params.sbp2 = (245);
-        vis_params.sbp_f = (246);
-        vis_params.sbp2_m = (247);
-        vis_params.sbp2_fm = (248);
-    else
-        vis_params.sbp1 = (231);
-        vis_params.sbp1_f = (232);
-        vis_params.sbp1_m = (233);
-        vis_params.sbp1_fm = [];
-        vis_params.sbp2 = (234);
-        vis_params.sbp2_f = (235);
-        vis_params.sbp2_m = (236);
-        vis_params.sbp2_fm = [];
-    end
+%     if exec_params.matches_filtering
+%         vis_params.sbp1 = (241);
+%         vis_params.sbp1_f = (242);
+%         vis_params.sbp1_m = (243);
+%         vis_params.sbp1_fm = (244);
+%         vis_params.sbp2 = (245);
+%         vis_params.sbp_f = (246);
+%         vis_params.sbp2_m = (247);
+%         vis_params.sbp2_fm = (248);
+%     else
+%         vis_params.sbp1 = (231);
+%         vis_params.sbp1_f = (232);
+%         vis_params.sbp1_m = (233);
+%         vis_params.sbp1_fm = [];
+%         vis_params.sbp2 = (234);
+%         vis_params.sbp2_f = (235);
+%         vis_params.sbp2_m = (236);
+%         vis_params.sbp2_fm = [];
+%     end
+    vis_params.sbp1 = (221);
+    vis_params.sbp1_m = (222);
+    vis_params.sbp2 = (223);
+    vis_params.sbp2_m = (224);
 end
 if nargin < 7 || isempty(match_params)
     match_params.match_metric = 'ssd';
@@ -219,9 +223,9 @@ if visualize
     fig_scrnsz(2) = fig_scrnsz(2) + offset;
     fig_scrnsz(4) = fig_scrnsz(4) - offset;
     f = figure; set(gcf, 'Position', fig_scrnsz);
-    show_binary(bw1, f, subplot(sbp1),'Binarized image1'); 
-    show_binary(bw2, f, subplot(sbp2),'Binarized image2');
-    pause(0.5);
+%     show_binary(bw1, f, subplot(sbp1),'Binarized image1'); 
+%     show_binary(bw2, f, subplot(sbp2),'Binarized image2');
+%     pause(0.5);
 end
 
 %% CC computation and possibly filtering
@@ -261,11 +265,11 @@ end
 %% visualization of the CCs
 if visualize
     if area_filtering
-        [labeled1_f,~] = show_cc(cc1_f, true, index1, f, subplot(sbp1_f),'Filtered connected components1');
-        [labeled2_f,~] = show_cc(cc2_f, true, index2, f, subplot(sbp2_f),'Filtered connected components2');
+        [labeled1_f,centr_cc1] = show_cc(cc1_f, true, index1, f, subplot(sbp1),'Filtered BIN CCs1');
+        [labeled2_f,centr_cc2] = show_cc(cc2_f, true, index2, f, subplot(sbp2),'Filtered BIN CCs1');
     else
-        [labeled1,~] = show_cc(cc1, true, [], f, subplot(sbp1_f),'Connected components1');
-        [labeled2,~] = show_cc(cc2, true, [], f, subplot(sbp2_f),'Connected components2');
+        [labeled1,centr_cc1] = show_cc(cc1, true, [], f, subplot(sbp1),'BIN CCs1');
+        [labeled2,centr_cc2] = show_cc(cc2, true, [], f, subplot(sbp2),'BIN CCs2');
     end
 end
 
@@ -363,70 +367,48 @@ if matches_filtering
 end
 %% visualization of matches
 if visualize
-    if area_filtering
-        matched1 = zeros(size(labeled1_f));
-        matched2 = zeros(size(labeled2_f));
-        
-        for m = 1:num_matches
-            matched1(labeled1_f == matched_ind(m, 1)) = m;
-            matched2(labeled2_f == matched_ind(m, 2)) = m;
-        end
-        
-        if matches_filtering
-            filt_matched1 = zeros(size(labeled1_f));
-            filt_matched2 = zeros(size(labeled2_f));
-            for m = 1:filt_num_matches
-                filt_matched1(labeled1_f == filt_matched_ind(m, 1)) = m;
-                filt_matched2(labeled2_f == filt_matched_ind(m, 2)) = m;
-            end
-        end
-        
+
+    if matches_filtering        
+        matchedPoints1 = centr_cc1(filt_matched_ind(:,1));        
+        matchedPoints2 = centr_cc2(filt_matched_ind(:,2));
     else
-        matched1 = zeros(size(labeled1));
-        matched2 = zeros(size(labeled2));
-        
-        if matches_filtering
-            filt_matched1 = zeros(size(labeled1));
-            filt_matched2 = zeros(size(labeled2));
-            for m = 1:filt_num_matches
-                filt_matched1(labeled1 == filt_matched_ind(m, 1)) = m;
-                filt_matched2(labeled2 == filt_matched_ind(m, 2)) = m;
-            end
-        else
-            for m = 1:num_matches
-                matched1(labeled1 == matched_ind(m, 1)) = m;
-                matched2(labeled2 == matched_ind(m, 2)) = m;
-            end
-        end
-    end
-    % make label matricies from the matched pairs
-    if matches_filtering
-        for m = 1:filt_num_matches
-            filt_region1_idx(m) = filt_matched_pairs(m).first;
-            filt_region2_idx(m) = filt_matched_pairs(m).second;
-        end
-    end
-    for m =1:num_matches
-        region1_idx(m) = matched_pairs(m).first;
-        region2_idx(m) = matched_pairs(m).second;
+        matchedPoints1 = centr_cc1(matched_ind(:,1));
+        matchedPoints2 = centr_cc2(matched_ind(:,2));
     end
     
+    % make matched Points a list of centroid locaitons from the struct of
+    % centroids
+    matchedPoints1 = cat(1,matchedPoints1.Centroid);
+    matchedPoints2 = cat(1,matchedPoints2.Centroid);
     
-    % display
-    show_labelmatrix(matched1, true, region1_idx, stats_cc1, f, ...
-        subplot(sbp1_m), 'Matched regions on image1');
+    figure(f); subplot(sbp1_m);
+    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2,...
+        'PlotOptions', {'ro','go','y--'});
+    legend('points 1','points 2', ...
+        'Location', 'best');
+    title('Matching 1->2 ');
+    figure(f); subplot(sbp2_m);
+    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1,...
+        'PlotOptions', {'ro','go','y--'});
+    legend('points 2',' points 1', ...
+        'Location', 'best');
+    title('Matches 2->1 ');
     
-    show_labelmatrix(matched2, true, region2_idx, stats_cc2, f, ...
-        subplot(sbp2_m), 'Matched regions image2');
+     %figure(f); subplot(sbp1_fm);
+    figure;
+    showMatchedFeatures(im1,im2,matchedPoints1,matchedPoints2, 'montage',...
+        'PlotOptions', {'ro','go','y--'});
+    legend('points 1','points 2', ...
+        'Location', 'best');
+    title('Matches 1->2');axis on, grid on;
+    %figure(f); subplot(sbp2_fm);
+    figure;
+    showMatchedFeatures(im2,im1,matchedPoints2,matchedPoints1, 'montage',...
+        'PlotOptions', {'ro','go','y--'});
+    legend('points 2','points 1', ...
+        'Location', 'best');
+    title('Matches 2->1');axis on, grid on;
     
-    if matches_filtering
-        show_labelmatrix(filt_matched1, true, filt_region1_idx, stats_cc1, f, ...
-            subplot(sbp1_fm), 'Filtered matched regions on image1');
-        
-        show_labelmatrix(filt_matched2, true, filt_region2_idx, stats_cc2, f, ...
-            subplot(sbp2_fm), 'Filtered matched regions on image2');
-    end
-    pause(0.5);
 end
 
 %% Estimation of affine transformation between the 2 images from the matches
