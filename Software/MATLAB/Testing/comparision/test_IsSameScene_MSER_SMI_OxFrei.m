@@ -133,7 +133,7 @@ for i = 1: numel(test_cases)
                 
                 %% compare if the 2 images show the same scene
                 if r >= c
-                    [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_MSER_SURF(im1, im2,...
+                    [is_same, num_matches, mean_cost, transf_sim] = IsSameScene_MSER_SMI(im1, im2,...
                         moments_params, cc_params, match_params, vis_params, exec_params);
                     is_same_all(r,c) = is_same;
                     mean_costs(r,c) = mean_cost;
