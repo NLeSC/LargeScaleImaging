@@ -32,6 +32,9 @@
 
 % test_IsSameScene_MSER_SMI_imagePair_Oxford- testing IsSameScene_MSER_SMI
 %                   function for comparision if 2 images are of the same scene (Oxford dataset) 
+% test_IsSameScene_MSER_SMI_Oxford- testing IsSameScene_MSER_SMI for comparision if 2
+%                   images are of the same scene for the Oxford dataset
+
 % test_IsSameScene_MSER_SMI_imagePair_OxFrei- testing IsSameScene_MSER_SMI
 %                   function for comparision if 2 images are of the same scene (OxFrei dataset) 
 
