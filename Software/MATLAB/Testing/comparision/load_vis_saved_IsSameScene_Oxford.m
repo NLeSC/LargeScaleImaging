@@ -4,6 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 15-11-2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% last modification date: 24.04.2017
+% modification details: adding MSER + SMI
 % last modification date: 10.04.2017
 % modification details: making it generic for the Oxford
 %               dataset,independant on  combination detector + descriptor
@@ -19,9 +21,15 @@ verbose = true;
 visualize = true;
 visualize_matching_cost =  true;
 visualize_transf_similarity = true;
-visualize_dataset = false;
-%det_desr = 'BIN_SMI';
-det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF]): ','s');
+visualize_dataset = true;
+publish = true;
+
+if publish
+    det_descr = 'BIN_SMI'; %'MSER_SMI'; %'MSER_SURF';
+else
+    det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF|MSER_SMI]): ','s');
+end
+
 if ispc
     starting_path = fullfile('C:','Projects');
 else
@@ -32,9 +40,11 @@ project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
 switch upper(det_descr)
     case 'BIN_SMI'
-        sav_fname = [sav_path 'test_IsSameScene_BIN_SMI_Oxford_10-04-2017_14-03.mat'];
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_Oxford_21-04-2017_13-43.mat');
     case 'MSER_SURF'
-        sav_fname = [sav_path 'test_IsSameScene_MSER_SURF_Oxford_10-04-2017_14-02.mat'];
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_Oxford_21-04-2017_10-25.mat');
+    case 'MSER_SMI'
+        sav_fname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_Oxford_21-04-2017_11-18.mat');
     otherwise
         error('Unknown detector + descriptor combination!');
 end
