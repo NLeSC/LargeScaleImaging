@@ -20,7 +20,7 @@ visualize_dataset = false;
 visualize_final = true;
 area_filtering = true;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
-sav = false;
+sav = true;
 binarized = true;
 
 % paths
