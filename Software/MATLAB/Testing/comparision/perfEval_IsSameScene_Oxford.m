@@ -4,8 +4,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 7 April 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 
-% modification details:
+% last modification date: 24.04.2017
+% modification details: intriduced detector + descriptor
 %**************************************************************************
 
 %% parameters
@@ -13,7 +13,15 @@ vis_eval = true;
 lab_step = 1;
 verbose = true;
 scene_size = 6;
-publish = false;
+publish = true;
+
+if publish
+    det_descr = 'BIN_SMI';
+    det_descr = 'MSER_SMI';
+    det_descr = 'MSER_SURF';
+% else
+%     det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF|MSER_SMI]): ','s');
+end
 
 %% load the predicted matrix
 if ispc
@@ -25,12 +33,21 @@ project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
 
 if publish
-   % sav_fname = 'test_IsSameScene_BIN_SMI_Oxford_06-04-2017_17-58.mat';
-   sav_fname = 'test_IsSameScene_MSER_SURF_Oxford_07-04-2017_16-19.mat';
+   switch upper(det_descr)
+    case 'BIN_SMI'
+        sav_fullname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_Oxford_21-04-2017_13-43.mat');
+    case 'MSER_SURF'
+        sav_fullname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_Oxford_21-04-2017_10-25.mat');
+    case 'MSER_SMI'
+        sav_fullname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_Oxford_21-04-2017_11-18.mat');
+    otherwise
+        error('Unknown detector + descriptor combination!');
+   end  
 else
     sav_fname = input('Enter the Oxford is same scene experiment results filename: ', 's');
+    sav_fullname = fullfile(sav_path, sav_fname);
 end
-sav_fullname = [sav_path sav_fname];
+
 %% load the saved results
 load(sav_fullname,'is_same_all','YLabels');
 predicted = is_same_all;

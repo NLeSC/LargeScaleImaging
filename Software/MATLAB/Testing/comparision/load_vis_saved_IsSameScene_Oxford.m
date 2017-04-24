@@ -1,4 +1,4 @@
-% load_vis_saved_IsSameScene_Oxford- loading and visualizing the results 
+o% load_vis_saved_IsSameScene_Oxford- loading and visualizing the results 
 %               from the same scene testing for the Oxford dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
