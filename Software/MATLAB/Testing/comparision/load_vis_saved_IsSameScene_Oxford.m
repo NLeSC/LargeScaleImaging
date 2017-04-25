@@ -1,4 +1,4 @@
-o% load_vis_saved_IsSameScene_Oxford- loading and visualizing the results 
+% load_vis_saved_IsSameScene_Oxford- loading and visualizing the results 
 %               from the same scene testing for the Oxford dataset
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
@@ -25,7 +25,9 @@ visualize_dataset = true;
 publish = true;
 
 if publish
-    det_descr = 'BIN_SMI'; %'MSER_SMI'; %'MSER_SURF';
+   % det_descr = 'BIN_SMI';
+   % det_descr = 'MSER_SMI';
+    det_descr = 'MSER_SURF';
 else
     det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF|MSER_SMI]): ','s');
 end
@@ -87,7 +89,7 @@ if visualize
     end
     if visualize_transf_similarity
         f3 = format_figure(transf_sims, 6, hcmap, ...
-            [], [], ...
+            [-0.2:0.1:1.1], [-0.2:0.1:1.1], ...
             'Correlation between matches. All (structured) pairs of Oxford dataset.',...
             YLabels, []);
     end
