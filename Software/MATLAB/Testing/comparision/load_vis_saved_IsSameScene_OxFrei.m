@@ -19,7 +19,7 @@ visualize = true;
 visualize_matching_cost =  true;
 visualize_transf_similarity = true;
 visualize_dataset = true;
-publish = false;
+publish = true;
 
 if publish
    % det_descr = 'BIN_SMI';
@@ -59,7 +59,7 @@ data_path_or = fullfile(project_path, 'Data', 'OxFrei');
 ext = '.png';
 % data size
 data_size = 189;
-lab_step = 1;
+lab_step = 4;
 
 %% visualize the test dataset
 if visualize_dataset
@@ -87,7 +87,7 @@ if visualize
     end
     if visualize_transf_similarity
         f3 = format_figure(transf_sims, 6, hcmap, ...
-            [-0.2:0.1:1.1], [-0.2:0.1:1.1], ...
+            [-0.7:0.1:1.1], [-0.7:0.1:1.1], ...
             'Correlation between matches. All pairs of OxFrei dataset.',...
             YLabels, lab_step);
     end
