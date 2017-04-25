@@ -19,7 +19,7 @@ visualize = true;
 visualize_matching_cost =  true;
 visualize_transf_similarity = true;
 visualize_dataset = true;
-publish = true;
+publish = false;
 
 if publish
    % det_descr = 'BIN_SMI';
@@ -39,9 +39,9 @@ sav_path = fullfile(project_path, 'Results', 'OxFrei','Comparision');
 
 switch upper(det_descr)
     case 'BIN_SMI'
-        sav_fname = [sav_path '.mat'];
+        sav_fname = fullfile(sav_path, '.mat');
     case 'MSER_SURF'
-        sav_fname = [sav_path 'test_IsSameScene_MSER_SURF_OxFrei_21-04-2017_10-24.mat'];
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_OxFrei_21-04-2017_10-24.mat');
     case 'MSER_SMI'
         sav_fname =fullfile(sav_path, '.mat');
     otherwise
@@ -55,7 +55,7 @@ load(sav_fname);
 v2struct(match_params);
 
 % paths
-data_path_or = 'C:\Projects\eStep\LargeScaleImaging\Data\OxFrei\';
+data_path_or = fullfile(project_path, 'Data', 'OxFrei');
 ext = '.png';
 % data size
 data_size = 189;
