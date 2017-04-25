@@ -18,9 +18,17 @@ verbose = true;
 visualize = true;
 visualize_matching_cost =  true;
 visualize_transf_similarity = true;
-visualize_dataset = false;
-%det_desr = 'BIN_SMI';
-det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF]): ','s');
+visualize_dataset = true;
+publish = true;
+
+if publish
+   % det_descr = 'BIN_SMI';
+   % det_descr = 'MSER_SMI';
+    det_descr = 'MSER_SURF';
+else
+    det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF|MSER_SMI]): ','s');
+end
+
 if ispc
     starting_path = fullfile('C:','Projects');
 else
@@ -31,9 +39,11 @@ sav_path = fullfile(project_path, 'Results', 'OxFrei','Comparision');
 
 switch upper(det_descr)
     case 'BIN_SMI'
-        sav_fname = [sav_path 'test_IsSameScene_BIN_SMI_OxFrei_07-04-2017_17-18.mat'];
+        sav_fname = [sav_path '.mat'];
     case 'MSER_SURF'
-        sav_fname = [sav_path 'test_IsSameScene_MSER_SURF_OxFrei_07-04-2017_17-19.mat'];
+        sav_fname = [sav_path 'test_IsSameScene_MSER_SURF_OxFrei_21-04-2017_10-24.mat'];
+    case 'MSER_SMI'
+        sav_fname =fullfile(sav_path, '.mat');
     otherwise
         error('Unknown detector + descriptor combination!');
 end
@@ -77,7 +87,7 @@ if visualize
     end
     if visualize_transf_similarity
         f3 = format_figure(transf_sims, 6, hcmap, ...
-            [], [], ...
+            [-0.2:0.1:1.1], [-0.2:0.1:1.1], ...
             'Correlation between matches. All pairs of OxFrei dataset.',...
             YLabels, lab_step);
     end
