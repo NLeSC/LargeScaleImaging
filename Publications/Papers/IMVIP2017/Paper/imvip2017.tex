@@ -1,0 +1,158 @@
+% ********************************************************************
+% *                  Format for IMVIP 2017  papers,                  *
+% *         based on the IMVIP 2001, 2006, 2014-2016 templates       *
+% ********************************************************************
+\documentclass[a4paper,11pt]{article}
+
+
+
+\setlength{\topmargin}{-0.5cm}
+\setlength{\headsep}{.5cm}
+%\setlength{\footskip}{1.0cm}
+\setlength{\textheight}{24cm}
+\setlength{\textwidth}{17cm}
+\setlength{\evensidemargin}{-.5cm}
+\setlength{\oddsidemargin}{-.5cm}
+
+
+
+\usepackage{fourier}
+\usepackage{color}
+ \usepackage{graphicx}
+\usepackage{url}
+\usepackage[affil-it]{authblk}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{xspace}
+
+\usepackage[T1]{fontenc}
+\usepackage{times}
+
+
+\pagestyle{empty}
+
+%%%%
+\begin{document}
+
+\title{Shape and Moment Invariants Descriptor for Structured Images}
+
+\author{E. Ranguelova}
+\affil{Netherlands eScience Centre\\ Amsterdam, The Netherlands.}
+\date{}
+\maketitle
+\thispagestyle{empty}
+
+
+
+\begin{abstract}
+Here goes the abstract.
+\end{abstract}
+\textbf{Keywords:} image mathching, shape descriptors, moment invariants, 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.4\textwidth, height=0.28\textwidth]{iontas.png}
+\end{center}
+\vspace{-20pt}
+  \caption{Introduction Banner.}
+  \vspace{-0pt}
+\end{wrapfigure}
+%%%%%%%%%%%%%%%%%%%%%%
+Here figure for introduction.
+%%
+
+\section{Related Work}
+
+
+\subsection{Salient region detectors}
+
+
+\subsubsection{Region descriptors}
+
+
+\section{Shape and Moment Invariant descriptor}
+
+\subsubsection{Simple shape invariants}
+\subsubsection{Moment invariants}
+\subsubsection{Descriptor}
+
+\paragraph{My Paragraph:} 
+This is a paragraph.
+
+
+\section{Performance Evaluation}
+
+\subsection{Vgg dataset}
+Consider the variable $x \in \mathbb{R}$, 
+\begin{equation}
+f(x)=x^2+2 \label{eq:mylabel}
+\end{equation}
+Equation (\ref{eq:mylabel}) is a polynomial of order 2.
+%% comment line
+
+
+Figure \ref{fig:myfig} shows individual colour channels. 
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=1\textwidth]{south_campus.jpg}
+\end{center}
+\vspace{-20pt}
+  \caption{A figure}\label{fig:myfig}
+  \vspace{-10pt}
+\end{figure}
+
+
+
+%% comment line
+
+An example of table is shown Table \ref{tab:mytab}.
+\begin{table}[!ht]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+x & y & z\\
+\hline
+\end{tabular}
+\end{center}
+\vspace{-20pt}
+\caption{Example of table.} \label{tab:mytab}
+  \vspace{-10pt}
+\end{table}
+
+\subsection{OxFrei dataset}
+
+\section{Conclusion}
+
+
+\section*{Acknowledgments}
+
+%%\subsection{Bibliographic references}
+%%References in a bib file format (e.g. imvip2017.bib given in the template) can be inserted using bibtex along with
+%%\LaTeX\xspace/pdflatex (e.g.  \cite{hartley} or  \cite{jain, goodfellow}). 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+
+\section{Vgg dataset matching results }
+
+
+
+\section{OxFrei dataset matching results }
+
+
+
+\bibliographystyle{apalike}
+
+\bibliography{imvip2017}
+
+
+\end{document}
+
