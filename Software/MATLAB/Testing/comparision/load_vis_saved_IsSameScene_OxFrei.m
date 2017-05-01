@@ -22,9 +22,9 @@ visualize_dataset = true;
 publish = true;
 
 if publish
-   % det_descr = 'BIN_SMI';
+    det_descr = 'BIN_SMI';
    % det_descr = 'MSER_SMI';
-    det_descr = 'MSER_SURF';
+   % det_descr = 'MSER_SURF';
 else
     det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF|MSER_SMI]): ','s');
 end
@@ -39,11 +39,11 @@ sav_path = fullfile(project_path, 'Results', 'OxFrei','Comparision');
 
 switch upper(det_descr)
     case 'BIN_SMI'
-        sav_fname = fullfile(sav_path, '.mat');
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_OxFrei_24-04-2017_11-06.mat');
     case 'MSER_SURF'
         sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_OxFrei_21-04-2017_10-24.mat');
     case 'MSER_SMI'
-        sav_fname =fullfile(sav_path, '.mat');
+        sav_fname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_OxFrei_21-04-2017_17-19.mat');
     otherwise
         error('Unknown detector + descriptor combination!');
 end
