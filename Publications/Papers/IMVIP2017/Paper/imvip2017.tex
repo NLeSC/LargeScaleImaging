@@ -18,7 +18,9 @@
 
 \usepackage{fourier}
 \usepackage{color}
- \usepackage{graphicx}
+\usepackage{graphicx}
+ \graphicspath{{./Figs/}}
+ \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
 \usepackage{url}
 \usepackage[affil-it]{authblk}
 \usepackage{amsmath}
@@ -27,7 +29,8 @@
 
 \usepackage[T1]{fontenc}
 \usepackage{times}
-
+\usepackage{verbatim}
+\usepackage{subcaption}
 
 \pagestyle{empty}
 
@@ -36,7 +39,7 @@
 
 \title{Shape and Moment Invariants Descriptor for Structured Images}
 
-\author{E. Ranguelova}
+\author{Elena Ranguelova}
 \affil{Netherlands eScience Centre\\ Amsterdam, The Netherlands.}
 \date{}
 \maketitle
@@ -45,7 +48,7 @@
 
 
 \begin{abstract}
-Here goes the abstract.
+Here goes the abstract.Here goes the abstract.Here goes the abstract.Here goes the abstract.Here goes the abstract.
 \end{abstract}
 \textbf{Keywords:} image mathching, shape descriptors, moment invariants, 
 
@@ -53,48 +56,43 @@ Here goes the abstract.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+ 
 \begin{wrapfigure}{r}{0.5\textwidth}
-  \vspace{-20pt}
-  \begin{center}
-    \includegraphics[width=0.4\textwidth, height=0.28\textwidth]{iontas.png}
+ \vspace{-20pt} 
+%    \includegraphics[width=0.4\textwidth, height=0.28\textwidth]{iontas.png}
+\begin{center}
+\begin{subfigure}[b]{0.247\textwidth}
+  \includegraphics[width=\textwidth, height=\textwidth]{cool_car_scale5}
+\end{subfigure}
+\begin{subfigure}[b]{0.247\textwidth}
+\includegraphics[width=\textwidth]{cool_car_viewpoint5}
+\end{subfigure}
 \end{center}
 \vspace{-20pt}
-  \caption{Introduction Banner.}
-  \vspace{-0pt}
-\end{wrapfigure}
-%%%%%%%%%%%%%%%%%%%%%%
-Here figure for introduction.
-%%
+\begin{center}
+\begin{subfigure}[b]{0.247\textwidth}
+  \includegraphics[width=\textwidth]{1graffiti_blur4}
+\end{subfigure}
+\begin{subfigure}[b]{0.247\textwidth}
+\includegraphics[width=\textwidth]{2freiburg_center_blur4}
+\end{subfigure}
+\end{center}
+\vspace{-20pt}
+\caption{``Is it the same object or scene?'' Matching two images under different transformation using local interest regions detected by MSER.\\ {\em Top image pair} (scale and viewpoint): SURF descriptor yields false negative (similarity score $0.096$), while the proposed SMI descriptor - true positive ($0.89$).\\
+{\em Bottom image pair} (blur): SURF gives false positive ($0.27$), while SMI - true negative ($-0.11$).}
+  \vspace{-10pt}
+\end{wrapfigure}\label{fig:intro1}
+Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
+Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
 
+%%%%%%%%%%%%%%%%%%%%%%
+Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.
+Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
+Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
 \section{Related Work}
 
-
 \subsection{Salient region detectors}
-
-
-\subsubsection{Region descriptors}
-
-
-\section{Shape and Moment Invariant descriptor}
-
-\subsubsection{Simple shape invariants}
-\subsubsection{Moment invariants}
-\subsubsection{Descriptor}
-
-\paragraph{My Paragraph:} 
-This is a paragraph.
-
-
-\section{Performance Evaluation}
-
-\subsection{Vgg dataset}
-Consider the variable $x \in \mathbb{R}$, 
-\begin{equation}
-f(x)=x^2+2 \label{eq:mylabel}
-\end{equation}
-Equation (\ref{eq:mylabel}) is a polynomial of order 2.
-%% comment line
-
+Blah, blah blhBlah, blah blhBlah, blah blhBlah, blah blhBlah, blah blhBlah, blah blhBlah, blah blh
 
 Figure \ref{fig:myfig} shows individual colour channels. 
 \begin{figure}[!ht]
@@ -107,41 +105,95 @@ Figure \ref{fig:myfig} shows individual colour channels.
 \end{figure}
 
 
+\subsection{Region descriptors}
+{\em State of the art in region descriptor}
+
+\section{Image matching with Shape and Moment Invariant descriptor}
+
+\subsection{Simple shape invariants}
+\subsection{Moment invariants}
+Consider the variable $x \in \mathbb{R}$, 
+\begin{equation}
+f(x)=x^2+2 \label{eq:mylabel}
+\end{equation}
+Equation (\ref{eq:mylabel}) is a polynomial of order 2.
+%% comment line
+
+\subsection{Matching}
+
+\paragraph{My Paragraph:} 
+This is a paragraph. 
+
+\section{Performance Evaluation}
+
+\subsection{VGG dataset}
 
 %% comment line
 
-An example of table is shown Table \ref{tab:mytab}.
+The performance results on the VGG dataset are summarized in Table \ref{tab:vgg}.
 \begin{table}[!ht]
 \begin{center}
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|l||c|c|c|c|c|c|c|}
+
 \hline
-x & y & z\\
+Det. + descr. & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+\hline
+\hline
+MSER + SURF & $130$ & $428$ & $4$ & $14$ & $0.968$ & $0.97$ & $0.902$\\
+\hline
+MSER + \bf{SMI} & $122$ & $432$ & $0$ & $22$ & $0.961$ & $1$ & $0.84$\\
+\hline
+BIN + SURF & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+\hline
+BIN + \bf{SMI} & $112$ & $428$ & $4$ & $32$ & $0.93$ & $0.96$ & $0.77$\\
 \hline
 \end{tabular}
 \end{center}
 \vspace{-20pt}
-\caption{Example of table.} \label{tab:mytab}
+\caption{Performance of salient region detectors and descriptors on the VGG dataset.} \label{tab:vgg}
   \vspace{-10pt}
 \end{table}
 
 \subsection{OxFrei dataset}
 
+The performance results on the VGG dataset are summarized in Table \ref{tab:oxfrei}.
+\begin{table}[!ht]
+\begin{center}
+\begin{tabular}{|l||c|c|c|c|c|c|c|}
+
+\hline
+Det. + descr. & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+\hline
+\hline
+MSER + SURF & $3303$ & $28926$ & $2826$ & $666$ & $0.9$ & $0.53$ & $0.83$\\
+\hline
+MSER + \bf{SMI} & $2911$ & $31236$ & $516$ & $1058$ & $0.95$ & $0.84$ & $0.73$\\
+\hline
+BIN + SURF & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+\hline
+BIN + \bf{SMI}  & $2155$ & $27840$ & $3912$ & $1814$ & $0.84$ & $0.35$ & $0.54$\\
+\hline
+\end{tabular}
+\end{center}
+\vspace{-20pt}
+\caption{Performance of salient region detectors and descriptors on the OxFrei dataset.} \label{tab:oxfrei}
+  \vspace{-10pt}
+\end{table}
+
 \section{Conclusion}
 
 
-\section*{Acknowledgments}
+%\section*{Acknowledgments}
 
 %%\subsection{Bibliographic references}
 %%References in a bib file format (e.g. imvip2017.bib given in the template) can be inserted using bibtex along with
 %%\LaTeX\xspace/pdflatex (e.g.  \cite{hartley} or  \cite{jain, goodfellow}). 
 
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 
-\section{Vgg dataset matching results }
+\section{VGG dataset matching results }
 
 
 
