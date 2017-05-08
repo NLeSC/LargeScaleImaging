@@ -87,7 +87,7 @@
 %**************************************************************************
 % EXAMPLES USAGE:
 %
-% see test_IsSameScene.m
+% see test_IsSameScene_BIN_SMI.m
 %**************************************************************************
 % REFERENCES:
 %**************************************************************************
@@ -285,10 +285,10 @@ end
 cc1_d = bwconncomp(bw1_d, conn); cc2_d = bwconncomp(bw2_d, conn);
 
 tic
-[SMI_descr1,SMI_descr1_struct] = ccSMIdescriptor(cc1_d, image_area1, ...
+[SMI_descr1,~] = ccSMIdescriptor(cc1_d, image_area1, ...
     list_props, order, ...
     coeff_file, max_num_moments);
-[SMI_descr2,SMI_descr2_struct] = ccSMIdescriptor(cc2_d, image_area2, ...
+[SMI_descr2,~] = ccSMIdescriptor(cc2_d, image_area2, ...
     list_props, order, ...
     coeff_file, max_num_moments);
 
