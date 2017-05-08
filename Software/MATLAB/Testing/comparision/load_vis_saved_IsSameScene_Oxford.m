@@ -25,9 +25,9 @@ visualize_dataset = true;
 publish = true;
 
 if publish
-   % det_descr = 'BIN_SMI';
+    det_descr = 'BIN_SMI';
    % det_descr = 'MSER_SMI';
-    det_descr = 'MSER_SURF';
+   % det_descr = 'MSER_SURF';
 else
     det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF|MSER_SMI]): ','s');
 end
@@ -42,7 +42,8 @@ project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
 switch upper(det_descr)
     case 'BIN_SMI'
-        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_Oxford_21-04-2017_13-43.mat');
+        %sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_Oxford_21-04-2017_13-43.mat');
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_Oxford_08-05-2017_16-57.mat');
     case 'MSER_SURF'
         sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_Oxford_21-04-2017_10-25.mat');
     case 'MSER_SMI'
