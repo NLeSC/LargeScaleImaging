@@ -1,6 +1,6 @@
 % test_IsSameScene_MSER_SURF_imagePair_Oxford- testing IsSameScene_MSER_SURF
 %                   function for comparision if 2
-%                   images are of the same scene (Oxford dataset) using
+%                   images are of the same scene (Oxford dataset) 
 %**************************************************************************
 % author: Elena Ranguelova, NLeSc
 % date created: 23-02-2017
