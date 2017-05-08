@@ -67,10 +67,11 @@ max_num_moments = 16;
 moments_params = v2struct(order,coeff_file, max_num_moments);
 
 % CC parameters
+
 conn = 8;
 list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
     'Eccentricity','Solidity'};
-area_factor = 0.0002;
+area_factor = 0.00005; % 0.0002;
 % pack to a structure
 cc_params = v2struct(conn, list_props, area_factor);
 
@@ -119,6 +120,9 @@ test_cases = {'graffiti', 'boat','leuven','bikes'};
 r = 0;
 for i = 1: numel(test_cases)
     test_case1 = char(test_cases{i});
+    if verbose
+        disp(['Test case1: ', test_case1]);
+    end
     for trans_deg1 = 1:6
         r  = r + 1;
         disp('*****************************************************************');
@@ -135,10 +139,18 @@ for i = 1: numel(test_cases)
         c = 0;
         for j = 1: numel(test_cases)
             test_case2 = char(test_cases{j});
+
             for trans_deg2 = 1:6
-                c  = c+1;
-                disp('----------------------------------------------------------------');
-                disp([test_case2 num2str(trans_deg2)]);               
+                c  = c+1;                
+                if verbose
+                    disp('----------------------------------------------------------------');
+                    disp(['Test case1: ', test_case1,...
+                        ' with transformation degree: ', num2str(trans_deg1), ...
+                        ' comparing to test case2: ', test_case2, ...
+                        ' with transformation degree: ', num2str(trans_deg2)]);  
+                    disp('----------------------------------------------------------------');
+                end
+                %disp([test_case2 num2str(trans_deg2)]);               
                 test_path2 = fullfile(data_path_or,test_case2);               
                 test_image2 = fullfile(test_path2,[test_case2 num2str(trans_deg2) ext_or]);
                 im2 = imread(test_image2); bw2 = [];
