@@ -40,6 +40,9 @@
 % test_IsSameScene_MSER_SMI_OxFrei- testing IsSameScene_MSER_SMI for comparision if 2
 %                   images are of the same scene for the OxFrei dataset
 
+% test_IsSameScene_BIN_SURF_imagePair_Oxford- testing IsSameScene_BIN_SURF
+%                   function for comparision if 2 images are of the same scene (Oxford dataset) 
+
 % load_vis_saved_IsSameScene_Oxford- loading and visualizing the results 
 %               from the same scene testing for the Oxford dataset
 % load_vis_saved_IsSameScene_OxFrei- loading and visualizing the results 
