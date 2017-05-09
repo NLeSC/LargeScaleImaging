@@ -250,25 +250,35 @@ end
 
 tic
 
-% pass the centroids of the BIN regions as interest points
-centr1 = cat(1, centr_cc1.Centroid);
-centr2 = cat(1, centr_cc2.Centroid);
-% num1 = length(centr1);
-% num2 = length(centr2); 
-% 
-% for i = 1:num1
-%     regions1(i).Location = centr1(i,:);
-% end
-% for j = 1:num2
-%     regions2(j).Location = centr2(j,:);
-% end
+% Make 'fake' MSER regions by using the already detected connected components
+if area_filtering
+    cc1_d = cc1_f;
+    cc2_d = cc2_f;
+else
+    cc1_d = cc1;
+    cc2_d = cc2;
+end
+stats1 = regionprops(cc1_d,'PixelList');
+stats2 = regionprops(cc2_d,'PixelList');
+num1 =numel(stats1);
+num2 = numel(stats2);
+PixelLists1 = cell(num1,1);
+PixelLists2 = cell(num2,1);
+
+for i = 1:num1
+    PixelLists1{i} = int32(stats1(i).PixelList);
+end
+regions1 = MSERRegions(PixelLists1);
+for j = 1:num2
+    PixelLists2{j} = int32(stats2(j).PixelList);
+end
+regions2 = MSERRegions(PixelLists2);
 
 % compute the SURF descriptor
-% [SURF_descr1, valid_points1] = extractFeatures(im1,regions1);
-% [SURF_descr2, valid_points2] = extractFeatures(im2,regions2);
+[SURF_descr1, valid_points1] = extractFeatures(im1,regions1);
+[SURF_descr2, valid_points2] = extractFeatures(im2,regions2);
 
-[SURF_descr1, valid_points1] = extractFeatures(im1,centr1, 'Method', 'SURF');
-[SURF_descr2, valid_points2] = extractFeatures(im2,centr2, 'Method', 'SURF');
+
 if verbose
     toc
 end
