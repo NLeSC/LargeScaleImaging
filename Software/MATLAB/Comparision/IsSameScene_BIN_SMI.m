@@ -265,11 +265,11 @@ end
 %% visualization of the CCs
 if visualize
     if area_filtering
-        [labeled1_f,centr_cc1] = show_cc(cc1_f, true, index1, f, subplot(sbp1),'Filtered BIN CCs1');
-        [labeled2_f,centr_cc2] = show_cc(cc2_f, true, index2, f, subplot(sbp2),'Filtered BIN CCs1');
+        [~,centr_cc1] = show_cc(cc1_f, true, index1, f, subplot(sbp1),'Filtered BIN CCs1');
+        [~,centr_cc2] = show_cc(cc2_f, true, index2, f, subplot(sbp2),'Filtered BIN CCs1');
     else
-        [labeled1,centr_cc1] = show_cc(cc1, true, [], f, subplot(sbp1),'BIN CCs1');
-        [labeled2,centr_cc2] = show_cc(cc2, true, [], f, subplot(sbp2),'BIN CCs2');
+        [~,centr_cc1] = show_cc(cc1, true, [], f, subplot(sbp1),'BIN CCs1');
+        [~,centr_cc2] = show_cc(cc2, true, [], f, subplot(sbp2),'BIN CCs2');
     end
 end
 
