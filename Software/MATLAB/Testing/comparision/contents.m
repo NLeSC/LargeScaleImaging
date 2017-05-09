@@ -9,6 +9,7 @@
 %**************************************************************************
 % perf_eval - evaluates the performance of a classification model
 % perfEval_IsSameScene- performance evaluation of the same scene experiemnts
+% config - sets up all configurations for the experiments
 %**************************************************************************
 % Scripts
 %**************************************************************************

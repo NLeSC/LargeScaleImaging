@@ -13,85 +13,12 @@
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
-publish = false;
 
-% execution parameters
-verbose = true;
-visualize = true;
-visualize_dataset = false;
-visualize_test = false;
-area_filtering = true;  % if true, perform area filterring on regions
-matches_filtering = true; % if true, perform filterring on the matches
-% pack to a structure
-exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
+[ exec_flags, exec_params, ~, cc_params, ...
+    match_params, vis_params, paths] = config(mfilename, 'oxford');
 
-binarized = true;
-
-% CC parameters
-conn = 8;
-list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
-    'Eccentricity','Solidity'};
-area_factor = 0.00005; %0.0002; %0.0005;
-% pack to a structure
-cc_params = v2struct(conn, list_props, area_factor);
-
-% matching parameters
-match_metric = 'ssd';
-match_thresh = 1;
-max_ratio = 1;
-max_dist = 8;
-conf=95;
-max_num_trials = 1000;
-cost_thresh = 0.025;
-transf_sim_thresh = 0.25;
-num_sim_runs = 30;
-% pack to a structure
-match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-     conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
-
-% visualization parameters
-if visualize
-    if matches_filtering
-        sbp1 = (241);
-        sbp1_d = (242);
-        sbp1_m = (243);
-        sbp1_fm = (244);
-        sbp2 = (245);
-        sbp2_d = (246);
-        sbp2_m = (247);
-        sbp2_fm = (248);
-    else
-        sbp1 = (231);
-        sbp1_d = (232);
-        sbp1_m = (233);
-        sbp1_fm = [];
-        sbp2 = (234);
-        sbp2_d = (235);
-        sbp2_m = (236);
-        sbp2_fm = [];
-    end
-    offset_factor = 0.25;
-    % pack to a structure
-    vis_params = v2struct(sbp1, sbp1_d, sbp1_m, sbp1_fm,...
-        sbp2, sbp2_d, sbp2_m, sbp2_fm, offset_factor);
-else
-    vis_params = [];
-end
-
-% paths
-if ispc
-    starting_path = fullfile('C:','Projects');
-else
-    starting_path = fullfile(filesep,'home','elena');
-end
-project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path_or = fullfile(project_path , 'Data', 'AffineRegions');
-ext_or  ='.png';
-if binarized
-    data_path_bin = fullfile(project_path , 'Results', 'AffineRegions');
-    ext_bin = '_bin.png';
-end
-
+v2struct(exec_flags)
+v2struct(paths)
 
 disp('******************************************************************************************************');
 disp(' Demo: are 2 images from the Oxford dataset of the same scene (smart binarization + SURF descriptor)?');
