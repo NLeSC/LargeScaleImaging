@@ -17,96 +17,11 @@
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
+[ exec_flags, exec_params, moments_params, cc_params, ...
+    match_params, vis_params, paths] = config(mfilename, 'oxfrei');
 
-% execution parameters
-verbose = true;
-visualize = true;
-visualize_dataset = false;
-visualize_test = true;
-area_filtering = true;  % if true, perform area filterring on regions
-matches_filtering = true; % if true, perform filterring on the matches
-% pack to a structure
-exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering);
-
-binarized = true;
-
-% moments parameters
-order = 4;
-coeff_file = 'afinvs4_19.txt';
-max_num_moments = 16;
-% pack to a structure
-moments_params = v2struct(order,coeff_file, max_num_moments);
-
-% CC parameters
-conn = 8;
-list_props = {'Area','Centroid','MinorAxisLength','MajorAxisLength',...
-    'Eccentricity','Solidity'};
-area_factor = 0.0005;
-% pack to a structure
-cc_params = v2struct(conn, list_props, area_factor);
-
-% matching parameters
-match_metric = 'ssd';
-match_thresh = 1;
-max_ratio = 1;
-max_dist = 8;
-conf = 95;
-max_num_trials = 1000;
-cost_thresh = 0.025;
-transf_sim_thresh = 0.25;
-num_sim_runs = 30;
-
-% pack to a structure
-match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
-
-
-% visualization parameters
-if visualize
-%     if matches_filtering
-%         sbp1 = (241);
-%         sbp1_f = (242);
-%         sbp1_m = (243);
-%         sbp1_fm = (244);
-%         sbp2 = (245);
-%         sbp2_f = (246);
-%         sbp2_m = (247);
-%         sbp2_fm = (248);
-%     else
-%         sbp1 = (231);
-%         sbp1_f = (232);
-%         sbp1_m = (233);
-%         sbp1_fm = [];
-%         sbp2 = (234);
-%         sbp2_f = (235);
-%         sbp2_m = (236);
-%         sbp2_fm = [];
-%     end
-    sbp1 = (221);
-    sbp1_m = (222);
-    sbp2 = (223);
-    sbp2_m = (224);
-    offset_factor = 0.25;
-    % pack to a structure
-    vis_params = v2struct(sbp1, sbp1_m,...
-        sbp2, sbp2_m, offset_factor);
-else
-    vis_params = [];
-end
-
-% paths
-if ispc
-    starting_path = fullfile('C:','Projects');
-else
-    starting_path = fullfile(filesep,'home','elena');
-end
-project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path_or = fullfile(project_path , 'Data', 'OxFrei');
-ext_or  ='.png';
-if binarized
-    data_path_bin = fullfile(project_path , 'Results', 'OxFrei');
-    ext_bin = '_bin.png';
-end
+v2struct(exec_flags)
+v2struct(paths)
 
 disp('********************************************************************************************************************************');
 disp('  Demo script for determining if 2 images from the OxFrei dataset are of the same scene (smart binarization + SMI descriptor).  ');

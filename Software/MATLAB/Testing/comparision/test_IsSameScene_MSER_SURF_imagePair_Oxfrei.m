@@ -13,72 +13,12 @@
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
-% execution parameters
-verbose = true;
-visualize = true;
-visualize_dataset = false;
-visualize_test = false;
-matches_filtering = true; % if true, perform filterring on the matches
-% pack to a structure
-exec_params = v2struct(verbose, visualize, matches_filtering);
 
-% matching parameters
-match_metric = 'ssd';
-match_thresh = 1;
-max_ratio = 1;
-max_dist = 8;
-conf = 95;
-max_num_trials = 1000;
-cost_thresh = 0.025;
-transf_sim_thresh = 0.25;
-num_sim_runs = 30;
-% pack to a structure
-match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
-    conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
+[ exec_flags, exec_params, ~, ~, ...
+    match_params, vis_params, paths] = config(mfilename, 'oxfrei');
 
-% visualization parameters
-if visualize
-%     if matches_filtering
-%         sbp1 = (241);
-%         sbp1_d = (242);
-%         sbp1_m = (243);
-%         sbp1_fm = (244);
-%         sbp2 = (245);
-%         sbp2_d = (246);
-%         sbp2_m = (247);
-%         sbp2_fm = (248);
-%     else
-%         sbp1 = (231);
-%         sbp1_d = (232);
-%         sbp1_m = (233);
-%         sbp1_fm = [];
-%         sbp2 = (234);
-%         sbp2_d = (235);
-%         sbp2_m = (236);
-%         sbp2_fm = [];
-%     end
-    sbp1 = (221);
-    sbp1_m = (222);
-    sbp2 = (223);
-    sbp2_m = (224);
-    offset_factor = 0.25;
-    % pack to a structure
-    vis_params = v2struct(sbp1, sbp1_m, ...
-        sbp2, sbp2_m, offset_factor);
-else
-    vis_params = [];
-end
-
-% paths
-if ispc
-    starting_path = fullfile('C:','Projects');
-else
-    starting_path = fullfile(filesep,'home','elena');
-end
-project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
-data_path_or = fullfile(project_path , 'Data', 'OxFrei');
-ext_or  ='.png';
-
+v2struct(exec_flags)
+v2struct(paths)
 
 disp('***************************************************************************************************************************');
 disp(' Demo script for determining if 2 images from the OxFrei dataset of the same scene (using MSER detector + SURF descriptor)?');

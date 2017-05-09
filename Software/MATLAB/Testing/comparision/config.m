@@ -142,6 +142,7 @@ num_sim_runs = 10;
 match_params = v2struct(match_metric, match_thresh, max_ratio, max_dist, ...
     conf, max_num_trials, cost_thresh, transf_sim_thresh, num_sim_runs);
 
+%% vis. parameters
 if visualize
     if matches_filtering
         sbp1 = (241);
