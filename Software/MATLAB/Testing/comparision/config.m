@@ -87,12 +87,13 @@ function [ exec_flags, exec_params, moments_params, cc_params, ...
 publish = false;
 visualize_dataset = false;
 visualize_test = false;
+visualize_final = true;
 binarized = true;
 sav = true;
 
 % execution parameters
 verbose = true;
-visualize = true;
+visualize = false;
 area_filtering = false;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 
@@ -110,7 +111,7 @@ end
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering,...
     data_size, tick_step);
 
-exec_flags  = v2struct(publish, visualize_dataset, visualize_test, ...,
+exec_flags  = v2struct(publish, visualize_dataset, visualize_test, visualize_final,...
     verbose, binarized, sav);
  
 %% moments parameters
