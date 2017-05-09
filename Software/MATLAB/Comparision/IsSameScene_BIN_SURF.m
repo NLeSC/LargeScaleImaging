@@ -275,8 +275,8 @@ end
 regions2 = MSERRegions(PixelLists2);
 
 % compute the SURF descriptor
-[SURF_descr1, valid_points1] = extractFeatures(im1,regions1);
-[SURF_descr2, valid_points2] = extractFeatures(im2,regions2);
+[SURF_descr1, valid_points1] = extractFeatures(im1,regions1, 'Method', 'SURF');
+[SURF_descr2, valid_points2] = extractFeatures(im2,regions2,'Method', 'SURF');
 
 
 if verbose
