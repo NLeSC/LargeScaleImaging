@@ -38,6 +38,8 @@
 %                  all pairs of images are of the same scene for the Oxford dataset
 % test_IsSameScene_BIN_SURF_imagePair_OxFrei- testing IsSameScene_BIN_SURF 
 %                   function for comparision if 2 images are of the same scene (OxFrei dataset)
+% test_IsSameScene_BIN_SURF_OxFrei- testing IsSameScene_BIN_SURF function
+%                   for comparision if all pairs of images are of the same scene for the OxFrei dataset
 
 % test_IsSameScene_BIN_SMI_imagePair_Oxford- testing IsSameScene_BIN_SMI function for comparision if 2
 %                   images are of the same scene (Oxford dataset)
