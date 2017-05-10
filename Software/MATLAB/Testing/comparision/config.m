@@ -84,16 +84,18 @@ function [ exec_flags, exec_params, moments_params, cc_params, ...
     match_params, vis_params, paths] = config(scripts_name, dataset)
 
 %% execution flags
-publish = false;
-visualize_dataset = false;
+publish = true;
+visualize_dataset = true;
 visualize_test = false;
 visualize_final = true;
+visualize_matching_cost = true;
+visualize_transf_similarity = true;
 binarized = true;
 sav = true;
 
 % execution parameters
 verbose = true;
-visualize = false;
+visualize = true;
 area_filtering = false;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 
@@ -112,7 +114,7 @@ exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering,...
     data_size, tick_step);
 
 exec_flags  = v2struct(publish, visualize_dataset, visualize_test, visualize_final,...
-    verbose, binarized, sav);
+    verbose, binarized, sav, visualize_transf_similarity, visualize_matching_cost);
  
 %% moments parameters
 order = 4;
@@ -209,6 +211,6 @@ if sav
     sav_fname = generate_results_fname(sav_path, scripts_name, format_dt);
 end
 
-paths = v2struct(data_path_or, data_path_bin, ext_or, ext_bin, sav_fname);
+paths = v2struct(data_path_or, data_path_bin, ext_or, ext_bin, sav_path, sav_fname);
 end
 
