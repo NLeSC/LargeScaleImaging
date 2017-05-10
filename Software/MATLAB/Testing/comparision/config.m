@@ -184,7 +184,7 @@ switch lower(dataset)
     case 'oxford'
         data_path_or = fullfile(project_path , 'Data', 'AffineRegions');
         if sav
-            sav_path = fullfile(project_path, 'Results', 'Oxford','Comparision');
+            sav_path = fullfile(project_path, 'Results', 'AffineRegions','Comparision');
         end
         if binarized
             data_path_bin = fullfile(project_path , 'Results', 'AffineRegions');        
