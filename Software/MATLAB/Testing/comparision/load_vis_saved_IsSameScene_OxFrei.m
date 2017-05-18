@@ -4,29 +4,30 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 10-04-2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 
-% modification details: 
+% last modification date: 18-05-2017
+% modification details: adding BIN + SURF; using config
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: possible combinations detector + descriptor:
-%       BIN + SMI, MSER + SURF
+%       BIN+SMI_all, BIN+SMI_filt, BIN+SURF, MSER+SURF, MSER + SMI
 %**************************************************************************
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
-% execution parameters
-verbose = true;
-visualize = true;
-visualize_matching_cost =  true;
-visualize_transf_similarity = true;
-visualize_dataset = true;
-publish = true;
+[ exec_flags, exec_params, ~, ~, ...
+    ~, ~, paths] = config(mfilename, 'oxford');
+
+v2struct(exec_flags);
+v2struct(exec_params);
+v2struct(paths);
 
 if publish
-    det_descr = 'BIN_SMI';
-   % det_descr = 'MSER_SMI';
-   % det_descr = 'MSER_SURF';
-else
-    det_descr = input('Enter  detector + descriptor combination ([BIN_SMI|MSER_SURF|MSER_SMI]): ','s');
+    det_descr = 'BIN_SMI_all';
+  %  det_descr = 'BIN_SMI_filt';
+  %  det_descr = 'BIN_SURF';
+  %  det_descr = 'MSER_SMI';
+  %  det_descr = 'MSER_SURF';
+else   
+    det_descr = input('Enter  detector + descriptor combination ([BIN_SURF|BIN_SMI_all|BIN_SMI_filt|MSER_SURF|MSER_SMI]): ','s');
 end
 
 if ispc
@@ -38,14 +39,18 @@ project_path = fullfile(starting_path, 'eStep','LargeScaleImaging');
 sav_path = fullfile(project_path, 'Results', 'OxFrei','Comparision');
 
 switch upper(det_descr)
-    case 'BIN_SMI'
-        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_OxFrei_24-04-2017_11-06.mat');
+    case 'BIN_SURF' 
+        sav_fname =  fullfile(sav_path, 'test_IsSameScene_BIN_SURF_Oxfrei_   .mat');
+    case 'BIN_SMI_ALL'        
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_all_Oxffrei_   .mat');
+    case 'BIN_SMI_FILT'        
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt_Oxfrei_    .mat');
     case 'MSER_SURF'
-        sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_OxFrei_21-04-2017_10-24.mat');
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_Oxfrei_       .mat');
     case 'MSER_SMI'
-        sav_fname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_OxFrei_21-04-2017_17-19.mat');
+        sav_fname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_Oxfrei_         .mat');
     otherwise
-        error('Unknown detector + descriptor combination!');
+       error('Unknown detector + descriptor combination!');
 end
 
 % load the saved results
@@ -53,13 +58,6 @@ load(sav_fname);
 
 % unpack parameters from  a structure
 v2struct(match_params);
-
-% paths
-data_path_or = fullfile(project_path, 'Data', 'OxFrei');
-ext = '.png';
-% data size
-data_size = 189;
-lab_step = 4;
 
 %% visualize the test dataset
 if visualize_dataset

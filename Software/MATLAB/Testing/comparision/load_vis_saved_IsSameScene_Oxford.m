@@ -13,7 +13,7 @@
 %               dataset,independant on  combination detector + descriptor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: possible combinations detector + descriptor:
-%       BIN + SMI, MSER + SURF
+%       BIN+SMI_all, BIN+SMI_filt, MSER+SURF, MSER + SMI
 %**************************************************************************
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,7 +41,7 @@ switch upper(det_descr)
     case 'BIN_SMI_ALL'        
         sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_all_Oxford_10-05-2017_13-40.mat');
     case 'BIN_SMI_FILT'        
-        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt__Oxford_10-05-2017_16-05.mat');
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt_Oxford_10-05-2017_16-05.mat');
     case 'MSER_SURF'
         sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_Oxford_10-05-2017_10-25.mat');
     case 'MSER_SMI'
