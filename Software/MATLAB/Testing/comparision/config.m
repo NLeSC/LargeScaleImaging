@@ -6,8 +6,8 @@
 % author: Elena Ranguelova, NLeSc
 % date created: 9 May 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% last modification date: 
-% modification details: 
+% last modification date: 18.05.2017
+% modification details: added parameters or the performance evaluaiton scripts
 %**************************************************************************
 % INPUTS:
 % scripts_name  the mfilename of the calling script
@@ -19,13 +19,19 @@
 %               visualize_dataset - whether to visuzalize the dataset
 %               visualize_test- whether to visualize the test image pair
 %               binarized- if true pre-binarized images are used
-%               
+%               visualize_final - whether to visualize the final result 
+%               visualize_matching_cost - whether to visualize the matching cost matrix
+%               visualize_transf_similarity - whether to visualize the cost matrix   
+%               vis_eval - weather to vosualize the evaluation matrix
 % exec_params   the execution parameters structure with fields:
 %               verbose- flag for verbose mode
 %               visualize- flag for vizualizing the matching
 %               area_filtering - flag for region (cc) area filtering 
 %               matches_filtering - flag for matches filtering
-%
+%               data_size - the number of images in the dataset
+%               scene_size - the number of (original + transformed) images in a scene
+%               tick_step - the step  between ticksin images
+%               lab_step - the step between axis labels
 % moments_params struct with the moment invariants parameters:
 %                order- moments order, {4}
 %                coeff_file- coefficients file filename, {'afinvs4_19.txt'}
@@ -84,18 +90,19 @@ function [ exec_flags, exec_params, moments_params, cc_params, ...
     match_params, vis_params, paths] = config(scripts_name, dataset)
 
 %% execution flags
-publish = true;
-visualize_dataset = true;
+publish = false;
+visualize_dataset = false;
 visualize_test = false;
 visualize_final = true;
 visualize_matching_cost = true;
 visualize_transf_similarity = true;
+vis_eval = true;
 binarized = true;
 sav = true;
 
 % execution parameters
 verbose = true;
-visualize = true;
+visualize = false;
 area_filtering = false;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 
@@ -103,18 +110,23 @@ switch lower(dataset)
     case 'oxford'
         data_size =24;
         tick_step = 1;
+        scene_size = 6;
+        lab_step = 1;
     case 'oxfrei'
         data_size = 189;
-        tick_step =4;
+        tick_step = 4;
+        scene_size = 21;
+        lab_step = 4;
     otherwise
         error('Unsupported dataset!');
 end
 
 exec_params = v2struct(verbose,visualize, area_filtering, matches_filtering,...
-    data_size, tick_step);
+    data_size, tick_step, scene_size, lab_step);
 
 exec_flags  = v2struct(publish, visualize_dataset, visualize_test, visualize_final,...
-    verbose, binarized, sav, visualize_transf_similarity, visualize_matching_cost);
+    vis_eval, verbose, binarized, sav,...
+    visualize_transf_similarity, visualize_matching_cost);
  
 %% moments parameters
 order = 4;
