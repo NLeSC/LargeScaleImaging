@@ -139,13 +139,15 @@ The performance results on the VGG dataset are summarized in Table \ref{tab:vgg}
 Det. + descr. & TP & TN & FP & FN & Acc. &Prec. &Recall\\
 \hline
 \hline
-MSER + SURF & $130$ & $428$ & $4$ & $14$ & $0.968$ & $0.97$ & $0.902$\\
+MSER + SURF & $128$ & $428$ &$4$ & $16$ & $0.965$ & $0.969$ & $0.889$\\
 \hline
-MSER + \bf{SMI} & $122$ & $432$ & $0$ & $22$ & $0.961$ & $1$ & $0.84$\\
+MSER + \bf{SMI} & $122$ &$430$  &$2$  &$22$  &$0.958$  & $0.98$ & $0.847$\\
 \hline
-BIN + SURF & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+BIN + SURF & $122$ & $426$ & $6$ & $22$ & $0.951$ & $0.953$ &$0.847$\\
 \hline
-BIN + \bf{SMI} & $112$ & $428$ & $4$ & $32$ & $0.93$ & $0.96$ & $0.77$\\
+BIN (All) + \bf{SMI} &$84$  &$432$  &$0$  &$60$ &$0.89$  & $1$ &$0.58$ \\
+\hline
+BIN (Largest) + \bf{SMI} &$112$  &$424$  &$8$  &$32$ &$0.93$  & $0.93$ &$0.77$ \\
 \hline
 \end{tabular}
 \end{center}
@@ -165,13 +167,15 @@ The performance results on the VGG dataset are summarized in Table \ref{tab:oxfr
 Det. + descr. & TP & TN & FP & FN & Acc. &Prec. &Recall\\
 \hline
 \hline
-MSER + SURF & $3303$ & $28926$ & $2826$ & $666$ & $0.9$ & $0.53$ & $0.83$\\
+MSER + SURF & TP & TN & FP & FN & Acc. &Prec. &Recall\\
 \hline
-MSER + \bf{SMI} & $2911$ & $31236$ & $516$ & $1058$ & $0.95$ & $0.84$ & $0.73$\\
+MSER + \bf{SMI} & TP & TN & FP & FN & Acc. &Prec. &Recall\\
 \hline
 BIN + SURF & TP & TN & FP & FN & Acc. &Prec. &Recall\\
 \hline
-BIN + \bf{SMI}  & $2155$ & $27840$ & $3912$ & $1814$ & $0.84$ & $0.35$ & $0.54$\\
+BIN (All) + \bf{SMI}  & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+\hline
+BIN (Largest) + \bf{SMI}  & TP & TN & FP & FN & Acc. &Prec. &Recall\\
 \hline
 \end{tabular}
 \end{center}
