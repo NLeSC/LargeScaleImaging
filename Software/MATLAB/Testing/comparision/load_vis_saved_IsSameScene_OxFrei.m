@@ -14,16 +14,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% parameters
 [ exec_flags, exec_params, ~, ~, ...
-    ~, ~, paths] = config(mfilename, 'oxford');
+    ~, ~, paths] = config(mfilename, 'oxfrei');
 
 v2struct(exec_flags);
 v2struct(exec_params);
 v2struct(paths);
 
+publish = true;
+visualize = true;
 if publish
-    det_descr = 'BIN_SMI_all';
+  %  det_descr = 'BIN_SMI_all';
   %  det_descr = 'BIN_SMI_filt';
-  %  det_descr = 'BIN_SURF';
+    det_descr = 'BIN_SURF';
   %  det_descr = 'MSER_SMI';
   %  det_descr = 'MSER_SURF';
 else   
@@ -40,15 +42,15 @@ sav_path = fullfile(project_path, 'Results', 'OxFrei','Comparision');
 
 switch upper(det_descr)
     case 'BIN_SURF' 
-        sav_fname =  fullfile(sav_path, 'test_IsSameScene_BIN_SURF_Oxfrei_   .mat');
+        sav_fname =  fullfile(sav_path, 'test_IsSameScene_BIN_SURF_OxFrei_16-05-2017_15-27.mat');
     case 'BIN_SMI_ALL'        
         sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_all_Oxffrei_   .mat');
     case 'BIN_SMI_FILT'        
         sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt_Oxfrei_    .mat');
     case 'MSER_SURF'
-        sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_Oxfrei_       .mat');
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_OxFrei_10-05-2017_22-30.mat');
     case 'MSER_SMI'
-        sav_fname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_Oxfrei_         .mat');
+        sav_fname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_OxFrei_20-05-2017_11-23.mat');
     otherwise
        error('Unknown detector + descriptor combination!');
 end
