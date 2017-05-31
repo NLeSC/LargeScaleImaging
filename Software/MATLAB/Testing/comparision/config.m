@@ -22,7 +22,7 @@
 %               visualize_final - whether to visualize the final result 
 %               visualize_matching_cost - whether to visualize the matching cost matrix
 %               visualize_transf_similarity - whether to visualize the cost matrix   
-%               vis_eval - weather to vosualize the evaluation matrix
+%               vis_eval - whether to visualize the evaluation matrix
 % exec_params   the execution parameters structure with fields:
 %               verbose- flag for verbose mode
 %               visualize- flag for vizualizing the matching
@@ -103,7 +103,7 @@ sav = true;
 % execution parameters
 verbose = true;
 visualize = false;
-area_filtering = false;  % if true, perform area filterring on regions
+area_filtering = true; %false;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 
 switch lower(dataset)
