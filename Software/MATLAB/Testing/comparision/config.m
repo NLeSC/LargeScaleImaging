@@ -103,7 +103,7 @@ sav = true;
 % execution parameters
 verbose = true;
 visualize = false;
-area_filtering = true; %false;  % if true, perform area filterring on regions
+area_filtering = false;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 
 switch lower(dataset)

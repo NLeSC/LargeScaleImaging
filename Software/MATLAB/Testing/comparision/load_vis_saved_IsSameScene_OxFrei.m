@@ -24,8 +24,8 @@ publish = true;
 visualize = true;
 if publish
   %  det_descr = 'BIN_SMI_all';
-  %  det_descr = 'BIN_SMI_filt';
-    det_descr = 'BIN_SURF';
+    det_descr = 'BIN_SMI_filt';
+  %  det_descr = 'BIN_SURF';
   %  det_descr = 'MSER_SMI';
   %  det_descr = 'MSER_SURF';
 else   
@@ -44,9 +44,9 @@ switch upper(det_descr)
     case 'BIN_SURF' 
         sav_fname =  fullfile(sav_path, 'test_IsSameScene_BIN_SURF_OxFrei_16-05-2017_15-27.mat');
     case 'BIN_SMI_ALL'        
-        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_all_Oxffrei_   .mat');
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_all_OxFrei_25-05-2017_17-43.mat');
     case 'BIN_SMI_FILT'        
-        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt_Oxfrei_    .mat');
+        sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt_OxFrei_30-05-2017_20-07.mat');
     case 'MSER_SURF'
         sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_OxFrei_10-05-2017_22-30.mat');
     case 'MSER_SMI'

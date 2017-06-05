@@ -10,15 +10,19 @@
 
 %% parameters
 [ exec_flags, exec_params, ~, ~, ...
-    ~, ~, paths] = config(mfilename, 'oxford');
+    ~, ~, paths] = config(mfilename, 'oxfrei');
 
 v2struct(exec_flags);
 v2struct(exec_params);
 v2struct(paths);
 
+publish = true;
+visualize = true;
+area_filtering = true;  % if true, perform area filterring on regions
+
 if publish
-    det_descr = 'BIN_SMI_all';
-  %  det_descr = 'BIN_SMI_filt';
+  %  det_descr = 'BIN_SMI_all';
+    det_descr = 'BIN_SMI_filt';
   %  det_descr = 'BIN_SURF';
   %  det_descr = 'MSER_SMI';
   %  det_descr = 'MSER_SURF';
@@ -38,25 +42,25 @@ sav_path = fullfile(project_path , 'Results', 'OxFrei','Comparision');
 if publish
     switch upper(det_descr)
         case 'BIN_SURF'
-            sav_fname =  fullfile(sav_path, 'test_IsSameScene_BIN_SURF_Oxfrei_   .mat');
+            sav_fullfname =  fullfile(sav_path, 'test_IsSameScene_BIN_SURF_OxFrei_16-05-2017_15-27.mat');
         case 'BIN_SMI_ALL'
-            sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_all_Oxffrei_   .mat');
+            sav_fullfname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_all_OxFrei_25-05-2017_17-43.mat');
         case 'BIN_SMI_FILT'
-            sav_fname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt_Oxfrei_    .mat');
+            sav_fullfname = fullfile(sav_path, 'test_IsSameScene_BIN_SMI_filt_OxFrei_30-05-2017_20-07.mat');
         case 'MSER_SURF'
-            sav_fname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_Oxfrei_       .mat');
+            sav_fullfname = fullfile(sav_path, 'test_IsSameScene_MSER_SURF_OxFrei_10-05-2017_22-30.mat');
         case 'MSER_SMI'
-            sav_fname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_Oxfrei_         .mat');
+            sav_fullfname =fullfile(sav_path, 'test_IsSameScene_MSER_SMI_OxFrei_20-05-2017_11-23.mat');
         otherwise
             error('Unknown detector + descriptor combination!');
     end
 else
-    sav_fname = input('Enter the OxFrei is same scene experiment results filename: ', 's');
-    sav_fullname = fullfile(sav_path, sav_fname);
+    sav_fullfname = input('Enter the OxFrei is same scene experiment results filename: ', 's');
+    sav_fullfname = fullfile(sav_path, sav_fullfname);
 end
 
 %% load the saved results
-load(sav_fullname,'is_same_all','YLabels');
+load(sav_fullfname,'is_same_all','YLabels');
 predicted = is_same_all;
 
 
