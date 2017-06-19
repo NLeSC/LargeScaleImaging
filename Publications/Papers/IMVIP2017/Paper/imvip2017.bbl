@@ -1,9 +1,40 @@
 \begin{thebibliography}{}
 
-\bibitem[Flusser, 2006]{Flusser06momentinvariants}
-Flusser, J. (2006).
-\newblock Moment invariants in image analysis.
-\newblock {\em Trans. on Engineering, Computing and Technology},
-  11(2):196--201.
+\bibitem[Flusser and Suk, 1993]{FLUSSER1993167}
+Flusser, J. and Suk, T. (1993).
+\newblock Pattern recognition by affine moment invariants.
+\newblock {\em Pattern Recognition}, 26(1):167 -- 174.
+
+\bibitem[Flusser et~al., 2009]{Flusser09a}
+Flusser, J., Suk, T., and Zitova, B. (2009).
+\newblock {\em Moments and Moment Invariants in Pattern Recognition}.
+\newblock Wiley.
+
+\bibitem[Matas et~al., 2002]{Matas2002BMVC}
+Matas, J., Chum, O., Urban, M., and Pajdla, T. (2002).
+\newblock {Robust Wide Baseline Stereo from Maximally Stable Extremal Regions}.
+\newblock In {\em Proceedings BMVC}, pages 36.1--36.10.
+
+\bibitem[Mikolajczyk et~al., 2005]{Mikolajczyk:2005}
+Mikolajczyk, K. et~al. (2005).
+\newblock A comparison of affine region detectors.
+\newblock {\em International Journal of Computer Vision}, 65(1-2):43--72.
+
+\bibitem[Ranguelova, 2016]{Ranguelova2016AICCSA}
+Ranguelova, E. (2016).
+\newblock {A Salient Region Detector for Structured Images}.
+\newblock In {\em Proceedings of IEEE/ACS 13th Int. Conf. of Computer Systems
+  and Applicaitons (AICCSA)}, pages 1--8.
+
+\bibitem[Suk, 2004]{UTIAcode}
+Suk (2004).
+\newblock Matlab codes: Affine moment invariants.
+\newblock http://zoi\_zmije.utia.cas.cz/mi/codes.
+
+\bibitem[Suk and Flusser, 2004]{SukF04}
+Suk, T. and Flusser, J. (2004).
+\newblock Graph method for generating affine moment invariants.
+\newblock In {\em 17th International Conference on Pattern Recognition, {ICPR}
+  2004, Cambridge, UK, August 23-26, 2004.}, pages 192--195.
 
 \end{thebibliography}

@@ -39,8 +39,11 @@
 
 \title{Shape and Moment Invariants Local Descriptor for Structured Images}
 
-\author{Elena Ranguelova}
-\affil{Netherlands eScience Centre\\ Amsterdam, The Netherlands.}
+\author{Anonymous Submission}
+\affil{Anonymous Affiliation}
+
+%\author{Elena Ranguelova}
+%\affil{Netherlands eScience Centre\\ Amsterdam, The Netherlands.}
 \date{}
 \maketitle
 \thispagestyle{empty}
@@ -48,9 +51,10 @@
 
 
 \begin{abstract}
-Here goes the abstract.Here goes the abstract.Here goes the abstract.Here goes the abstract.Here goes the abstract.
+
+
 \end{abstract}
-\textbf{Keywords:} image mathching, shape descriptors, moment invariants, 
+\textbf{Keywords:} image matching, shape descriptors, moment invariants, 
 
 
 
@@ -81,32 +85,26 @@ Here goes the abstract.Here goes the abstract.Here goes the abstract.Here goes t
 {\em Bottom image pair} (blur): SURF gives false positive ($0.27$), while SMI - true negative ($-0.11$).}
   \vspace{-10pt}
 \end{wrapfigure}\label{fig:intro1}
-Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
-Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
+A pair of images $<I1, I2>$, related with an photometric $P$ and affine geometric transformation $G$: $I2=I1.G.P$.
 
-%%%%%%%%%%%%%%%%%%%%%%
-Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.
-Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
-Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton. Here goes the Introduciton.Here goes the Introduc
 \section{Related Work}
 
-\subsection{Salient region detectors}
-Blah, blah blhBlah, blah blhBlah, blah blhBlah, blah blhBlah, blah blhBlah, blah blhBlah, blah blh
 
+\paragraph{Salient region detectors}
+Maximally Stable Extremal Regions (MSER), \cite{Matas2002BMVC}.
+The Data-driven Morphology Salient Regions Detector (DMSR) have been demonstrated to outperform MSER in ..., \cite{Ranguelova2016AICCSA}. Here, we propose to use a Binary detector (BIN) using the data-driven binarization explained in \cite{Ranguelova2016AICCSA}, with either all or only regions with large area ($A_{reg.} \ge f_A.A_{Im.}$) are used.
 
-\subsection{Region descriptors}
+\paragraph{Region descriptors}
 {\em State of the art in region descriptor}
+Moment invariants are a group of efficient invariant object descriptors. Flusser et al. introduced a general framework for the derivation of Affine Moment Invariants (AMIs) using graph representation \cite{FLUSSER1993167, SukF04, Flusser09a}.
+
+\paragraph{Detector-descriptor combination}
 
 \section{Image matching with Shape and Moment Invariant descriptor}
-We propose a set of several Shape and Moment Invariants (SMI) to encode each salient region into a feature vector (descriptor) used for the region matching. 
-The SMI descriptor contains two parts: {\em simple shape invariants}  and {\em moment invariants}.
-\begin{equation}
-SMI_i = \{S_i, M_i\}
-\end{equation} \label{eq:smi}
+We propose a set of several Shape and Moment Invariants (SMI) to encode each salient region into a feature vector (descriptor) used for the region matching. The SMI descriptor contains two parts: {\em simple shape invariants}  and {\em moment invariants} $SMI_i = \{S_i, M_i\}$.
 
-\subsection{Simple shape invariants}
-A binary shape of a region $R_i$ can be described by a set of simple shape properties defined over the original shape or over the equivalent ellipse $E_i$ with seond order moments the same as the region. These properties are: the region's area $a_i$, the area of the region's covex hull $a^c_i$, the length of the major and minor axes of $E_i$, $\mu_i$ and $\nu_i$ and the distance between the foci of the ellipse $\phi_i$.% and the angle between the major axis and the $x$-axis of $E_i$, $\theta_i$. 
-From these basic properties, a set of affine invariants are defined in Table \ref{tab:ssi}.   
+\paragraph{Simple shape invariants}
+A binary shape of a region $R_i$ can be described by a set of simple properties defined over the original shape or the equivalent up to the second order moments ellipse $E_i$. These properties are: the region's area $a_i$, the area of the region's convex hull $a^c_i$, the length of the major and minor axes of $E_i$, $\mu_i$ and $\nu_i$ and the distance between the foci of the ellipse $\phi_i$. From these basic properties, a set of shape affine invariants are defined in Table \ref{tab:ssi}.   
 
 \begin{table}[!ht]
 \begin{center}
@@ -131,20 +129,30 @@ Solidity & $s_i = {a_i}/{a_i^c} $ & proportion of the convex hull pixels, that a
 \caption{Simple shape invariants.} \label{tab:ssi}
   \vspace{-10pt}
 \end{table}
-The simple shape invariants part of $SMI_i$ is 
+The simple shape invariants part of $SMI_i$ is then $S_i = \{\tilde{a}_i, r_i, e_i, s_i\}$.
+
+\paragraph{Affine Moment Invariants}
+ 
+If $f(x,y)$ is a real-valued image with $N$ points, the AMI functional is defined by
 \begin{equation}
-S_i = \{\tilde{a}_i, r_i, e_i, s_i\}
-\end{equation} \label{eq:ssi}
+I(f) = \int_{-\infty}^{\infty} \prod_{k,j=1}^{N}C_{kj}^{n_{kj}} . \prod_{l=1}^{N}f(x_l, y_l)dx_ldy_l,
+\end{equation}
+where $n_{kj}$ are non-negative integers, $C_{kj} =x_ky_j - x_jy_k$ is the cross-product (graph edge) of points (nodes) $(x_k, y_k)$ and $(x_j, y_j)$, \cite{SukF04}. For full details of the AMI's theory the reader is referred to \cite{Flusser09a}.
+We use the set of $16$ irreducible AMIs of $N=4$th order as implemented by the authors in an open source MATLAB software \cite{UTIAcode}. The AMI part of $SMI_i$ is $M_i = \{m_{i1}, \ldots, m_{i16}\}$. 
 
-\subsection{Moment invariants}
-Moment invariants are a group of efficient invariant object descriptors. Flusser et al. introduced a general framework for the derivation of moment invariants of any order. \cite{Flusser06momentinvariants}
-\subsection{Matching}
+Hence, the final descriptor for the $i$-th region is a $20$ element feature vector $SMI_i = \{\tilde{a}_i, r_i, e_i, s_i, m_{i1}, \ldots, m_{i16}\}$. 
 
-\paragraph{My Paragraph:} 
-This is a paragraph. 
+\paragraph{Matching}
+
+Lets $\{SMI^1_i\}, i= 1,\ldots, n_1$ and $\{SMI^2_j\}, j= 1,\ldots, n_2$ be the $n_1 \times 20$ and $n_2 \times 20$ matrices with rows the SMI descriptors for the $n_1$ and $n_2$ regions detected via MSER or BIN (all/largest) detector in the pair of images to compare. % We use \texttt{matchFeatures} MATLAB CVS Toolbox function, \cite{matchFeaturesDoc}, to 
+We compare exhaustively every pair of local SMI descriptors $SMI^1_i$ and $SMI^2_j$ with Sum of square differences metric. The matching threshold for selection of the strongest matches is $mt$, the max ratio threshold for rejecting ambiguous matches is $mr$, the confidence of a match is $mc$ and only unique matches are considered.
+After matching of all descriptor pairs, we select the top quality matches above a matching cost threshold $ct$. From those, we estimate in $it$iterations the affine transformation ${\tilde T}$ between the two sets of points being the centroids of the two matching regions sets as average of $nr$ runs with allowed max point distance $md$. The two images are then transformed $J2 = I1 . {\tilde T}$, $J1 = I2 . {\tilde T}^{-1}$ and a correlation ($cor[X,Y] = cov[X,Y]/ \sqrt{var[X] var[Y]}$) between the original and transformed images is used for confirmation of a true match. If the average correlation similarity between both images and their transformed versions $(cor[I1, J1]+cor[I2, J2])/2$ is above a similarity threshold $st$, we declare the original image pair $<I1, I2>$ to be depicting (partially) the same scene.
 
 \section{Performance Evaluation}
 
+VGG dataset, \cite{Mikolajczyk:2005}.
+OxFrei dataset, \cite{Ranguelova2016AICCSA}.
+Used parameters: $mt=mr=1$, $f_A=2e-3$ (for BIN largest), $it=1000$, $nr=10$, $mc=95$, $md=8px$, $ct=0.025$, $st=0.25$.
 \subsection{VGG dataset}
 
 %% comment line
@@ -177,7 +185,7 @@ BIN (Largest) + \bf{SMI} &$112$  &$424$  &$8$  &$32$ &$0.93$  & $0.93$ &$0.77$ \
 
 \subsection{OxFrei dataset}
 
-The performance results on the VGG dataset are summarized in Table \ref{tab:oxfrei}.
+The performance results on the OxFrei dataset are summarized in Table \ref{tab:oxfrei}.
 \begin{table}[!ht]
 \begin{center}
 \begin{tabular}{|l||c|c|c|c|c|c|c|}
@@ -214,13 +222,13 @@ BIN (Largest) + \bf{SMI}  & $2079$& $28474$ & $3278$ & $1890$ & $0.85$ & $0.38$ 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
+%\appendix
 
-\section{VGG dataset matching results }
+%\section{VGG dataset matching results }
 
 
 
-\section{OxFrei dataset matching results }
+%\section{OxFrei dataset matching results }
 
 
 
