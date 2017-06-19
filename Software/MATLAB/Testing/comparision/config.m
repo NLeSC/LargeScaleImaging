@@ -98,11 +98,11 @@ visualize_matching_cost = true;
 visualize_transf_similarity = true;
 vis_eval = true;
 binarized = true;
-sav = true;
+sav = false;
 
 % execution parameters
 verbose = true;
-visualize = false;
+visualize = true;
 area_filtering = false;  % if true, perform area filterring on regions
 matches_filtering = true; % if true, perform filterring on the matches
 
@@ -223,6 +223,9 @@ if sav
     sav_fname = generate_results_fname(sav_path, scripts_name, format_dt);
 end
 
-paths = v2struct(data_path_or, data_path_bin, ext_or, ext_bin, sav_path, sav_fname);
+if sav
+    paths = v2struct(data_path_or, data_path_bin, ext_or, ext_bin, sav_path, sav_fname);
+else
+    paths = v2struct(data_path_or, data_path_bin, ext_or, ext_bin);
 end
 
