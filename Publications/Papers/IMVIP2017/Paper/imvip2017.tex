@@ -155,12 +155,50 @@ Hence, the final descriptor for the $i$-th region is a $20$ element feature vect
 Lets $SMI1$ and $SMI2$ be $n1 \times 20$ and $n2 \times 20$ matrices, where each row is the SMI descriptor for the $n_1$ and $n_2$ regions detected via MSER or BIN (all/largest) detector in the pair of images $<I1, I2>$.
 We compare exhaustively  $SMI1$ and $SMI2$ with Sum of square differences metric. The matching threshold for selection of the strongest matches is $mt$, the max ratio threshold for rejecting ambiguous matches is $mr$, the confidence of a match is $mc$ and only unique matches are allowed. Then, we select the top quality matches above a cost threshold $ct$. From those, we estimate in $it$ iterations the affine transformation ${\tilde T}$ between the two sets of points- centroids of the matching regions sets as average of $nr$ runs with allowed max point distance $md$. The two images are then transformed $J2 = {\tilde T}(I1)$, $J1 = {\tilde T}^{-1}(I2)$ and a correlation ($cor[X,Y] = cov[X,Y]/ \sqrt{var[X] var[Y]}$) between the original and transformed images is used for confirmation of a true match. If the average correlation similarity between both images and their transformed versions $(cor[I1, J1]+cor[I2, J2])/2$ is above a similarity threshold $st$, we declare the image pair $<I1, I2>$ to be depicting (partially) the same scene.
 
+\begin{figure}[h]
+ \vspace{-10pt} 
+\begin{center}
+\begin{subfigure}[b]{0.22\textwidth}
+  \includegraphics[width=\textwidth]{graffiti1orig}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+\includegraphics[width=\textwidth]{graffiti1orig_bin}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+  \includegraphics[width=\textwidth]{graffiti_matched_12}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+\includegraphics[width=\textwidth]{graffiti_overlay_12}
+\end{subfigure}
+\end{center}
+\vspace{-22pt}
+\begin{center}
+\begin{subfigure}[b]{0.22\textwidth}
+  \includegraphics[width=\textwidth]{graffiti1view}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+\includegraphics[width=\textwidth]{graffiti1view_bin}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+  \includegraphics[width=\textwidth]{graffiti_matched_21}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+\includegraphics[width=\textwidth]{graffiti_overlay_21}
+\end{subfigure}
+\end{center}
+\vspace{-20pt}
+\caption{\small Matching two images of the same scene under viewpoint transformation using BIN regions and SMI descriptor. {\em First column:} original images $I1, I2$; {\em second column:} binarization; {\em third column:} matched BIN regions using SMI descriptor (blend view with pseudocolours); {\em fourth column:}overlay of the original and transformed images $(I1, J1), (I2, J2)$ }
+  \vspace{-12pt}
+\end{figure}\label{fig:match}
+
+Figure \ref{fig:match} illustrates the major steps of the image matching using BIN + SMI in case of viewpoint distortion. Note the better alignment in the right part of the images due to the larger number of correct matches there. The steps are the same when using MSER istead of the data-driven binarization or SURF instead of SMI descriptor.
+
 \section{Performance Evaluation}
 
 VGG dataset, \cite{Mikolajczyk:2005}.
 OxFrei dataset, \cite{Ranguelova2016AICCSA}.
 Used parameters: $mt=mr=1$, $f_A=2e-3$ (for BIN largest), $it=1000$, $nr=10$, $mc=95$, $md=8px$, $ct=0.025$, $st=0.25$.
-\subsection{VGG dataset}
+\paragraph{VGG dataset}
 
 %% comment line
 
@@ -190,7 +228,7 @@ BIN (Largest) + \bf{SMI} &$112$  &$424$  &$8$  &$32$ &$0.93$  & $0.93$ &$0.77$ \
   \vspace{-10pt}
 \end{table}
 
-\subsection{OxFrei dataset}
+\paragraph{OxFrei dataset}
 
 The performance results on the OxFrei dataset are summarized in Table \ref{tab:oxfrei}.
 \begin{table}[!ht]
@@ -238,7 +276,7 @@ BIN (Largest) + \bf{SMI}  & $2079$& $28474$ & $3278$ & $1890$ & $0.85$ & $0.38$ 
 %\section{OxFrei dataset matching results }
 
 
-
+\small
 \bibliographystyle{apalike}
 
 \bibliography{imvip2017}
