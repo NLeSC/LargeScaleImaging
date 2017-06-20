@@ -1,5 +1,20 @@
 \begin{thebibliography}{}
 
+\bibitem[Bay et~al., 2008]{Bay2008}
+Bay, H., Ess, A., Tuytelaars, T., and Van~Gool, L. (2008).
+\newblock Speeded-up robust features (surf).
+\newblock {\em Comput. Vis. Image Underst.}, 110(3):346--359.
+
+\bibitem[Dahl et~al., 2011]{DahlAP11}
+Dahl, A.~L., Aanæs, H., and Pedersen, K.~S. (2011).
+\newblock Finding the best feature detector-descriptor combination.
+\newblock In {\em 3DIMPVT}, pages 318--325. IEEE Computer Society.
+
+\bibitem[Escalera et~al., 2007]{EscaleraCVPR07}
+Escalera, S., Radeva, P., and Pujol, O. (2007).
+\newblock Complex salient regions for computer vision problems.
+\newblock In {\em CVPR}.
+
 \bibitem[Flusser and Suk, 1993]{FLUSSER1993167}
 Flusser, J. and Suk, T. (1993).
 \newblock Pattern recognition by affine moment invariants.
@@ -26,6 +41,11 @@ Ranguelova, E. (2016).
 \newblock In {\em Proceedings of IEEE/ACS 13th Int. Conf. of Computer Systems
   and Applicaitons (AICCSA)}, pages 1--8.
 
+\bibitem[Snavely et~al., 2008]{Snavely2008}
+Snavely, N., Seitz, S.~M., and Szeliski, R. (2008).
+\newblock Modeling the world from internet photo collections.
+\newblock {\em Int. J. Comput. Vision}, 80(2):189--210.
+
 \bibitem[Suk, 2004]{UTIAcode}
 Suk (2004).
 \newblock Matlab codes: Affine moment invariants.
@@ -36,5 +56,10 @@ Suk, T. and Flusser, J. (2004).
 \newblock Graph method for generating affine moment invariants.
 \newblock In {\em 17th International Conference on Pattern Recognition, {ICPR}
   2004, Cambridge, UK, August 23-26, 2004.}, pages 192--195.
+
+\bibitem[Zagoruyko and Komodakis, 2015]{ZagoruykoK15}
+Zagoruyko, S. and Komodakis, N. (2015).
+\newblock Learning to compare image patches via convolutional neural networks.
+\newblock {\em CoRR}, abs/1504.03641.
 
 \end{thebibliography}

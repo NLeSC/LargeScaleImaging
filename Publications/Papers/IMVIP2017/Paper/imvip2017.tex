@@ -51,54 +51,60 @@
 
 
 \begin{abstract}
-
-
+Finding correspondences between two images to determine if they depict the same scene or object, is a fundamental, yet challenging task. To cope with different viewpoints and lighting conditions, usually salient regions are detected as local invariant features, encoded by descriptors such as SIFT or SURF. While using the image intensities around a single point, the centroid of the region, to compute a histogram-of-gradients type descriptor, often works well, we argue that for structured scenes it is enough to use only the binary shape of the regions. We propose a $20$-dimensional Shape and Moment Invariant (SMI) descriptor and show that it outperforms the $64$-dimensional SURF on classical and transformation-independent datasets in terms of precision, achieving similar or even higher accuracy, while having a better scalability.
 \end{abstract}
-\textbf{Keywords:} image matching, shape descriptors, moment invariants, 
+\textbf{Keywords:} image matching, affine-invariant descriptor, shape invariants, moment invariants
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
- 
+
 \begin{wrapfigure}{r}{0.5\textwidth}
- \vspace{-20pt} 
+ \vspace{-22pt} 
 \begin{center}
-\begin{subfigure}[b]{0.247\textwidth}
+%\begin{subfigure}[b]{0.247\textwidth}
+\begin{subfigure}[b]{0.22\textwidth}
   \includegraphics[width=\textwidth, height=\textwidth]{cool_car_scale5}
 \end{subfigure}
-\begin{subfigure}[b]{0.247\textwidth}
+%\begin{subfigure}[b]{0.247\textwidth}
+\begin{subfigure}[b]{0.22\textwidth}
 \includegraphics[width=\textwidth]{cool_car_viewpoint5}
 \end{subfigure}
 \end{center}
-\vspace{-20pt}
+\vspace{-22pt}
 \begin{center}
-\begin{subfigure}[b]{0.247\textwidth}
+%\begin{subfigure}[b]{0.247\textwidth}
+\begin{subfigure}[b]{0.22\textwidth}
   \includegraphics[width=\textwidth]{1graffiti_blur4}
 \end{subfigure}
-\begin{subfigure}[b]{0.247\textwidth}
+%\begin{subfigure}[b]{0.247\textwidth}
+\begin{subfigure}[b]{0.22\textwidth}
 \includegraphics[width=\textwidth]{2freiburg_center_blur4}
 \end{subfigure}
 \end{center}
 \vspace{-20pt}
-\caption{``Is it the same object or scene?'' Matching two images under different transformation using local interest regions detected by MSER.\\ {\em Top image pair} (scale and viewpoint): SURF descriptor yields false negative (similarity score $0.096$), while the proposed SMI descriptor - true positive ($0.89$).\\
+\caption{\small ``Is it the same object or scene?'' Matching two images under different transformation using MSER regions.\\ {\em Top image pair} (scale and viewpoint): SURF descriptor yields false negative (similarity score $0.096$), while SMI - true positive ($0.89$).
 {\em Bottom image pair} (blur): SURF gives false positive ($0.27$), while SMI - true negative ($-0.11$).}
-  \vspace{-10pt}
+  \vspace{-16pt}
 \end{wrapfigure}\label{fig:intro1}
-A pair of images $<I1, I2>$, related with an photometric $P$ and affine geometric transformation $G$: $I2=I1.G.P$.
 
-\section{Related Work}
+Automatically determining weather $2$ images depict partially the same physical scene is a fundamental computer vision problem such as baseline stereo matching, image retrieval, etc.~\cite{EscaleraCVPR07,Matas2002BMVC}). {\em Detection} of local (due to partial overlap) image features, followed by their {\em description}, is a classical approach. Salient regions, corresponding to the same image patches, detected with high repeatability independently in each image are such features. Many detectors and descriptors are designed to be invariant to photometric (due to different sensors and lighting) and affine geometric transformations (due to different viewpoints). In recent years, a new approach of using large datasets of image patch correspondences is established, \cite{Snavely2008, ZagoruykoK15}. However, when very few, even only $2$ {\em structured} (having homogeneous regions with distinctive boundaries) images are available, e.~g.~in some scientific applications \cite{Ranguelova2016AICCSA}, deep learning is not applicable.
 
+The Maximally Stable Extremal Regions (MSER) has become the standard in the field, \cite{ Matas2002BMVC}. It is often used in combination with a histogram-of-gradients type descriptor such as Scale-invariant Feature Transform (SIFT) or Speeded-Up Robust Features (SURF), \cite{Bay2008}, computed from image intensities around the cetroids of the MSER regions. We argue that using the shape and moment information of the  regions encoded by a {\em Shape and Moment Invariants (SMI)} descriptor is beneficial, compared to image intensities around the region's centroid. Figure \ref{fig:intro1} illustrates two cases of image pairs, one depicting the same scene and the other- not, when SMI outperforms SURF applied on pre-detected MSER regions.
+
+\section{Related work}
 
 \paragraph{Salient region detectors}
-Maximally Stable Extremal Regions (MSER), \cite{Matas2002BMVC}.
-The Data-driven Morphology Salient Regions Detector (DMSR) have been demonstrated to outperform MSER in ..., \cite{Ranguelova2016AICCSA}. Here, we propose to use a Binary detector (BIN) using the data-driven binarization explained in \cite{Ranguelova2016AICCSA}, with either all or only regions with large area ($A_{reg.} \ge f_A.A_{Im.}$) are used.
+A comparative performance evaluation of many region detectors have concluded that the {\em Maximally Stable Extremal Regions (MSER)} is the best performing region detector for structured scenes, \cite{Mikolajczyk:2005, Matas2002BMVC}. MSER has become the de-facto standard in the field: it has been implemented as part of MATLAB, OpenCV, VLFeat, etc. However, despite its success, the detector has several drawbacks: it is sensitive to image blur; it produces nested and redundant regions, and its performance degrades with the increase of image resolution. The Data-driven Morphology Salient Regions Detector (DMSR) have been demonstrated to outperform MSER in the case of those transformations, \cite{Ranguelova2016AICCSA}. Here, we propose to use a Binary detector (BIN) using the data-driven binarization explained in \cite{Ranguelova2016AICCSA}, with either all or only regions with large area ($A_{reg.} \ge f_A.A_{Im.}$) are used.
 
 \paragraph{Region descriptors}
 {\em State of the art in region descriptor}
 Moment invariants are a group of efficient invariant object descriptors. Flusser et al. introduced a general framework for the derivation of Affine Moment Invariants (AMIs) using graph representation \cite{FLUSSER1993167, SukF04, Flusser09a}.
 
 \paragraph{Detector-descriptor combination}
+Research has been performed not only to determine the best region detector and descriptor, but also the best combination detector - descriptor.
+For example, the conclusion in \cite{DahlAP11} is that the best combination is DOG or MSER detector and SIFT or DAISY descriptors. The SURF descriptor was not in the list of compared  descriptors.
 
 \section{Image matching with Shape and Moment Invariant descriptor}
 We propose a set of several Shape and Moment Invariants (SMI) to encode each salient region into a feature vector (descriptor) used for the region matching. The SMI descriptor contains two parts: {\em simple shape invariants}  and {\em moment invariants} $SMI_i = \{S_i, M_i\}$.
