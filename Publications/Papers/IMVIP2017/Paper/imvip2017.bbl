@@ -15,11 +15,6 @@ Escalera, S., Radeva, P., and Pujol, O. (2007).
 \newblock Complex salient regions for computer vision problems.
 \newblock In {\em CVPR}.
 
-\bibitem[Flusser and Suk, 1993]{FLUSSER1993167}
-Flusser, J. and Suk, T. (1993).
-\newblock Pattern recognition by affine moment invariants.
-\newblock {\em Pattern Recognition}, 26(1):167 -- 174.
-
 \bibitem[Flusser et~al., 2009]{Flusser09a}
 Flusser, J., Suk, T., and Zitova, B. (2009).
 \newblock {\em Moments and Moment Invariants in Pattern Recognition}.
@@ -57,11 +52,6 @@ Ranguelova, E. (2016).
 Snavely, N., Seitz, S.~M., and Szeliski, R. (2008).
 \newblock Modeling the world from internet photo collections.
 \newblock {\em Int. J. Comput. Vision}, 80(2):189--210.
-
-\bibitem[Suk, 2004]{UTIAcode}
-Suk (2004).
-\newblock Matlab codes: Affine moment invariants.
-\newblock http://zoi\_zmije.utia.cas.cz/mi/codes.
 
 \bibitem[Suk and Flusser, 2004]{SukF04}
 Suk, T. and Flusser, J. (2004).
