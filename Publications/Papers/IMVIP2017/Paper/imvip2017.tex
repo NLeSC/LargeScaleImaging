@@ -89,28 +89,29 @@ Finding correspondences between two images to determine if they depict the same 
   \vspace{-16pt}
 \end{wrapfigure}\label{fig:intro1}
 
-Automatically determining weather $2$ images depict partially the same physical scene is a fundamental computer vision problem such as baseline stereo matching, image retrieval, etc.~\cite{EscaleraCVPR07,Matas2002BMVC}). {\em Detection} of local (due to partial overlap) image features, followed by their {\em description}, is a classical approach. Salient regions, corresponding to the same image patches, detected with high repeatability independently in each image are such features. Many detectors and descriptors are designed to be invariant to photometric (due to different sensors and lighting) and affine geometric transformations (due to different viewpoints). In recent years, a new approach of using large datasets of image patch correspondences is established, \cite{Snavely2008, ZagoruykoK15}. However, when very few, even only $2$ {\em structured} (having homogeneous regions with distinctive boundaries) images are available, e.~g.~in some scientific applications \cite{Ranguelova2016AICCSA}, deep learning is not applicable.
+Automatically determining weather $2$ images depict partially the same physical scene is a fundamental computer vision problem such as baseline stereo matching, image retrieval, etc.~\cite{EscaleraCVPR07,Matas2002BMVC}). {\em Detection} of local (due to partial overlap) features, followed by {\em matching} of their {\em descriptors}, is the used approach. Salient regions, corresponding to the same image patches, detected with high repeatability independently in each image are such features. Many detectors and descriptors are designed to be invariant to photometric (due to different sensors and lighting) and affine geometric transformations (due to different viewpoints). In recent years, a new approach of using large datasets of image patch correspondences is established, \cite{Snavely2008, ZagoruykoK15}. However, when very few, even only $2$ {\em structured} (having homogeneous regions with distinctive boundaries) images are available, e.~g.~in some scientific applications \cite{Ranguelova2016AICCSA}, deep learning is not applicable.
 
-The Maximally Stable Extremal Regions (MSER) has become the standard in the field, \cite{ Matas2002BMVC}. It is often used in combination with a histogram-of-gradients type descriptor such as Scale-invariant Feature Transform (SIFT) or Speeded-Up Robust Features (SURF), \cite{Bay2008}, computed from image intensities around the cetroids of the MSER regions. We argue that using the shape and moment information of the  regions encoded by a {\em Shape and Moment Invariants (SMI)} descriptor is beneficial, compared to image intensities around the region's centroid. Figure \ref{fig:intro1} illustrates two cases of image pairs, one depicting the same scene and the other- not, when SMI outperforms SURF applied on pre-detected MSER regions.
+The Maximally Stable Extremal Regions (MSER) has become the standard in the field, \cite{ Matas2002BMVC}. It is often used in combination with a histogram-of-gradients type descriptor such as Scale-invariant Feature Transform (SIFT) or Speeded-Up Robust Features (SURF), \cite{Bay2008}, computed from image intensities around the centroids of the MSER regions. We argue that using the shape and moment information of the  regions encoded by a {\em Shape and Moment Invariants (SMI)} descriptor is beneficial, compared to image intensities around the region's centroid. Figure \ref{fig:intro1} illustrates two cases of image pairs, one depicting the same scene and the other- not, when SMI outperforms SURF applied on pre-detected MSER regions.
 
 \section{Related work}
+The literature describes large number of local detectors and descriptors, for a recent introduction and overview the reader is referred to \cite{Hassaballah:2016}. Here we mention very briefly only the closely related work.
 
-\paragraph{Salient region detectors}
-A comparative performance evaluation of many region detectors have concluded that the {\em Maximally Stable Extremal Regions (MSER)} is the best performing region detector for structured scenes, \cite{Mikolajczyk:2005, Matas2002BMVC}. MSER has become the de-facto standard in the field: it has been implemented as part of MATLAB, OpenCV, VLFeat, etc. However, despite its success, the detector has several drawbacks: it is sensitive to image blur; it produces nested and redundant regions, and its performance degrades with the increase of image resolution. The Data-driven Morphology Salient Regions Detector (DMSR) have been demonstrated to outperform MSER in the case of those transformations, \cite{Ranguelova2016AICCSA}. Here, we propose to use a Binary detector (BIN) using the data-driven binarization explained in \cite{Ranguelova2016AICCSA}, with either all or only regions with large area ($A_{reg.} \ge f_A.A_{Im.}$) are used.
+%\paragraph{Salient region detectors}
+A comparative performance evaluation of many detectors have concluded that the MSER is the best performing region detector for structured scenes, \cite{Mikolajczyk:2005}. Since, MSER has been integrated in MATLAB, OpenCV, VLFeat, etc.~, making it the default baseline detector. However, despite its success, the detector has several drawbacks, which have been addressed and fixed by improved detectors, including the Data-driven Morphology Salient Regions Detector (DMSR), \cite{Ranguelova2016AICCSA}. Here, we propose to use a Binary detector (BIN) using the first step of DMSR construction: data-driven binarization explained in \cite{Ranguelova2016AICCSA}, with either all or only regions with large area ($A_{reg.} \ge f_A.A_{Im.}$).
 
-\paragraph{Region descriptors}
-{\em State of the art in region descriptor}
-Moment invariants are a group of efficient invariant object descriptors. Flusser et al. introduced a general framework for the derivation of Affine Moment Invariants (AMIs) using graph representation \cite{FLUSSER1993167, SukF04, Flusser09a}.
+%\paragraph{Region descriptors}
+Another comparative performance evaluation of many region descriptors have concluded that the "region-based SIFT descriptor" is best performing again for structured images, \cite{Mikolajczyk:descr:2005}. Since, we are interested in using the binary shape shape of the detected regions, we have chosen for the moment invariant theory. Moment invariants are a group of efficient invariant object descriptors. Flusser et al. developed a coherent theory and general framework for the derivation of Affine Moment Invariants (AMIs) using graph representation \cite{SukF04, Flusser09a}.
 
-\paragraph{Detector-descriptor combination}
+%\paragraph{Detector-descriptor combination}
 Research has been performed not only to determine the best region detector and descriptor, but also the best combination detector - descriptor.
-For example, the conclusion in \cite{DahlAP11} is that the best combination is DOG or MSER detector and SIFT or DAISY descriptors. The SURF descriptor was not in the list of compared  descriptors.
+For example, the conclusion of the experiments in \cite{DahlAP11} is that the best combination is DOG or MSER detector and SIFT (SURF was not included in the experiments) or DAISY descriptors. SURF has been introduced as an improvement over SIFT and since has become a standard descriptor in many computer vision software libraries, making it the default baseline descriptor, \cite{Bay2008}.
+Hence, we have chosen MSER + SURF as the baseline detector + descriptor combination.
 
 \section{Image matching with Shape and Moment Invariant descriptor}
-We propose a set of several Shape and Moment Invariants (SMI) to encode each salient region into a feature vector (descriptor) used for the region matching. The SMI descriptor contains two parts: {\em simple shape invariants}  and {\em moment invariants} $SMI_i = \{S_i, M_i\}$.
+We propose a set of several Shape and Moment Invariants (SMI) derived from the binary shapes of the detected regions as a region descriptor. SMI descriptor contains {\em shape invariants} and {\em moment invariants}.
 
-\paragraph{Simple shape invariants}
-A binary shape of a region $R_i$ can be described by a set of simple properties defined over the original shape or the equivalent up to the second order moments ellipse $E_i$. These properties are: the region's area $a_i$, the area of the region's convex hull $a^c_i$, the length of the major and minor axes of $E_i$, $\mu_i$ and $\nu_i$ and the distance between the foci of the ellipse $\phi_i$. From these basic properties, a set of shape affine invariants are defined in Table \ref{tab:ssi}.   
+\paragraph{Shape invariants}
+A binary shape of a region $R_i$ can be described by a set of simple properties of the original shape or the equivalent (up to the second order moments) ellipse $E_i$. These are: the region's area $a_i$, the area of the region's convex hull $a^c_i$, the length of the major and minor axes of $E_i$, $\mu_i$ and $\nu_i$ and the distance between the foci of the ellipse $\phi_i$. From these basic properties, a set of shape affine invariants are defined in Table \ref{tab:ssi}.   
 
 \begin{table}[!ht]
 \begin{center}
@@ -132,10 +133,10 @@ Solidity & $s_i = {a_i}/{a_i^c} $ & proportion of the convex hull pixels, that a
 \end{tabular}
 \end{center}
 \vspace{-20pt}
-\caption{Simple shape invariants.} \label{tab:ssi}
-  \vspace{-10pt}
+\caption{\small Simple shape invariants.} \label{tab:ssi}
+  \vspace{-20pt}
 \end{table}
-The simple shape invariants part of $SMI_i$ is then $S_i = \{\tilde{a}_i, r_i, e_i, s_i\}$.
+%The simple shape invariants part of $SMI_i$ is then $S_i = \{\tilde{a}_i, r_i, e_i, s_i\}$.
 
 \paragraph{Affine Moment Invariants}
  
@@ -144,7 +145,8 @@ If $f(x,y)$ is a real-valued image with $N$ points, the AMI functional is define
 I(f) = \int_{-\infty}^{\infty} \prod_{k,j=1}^{N}C_{kj}^{n_{kj}} . \prod_{l=1}^{N}f(x_l, y_l)dx_ldy_l,
 \end{equation}
 where $n_{kj}$ are non-negative integers, $C_{kj} =x_ky_j - x_jy_k$ is the cross-product (graph edge) of points (nodes) $(x_k, y_k)$ and $(x_j, y_j)$, \cite{SukF04}. For full details of the AMI's theory the reader is referred to \cite{Flusser09a}.
-We use the set of $16$ irreducible AMIs of $N=4$th order as implemented by the authors in an open source MATLAB software \cite{UTIAcode}. The AMI part of $SMI_i$ is $M_i = \{m_{i1}, \ldots, m_{i16}\}$. 
+We use the set of $16$ irreducible AMIs of $N=4$th order as implemented by the authors in an open source MATLAB software \cite{UTIAcode}. 
+%The AMI part of $SMI_i$ is $M_i = \{m_{i1}, \ldots, m_{i16}\}$. 
 
 Hence, the final descriptor for the $i$-th region is a $20$ element feature vector $SMI_i = \{\tilde{a}_i, r_i, e_i, s_i, m_{i1}, \ldots, m_{i16}\}$. 
 
