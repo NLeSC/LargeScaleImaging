@@ -63,22 +63,18 @@ Finding correspondences between two images to determine if they depict the same 
 \begin{wrapfigure}{r}{0.5\textwidth}
  \vspace{-22pt} 
 \begin{center}
-%\begin{subfigure}[b]{0.247\textwidth}
 \begin{subfigure}[b]{0.22\textwidth}
   \includegraphics[width=\textwidth, height=\textwidth]{cool_car_scale5}
 \end{subfigure}
-%\begin{subfigure}[b]{0.247\textwidth}
 \begin{subfigure}[b]{0.22\textwidth}
 \includegraphics[width=\textwidth]{cool_car_viewpoint5}
 \end{subfigure}
 \end{center}
 \vspace{-22pt}
 \begin{center}
-%\begin{subfigure}[b]{0.247\textwidth}
 \begin{subfigure}[b]{0.22\textwidth}
   \includegraphics[width=\textwidth]{1graffiti_blur4}
 \end{subfigure}
-%\begin{subfigure}[b]{0.247\textwidth}
 \begin{subfigure}[b]{0.22\textwidth}
 \includegraphics[width=\textwidth]{2freiburg_center_blur4}
 \end{subfigure}
@@ -86,8 +82,9 @@ Finding correspondences between two images to determine if they depict the same 
 \vspace{-20pt}
 \caption{\small ``Is it the same object or scene?'' Matching two images under different transformation using MSER regions.\\ {\em Top image pair} (scale and viewpoint): SURF descriptor yields false negative (similarity score $0.096$), while SMI - true positive ($0.89$).
 {\em Bottom image pair} (blur): SURF gives false positive ($0.27$), while SMI - true negative ($-0.11$).}
+\label{fig:intro1}
   \vspace{-16pt}
-\end{wrapfigure}\label{fig:intro1}
+\end{wrapfigure}
 
 Automatically determining weather $2$ images depict partially the same physical scene is a fundamental computer vision problem such as baseline stereo matching, image retrieval, etc.~\cite{EscaleraCVPR07,Matas2002BMVC}). {\em Detection} of local (due to partial overlap) features, followed by {\em matching} of their {\em descriptors}, is the used approach. Salient regions, corresponding to the same image patches, detected with high repeatability independently in each image are such features. Many detectors and descriptors are designed to be invariant to photometric (due to different sensors and lighting) and affine geometric transformations (due to different viewpoints). In recent years, a new approach of using large datasets of image patch correspondences is established, \cite{Snavely2008, ZagoruykoK15}. However, when very few, even only $2$ {\em structured} (having homogeneous regions with distinctive boundaries) images are available, e.~g.~in some scientific applications \cite{Ranguelova2016AICCSA}, deep learning is not applicable.
 
@@ -107,7 +104,7 @@ Research has been performed not only to determine the best region detector and d
 For example, the conclusion of the experiments in \cite{DahlAP11} is that the best combination is DOG or MSER detector and SIFT (SURF was not included in the experiments) or DAISY descriptors. SURF has been introduced as an improvement over SIFT and since has become a standard descriptor in many computer vision software libraries, making it the default baseline descriptor, \cite{Bay2008}.
 Hence, we have chosen MSER + SURF as the baseline detector + descriptor combination.
 
-\section{Image matching with Shape and Moment Invariant descriptor}
+\section{Image matching with Shape and Moment Invariant descriptor}\label{sec:match}
 We propose a set of several Shape and Moment Invariants (SMI) derived from the binary shapes of the detected regions as a region descriptor. SMI descriptor contains {\em shape invariants} and {\em moment invariants}.
 
 \paragraph{Shape invariants}
@@ -155,6 +152,8 @@ Hence, the final descriptor for the $i$-th region is a $20$ element feature vect
 Lets $SMI1$ and $SMI2$ be $n1 \times 20$ and $n2 \times 20$ matrices, where each row is the SMI descriptor for the $n_1$ and $n_2$ regions detected via MSER or BIN (all/largest) detector in the pair of images $<I1, I2>$.
 We compare exhaustively  $SMI1$ and $SMI2$ with Sum of square differences metric. The matching threshold for selection of the strongest matches is $mt$, the max ratio threshold for rejecting ambiguous matches is $mr$, the confidence of a match is $mc$ and only unique matches are allowed. Then, we select the top quality matches above a cost threshold $ct$. From those, we estimate in $it$ iterations the affine transformation ${\tilde T}$ between the two sets of points- centroids of the matching regions sets as average of $nr$ runs with allowed max point distance $md$. The two images are then transformed $J2 = {\tilde T}(I1)$, $J1 = {\tilde T}^{-1}(I2)$ and a correlation ($cor[X,Y] = cov[X,Y]/ \sqrt{var[X] var[Y]}$) between the original and transformed images is used for confirmation of a true match. If the average correlation similarity between both images and their transformed versions $(cor[I1, J1]+cor[I2, J2])/2$ is above a similarity threshold $st$, we declare the image pair $<I1, I2>$ to be depicting (partially) the same scene.
 
+Figure \ref{fig:matching1} illustrates the major steps of the image matching using BIN + SMI in case of viewpoint distortion. Note the better alignment in the right part of the images due to the larger number of correct matches there. The steps are the same when using MSER istead of the data-driven binarization or SURF instead of SMI descriptor.
+
 \begin{figure}[h]
  \vspace{-10pt} 
 \begin{center}
@@ -188,17 +187,40 @@ We compare exhaustively  $SMI1$ and $SMI2$ with Sum of square differences metric
 \end{center}
 \vspace{-20pt}
 \caption{\small Matching two images of the same scene under viewpoint transformation using BIN regions and SMI descriptor. {\em First column:} original images $I1, I2$; {\em second column:} binarization; {\em third column:} matched BIN regions using SMI descriptor (blend view with pseudocolours); {\em fourth column:}overlay of the original and transformed images $(I1, J1), (I2, J2)$ }
+\label{fig:matching1}
   \vspace{-12pt}
-\end{figure}\label{fig:match}
-
-Figure \ref{fig:match} illustrates the major steps of the image matching using BIN + SMI in case of viewpoint distortion. Note the better alignment in the right part of the images due to the larger number of correct matches there. The steps are the same when using MSER istead of the data-driven binarization or SURF instead of SMI descriptor.
+\end{figure}
 
 \section{Performance Evaluation}
 
-VGG dataset, \cite{Mikolajczyk:2005}.
-OxFrei dataset, \cite{Ranguelova2016AICCSA}.
-Used parameters: $mt=mr=1$, $f_A=2e-3$ (for BIN largest), $it=1000$, $nr=10$, $mc=95$, $md=8px$, $ct=0.025$, $st=0.25$.
-\paragraph{VGG dataset}
+We have tested the performance of the MSER and BIN (all regions and only the largest) detectors in combinations with the SURF and SMI descriptors on $2$ datasets: Oxford (VGG), \cite{Mikolajczyk:2005} and OxFrei, \cite{Ranguelova2016AICCSA}. Each of the $4$ structured image sequences of the Oxford set consists of $1$ base and $5$ increasingly distorted images. Each sequence can be used to test only $1$ transformation $T$: viewpont, scaling + rotation, decreased lighing and blur. OxFrei dataset overcomes this limitaiton: $9$ structured scenes each with $21$ images (original + $5$ images for $4 T$) using Oxford's real homographies. We compared all possible image pairs and assigned a flag {\em True/False} if a pair is depicting the same scene as described inSection \ref{sec:match}. The values of parameters used in the experiments have been determined empirically: $mt=mr=1$, $f_A=2e-3$ (for BIN largest), $it=1000$, $nr=10$, $mc=95$, $md=8px$, $ct=0.025$, $st=0.25$.
+%\paragraph{Oxford dataset}
+Figure \ref{fig:intro1} illustrates the result for 2 pairs and Figure \ref{fig:matching2}- for all pairs (a pixel represents image pair and a square block - a sequence) of the OxFrei dataset. Note the lower number of false positives and correlation similarity varience when using the SMI desriptor.
+
+\begin{figure}[h]
+ \vspace{-10pt} 
+\begin{center}
+\begin{subfigure}[b]{0.18\textwidth}
+  \includegraphics[width=\textwidth]{oxfrei_gt}
+\end{subfigure}
+\begin{subfigure}[b]{0.18\textwidth}
+\includegraphics[width=\textwidth]{oxfrei_sim_mser_surf}
+\end{subfigure}
+\begin{subfigure}[b]{0.18\textwidth}
+  \includegraphics[width=\textwidth]{oxfrei_mser_surf}
+\end{subfigure}
+\begin{subfigure}[b]{0.18\textwidth}
+\includegraphics[width=\textwidth]{oxfrei_sim_mser_smi}
+\end{subfigure}
+\begin{subfigure}[b]{0.18\textwidth}
+  \includegraphics[width=\textwidth]{oxfrei_mser_smi}
+\end{subfigure}
+\end{center}
+\vspace{-20pt}
+\caption{\small  All pairs of the OxFrei dataset: ``Is the image pair from the same scene?''. True(white)/False(black).  Correlation similarity: the lighter, the higher. {\em First:} ground truth; {\em second and third:} MSER + SURF; {\em fourth and fifth:} MSER + SMI.}
+\label{fig:matching2}
+  \vspace{-12pt}
+\end{figure}
 
 %% comment line
 
@@ -208,7 +230,7 @@ The performance results on the VGG dataset are summarized in Table \ref{tab:vgg}
 \begin{tabular}{|l||c|c|c|c|c|c|c|}
 
 \hline
-Det. + descr. & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+Detector + descriptor & TP & TN & FP & FN & Accuracy &Precision &Recall\\
 \hline
 \hline
 MSER + SURF & $128$ & $428$ &$4$ & $16$ & $0.965$ & $0.969$ & $0.889$\\
@@ -228,7 +250,7 @@ BIN (Largest) + \bf{SMI} &$112$  &$424$  &$8$  &$32$ &$0.93$  & $0.93$ &$0.77$ \
   \vspace{-10pt}
 \end{table}
 
-\paragraph{OxFrei dataset}
+%\paragraph{OxFrei dataset}
 
 The performance results on the OxFrei dataset are summarized in Table \ref{tab:oxfrei}.
 \begin{table}[!ht]
@@ -236,7 +258,7 @@ The performance results on the OxFrei dataset are summarized in Table \ref{tab:o
 \begin{tabular}{|l||c|c|c|c|c|c|c|}
 
 \hline
-Det. + descr. & TP & TN & FP & FN & Acc. &Prec. &Recall\\
+Detector + descriptor & TP & TN & FP & FN & Accuracy &Precision &Recall\\
 \hline
 \hline
 MSER + SURF & $3309$ & $28848$ & $2904$ & $660$ & $0.90$ & $0.53$ & $0.83$\\
