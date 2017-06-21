@@ -224,6 +224,7 @@ Figure \ref{fig:intro1} illustrates the result for 2 pairs and Figure \ref{fig:m
 
 %% comment line
 
+\begin{comment}
 The performance results on the VGG dataset are summarized in Table \ref{tab:vgg}.
 \begin{table}[!ht]
 \begin{center}
@@ -275,6 +276,28 @@ BIN (Largest) + \bf{SMI}  & $2079$& $28474$ & $3278$ & $1890$ & $0.85$ & $0.38$ 
 \end{center}
 \vspace{-20pt}
 \caption{Performance of salient region detectors and descriptors on the OxFrei dataset.} \label{tab:oxfrei}
+  \vspace{-10pt}
+\end{table}
+
+\end{comment}
+
+Table \ref{tab:perf} summarizes the perofrmance of the combinations of detectors and descriptors for the $2$ datasets.
+\begin{table}[!ht]
+\begin{center}
+  \vspace{-6pt}
+\begin{tabular}{|l|*{6}{c|}}  % repeats {c|} 18 times
+\hline
+\multicolumn{1}{|r}{Dataset} & \multicolumn{3}{|c|}{Oxford}  & \multicolumn{3}{|c|}{OxFrei} \\ \hline
+{Detector + descriptor}  & Accuracy &Precision &Recall & Accuracy &Precision &Recall \\ \hline
+MSER + SURF & $0.90$ & $0.53$ & $0.83$ &  $0.90$ & $0.53$ & $0.83$\\ \hline
+MSER + \bf{SMI}  &$0.958$  & $0.98$ & $0.847$ & $0.95$ &$0.83$ & $0.74$ \\ \hline
+BIN (All) + SURF & $0.951$ & $0.953$ &$0.847$ & $0.85$ &$0.41$ & $0.63$\\ \hline
+BIN (All) + \bf{SMI} & $0.89$  & $1$ &$0.58$ & $0.91$ &$0.73$ & $0.32$\\ \hline
+BIN (Largest) + \bf{SMI} &$0.93$  & $0.93$ &$0.77$ & $0.85$ & $0.38$ & $0.52$\\ \hline
+\end{tabular}
+\end{center}
+\vspace{-20pt}
+\caption{Performance of salient region detectors and descriptors on the Oxford and OxFrei datasets.} \label{tab:perf}
   \vspace{-10pt}
 \end{table}
 
