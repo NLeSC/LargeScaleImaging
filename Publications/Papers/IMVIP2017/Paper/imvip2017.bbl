@@ -23,8 +23,8 @@ Flusser, J., Suk, T., and Zitova, B. (2009).
 \bibitem[Hassaballah et~al., 2016]{Hassaballah:2016}
 Hassaballah, M., Abdelmgeid, A.~A., and Alshazly, H.~A. (2016).
 \newblock {I}mage {F}eatures {D}etection, {D}escription and {M}atching.
-\newblock In Awad, A. and Hassaballah, M., editors, {\em IMAGE FEATURE
-  DETECTORS AND DESCRIPTORS: FOUNDATIONS AND APPLICATIONS}, volume 630 of {\em
+\newblock In Awad, A. and Hassaballah, M., editors, {\em Image Feature
+  detectors and Descriptors: Foundations and Applications}, volume 630 of {\em
   Studies in Computational Intelligence}, pages 11--45. Springer.
 
 \bibitem[Matas et~al., 2002]{Matas2002BMVC}
@@ -35,7 +35,7 @@ Matas, J., Chum, O., Urban, M., and Pajdla, T. (2002).
 \bibitem[Mikolajczyk et~al., 2005]{Mikolajczyk:2005}
 Mikolajczyk, K. et~al. (2005).
 \newblock A comparison of affine region detectors.
-\newblock {\em International Journal of Computer Vision}, 65(1-2):43--72.
+\newblock {\em Int. J. of CV}, 65(1-2):43--72.
 
 \bibitem[Mikolajczyk and Schmid, 2005]{Mikolajczyk:descr:2005}
 Mikolajczyk, K. and Schmid, C. (2005).
@@ -46,7 +46,7 @@ Mikolajczyk, K. and Schmid, C. (2005).
 Ranguelova, E. (2016).
 \newblock {A Salient Region Detector for Structured Images}.
 \newblock In {\em Proceedings of IEEE/ACS 13th Int. Conf. of Computer Systems
-  and Applicaitons (AICCSA)}, pages 1--8.
+  and Applications (AICCSA)}, pages 1--8.
 
 \bibitem[Snavely et~al., 2008]{Snavely2008}
 Snavely, N., Seitz, S.~M., and Szeliski, R. (2008).
