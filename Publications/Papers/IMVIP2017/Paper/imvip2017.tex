@@ -38,7 +38,7 @@
 %%%%
 \begin{document}
 
-\title{Shape- and Moment- Invariant Descriptor for Structured Images}
+\title{Local Shape and Moment Invariant Descriptor for Structured Images}
 
 \author{Anonymous Submission}
 \affil{Anonymous Affiliation}
@@ -52,7 +52,7 @@
 
 
 \begin{abstract}
-Finding correspondences between two images to determine if they depict the same scene is a fundamental, yet challenging task. To cope with different viewpoints and lighting conditions, local salient regions are detected invariantly to transformations and encoded by descriptors such as Scale-invariant Feature Transform (SIFT) or Speeded-up Robust Features (SURF). While using the image intensities around the centroid of the region to compute a SIFT-type descriptor often works well, we argue that for structured scenes it is beneficial to use descriptors based on the shape of the regions. We propose a $20$-dimensional Shape- and Moment- Invariant (SMI) descriptor and show that it outperforms the $64$-dimensional SURF on two benchmark datasets in terms of precision with similar or higher accuracy, while having a better scalability.
+Finding correspondences between two images to determine if they are from the same scene is a fundamental, yet challenging task. To cope with different viewpoints and lighting conditions, local salient regions are detected invariantly to transformations and encoded by descriptors such as Scale-invariant Feature Transform (SIFT) or Speeded-up Robust Features (SURF). While using image intensities around a single point, the centroid of each region, to compute SIFT-type descriptors often works well, we argue that for structured scenes it is beneficial to use descriptors based on the shape of the regions. We propose a $20$-dimensional Shape and Moment Invariant (SMI) descriptor and show that it outperforms the $64$-dimensional SURF on two benchmark datasets in  precision with similar or higher accuracy, while having a better scalability.
 \end{abstract}
 \textbf{Keywords:} image matching, affine-invariant descriptor, shape invariants, moment invariants
 
@@ -81,29 +81,29 @@ Finding correspondences between two images to determine if they depict the same 
 \end{subfigure}
 \end{center}
 \vspace{-20pt}
-\caption{\small ``Is it the same object or scene?'' Matching two images under different transformations using MSER regions.\\ {\em Top image pair} (scale and viewpoint): SURF descriptor yields false negative (similarity score $0.096$), while SMI - true positive ($0.89$).
-{\em Bottom image pair} (blur): SURF gives false positive ($0.27$), while SMI true negative ($-0.11$).}
+\caption{\footnotesize ``Is it the same object or scene?'' Matching an OxFrei image pair under different transformations using MSER regions.\\ {\em Top image pair} (scale and viewpoint): SURF descriptor yields false negative (similarity score $0.096$), while SMI true positive ($0.89$).
+{\em Bottom image pair} (blur): SURF descriptor yields false positive (similarity score $0.27$), while SMI  true negative ($-0.11$).}
 \label{fig:intro1}
   \vspace{-16pt}
 \end{wrapfigure}
 
 Automatically determining whether two images depict partially the same physical scene is a fundamental computer vision problem such as baseline stereo matching, image retrieval, etc.~\cite{EscaleraCVPR07,Matas2002BMVC}). The approach is to {\em detect} local (to cope with partial overlap) features, followed by matching of their {\em descriptors}.
- A class of such features are local regions, corresponding to the same image patches, detected independently in each of the two images. Many detectors and descriptors are invariant to photometric (due to different sensors and lighting) and affine geometric transformations (due to different viewpoints). In recent years, the approach of using large datasets of image patch correspondences has been established, \cite{Snavely2008, ZagoruykoK15}. However,  deep learning is not applicable when the {\em structured} images with homogeneous regions with distinctive boundaries, are only few. Such is the case, for example, in some scientific applications \cite{Ranguelova2016AICCSA}.
+ A class of such features are local regions, corresponding to the same image patches, detected independently in each of the two images. Many detectors and descriptors are invariant to photometric (due to different sensors and lighting) and affine geometric transformations (due to different viewpoints). In recent years, an approach of using large datasets of image patch correspondences has been established, \cite{Snavely2008, ZagoruykoK15}. However,  deep learning is not applicable when the {\em structured} images having homogeneous regions with distinctive boundaries, are only few. Such is the case, for example, in some scientific applications \cite{Ranguelova2016AICCSA}.
 
-The Maximally Stable Extremal Regions (MSER) detector has become the standard in computer vision \cite{ Matas2002BMVC}. It is often used in combination with a histogram-of-gradients type descriptor such as Scale-invariant Feature Transform (SIFT) or Speeded-Up Robust Features (SURF) \cite{Bay2008}, computed from image intensities around the centroids of the MSER regions. We argue that using the shape and moment information of the regions encoded by a {\em Shape- and Moment- Invariant (SMI)} descriptor is beneficial, compared to image intensities around the region's centroid. Figure \ref{fig:intro1} illustrates two cases of image pairs, one depicting the same scene and the other not, where SMI outperforms SURF applied on pre-detected MSER regions.
+The Maximally Stable Extremal Regions (MSER) detector has become the standard in computer vision \cite{ Matas2002BMVC}. It is often used in combination with a histogram-of-gradients type descriptor such as Scale-invariant Feature Transform (SIFT) or Speeded-Up Robust Features (SURF) \cite{Bay2008}, computed from image intensities around the centroids of the MSER regions. We argue that using the shape information of the regions encoded by a {\em Shape and Moment Invariant (SMI)} descriptor is beneficial, compared to using image intensities around the central point of the region. Figure \ref{fig:intro1} illustrates two cases of image pairs, one depicting the same scene and the other not, where SMI outperforms SURF applied on pre-detected MSER regions.
 
 \section{Related work}
 The literature describes large number of local detectors and descriptors. For a recent introduction and overview the reader is referred to \cite{Hassaballah:2016}. Here, we mention very briefly only the closely related work.
 
-A comparative performance evaluation of number of detectors has concluded that the MSER is the best performing region detector for structured scenes \cite{Mikolajczyk:2005}. Since then, MSER has been integrated in MATLAB, OpenCV, VLFeat, etc.~, making it the default baseline detector. However, despite its success, the detector has several drawbacks, which have been addressed by improved detectors, including the Data-driven Morphology Salient Regions detector (DMSR) \cite{Ranguelova2016AICCSA}. Here, we propose to use a Binary detector (BIN) using the first step of DMSR construction: data-driven binarization explained in \cite{Ranguelova2016AICCSA}, with either all regions or only regions with large area ($A_{region} \ge f_A.A_{Image}$).
+A comparative performance evaluation of number of detectors has concluded that MSER is the best performing region detector for structured scenes \cite{Mikolajczyk:2005}. Since then, MSER has been integrated into MATLAB, OpenCV, VLFeat, etc.~, making it the default baseline detector. However, despite its success, the detector has several drawbacks, which have been addressed by improved detectors, including the Data-driven Morphology Salient Regions detector (DMSR) \cite{Ranguelova2016AICCSA}. Here, we propose to use a Binary detector (BIN) using the first step of DMSR construction: data-driven binarization explained in \cite{Ranguelova2016AICCSA}, with either all regions or only regions with large area ($A_{region} \ge f_A.A_{Image}$).
 
-Another comparative performance evaluation of number of region descriptors have concluded that the "region-based SIFT descriptor" is the best performing for structured images \cite{Mikolajczyk:descr:2005}. Since we are interested in describing the shape of the detected regions, we have chosen efficient shape descriptors, known as moment invariants. Flusser et al.~pointed our the dependency in the early set of $7$ Hu moments and developed a coherent theory and general framework for derivation of Affine Moment Invariants (AMIs) using graph representation \cite{SukF04, Flusser09a}.
+Another comparative performance evaluation of number of region descriptors has concluded that the "region-based SIFT descriptor" is the best performing for structured images \cite{Mikolajczyk:descr:2005}. Since we are interested in describing the shape of the detected regions, we have chosen efficient shape descriptors, known as moment invariants. Flusser et al.~pointed our the dependency in the early set of $7$ Hu moments and developed a coherent theory and general framework for derivation of Affine Moment Invariants (AMIs) using graph representation \cite{SukF04, Flusser09a}.
 
 Research has been performed not only to determine the best region detector and descriptor, but also the best detector - descriptor combination.
-For example, the conclusion of the experiments in \cite{DahlAP11} is that the best combination is DOG or MSER detector and SIFT (SURF was not included in the experiments) or DAISY descriptors. SURF has been introduced as an improvement over SIFT and since has become a standard descriptor in many computer vision software libraries, making it the default baseline descriptor \cite{Bay2008}.
+For example, the conclusion of the experiments in \cite{DahlAP11} is that the best combination is DOG or MSER detector and SIFT (SURF was not included in the experiments) or DAISY descriptors. SURF has been introduced as an improvement over SIFT and since has become the standard of many computer vision software libraries, making it the default baseline descriptor choice \cite{Bay2008}.
 Hence, we have chosen MSER - SURF as the baseline detector - descriptor combination.
 
-\section{Image matching with Shape- and Moment- Invariant descriptor}\label{sec:match}
+\section{Image matching with Shape and Moment Invariant descriptor}\label{sec:match}
 We propose a set of several Shape and Moment Invariants (SMI) derived from the binary shapes of the detected regions as a region descriptor. The SMI descriptor contains {\em shape invariants} and {\em moment invariants}.
 
 \paragraph{Shape invariants.}
@@ -136,9 +136,9 @@ Solidity & $s_i = {a_i}/{a_i^c} $ & proportion of the convex hull pixels, that a
 
 \paragraph{Affine Moment Invariants.}
  
-If $f(x,y)$ is a real-valued image with $N$ points, the AMI functional is defined by
+If $I(x,y)$ is a real-valued image with $N$ points, the AMI functional is defined by
 \begin{equation}
-M(f) = \int_{-\infty}^{\infty} \prod_{k,j=1}^{N}C_{kj}^{n_{kj}} . \prod_{l=1}^{N}I(x_l, y_l)dx_ldy_l,
+M(I) = \int_{-\infty}^{\infty} \prod_{k,j=1}^{N}C_{kj}^{n_{kj}} . \prod_{l=1}^{N}I(x_l, y_l)dx_ldy_l,
 \end{equation}
 where $n_{kj}$ are non-negative integers and $C_{kj} =x_ky_j - x_jy_k$ is the cross-product (graph edge) of points (nodes) $(x_k, y_k)$ and $(x_j, y_j)$, \cite{SukF04}. For full details of the AMI's theory the reader is referred to \cite{Flusser09a}.
 We use the set of $16$  irreducible AMIs of $N=4$th order, which are the functional coefficients $\{m_{ij},j=1 \ldots 16 \}$ , as implemented by the authors in an open source MATLAB software.% \cite{UTIAcode}. 
@@ -148,7 +148,7 @@ Hence, the final descriptor for the $i$-th region is a $20$ element feature vect
 
 \paragraph{Matching.}
 
-Lets $\mathit{SMI}1$ and $\mathit{SMI2}$ be $\mathit{n1} \times 20$ and $\mathit{n2} \times 20$ matrices, where each row is the SMI descriptor for the $n1$ and $n2$ regions detected via MSER or BIN (all/largest) detector in the pair of images $<I1, I2>$.
+Lets $\mathit{SMI}1$ and $\mathit{SMI}2$ be $\mathit{n1} \times 20$ and $\mathit{n2} \times 20$ matrices, where each row is the SMI descriptor for the $n1$ and $n2$ regions detected via MSER or BIN (all/largest) detector in the pair of images $<I1, I2>$.
 We compare exhaustively  $\mathit{SMI}1$ and $\mathit{SMI}2$ with Sum of square differences metric. The matching threshold for selection of the strongest matches is $\mathit{mt}$, the max ratio threshold for rejecting ambiguous matches is $\mathit{mr}$, the confidence of a match is $\mathit{mc}$ and only unique matches are allowed. Then, we select the top quality matches above a cost threshold $\mathit{ct}$. From those, we estimate in $\mathit{it}$ iterations the affine transformation ${\tilde T}$ between the two sets of points- centroids of the matching regions sets as average of $\mathit{nr}$ runs with allowed max point distance $\mathit{md}$. The two images are then transformed $J2 = {\tilde T}(I1)$, $J1 = {\tilde T}^{-1}(I2)$ and a correlation ($cor[X,Y] = cov[X,Y]/ \sqrt{var[X] var[Y]}$) between the original and transformed images is used for confirmation of a true match. If the average correlation similarity between both images and their transformed versions $(cor[I1, J1]+cor[I2, J2])/2$ is above a similarity threshold $st$, we declare the image pair $<I1, I2>$ to be depicting (partially) the same scene.
 
 Figure \ref{fig:matching1} illustrates the major steps of the image matching using BIN - SMI in case of viewpoint distortion. Note the better alignment in the right part of the images due to the larger number of correct matches there. The steps are the same when using MSER instead of the data-driven binarization or SURF instead of SMI descriptor.
@@ -185,14 +185,14 @@ Figure \ref{fig:matching1} illustrates the major steps of the image matching usi
 \end{subfigure}
 \end{center}
 \vspace{-20pt}
-\caption{\small Matching two images of the same scene under viewpoint transformation using BIN regions and SMI descriptor. {\em First column:} original images $I1, I2$; {\em second column:} binarization; {\em third column:} matched BIN regions using SMI descriptor (blend view with pseudocolours); {\em fourth column:} overlay of the original and transformed images $(I1, J1), (I2, J2)$. }
+\caption{\footnotesize Matching two same scene images under viewpoint transformation using BIN region detector and SMI descriptor. \\{\em First column:} original images $I1, I2$; {\em second column:} binarization; {\em third column:} SMI descriptor-matched BIN regions used for transformation estimation (blend view with pseudocolours); {\em fourth column:} overlay of the original and transformed images $(I1, J1), (I2, J2)$. }
 \label{fig:matching1}
   \vspace{-12pt}
 \end{figure}
 
 \section{Performance Evaluation}
 
-We have tested the performance of the MSER and BIN (all regions and only the largest) detectors in combinations with the SURF and SMI descriptors on two datasets: Oxford (VGG) \cite{Mikolajczyk:2005} and OxFrei, \cite{Ranguelova2016AICCSA}. Each of the $4$ structured image sequences of the Oxford set consists of $1$ base and $5$ increasingly distorted images. Each sequence can be used to test only one transformation $T$: viewpoint, scaling + rotation, decreased lighting and blur. OxFrei dataset overcomes the limitation: $9$ structured scenes each with $21$ images (original + $5$ images for $4 T$) using Oxford's real homographies. We compared all possible image pairs and assigned a flag {\em True/False} if a pair is depicting the same scene (see Section \ref{sec:match}). The values of the parameters used in the experiments have been determined empirically: $\mathit{mt}=\mathit{mr}=1$, $f_A=2e-3$ (for BIN largest), $\mathit{it}=1000$, $\mathit{nr}=10$, $\mathit{mc}=95$, $\mathit{md}=8px$, $\mathit{ct}=0.025$, $\mathit{st}=0.25$. Figure \ref{fig:intro1} illustrates the result for 2 pairs and Figure \ref{fig:matching2} for all pairs (a pixel represents image pair and a square block a sequence) of the OxFrei dataset. Note the lower number of false positives and correlation similarity variance when using the SMI descriptor.
+We have tested the performance of the MSER and BIN (all regions and only the largest) detectors in combinations with the SURF and SMI descriptors on two datasets: Oxford (VGG) \cite{Mikolajczyk:2005} and OxFrei \cite{Ranguelova2016AICCSA}. Each of the $4$ structured image sequences of the Oxford set consists of $1$ base and $5$ increasingly distorted images. Each sequence can be used to test only one transformation $T$: viewpoint, scaling + rotation, decreased lighting and blur. OxFrei dataset overcomes the limitation: $9$ structured scenes each with $21$ images (original + $5$ images for $4 T$) using Oxford's real homographies. We compared all possible image pairs and assigned a flag {\em True/False} if a pair is depicting the same scene (see Section \ref{sec:match}). The values of the parameters used in the evaluation have been determined experimentally: $\mathit{mt}=\mathit{mr}=1$, $f_A=2e-3$ (for BIN largest), $\mathit{it}=1000$, $\mathit{nr}=10$, $\mathit{mc}=95$, $\mathit{md}=8px$, $\mathit{ct}=0.025$, $\mathit{st}=0.25$. Figure \ref{fig:intro1} illustrates the result for 2 pairs and Figure \ref{fig:matching2} for all pairs (a pixel represents image pair and a square block a sequence) of the OxFrei dataset. Note the lower number of false positives and correlation similarity variance when using the SMI descriptor.
 
 \begin{figure}[h]
  \vspace{-10pt} 
@@ -216,14 +216,14 @@ We have tested the performance of the MSER and BIN (all regions and only the lar
 \vspace{-20pt}
 %\caption{\small  All pairs of the OxFrei dataset: ``Is the image pair from the same scene?''. True(white)/False(black).  Correlation similarity: the lighter, the higher. {\em First:} ground truth; {\em second and third:} MSER + SURF; {\em fourth and fifth:} MSER + SMI.}
 
-\caption{\small  OxFrei dataset, MSER regions. ``Is the image pair from the same scene?'': {\em True} = white, {\em False} = black. \\
+\caption{\footnotesize Matching all OxFrei pairs using MSER regions. ``Is the image pair from the same scene?'': {\em True}(white)/{\em False}(black). \\
 {\em First:} ground truth, {\em third:} SURF, {\em fifth:} SMI. Correlation similarity: the lighter, the higher. {\em Second:} SURF, {\em fourth:} SMI. }
 \label{fig:matching2}
   \vspace{-12pt}
 \end{figure}
 
 
-Table \ref{tab:perf} summarizes the performance of the combinations of detectors and descriptors for the $2$ datasets. When using the default MSER detector, it seems beneficial to combine with an SMI instead of the standard SURF descriptor as in both datasets almost all performance measures are improved. The BIN (all) detector does not outperform MSER in the matching task and using only the largest regions in BIN (largest) improves the recall at the expense of lower precision. The SMI descriptor achieves better precision in comparison to SURF independent of the detector or dataset. The best detector - descriptor combination is MSER - SMI when all measure are required to be high, especially accuracy and precision.
+Table \ref{tab:perf} summarizes the performance of the combinations of detectors and descriptors for the $2$ datasets. When using the default MSER detector, it seems beneficial to combine with an SMI instead of the standard SURF descriptor as in both datasets almost all performance measures are improved. The BIN (all) detector does not outperform MSER in the matching task and using only the largest regions in BIN (largest) improves the recall at the expense of lower precision. The SMI descriptor achieves better precision in comparison to SURF independent of the detector or dataset. The best detector - descriptor combination is MSER - SMI when all measures are required to be high, especially the accuracy and precision.
 
 \begin{table}[!ht]
 \begin{center}
@@ -240,13 +240,14 @@ BIN (Largest) - \bf{SMI} & $0.93$        & $0.93$      &$0.77$         & $0.85$ 
 \end{tabular}
 \end{center}
 \vspace{-18pt}
-\caption{Performance of salient region detectors and descriptors on the Oxford and OxFrei datasets.} \label{tab:perf}
+\caption{\small Performance of salient region detectors and descriptors on the Oxford and OxFrei datasets.} \label{tab:perf}
   \vspace{-10pt}
 \end{table}
 
 The developed MATLAB software will be released as open source with the final paper.
+
 \section{Conclusion}
-It is not possible to use deep learning of image patches approach when trying to automatically determine if two images depict (partially) the same scene if only a few images are available. It is beneficial not to discard the shape of the salient regions detected by the detector. For structured scenes, a descriptor based on the properties of the binary regions alone performs better than one based on image intensities.  The proposed shape and moment invariant descriptor, SMI, is a good choice when false positives should be minimal. In combination with the MSER detector, SMI achieves the highest precision and good accuracy and recall. In the future, the matching performance of the SMI descriptor should be tested on larger datasets.
+It is not possible to use deep learning of image patches approach when trying to automatically determine whether two images depict (partially) the same scene if only a few images are available. It is beneficial not to discard the shape of the salient regions detected by the detector. For structured scenes, a descriptor based on the properties of the binary regions alone performs better than one based on image intensities.  The proposed shape and moment invariant descriptor, SMI, is a good choice when false positives should be minimal. In combination with the MSER detector, SMI achieves the highest precision and good accuracy and recall. In the future, the matching performance of the SMI descriptor should be tested on larger datasets.
 
 %\section*{Acknowledgments}
 
