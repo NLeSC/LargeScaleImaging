@@ -83,8 +83,13 @@ https://github.com/NLeSC/LargeScaleImaging/edit/master/Data/OxFrei
 
 CONTACT
 -------------------
+
 Dr. Elena Ranguelova
+
 Netherlands eScience Center
+
 Amsterdam, The Netherlands
+
 https://www.esciencecenter.nl/profile/dr.-elena-ranguelova
+
 e.ranguelova@esciencecenter.nl
