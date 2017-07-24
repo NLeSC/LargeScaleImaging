@@ -1,5 +1,4 @@
-OxFrei dataset
---------------------
+# OxFrei dataset
 --------------------
 
 PURPOSE 
@@ -10,7 +9,7 @@ TERMS OF USE
 -------------------
 The dataset is only provided for research purposes and without any warranty. 
 If you use this you should cite:
-<fill in ICIP paper2016 if accepted here>
+Ranguelova, E., "A Salient Region Detector for Structured Images", Proceedings AICCSA 2016, pp.1-8
 
 SOURCES
 --------------------
@@ -57,6 +56,7 @@ Software/MATLAB/AfineRegions/Detectors/Testing
 URL
 --------------------
 This dataset is availabe in the following git repository:
+https://github.com/NLeSC/LargeScaleImaging/edit/master/Data/OxFrei
 
 CONTACT
 -------------------
