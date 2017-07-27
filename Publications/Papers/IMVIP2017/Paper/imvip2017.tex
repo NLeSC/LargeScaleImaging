@@ -137,9 +137,9 @@ Solidity & $s_i = {a_i}/{a_i^c} $ & proportion of the convex hull pixels, that a
 \paragraph{Affine Moment Invariants.}
  
 If $I(x,y)$ is a real-valued image with $N$ points, the AMI functional is defined by
-\begin{equation}
+\begin{equation*}
 M(I) = \int_{-\infty}^{\infty} \prod_{k,j=1}^{N}C_{kj}^{n_{kj}} . \prod_{l=1}^{N}I(x_l, y_l)dx_ldy_l,
-\end{equation}
+\end{equation*}
 where $n_{kj}$ are non-negative integers and $C_{kj} =x_ky_j - x_jy_k$ is the cross-product (graph edge) of points (nodes) $(x_k, y_k)$ and $(x_j, y_j)$, \cite{SukF04}. For full details of the AMI's theory the reader is referred to \cite{Flusser09a}.
 We use the set of $16$  irreducible AMIs of $N=4$th order, which are the functional coefficients $\{m_{ij},j=1 \ldots 16 \}$ , as implemented by the authors in an open source MATLAB software.% \cite{UTIAcode}. 
 %The AMI part of $SMI_i$ is $M_i = \{m_{i1}, \ldots, m_{i16}\}$. 
