@@ -1,4 +1,5 @@
 # Datasets
+[![DOI](https://zenodo.org/badge/33118509.svg)](https://zenodo.org/badge/latestdoi/33118509)
 
 Here there are 2 datasets suitable to test affine covariant region detectors. To access the datasets, [Git LFS (Large File Storage)](https://git-lfs.github.com/) is needed.
 
